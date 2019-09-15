@@ -1,0 +1,13 @@
+.borde {
+    border: 2px solid rgb(68, 76, 143);
+    border-radius: 10px;
+  }
+  .izquierda {
+    text-align: end;
+  }
+  .final{
+    align-content: space-around;  
+  }
+.derecha{
+  align-content: flex-start;
+}
