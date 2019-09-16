@@ -11,6 +11,7 @@ import {Firebase} from "./config/config";
 
 class App extends Component{
 //hola
+// que onda luis
     constructor(props){
         super(props);
         this.state = {
