@@ -10,7 +10,7 @@ import {Firebase} from "./config/config";
 
 
 class App extends Component{
-
+//hola
     constructor(props){
         super(props);
         this.state = {
