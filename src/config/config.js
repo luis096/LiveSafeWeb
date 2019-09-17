@@ -10,7 +10,7 @@ import 'firebase/firestore';
   // messagingSenderId: "810428216960",
   // appId: "1:810428216960:web:ffe81dcac50290a2"
   // }; 
-
+  
 const config = {
     apiKey: "AIzaSyC_6xPis8MppwEJZOb1RC9atc0ot2oh3Iw",
     authDomain: "livesafeweb.firebaseapp.com",
