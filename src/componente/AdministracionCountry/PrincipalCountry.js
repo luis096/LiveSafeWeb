@@ -12,7 +12,6 @@ class PrincipalCountry extends Component{
         this.state= {
             barrios: []
         }
-        this.actualizar = this.actualizar.bind(this)
     }
 
     async componentDidMount(){

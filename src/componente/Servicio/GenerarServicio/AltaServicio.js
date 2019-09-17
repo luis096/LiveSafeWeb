@@ -44,6 +44,7 @@ class AltaServicio extends Component{
     ChangeRadio(event){
       this.setState({estado: event.currentTarget.value})
   }
+  
     registrar(){
         //Agregar validaciones para no registrar cualquier gilada
         if(true){
