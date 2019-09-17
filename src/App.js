@@ -5,7 +5,7 @@ import Router from './componente/router';
 import './App.css';
 import Encabezado from './componente/Encabezado/Encabezado';
 import { Firebase } from './config/config';
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom';
 
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 
@@ -53,7 +53,7 @@ class App extends Component {
             return (
                 <div className="app container-fluid ">
                     <Encabezado tipoUsuario={this.state.tipoUsuario}></Encabezado>
-                    <Router user={ this.state.user?true:false} ></Router>
+                    <Router user={this.state.user ? true : false}></Router>
                 </div>
             );
         }

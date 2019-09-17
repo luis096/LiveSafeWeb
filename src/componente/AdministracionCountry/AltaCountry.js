@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import '../Style/Alta.css';
+// import '../Style/Alta.css';
 import { Database, Firebase } from '../../config/config';
 import { Link } from 'react-router-dom';
-import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-import ReactDOM from 'react-dom';
-import { Textbox } from 'react-inputs-validation';
-import 'react-inputs-validation/lib/react-inputs-validation.min.css';
+
+import { validator } from './validator';
 
 class AltaCountry extends Component {
 
@@ -33,8 +31,8 @@ class AltaCountry extends Component {
         this.handleFiles = this.handleFiles.bind(this);
         this.registrar = this.registrar.bind(this);
 
+        this.errorName = false;
     }
-
 
     addCountry() {
         Database.collection('Country').add({
@@ -70,6 +68,7 @@ class AltaCountry extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
+        this.errorName = validator.numero(event.target.value);
     }
 
     ChangeCalle(event) {
@@ -77,6 +76,7 @@ class AltaCountry extends Component {
     }
 
     ChangeNumero(event) {
+        console.log('numerom', validator.numero(event.target.value));
         this.setState({numero: event.target.value});
     }
 
@@ -111,76 +111,81 @@ class AltaCountry extends Component {
 
     render() {
 
-	return(
-		<div className="col-12">
-            <div className="col-md-12 ">
-			<div className="row">
-				<legend>  Registrar Alta de un Barrio </legend>
-					<div className = "col-md-6  flex-container form-group">
-						<label for = "Nombre">  Nombre del Barrio </label>
-						<input type = "name" className = "form-control"   placeholder = "Name Country"
-						value={this.state.nombre}
-						onChange ={this.ChangeNombre}/>
-					</div>
-					<div className = "col-md-6  flex-container form-group">
-						<label for = "Nombre">  Titular </label>
-						<input type = "name" className = "form-control"   placeholder = "Name Headline"
-						value={this.state.titular}
-						onChange ={this.ChangeTitular}/>
-					</div>
-					<div className = "col-md-6  flex-container form-group">
-						<label for = "Nombre"> Calle </label>
-						<input type = "name" className = "form-control"   placeholder = "Street"
-						value={this.state.calle}
-						onChange ={this.ChangeCalle}/>
-					</div>
-					<div className = "col-md-6  flex-container form-group">
-						<label for = "Nombre">  Celular </label>
-						<input type = "name" className = "form-control"   placeholder = "Mobile"
-						value={this.state.celular}
-						onChange ={this.ChangeCelular}/>
-					</div>
-					<div className = "col-md-6  flex-container form-group">
-						<label for = "Nombre">  Numero </label>
-						<input type = "name" className = "form-control"   placeholder = "Number"
-						value={this.state.numero}
-						onChange ={this.ChangeNumero}/>
-					</div>
+        return (
+            <div className="col-12">
+                <div className="col-md-12 ">
+                    <div className="row">
+                        <legend> Registrar Alta de un Barrio</legend>
 
-
-					<div className = "col-md-6  flex-container form-group">
-						<label for = "Nombre">  Descripcion </label>
-						<textarea className = "form-control" id = "exampleTextarea" rows = "3"  placeholder = "Description"
-                             value = {this.state.descripcion}
-                             onChange={this.ChangeDescripcion}> </textarea>
+                        <div
+                            className={this.errorName ? 'col-md-6 form-group has-feedback has-error' : 'col-md-6 form-group has-feedback'}>
+                            <label for="Nombre" className=''> Nombre del Barrio </label>
+                            <div className=''>
+                                <input type="name" className="form-control " placeholder="Name Country"
+                                       value={this.state.nombre}
+                                       onChange={this.ChangeNombre}/>
+                                {/*<span className="glyphicon glyphicon-remove form-control-feedback"></span>*/}
+                            </div>
                         </div>
-					<div>
+                        <div className="col-md-6  flex-container form-group">
+                            <label for="Nombre"> Titular </label>
+                            <input type="name" className="form-control" placeholder="Name Headline"
+                                   value={this.state.titular}
+                                   onChange={this.ChangeTitular}/>
+                        </div>
+                        <div className="col-md-6  flex-container form-group">
+                            <label for="Nombre"> Calle </label>
+                            <input type="name" className="form-control" placeholder="Street"
+                                   value={this.state.calle}
+                                   onChange={this.ChangeCalle}/>
+                        </div>
+                        <div className="col-md-6  flex-container form-group">
+                            <label for="Nombre"> Celular </label>
+                            <input type="name" className="form-control" placeholder="Mobile"
+                                   value={this.state.celular}
+                                   onChange={this.ChangeCelular}/>
+                        </div>
+                        <div className="col-md-6  flex-container form-group">
+                            <label for="Nombre"> Numero </label>
+                            <input type="name" className="form-control" placeholder="Number"
+                                   value={this.state.numero}
+                                   onChange={this.ChangeNumero}/>
+                        </div>
+
+
+                        <div className="col-md-6  flex-container form-group">
+                            <label for="Nombre"> Descripcion </label>
+                            <textarea className="form-control" id="exampleTextarea" rows="3" placeholder="Description"
+                                      value={this.state.descripcion}
+                                      onChange={this.ChangeDescripcion}> </textarea>
+                        </div>
+                        <div>
 						<span>
 							<strong>{this.state.resultado}</strong>
 						</span>
-					</div>
-          </div>
+                        </div>
+                    </div>
 
-		<div className="col-md-6  flex-container form-group">
-			<progress value={this.state.upLoadValue} max='100'>
-				{this.state.upLoadValue}%
-			</progress>
+                    <div className="col-md-6  flex-container form-group">
+                        <progress value={this.state.upLoadValue} max='100'>
+                            {this.state.upLoadValue}%
+                        </progress>
 
-                            <input type="file" onChange={this.handleFiles}/>
+                        <input type="file" onChange={this.handleFiles}/>
 
-                            <img width="320" src={this.state.picture}/>
+                        <img width="320" src={this.state.picture}/>
 
-		</div>
-          	<div className="form-group izquierda">
-			      <button className="btn btn-primary boton" onClick= {this.registrar} >Registrar</button>
-            <Link to="/" type="button" className="btn btn-primary boton">Volver</Link>
-		    </div>
-        </div>
+                    </div>
+                    <div className="form-group izquierda">
+                        <button className="btn btn-primary boton" onClick={this.registrar}>Registrar</button>
+                        <Link to="/" type="button" className="btn btn-primary boton">Volver</Link>
+                    </div>
+                </div>
 
-      </div>
-	
-	);
-}
+            </div>
+
+        );
+    }
 }
 
 export default AltaCountry;

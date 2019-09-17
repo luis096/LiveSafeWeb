@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import "../Style/Alta.css";
-import {Database} from "../../config/config";
-import {Link} from "react-router-dom"
+import '../Style/Alta.css';
+import { Database } from '../../config/config';
+import { Link } from 'react-router-dom';
 
-class EditarPropietario extends Component{
+class EditarPropietario extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            propietario: [], 
+            propietario: [],
             nombre: '',
             apellido: '',
             tipoDocumento: '',
@@ -24,9 +24,9 @@ class EditarPropietario extends Component{
             idCountry: '',
 
             tipoD: [],// Para cargar el combo
-            temp: '', 
+            temp: '',
             resultado: ''
-        }
+        };
         this.editPropietario = this.editPropietario.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
@@ -36,67 +36,67 @@ class EditarPropietario extends Component{
         this.ChangeSelect = this.ChangeSelect.bind(this);
         this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
         this.ChangeFechaNacimiento = this.ChangeFechaNacimiento.bind(this);
-        this.ChangeRadio  = this.ChangeRadio.bind(this);
+        this.ChangeRadio = this.ChangeRadio.bind(this);
         this.ChangeTelefonoFijo = this.ChangeTelefonoFijo.bind(this);
         this.registrar = this.registrar.bind(this);
 
         this.idTD = '';
         const url = this.props.location.pathname.split('/');
-        this.idPropietario  = url[url.length - 1];
+        this.idPropietario = url[url.length - 1];
     }
 
-    async componentDidMount(){
-        const { tipoD, propietario} = this.state;
-        await Database.collection('TipoDocumento').get().then(querySnapshot => {
-            querySnapshot.forEach(doc => {
+    async componentDidMount() {
+        const {tipoD, propietario} = this.state;
+        await Database.collection('TipoDocumento').get().then(querySnapshot=> {
+            querySnapshot.forEach(doc=> {
                 this.state.tipoD.push(
                     {value: doc.id, label: doc.data().Nombre}
-                )
+                );
             });
         });
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-        .collection('Propietarios').doc(this.idPropietario).get()
-            .then(doc => {
+            .collection('Propietarios').doc(this.idPropietario).get()
+            .then(doc=> {
                 if (doc.exists) {
                     this.state.propietario.push(doc.data());
                 }
             })
-            .catch(err => {
+            .catch(err=> {
                 //En caso de error, hacer esto...
-            })
+            });
         this.setState({tipoD});
         this.setState({propietario});
         const estrella = this.state.propietario[0];
 
         await Database.collection('TipoDocumento').doc(estrella.TipoDocumento.id).get()
-            .then(doc => {
+            .then(doc=> {
                 if (doc.exists) {
-                    
-                    this.state.tipoDocumento = {value : doc.id, name : doc.data().Nombre}
-                
-                 }
-            })
+
+                    this.state.tipoDocumento = {value: doc.id, name: doc.data().Nombre};
+
+                }
+            });
         this.setState({
             nombre: estrella.Nombre,
             apellido: estrella.Apellido,
-            titular: estrella.Titular?'Si':'No',
+            titular: estrella.Titular ? 'Si' : 'No',
             documento: estrella.Documento,
             fechaNacimiento: estrella.FechaNacimiento,
             fechaAlta: estrella.FechaAlta,
             telefonoFijo: estrella.TelefonoFijo,
-            celular : estrella.Celular,
+            celular: estrella.Celular,
             descripcion: estrella.Descripcion,
-            usuario: estrella.Usuario,
-        })
+            usuario: estrella.Usuario
+        });
     }
- 
 
-    editPropietario(){
+
+    editPropietario() {
         Database.collection('Country').doc(localStorage.getItem('idCountry'))
-        .collection('Propietarios').doc(this.idPropietario).set({
+            .collection('Propietarios').doc(this.idPropietario).set({
             Nombre: this.state.nombre,
             Apellido: this.state.apellido,
-            Titular: this.state.titular=== 'Si'?true:false,
+            Titular: this.state.titular === 'Si' ? true : false,
             Celular: this.state.celular,
             TelefonoFijo: this.state.telefonoFijo,
             Descripcion: this.state.descripcion,
@@ -104,72 +104,79 @@ class EditarPropietario extends Component{
             Documento: this.state.documento,
             FechaNacimiento: this.state.fechaNacimiento,
             FechaAlta: this.state.fechaAlta,
-            Usuario: this.state.usuario,
+            Usuario: this.state.usuario
         });
 
     }
 
     ChangeNombre(event) {
-        this.setState({nombre : event.target.value});
+        this.setState({nombre: event.target.value});
     }
+
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
     }
+
     ChangeNumero(event) {
         this.setState({numero: event.target.value});
     }
+
     ChangeTelefonoFijo(event) {
         this.setState({telefonoFijo: event.target.value});
     }
+
     ChangeDocumento(event) {
-        this.setState({documento : event.target.value});
+        this.setState({documento: event.target.value});
     }
+
     ChangeCelular(event) {
-        this.setState({celular : event.target.value});
+        this.setState({celular: event.target.value});
     }
+
     ChangeDescripcion(event) {
-        this.setState({descripcion : event.target.value});
+        this.setState({descripcion: event.target.value});
     }
 
-    ChangeSelect(event){
-        this.setState({tipoDocumento : event.target.value});
-    }
-    ChangeFechaNacimiento(event){
-        this.setState({fechaNacimiento : event.target.value});
+    ChangeSelect(event) {
+        this.setState({tipoDocumento: event.target.value});
     }
 
-    ChangeRadio(event){
-        this.setState({titular: event.currentTarget.value})
+    ChangeFechaNacimiento(event) {
+        this.setState({fechaNacimiento: event.target.value});
     }
 
-    registrar(){
+    ChangeRadio(event) {
+        this.setState({titular: event.currentTarget.value});
+    }
+
+    registrar() {
         //Agregar validaciones para no registrar cualquier gilada
-        if(true){
+        if (true) {
             this.editPropietario();
         }
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <div className="col-12 ">
                 <div>
                     <div className="row">
-                        <legend> Editar Propietario </legend>
-                        <div className = "col-md-6  flex-container form-group">
-                            <label for = "Nombre">  Nombre  </label>
-                            <input type = "name" className = "form-control"   placeholder = "Name"
+                        <legend> Editar Propietario</legend>
+                        <div className="col-md-6  flex-container form-group">
+                            <label for="Nombre"> Nombre </label>
+                            <input type="name" className="form-control" placeholder="Name"
                                    value={this.state.nombre}
                                    onChange={this.ChangeNombre}
                             />
                         </div>
-                        <div className = "col-md-6  flex-container form-group">
-                            <label for = "Apellido">  Apellido  </label>
-                            <input type = "family-name" className = "form-control"   placeholder = "Surname"
+                        <div className="col-md-6  flex-container form-group">
+                            <label for="Apellido"> Apellido </label>
+                            <input type="family-name" className="form-control" placeholder="Surname"
                                    value={this.state.apellido}
-                                   onChange= {this.ChangeApellido} />
+                                   onChange={this.ChangeApellido}/>
                         </div>
-                        <div className = "col-md-6  flex-container form-group">
-                        <label for = "TipoDocumento">  Tipo de Documento  </label>
+                        <div className="col-md-6  flex-container form-group">
+                            <label for="TipoDocumento"> Tipo de Documento </label>
                             <Select
                                 className="select-documento"
                                 value={this.state.tipoDocumento}
@@ -182,67 +189,68 @@ class EditarPropietario extends Component{
                                 onChange={this.ChangeSelect.bind(this)}
                             />
                         </div>
-                        <div className = "col-md-6  flex-container form-group">
-                            <label for = "NumeroDocumento">  Numero de Documento  </label>
-                            <input type = "document" className = "form-control"   placeholder = "Document number"
-                            value={this.state.documento}
-                            onChange= {this.ChangeDocumento}/>
+                        <div className="col-md-6  flex-container form-group">
+                            <label for="NumeroDocumento"> Numero de Documento </label>
+                            <input type="document" className="form-control" placeholder="Document number"
+                                   value={this.state.documento}
+                                   onChange={this.ChangeDocumento}/>
                         </div>
-                        <div className = "col-md-6  flex-container form-group">
-                            <label for = "FechaNacimiento">  Fecha de Nacimiento  </label>
-                            <input type="date"className = "form-control" name="FechaNacimiento"
+                        <div className="col-md-6  flex-container form-group">
+                            <label for="FechaNacimiento"> Fecha de Nacimiento </label>
+                            <input type="date" className="form-control" name="FechaNacimiento"
                                    step="1" min="1920-01-01"
                                    value={this.state.fechaNacimiento}
                                    onChange={this.ChangeFechaNacimiento}
                             />
                         </div>
-                        <fieldset className = "col-md-6  flex-container form-group">
-                            <legend>  Titular  </legend>
-                            <div className = "form-check">
-                                <label className = "form-check-label">
-                                    <input type = "radio" className = "form-check-input"  
-                                    value = 'Si' checked={this.state.titular === 'Si'}
-                                    onChange={this.ChangeRadio} />
+                        <fieldset className="col-md-6  flex-container form-group">
+                            <legend> Titular</legend>
+                            <div className="form-check">
+                                <label className="form-check-label">
+                                    <input type="radio" className="form-check-input"
+                                           value='Si' checked={this.state.titular === 'Si'}
+                                           onChange={this.ChangeRadio}/>
                                     Si
                                 </label>
                             </div>
-                            <div className = "form-check">
-                                <label className = "form-check-label">
-                                    <input type = "radio" className = "form-check-input" value = 'No'
-                                    onChange={this.ChangeRadio} checked={this.state.titular === 'No'} />
+                            <div className="form-check">
+                                <label className="form-check-label">
+                                    <input type="radio" className="form-check-input" value='No'
+                                           onChange={this.ChangeRadio} checked={this.state.titular === 'No'}/>
                                     No
                                 </label>
                             </div>
                         </fieldset>
-                        <div className = "col-md-6  flex-container form-group">
-                            <label for = "NumeroCelular">  Celular  </label>
-                            <input type = "tel" className = "form-control"   placeholder = "Mobile number"
+                        <div className="col-md-6  flex-container form-group">
+                            <label for="NumeroCelular"> Celular </label>
+                            <input type="tel" className="form-control" placeholder="Mobile number"
                                    value={this.state.celular}
-                                   onChange= {this.ChangeCelular} />
+                                   onChange={this.ChangeCelular}/>
                         </div>
-                        <div className = "col-md-6  flex-container form-group">
-                            <label for = "NumeroTelefono">  Telefono Fijo  </label>
-                            <input type = "tel" className = "form-control"   placeholder = "Landline number"
-                            value={this.state.telefonoFijo}
-                            onChange= {this.ChangeTelefonoFijo} />
+                        <div className="col-md-6  flex-container form-group">
+                            <label for="NumeroTelefono"> Telefono Fijo </label>
+                            <input type="tel" className="form-control" placeholder="Landline number"
+                                   value={this.state.telefonoFijo}
+                                   onChange={this.ChangeTelefonoFijo}/>
                         </div>
-                        <div className = "col-md-6  flex-container form-group">
-                            <label for = "exampleTextarea"> Descripcion  </ label >
-                            <textarea className = "form-control" id = "exampleTextarea" rows = "3"
-                            value={this.state.descripcion}
-                            onChange= {this.ChangeDescripcion} > </textarea>
+                        <div className="col-md-6  flex-container form-group">
+                            <label for="exampleTextarea"> Descripcion </ label>
+                            <textarea className="form-control" id="exampleTextarea" rows="3"
+                                      value={this.state.descripcion}
+                                      onChange={this.ChangeDescripcion}> </textarea>
                         </div>
                     </div>
                     <div className="form-group izquierda">
                         <Link to="/" type="button" className="btn btn-primary"
-                        >Volver</Link> 
-                            <button className="btn btn-primary" onClick={this.registrar} >Registrar</button>
+                        >Volver</Link>
+                        <button className="btn btn-primary" onClick={this.registrar}>Registrar</button>
                     </div>
                 </div>
             </div>
-        )
+        );
 
 
     }
 }
+
 export default EditarPropietario;

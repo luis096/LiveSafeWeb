@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import "../Style/Alta.css";
-import {Link} from 'react-router-dom'
-import {Database, Firebase} from "../../config/config";
+import '../Style/Alta.css';
+import { Link } from 'react-router-dom';
+import { Database, Firebase } from '../../config/config';
 
-class AltaAdministrador extends Component{
+class AltaAdministrador extends Component {
 
-    constructor(){
+    constructor() {
         super();
         this.state = {
             idAdminCreado: '',
@@ -18,15 +18,15 @@ class AltaAdministrador extends Component{
             celular: '',
             descripcion: '',
             fechaNacimiento: '',
-            fechaAlta: '', 
+            fechaAlta: '',
             mail: '',
             pass: '',
             idCountry: '',
             tipoD: [],// Para cargar el combo
             countryList: [],
             resultado: ''
-        }
-        this.addAdministrador= this.addAdministrador.bind(this);
+        };
+        this.addAdministrador = this.addAdministrador.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
         this.ChangeLegajo = this.ChangeLegajo.bind(this);
@@ -42,23 +42,23 @@ class AltaAdministrador extends Component{
 
     }
 
-    async componentDidMount(){
-        const { tipoD, countryList } = this.state;
-        await Database.collection('TipoDocumento').get().then(querySnapshot => {
-            querySnapshot.forEach(doc => {
+    async componentDidMount() {
+        const {tipoD, countryList} = this.state;
+        await Database.collection('TipoDocumento').get().then(querySnapshot=> {
+            querySnapshot.forEach(doc=> {
 
                 this.state.tipoD.push(
                     {value: doc.data().Id, label: doc.data().Nombre}
-                )
+                );
 
             });
         });
-        await Database.collection('Country').get().then(querySnapshot => {
-            querySnapshot.forEach(doc => {
+        await Database.collection('Country').get().then(querySnapshot=> {
+            querySnapshot.forEach(doc=> {
 
                 this.state.countryList.push(
                     {value: doc.id, label: doc.data().Nombre}
-                )
+                );
 
             });
         });
@@ -67,120 +67,124 @@ class AltaAdministrador extends Component{
     }
 
 
-    async addAdministrador(){
+    async addAdministrador() {
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Administradores').add({
-            Nombre: this.state.nombre,
-            Apellido: this.state.apellido,
-            Legajo: this.state.legajo,
-            Documento: this.state.documento,
-            Celular: this.state.celular,
-            Descripcion: this.state.descripcion,
-            TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
-            FechaNacimiento: this.state.fechaNacimiento,
-            FechaAlta: new Date(),
-            Usuario: this.state.mail, 
-        }).then(doc => {
-            this.setState({ idAdminCreado: doc.id })
-        });
-        
+                Nombre: this.state.nombre,
+                Apellido: this.state.apellido,
+                Legajo: this.state.legajo,
+                Documento: this.state.documento,
+                Celular: this.state.celular,
+                Descripcion: this.state.descripcion,
+                TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
+                FechaNacimiento: this.state.fechaNacimiento,
+                FechaAlta: new Date(),
+                Usuario: this.state.mail
+            }).then(doc=> {
+                this.setState({idAdminCreado: doc.id});
+            });
+
         await this.crearUsuario();
-        
+
 
     }
 
     ChangeNombre(event) {
-        this.setState({nombre : event.target.value});
+        this.setState({nombre: event.target.value});
     }
+
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
     }
+
     ChangeLegajo(event) {
         this.setState({legajo: event.target.value});
     }
 
     ChangeCelular(event) {
-        this.setState({celular : event.target.value});
+        this.setState({celular: event.target.value});
     }
+
     ChangeDocumento(event) {
-        this.setState({documento : event.target.value});
+        this.setState({documento: event.target.value});
     }
+
     ChangeDescripcion(event) {
-        this.setState({descripcion : event.target.value});
+        this.setState({descripcion: event.target.value});
     }
 
-    ChangeSelect(value){
-        this.setState({tipoDocumento : value});
+    ChangeSelect(value) {
+        this.setState({tipoDocumento: value});
     }
 
-    ChangeSelectCountry(value){
-        this.setState({idCountry : value});
+    ChangeSelectCountry(value) {
+        this.setState({idCountry: value});
     }
-    ChangeFechaNacimiento(event){
-        this.setState({fechaNacimiento : event.target.value});
+
+    ChangeFechaNacimiento(event) {
+        this.setState({fechaNacimiento: event.target.value});
     }
 
     ChangeMail(event) {
-        this.setState({mail : event.target.value});
+        this.setState({mail: event.target.value});
     }
+
     ChangePass(event) {
-        this.setState({pass : event.target.value});
+        this.setState({pass: event.target.value});
     }
 
 
-    registrar(){
+    registrar() {
         //Agregar validaciones para no registrar cualquier gilada
-        if(true){
+        if (true) {
             this.addAdministrador();
         }
     }
 
-    async crearUsuario(){
+    async crearUsuario() {
         const {mail} = this.state;
         const {pass} = this.state;
-        if (true){
+        if (true) {
             Firebase.auth().createUserWithEmailAndPassword(mail, pass).then(
                 await Database.collection('Usuarios').doc(mail).set({
                     NombreUsuario: mail,
                     TipoUsuario: Database.doc('/TiposUsuario/Administrador'),
-                    IdCountry: Database.doc('Country/'+ localStorage.getItem('idCountry')),
-                    IdPersona: Database.doc('Country/'+ localStorage.getItem('idCountry') + '/Administradores/' + this.state.idAdminCreado),
+                    IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
+                    IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Administradores/' + this.state.idAdminCreado)
                 })
-
             )
-            .catch(function(error) {
-              console.log('error :', error);
-              //La pass debe tener al menos 6 caracteres wachina
-            });
+                .catch(function (error) {
+                    console.log('error :', error);
+                    //La pass debe tener al menos 6 caracteres wachina
+                });
         }
     }
 
 
-
-    render(){
-        return(
+    render() {
+        return (
             <div className="col-md-12 ">
-            <div>
-                <div className="row">
+                <div>
+                    <div className="row">
 
-                    <legend>  Registrar Administrador </legend>
-                        <div className = "col-md-6 flex-container form-group">
-                            <label for = "Nombre">  Nombre  </label>
-                            <input type = "name" className = "form-control"   placeholder = "Name"
-                            value={this.state.nombre}
-                            onChange={this.ChangeNombre}
+                        <legend> Registrar Administrador</legend>
+                        <div className="col-md-6 flex-container form-group">
+                            <label for="Nombre"> Nombre </label>
+                            <input type="name" className="form-control" placeholder="Name"
+                                   value={this.state.nombre}
+                                   onChange={this.ChangeNombre}
                             />
                         </div>
-                        <div className = "col-md-6 flex-container form-group">
-                            <label for = "Apellido">  Apellido  </label>
-                            <input type = "family-name" className = "form-control"   placeholder = "Surname"
-                                    value={this.state.apellido}
-                                   onChange= {this.ChangeApellido} />
+                        <div className="col-md-6 flex-container form-group">
+                            <label for="Apellido"> Apellido </label>
+                            <input type="family-name" className="form-control" placeholder="Surname"
+                                   value={this.state.apellido}
+                                   onChange={this.ChangeApellido}/>
                         </div>
-                        <div className = "col-md-6 flex-container form-group">
-                        <label for = "Tipo Documento">  Tipo Documento  </label>
+                        <div className="col-md-6 flex-container form-group">
+                            <label for="Tipo Documento"> Tipo Documento </label>
                             <Select
-                            id = 'documento'
+                                id='documento'
                                 className="select-documento"
                                 classNamePrefix="select"
                                 // defaultValue={this.state.tipoD[0]}
@@ -192,30 +196,30 @@ class AltaAdministrador extends Component{
                                 onChange={this.ChangeSelect.bind(this)}
                             />
                         </div>
-                        <div className = "col-md-6 flex-container form-group">
-                            <label for = "NumeroDocumento">  Numero de Documento  </label>
-                            <input type = "document" className = "form-control" 
-                              placeholder = "Document number"
-                              value={this.state.documento}
-                              onChange={this.ChangeDocumento}/>
+                        <div className="col-md-6 flex-container form-group">
+                            <label for="NumeroDocumento"> Numero de Documento </label>
+                            <input type="document" className="form-control"
+                                   placeholder="Document number"
+                                   value={this.state.documento}
+                                   onChange={this.ChangeDocumento}/>
                         </div>
-                        <div className = "col-md-6 flex-container form-group">
-                            <label for = "FechaNacimiento">  Fecha de Nacimiento  </label>
-                            <input type="date"className = "form-control" name="FechaNacimiento"
+                        <div className="col-md-6 flex-container form-group">
+                            <label for="FechaNacimiento"> Fecha de Nacimiento </label>
+                            <input type="date" className="form-control" name="FechaNacimiento"
                                    step="1" min="1920-01-01"
                                    onChange={this.ChangeFechaNacimiento}
                             />
                         </div>
-                        <div className = "col-md-6 flex-container form-group">
-                            <label for = "NumeroCelular">  Legajo  </label>
-                            <input type = "tel" className = "form-control"   placeholder = "Mobile number"
-                            value={this.state.legajo}
-                            onChange={this.ChangeLegajo}/>
+                        <div className="col-md-6 flex-container form-group">
+                            <label for="NumeroCelular"> Legajo </label>
+                            <input type="tel" className="form-control" placeholder="Mobile number"
+                                   value={this.state.legajo}
+                                   onChange={this.ChangeLegajo}/>
                         </div>
-                        <div className = "col-md-6 flex-container form-group">
-                        <label for = "Country">  Country </label>
+                        <div className="col-md-6 flex-container form-group">
+                            <label for="Country"> Country </label>
                             <Select
-                                id = 'country'
+                                id='country'
                                 className="select-country"
                                 classNamePrefix="select"
                                 // defaultValue={this.state.countryList[0]}
@@ -227,43 +231,44 @@ class AltaAdministrador extends Component{
                                 onChange={this.ChangeSelectCountry.bind(this)}
                             />
                         </div>
-                        <div className = "col-md-6 flex-container form-group">
-                            <label for = "NumeroCelular">  Celular  </label>
-                            <input type = "tel" className = "form-control"   placeholder = "Mobile number"
-                            value={this.state.celular}
-                            onChange={this.ChangeCelular}/>
+                        <div className="col-md-6 flex-container form-group">
+                            <label for="NumeroCelular"> Celular </label>
+                            <input type="tel" className="form-control" placeholder="Mobile number"
+                                   value={this.state.celular}
+                                   onChange={this.ChangeCelular}/>
                         </div>
-                        <div className = "col-md-6 flex-container form-group">
-                            <label for = "exampleInputEmail1">  Dirección de correo electrónico  </label>
-                            <input type = "email" className = "form-control" id = "exampleInputEmail1"
-                                   aria-describe by = "emailHelp" placeholder = "Enter email"
+                        <div className="col-md-6 flex-container form-group">
+                            <label for="exampleInputEmail1"> Dirección de correo electrónico </label>
+                            <input type="email" className="form-control" id="exampleInputEmail1"
+                                   aria-describe by="emailHelp" placeholder="Enter email"
                                    value={this.state.mail}
                                    onChange={this.ChangeMail}/>
                         </div>
-                        <div className = "col-md-6 flex-container form-group">
-                            <label for = "exampleInputPassword1">  Contraseña  </label>
-                            <input type = "password" className = "form-control" id = "exampleInputPassword1"
-                                   placeholder = "Password"
+                        <div className="col-md-6 flex-container form-group">
+                            <label for="exampleInputPassword1"> Contraseña </label>
+                            <input type="password" className="form-control" id="exampleInputPassword1"
+                                   placeholder="Password"
                                    value={this.state.pass}
                                    onChange={this.ChangePass}/>
-                        </div>        
-                        <div className = "col-md-6 flex-container form-group">
-                            <label for = "exampleTextarea"> Descripcion  </ label >
-                            <textarea className = "form-control" id = "exampleTextarea" rows = "3"
-                            value={this.state.descripcion}
-                            onChange={this.ChangeDescripcion}
+                        </div>
+                        <div className="col-md-6 flex-container form-group">
+                            <label for="exampleTextarea"> Descripcion </ label>
+                            <textarea className="form-control" id="exampleTextarea" rows="3"
+                                      value={this.state.descripcion}
+                                      onChange={this.ChangeDescripcion}
                             > </textarea>
 
                         </div>
                     </div>
                     <div className="form-group izquierda">
-                        <button className="btn btn-primary boton" onClick={this.registrar} >Registrar</button>
+                        <button className="btn btn-primary boton" onClick={this.registrar}>Registrar</button>
                         <Link to="/" type="button" className="btn btn-primary boton"
-                    >Volver</Link> 
+                        >Volver</Link>
                     </div>
+                </div>
             </div>
-            </div>
-            )     
+        );
     }
 }
-export default  AltaAdministrador;
+
+export default AltaAdministrador;

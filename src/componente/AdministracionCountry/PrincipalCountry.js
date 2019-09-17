@@ -1,65 +1,66 @@
 import React, { Component } from 'react';
-import {Database} from '../../config/config';
-import "../Style/Alta.css";
-import { Link } from 'react-router-dom'
+import { Database } from '../../config/config';
+import '../Style/Alta.css';
+import { Link } from 'react-router-dom';
 import Country from './Country';
-import { Datatable } from "@o2xp/react-datatable";
+import { Datatable } from '@o2xp/react-datatable';
 import {
     FreeBreakfast as CoffeeIcon,
     CallSplit as CallSplitIcon
-} from "@material-ui/icons";
-import { chunk } from "lodash";
+} from '@material-ui/icons';
+import { chunk } from 'lodash';
+import { validator } from './validator';
 
 
-class PrincipalCountry extends Component{
+class PrincipalCountry extends Component {
 
-    constructor(){
+    constructor() {
         super();
-        this.state= {
+        this.state = {
             barrios: [],
             filas: {
-                title: "",
+                title: '',
                 dimensions: {
                     datatable: {
-                        width: "90vw",
-                        height: "500px"
+                        width: '90vw',
+                        height: '500px'
                     },
                     row: {
-                        height: "60px"
+                        height: '60px'
                     }
                 },
-                keyColumn: "idCountry",
-                font: "Arial",
+                keyColumn: 'idCountry',
+                font: 'Arial',
                 data: {
                     columns: [
                         {
-                            id: "idCountry",
-                            label: "idCountry",
-                            colSize: "150px",
+                            id: 'idCountry',
+                            label: 'idCountry',
+                            colSize: '150px',
                             editable: false
                         },
                         {
-                            id: "nombre",
-                            label: "Nombre",
-                            colSize: "100px",
+                            id: 'nombre',
+                            label: 'Nombre',
+                            colSize: '100px',
                             editable: true,
-                            dataType: "text",
-                            inputType: "input"
+                            dataType: 'text',
+                            inputType: 'input'
                         },
                         {
-                            id: "calle",
-                            label: "Calle",
-                            colSize: "100px",
+                            id: 'calle',
+                            label: 'Calle',
+                            colSize: '100px',
                             editable: true,
-                            dataType: "text",
-                            inputType: "input"
+                            dataType: 'text',
+                            inputType: 'input'
                         },
                         {
-                            id: "numero",
-                            label: "Numero",
-                            colSize: "80px",
+                            id: 'numero',
+                            label: 'Numero',
+                            colSize: '80px',
                             editable: true,
-                            dataType: "number",
+                            dataType: 'number'
                             // valueVerification: val => {
                             //     let error = val > 100 ? true : false;
                             //     let message = val > 100 ? "Value is too big" : "";
@@ -70,20 +71,20 @@ class PrincipalCountry extends Component{
                             // }
                         },
                         {
-                            id: "titular",
-                            label: "Titular",
-                            colSize: "50px",
+                            id: 'titular',
+                            label: 'Titular',
+                            colSize: '50px',
                             editable: true,
-                            dataType: "text",
+                            dataType: 'text'
                             // inputType: "checkbox"
                         },
                         {
-                            id: "celular",
-                            label: "Celular",
-                            colSize: "80px",
+                            id: 'celular',
+                            label: 'Celular',
+                            colSize: '80px',
                             editable: true,
-                            dataType: "number",
-                        },
+                            dataType: 'number'
+                        }
                         // {
                         //     id: "birthDate",
                         //     label: "birth date",
@@ -198,7 +199,7 @@ class PrincipalCountry extends Component{
                     canSelectRow: false,
                     canSaveUserConfiguration: false,
                     userConfiguration: {
-                        columnsOrder: ["idCountry", "nombre", "calle", "numero", "titular", "celular"],
+                        columnsOrder: ['idCountry', 'nombre', 'calle', 'numero', 'titular', 'celular'],
                         copyToClipboard: false
                     },
                     rowsPerPage: {
@@ -207,52 +208,51 @@ class PrincipalCountry extends Component{
                     },
                     additionalIcons: [
                         {
-                            title: "Coffee",
-                            icon: <CoffeeIcon color="primary" />,
-                            onClick: () => alert("Coffee Time!")
+                            title: 'Coffee',
+                            icon: <CoffeeIcon color="primary"/>,
+                            onClick: ()=>alert('Coffee Time!')
                         }
                     ],
                     selectionIcons: [
                         {
-                            title: "Selected Rows",
-                            icon: <CallSplitIcon color="primary" />,
-                            onClick: rows => console.log(rows)
+                            title: 'Selected Rows',
+                            icon: <CallSplitIcon color="primary"/>,
+                            onClick: rows=>console.log(rows)
                         }
                     ]
                 }
             },
             termino: false
         };
-        this.actualizar = this.actualizar.bind(this);
-        this.tabla= this.tabla(this);
+        this.tabla = this.tabla(this);
     }
 
 
-    actionsRow = ({ type, payload }) => {
+    actionsRow = ({type, payload})=> {
         console.log(type);
         console.log(payload);
     };
 
-    refreshRows = () => {
-        const { rows } = this.state.filas.data;
+    refreshRows = ()=> {
+        const {rows} = this.state.filas.data;
         const randomRows = Math.floor(Math.random() * rows.length) + 1;
         const randomTime = Math.floor(Math.random() * 4000) + 1000;
         const randomResolve = Math.floor(Math.random() * 10) + 1;
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
+        return new Promise((resolve, reject)=> {
+            setTimeout(()=> {
                 if (randomResolve > 3) {
                     resolve(chunk(rows, randomRows)[0]);
                 }
-                reject(new Error("err"));
+                reject(new Error('err'));
             }, randomTime);
         });
     };
 
 
-    async componentWillMount(){
-        const { barrios, filas } = this.state;
-        await Database.collection('Country').get().then(querySnapshot => {
-            querySnapshot.forEach(doc => {
+    async componentWillMount() {
+        const {barrios, filas} = this.state;
+        await Database.collection('Country').get().then(querySnapshot=> {
+            querySnapshot.forEach(doc=> {
                 filas.data.rows.push(
                     // [doc.data(),doc.id]
                     {
@@ -263,17 +263,17 @@ class PrincipalCountry extends Component{
                         titular: doc.data().Titular,
                         celular: doc.data().Celular
                     }
-                )
+                );
             });
         });
-        this.setState({barrios})
+        this.setState({barrios});
         // this.state.filas.data.rows= [barrios];
         this.state.termino = true;
-        this.render();
+
     }
 
-    tabla(){
-        return(
+    tabla() {
+        return (
             <div>
                 <Datatable
                     options={this.state.filas}
@@ -281,14 +281,14 @@ class PrincipalCountry extends Component{
                     actions={this.actionsRow}
                 />
             </div>
-        )
+        );
     }
 
 
-    render(){
+    render() {
         const {termino} = this.state;
-        if (!termino){
-            return(
+        if (!termino) {
+            return (
                 <div className="col-12">
                     <div className="row ">
                         <div className="col-5">
@@ -354,11 +354,11 @@ class PrincipalCountry extends Component{
                 </div>
             );
         } else {
-            return(
+            return (
                 <div>
                     <label> No cargo </label>
                 </div>
-            )
+            );
         }
 
     }

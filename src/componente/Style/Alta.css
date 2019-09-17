@@ -43,42 +43,42 @@
     margin: 50;
   } */
 
-  .App {
+.App {
     font-family: sans-serif;
     text-align: center;
-  }
-  
-  .container {
+}
+
+.container {
     width: 50%;
     margin: 0 auto;
-  }
-  
-  .hidden {
+}
+
+.hidden {
     visibility: hidden;
-  }
-  
-  .border {
+}
+
+.border {
     border-bottom: 1px solid #666;
-  }
-  
-  .button {
+}
+
+.button {
     margin-top: 10px;
     padding: 20px;
-  }
-  
-  .grayButton {
+}
+
+.grayButton {
     background: #666;
     color: #fff;
-  }
-  
-  .blueButton {
+}
+
+.blueButton {
     background: rgb(108, 174, 221);
     color: #fff;
-  }
-  
-  .errorMsg {
+}
+
+.errorMsg {
     text-align: right;
     color: crimson;
     margin: 10px 0;
-  }
+}
   
