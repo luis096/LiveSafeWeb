@@ -48,7 +48,7 @@ class AltaAdministrador extends Component{
             querySnapshot.forEach(doc => {
 
                 this.state.tipoD.push(
-                    {value: doc.data().Id, name: doc.data().Nombre}
+                    {value: doc.data().Id, label: doc.data().Nombre}
                 )
 
             });
@@ -57,7 +57,7 @@ class AltaAdministrador extends Component{
             querySnapshot.forEach(doc => {
 
                 this.state.countryList.push(
-                    {value: doc.id, name: doc.data().Nombre}
+                    {value: doc.id, label: doc.data().Nombre}
                 )
 
             });
@@ -183,7 +183,7 @@ class AltaAdministrador extends Component{
                             id = 'documento'
                                 className="select-documento"
                                 classNamePrefix="select"
-                                defaultValue={this.state.tipoD[0]}
+                                // defaultValue={this.state.tipoD[0]}
                                 isDisabled={false}
                                 isLoading={false}
                                 isClearable={true}
@@ -218,7 +218,7 @@ class AltaAdministrador extends Component{
                                 id = 'country'
                                 className="select-country"
                                 classNamePrefix="select"
-                                defaultValue={this.state.countryList[0]}
+                                // defaultValue={this.state.countryList[0]}
                                 isDisabled={false}
                                 isLoading={false}
                                 isClearable={true}

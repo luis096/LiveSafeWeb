@@ -47,7 +47,7 @@ class AltaPropietario extends Component{
         await Database.collection('TipoDocumento').get().then(querySnapshot => {
             querySnapshot.forEach(doc => {
                 this.state.tipoD.push(
-                    {value: doc.id, name: doc.data().Nombre}
+                    {value: doc.id, label: doc.data().Nombre}
                 )
             });
         });
