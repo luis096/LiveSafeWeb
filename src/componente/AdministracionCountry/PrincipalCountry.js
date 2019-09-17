@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 import Country from './Country';
 
 
-
 class PrincipalCountry extends Component{
 
     constructor(){
@@ -27,18 +26,6 @@ class PrincipalCountry extends Component{
         });
         this.setState({barrios});
     }
-
-    actualizar(id){
-        const {barrios}=this.state;
-        this.state.barrios.map( valor => {
-            if(valor[1]== id){
-                barrios.splice(barrios.indexOf(valor),1)
-            }
-        })
-        this.setState({barrios});
-        this.render();
-    }
-
 
     render(){
         return(          

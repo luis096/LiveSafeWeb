@@ -4,7 +4,6 @@ import PrincialIngreso from '../Ingresos/PrincipalIngreso';
 import PrincialEgreso from '../Egresos/PrincipalEgreso'
 
 
-
 class InicioAdministrador extends Component{
 
     constructor(props) {

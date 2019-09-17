@@ -18,13 +18,13 @@ class PrincipalServicio extends Component{
 
     async componentWillMount(){
         const { servicios } = this.state;
-        await Database.collection('Administradores').get().then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-                if(doc.data().Usuario === localStorage.getItem('mail')){
-                    this.state.idCountry = doc.data().IdCountry
-                }
-            });
-        })
+        // await Database.collection('Administradores').get().then(querySnapshot => {
+        //     querySnapshot.forEach(doc => {
+        //         if(doc.data().Usuario === localStorage.getItem('mail')){
+        //             this.state.idCountry = doc.data().IdCountry
+        //         }
+        //     });
+        // })
         
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
         .collection('Servicios').get().then(querySnapshot => {

@@ -5,13 +5,11 @@ import PrincipalEncargado from '../AdministracionEncargadoIngresoEgreso/Principa
 import PrincipalServicio from '../Servicio/GenerarServicio/PrincipalServicio';
 
 
-
 class InicioAdministrador extends Component{
 
     constructor(props) {
         super(props);
-    }
-        
+    }        
 
     render(){
         return(

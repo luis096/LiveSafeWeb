@@ -24,7 +24,6 @@ class PrincipalPropietario extends Component{
                     Database.collection('Country').doc(country.id)
                         .collection('Administradores').get()
                         .then(querySnapshot => { querySnapshot.forEach(doc => {
-                            console.log(doc.data());
                             this.state.administradores.push(
                                 [doc.data(), doc.id]
                             )
@@ -48,7 +47,6 @@ class PrincipalPropietario extends Component{
     render(){
         return(
             <div className="col-12">
-
                 <div className="row ">
                     <div className="col-1"></div>
                     <div className="col-5">
@@ -58,7 +56,6 @@ class PrincipalPropietario extends Component{
                         <input className = "mr-sm-2 borde-button" control de formulario  tipo = "texto" placeholder = "Buscar"/>
                         <Link to='/altaAdministrador' type="button" className="btn btn-primary" type="submit" >Nuevo Administrador</Link>
                     </div>
-
                 </div>
 
                 <div className="row">

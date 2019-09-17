@@ -3,7 +3,6 @@ import Select from 'react-select';
 import "../Style/Alta.css";
 import {Link} from 'react-router-dom'
 import {Database, Firebase} from "../../config/config";
-import {ValidatorForm, TextValidator, SelectValidator} from 'react-material-ui-form-validator';
 
 class AltaPropietario extends Component{
     constructor(){
@@ -72,7 +71,6 @@ class AltaPropietario extends Component{
         }).then(doc => {
             this.setState({ idPropietarioCreado: doc.id })
         });
-        console.log('object :', this.state.tipoDocumento);
         await this.crearUsuario();
     }
 
@@ -145,93 +143,58 @@ class AltaPropietario extends Component{
         }
     }
 
-   
-
-
 
     render(){
         return(
-            <ValidatorForm
-                ref="form"
-                onError={errors => console.log("hola",errors)}
-                onSubmit={this.registrar}
-                noValidate
-                >
             <div className="col-12 ">
             <div>
                 <div className="row">
                     <legend>  Registrar Propietario </legend>
                         <div className = "col-md-6  flex-container form-group">
-                            <TextValidator type = "name" className = "form-control"   label = "Nombre (*)"
+                            <label for = "Nombre">  Nombre  </label>
+                            <input type = "name" className = "form-control"   placeholder = "Name"
                             value = {this.state.nombre}
-                            validators={["required"]}
-                            errorMessages={["Campo requerido"]}
                             onChange={this.ChangeNombre}
                             />
                         </div>
                         <div className = "col-md-6  flex-container form-group">
-                            <TextValidator type = "family-name" className = "form-control"   label = "Apellido (*)"
+                            <label for = "Apellido">  Apellido  </label>
+                            <input type = "family-name" className = "form-control"   placeholder = "Surname"
                                    value = {this.state.apellido}
-                                   validators={["required"]}
-                                    errorMessages={["Campo requerido"]}
                                    onChange= {this.ChangeApellido} />
                         </div>
                         <div className = "col-md-6  flex-container form-group">
-                        <SelectValidator
-                            label="Tipo Documento (*)"
-                            validators={["required"]}
-                            errorMessages={["Campo requerido"]}
-                            id = 'documento'
-                            className="select-documento"
-                            classNamePrefix="select"
-                            isDisabled={false}
-                            isLoading={false}
-                            isClearable={true}
-                            isSearchable={true}
-                            name="tipoD"
-                            value={this.state.tipoDocumento}
-                            
-                                SelectProps={{
-                                    native: true
-                                }}
-                            onChange={this.ChangeSelect.bind(this)}
-                            >
-                               <option value="0"></option>
-                               {
-                                this.state.tipoD.map(tipos =>{
-                                    return(
-                                        <option key={tipos.value} value={tipos.value}>
-                                            {tipos.name}
-                                        </option>
-                                    );
-                                })
-                                }
-                    </SelectValidator>
+                        <label for = "TipoDocumento">  Tipo Documento  </label>
+                            <Select
+                                className="select-documento"
+                                classNamePrefix="select"
+                                isDisabled={false}
+                                isLoading={false}
+                                isClearable={true}
+                                isSearchable={true}
+                                options={this.state.tipoD}
+                                onChange={this.ChangeSelect.bind(this)}
+                            />
                         </div>
                         <div className = "col-md-6  flex-container form-group">
-                            <TextValidator type = "document" className = "form-control"   label = "Numero de Documento (*)"
+                            <label for = "NumeroDocumento">  Numero de Documento  </label>
+                            <input type = "document" className = "form-control"   placeholder = "Document number"
                             value = {this.state.documento}
-                            validators={["required"]}
-                            errorMessages={["Campo requerido"]}
                             onChange={this.ChangeDocumento}/>
                         </div>
                         <div className = "col-md-6  flex-container form-group">
-                            <label for = "FechaNacimiento">  Fecha de Nacimiento (*)  </label>
-                            <TextValidator type="date"className = "form-control" name="FechaNacimiento"
+                            <label for = "FechaNacimiento">  Fecha de Nacimiento  </label>
+                            <input type="date"className = "form-control" name="FechaNacimiento"
                                    step="1" min="1920-01-01"
-                                //    validators={["required"]}
-                                //   errorMessages={["Campo requerido"]}
                                    onChange={this.ChangeFechaNacimiento}
                             />
                         </div>
                         <fieldset className = "col-md-6  flex-container form-group">
-                            <TextValidator label="Titular (*)" disabled={true}>    </TextValidator>
+                            <legend>  Titular  </legend>
                                 <div className = "form-check">
                                     <label className = "form-check-label">
                                     <input type = "radio" className = "form-check-input"  
                                     value = 'Si' checked={this.state.titular === 'Si'}
-                                    validators={["required"]}
-                                    errorMessages={["Campo requerido"]}
                                     onChange={this.ChangeRadio} />
                                         Si
                                     </label>
@@ -239,58 +202,53 @@ class AltaPropietario extends Component{
                                 <div className = "form-check">
                                     <label className = "form-check-label">
                                     <input type = "radio" className = "form-check-input" value = 'No'
-                                    validators={["required"]}
-                                    errorMessages={["Campo requerido"]}
                                     onChange={this.ChangeRadio} checked={this.state.titular === 'No'} />
                                             No
                                     </label>
                                 </div>
                         </fieldset>
                         <div className = "col-md-6  flex-container form-group">
-                            <TextValidator type = "tel" className = "form-control"   label = "Celular (*)"
+                            <label for = "NumeroCelular">  Celular  </label>
+                            <input type = "tel" className = "form-control"   placeholder = "Mobile number"
                             value = {this.state.celular}
-                            validators={["required"]}
-                            errorMessages={["Campo requerido"]}
                             onChange={this.ChangeCelular}/>
                         </div>
                         <div className = "col-md-6  flex-container form-group">
-                            <TextValidator type = "tel" className = "form-control"  
-                             label = "Telefono Fijo "
+                            <label for = "NumeroTelefono">  Telefono Fijo  </label>
+                            <input type = "tel" className = "form-control"  
+                             placeholder = "Landline number"
                              value = {this.state.telefonoFijo}
                              onChange={this.ChangeTelefonoFijo}/>
                         </div>
                         <div className = "col-md-6  flex-container form-group">
-                            <TextValidator type = "email" className = "form-control" id = "exampleInputEmail1"
-                                   aria-describe by = "emailHelp" label = "Dirección de correo electrónico (*)"
-                                   validators={["required"]}
-                            errorMessages={["Campo requerido"]}
+                            <label for = "exampleInputEmail1">  Dirección de correo electrónico  </label>
+                            <input type = "email" className = "form-control" id = "exampleInputEmail1"
+                                   aria-describe by = "emailHelp" placeholder = "Enter email"
                                    value = {this.state.mail}
                                    onChange={this.ChangeMail}/>
                         </div>
                         <div className = "col-md-6  flex-container form-group">
-                            <TextValidator type = "password" className = "form-control" id = "exampleInputPassword1"
-                                   label = "Contraseña (*)"
+                            <label for = "exampleInputPassword1">  Contraseña  </label>
+                            <input type = "password" className = "form-control" id = "exampleInputPassword1"
+                                   placeholder = "Password"
                                    value = {this.state.pass}
-                                   validators={["required"]}
-                            errorMessages={["Campo requerido"]}
                                    onChange={this.ChangePass}/>
                         </div>        
                         <div className = "col-md-6  flex-container form-group">
-                            <TextValidator className = "form-control" id = "exampleTextarea" rows = "3"
+                            <label for = "exampleTextarea"> Descripcion  </ label >
+                            <textarea className = "form-control" id = "exampleTextarea" rows = "3"
                              value = {this.state.descripcion}
-                             label= "Descripcion"
-                             onChange={this.ChangeDescripcion}> </TextValidator>
+                             onChange={this.ChangeDescripcion}> </textarea>
                         </div>
                        
                         </div>
                         <div className="form-group izquierda">
-                            <button className="btn btn-primary boton" type="submit" >Registrar</button>
+                            <button className="btn btn-primary boton" onClick={this.registrar} >Registrar</button>
                             <Link to="/" type="button" className="btn btn-primary boton"
                         >Volver</Link> 
                         </div>
                 </div>
             </div>
-            </ValidatorForm>
             )
         
 

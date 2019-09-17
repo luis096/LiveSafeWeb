@@ -5,9 +5,6 @@ import { Link } from 'react-router-dom'
 import ModalEliminar from '../ModalEliminar';
 
 
-
-
-
 class Administrador extends Component{
 
     constructor(props){
