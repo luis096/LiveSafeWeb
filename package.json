@@ -7,6 +7,7 @@
     "@lls/react-light-calendar": "^2.0.6",
     "@material-ui/core": "^4.3.3",
     "@material-ui/icons": "^4.4.1",
+    "@o2xp/react-datatable": "^1.1.13",
     "@trendmicro/react-sidenav": "^0.4.5",
     "@y0c/react-datepicker": "^1.0.1",
     "express": "^4.17.1",

@@ -8,8 +8,9 @@ import {
     FreeBreakfast as CoffeeIcon,
     CallSplit as CallSplitIcon
 } from '@material-ui/icons';
+
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { chunk } from 'lodash';
-import { validator } from './validator';
 
 
 class PrincipalCountry extends Component {
@@ -26,7 +27,7 @@ class PrincipalCountry extends Component {
                         height: '500px'
                     },
                     row: {
-                        height: '60px'
+                        height: '70px'
                     }
                 },
                 keyColumn: 'idCountry',
@@ -36,13 +37,11 @@ class PrincipalCountry extends Component {
                         {
                             id: 'idCountry',
                             label: 'idCountry',
-                            colSize: '150px',
                             editable: false
                         },
                         {
                             id: 'nombre',
                             label: 'Nombre',
-                            colSize: '100px',
                             editable: true,
                             dataType: 'text',
                             inputType: 'input'
@@ -50,7 +49,6 @@ class PrincipalCountry extends Component {
                         {
                             id: 'calle',
                             label: 'Calle',
-                            colSize: '100px',
                             editable: true,
                             dataType: 'text',
                             inputType: 'input'
@@ -58,7 +56,6 @@ class PrincipalCountry extends Component {
                         {
                             id: 'numero',
                             label: 'Numero',
-                            colSize: '80px',
                             editable: true,
                             dataType: 'number'
                             // valueVerification: val => {
@@ -73,7 +70,6 @@ class PrincipalCountry extends Component {
                         {
                             id: 'titular',
                             label: 'Titular',
-                            colSize: '50px',
                             editable: true,
                             dataType: 'text'
                             // inputType: "checkbox"
@@ -81,7 +77,6 @@ class PrincipalCountry extends Component {
                         {
                             id: 'celular',
                             label: 'Celular',
-                            colSize: '80px',
                             editable: true,
                             dataType: 'number'
                         }
@@ -179,13 +174,6 @@ class PrincipalCountry extends Component {
                     //     }
                     // ]
                     rows: [
-                        // idCountry: 'CountryAPP',
-                        // nombre: 'River',
-                        // calle: 'Grenada',
-                        // numero: '3514',
-                        // titular: '',
-                        // celular: '351654987'
-
                     ]
                 },
                 features: {
@@ -208,23 +196,22 @@ class PrincipalCountry extends Component {
                     },
                     additionalIcons: [
                         {
-                            title: 'Coffee',
-                            icon: <CoffeeIcon color="primary"/>,
+                            title: 'Agregar un Country',
+                            icon: <AddCircleIcon className='primary' ></AddCircleIcon>,
                             onClick: ()=>alert('Coffee Time!')
                         }
                     ],
-                    selectionIcons: [
-                        {
-                            title: 'Selected Rows',
-                            icon: <CallSplitIcon color="primary"/>,
-                            onClick: rows=>console.log(rows)
-                        }
-                    ]
+                    // selectionIcons: [
+                    //     {
+                    //         title: 'Selected Rows',
+                    //         icon: <AddCircleIcon></AddCircleIcon>,
+                    //         onClick: rows=>console.log(rows)
+                    //     }
+                    // ]
                 }
             },
-            termino: false
         };
-        this.tabla = this.tabla(this);
+        
     }
 
 
@@ -268,98 +255,22 @@ class PrincipalCountry extends Component {
         });
         this.setState({barrios});
         // this.state.filas.data.rows= [barrios];
-        this.state.termino = true;
 
     }
-
-    tabla() {
-        return (
-            <div>
-                <Datatable
-                    options={this.state.filas}
-                    refreshRows={this.refreshRows}
-                    actions={this.actionsRow}
-                />
-            </div>
-        );
-    }
+    
 
 
     render() {
-        const {termino} = this.state;
-        if (!termino) {
             return (
                 <div className="col-12">
-                    <div className="row ">
-                        <div className="col-5">
                             <label className="h2">Country</label>
-                        </div>
-                        {/*<div className="col-5 izquierda">*/}
-                        {/*<Link to='/altaCountry' type="button" className="btn btn-primary" type="submit" >Nuevo Country</Link>*/}
-                        {/*</div>*/}
-                    </div>
-                    {/**/}
-                    {/*<div className="row">*/}
-                    {/*<div className="col-md-1"></div>*/}
-                    {/*<div className="col-md-10 ">*/}
-
-                    {/*<br></br>*/}
-
-                    {/*<table className="table table-hover  ">*/}
-                    {/*<thead >*/}
-                    {/*<tr>*/}
-                    {/*<th scope="col">Nombre</th>*/}
-                    {/*<th scope="col">Calle</th>*/}
-                    {/*<th scope="col">Calle</th>*/}
-                    {/*<th scope="col">Titular</th>*/}
-                    {/*<th scope="col">Celular</th>*/}
-                    {/*<th scope="col">Editar</th>*/}
-                    {/*<th scope="col">Eliminar</th>*/}
-                    {/*</tr>*/}
-                    {/*</thead>*/}
-                    {/**/}
-                    {/*<tbody>*/}
-                    {/*{ */}
-                    {/**/}
-                    {/*this.state.barrios.map( barrio => {*/}
-                    {/*return(*/}
-                    {/**/}
-                    {/*<Country*/}
-                    {/*idCountry = {barrio[1]}*/}
-                    {/*nombre = {barrio[0].Nombre}*/}
-                    {/*calle = {barrio[0].Calle}*/}
-                    {/*numero = {barrio[0].Numero}*/}
-                    {/*titular = {barrio[0].Titular}*/}
-                    {/*celular = {barrio[0].Celular}*/}
-                    {/*act = {this.actualizar}*/}
-                    {/*>*/}
-                    {/*</Country>*/}
-                    {/*)*/}
-                    {/*}*/}
-
-                    {/*)*/}
-                    {/*}*/}
-
-                    {/*</tbody>*/}
-                    {/*</table>*/}
-                    {/*</div>*/}
-                    {/*<div className="col-md-1"></div>            */}
-                    {/*</div>*/}
-                    {/*<div>  */}
-                    {/*< hr className="my-4"></hr>*/}
-                    {/*</div>*/}
-                    {/*<div className="espacio"></div>            */}
-
-                    {this.tabla}
+                        <Datatable
+                    options={this.state.filas}
+                    refreshRows={this.refreshRows}
+                    actions={this.actionsRow}
+                />  
                 </div>
-            );
-        } else {
-            return (
-                <div>
-                    <label> No cargo </label>
-                </div>
-            );
-        }
+            );    
 
     }
 }

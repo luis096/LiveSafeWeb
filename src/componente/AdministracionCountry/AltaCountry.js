@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 // import '../Style/Alta.css';
 import { Database, Firebase } from '../../config/config';
 import { Link } from 'react-router-dom';
-
-import { validator } from './validator';
+import ModalEliminar  from '../ModalEliminar'
+import { validator } from '../validator';
 
 class AltaCountry extends Component {
 
@@ -16,7 +16,7 @@ class AltaCountry extends Component {
             titular: '',
             celular: '',
             descripcion: '',
-            resultado: '',
+            resultado: 0,
             picture: '',
             upLoadValue: 0
 
@@ -31,7 +31,12 @@ class AltaCountry extends Component {
         this.handleFiles = this.handleFiles.bind(this);
         this.registrar = this.registrar.bind(this);
 
-        this.errorName = false;
+        this.errorNombre = false;
+        this.errorCalle = false;
+        this.errorNumero = false;
+        this.errorTitular = false;
+        this.errorCelular = false; 
+        this.errorDescripcion = false;
     }
 
     addCountry() {
@@ -68,34 +73,37 @@ class AltaCountry extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
-        this.errorName = validator.numero(event.target.value);
+        this.errorNombre = validator.numero(event.target.value);
     }
 
     ChangeCalle(event) {
         this.setState({calle: event.target.value});
+        this.errorCalle = validator.numero(event.target.value);
     }
 
     ChangeNumero(event) {
-        console.log('numerom', validator.numero(event.target.value));
         this.setState({numero: event.target.value});
+        this.errorNumero = validator.numero(event.target.value);
     }
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
+        this.errorCelular = validator.numero(event.target.value);
     }
 
     ChangeTitular(event) {
         this.setState({titular: event.target.value});
+        this.errorTitular = validator.numero(event.target.value);
     }
 
     ChangeDescripcion(event) {
         this.setState({descripcion: event.target.value});
+        this.errorDescripcion = validator.numero(event.target.value);
     }
 
     registrar() {
-//Agregar validaciones
-        if (true) {
-            this.addCountry();
+        if (!(this.esValido())) {
+            // this.addCountry();
             this.setState({
                 nombre: '',
                 calle: '',
@@ -103,11 +111,24 @@ class AltaCountry extends Component {
                 titular: '',
                 celular: '',
                 descripcion: '',
-                resultado: 'Se registro con exito'
+                resultado: 1
             });
+        } else {
+            this.setState({resultado : 2})
         }
     }
 
+
+    esValido(){
+        return(
+        this.errorNombre||
+        this.errorCalle ||
+        this.errorNumero ||
+        this.errorTitular ||
+        this.errorCelular ||
+        this.errorDescripcion
+        )
+    }
 
     render() {
 
@@ -117,52 +138,71 @@ class AltaCountry extends Component {
                     <div className="row">
                         <legend> Registrar Alta de un Barrio</legend>
 
-                        <div
-                            className={this.errorName ? 'col-md-6 form-group has-feedback has-error' : 'col-md-6 form-group has-feedback'}>
+                        <div className={this.errorNombre ? 'col-md-6 form-group has-feedback has-error' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Nombre del Barrio </label>
                             <div className=''>
                                 <input type="name" className="form-control " placeholder="Name Country"
                                        value={this.state.nombre}
                                        onChange={this.ChangeNombre}/>
-                                {/*<span className="glyphicon glyphicon-remove form-control-feedback"></span>*/}
+                                
                             </div>
+                            <label for="Nombre" className=' small text-danger' 
+                            hidden={!this.errorNombre} > Nombre no valido </label>
+                            {/*<span className="glyphicon glyphicon-remove form-control-feedback"></span>*/}
                         </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="Nombre"> Titular </label>
-                            <input type="name" className="form-control" placeholder="Name Headline"
-                                   value={this.state.titular}
-                                   onChange={this.ChangeTitular}/>
+                        <div className={this.errorTitular ? 'col-md-6 form-group has-feedback has-error' : 'col-md-6 form-group has-feedback'}>
+                            <label for="Nombre" className=''> Titular </label>
+                            <div className=''>
+                                <input type="name" className="form-control " placeholder="Nombre de titular"
+                                       value={this.state.titular}
+                                       onChange={this.ChangeTitular}/>
+                            </div>
+                            <label for="Nombre" className=' small text-danger' 
+                            hidden={!this.errorTitular} > Nombre de titular no válido </label>
                         </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="Nombre"> Calle </label>
-                            <input type="name" className="form-control" placeholder="Street"
-                                   value={this.state.calle}
-                                   onChange={this.ChangeCalle}/>
+                        <div className={this.errorCalle ? 'col-md-6 form-group has-feedback has-error' : 'col-md-6 form-group has-feedback'}>
+                            <label for="Nombre" className=''> Calle </label>
+                            <div className=''>
+                                <input type="name" className="form-control " placeholder="Nombre de calle"
+                                       value={this.state.calle}
+                                       onChange={this.ChangeCalle}/>
+                            </div>
+                            <label for="Nombre" className=' small text-danger' 
+                            hidden={!this.errorCalle} > Nombre de calle no valido </label>
                         </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="Nombre"> Celular </label>
-                            <input type="name" className="form-control" placeholder="Mobile"
-                                   value={this.state.celular}
-                                   onChange={this.ChangeCelular}/>
+                        <div className={this.errorCelular ? 'col-md-6 form-group has-feedback has-error' : 'col-md-6 form-group has-feedback'}>
+                            <label for="Nombre" className=''> Celular </label>
+                            <div className=''>
+                                <input type="name" className="form-control " placeholder="Celular"
+                                       value={this.state.celular}
+                                       onChange={this.ChangeCelular}/>
+                            </div>
+                            <label for="Nombre" className=' small text-danger' 
+                            hidden={!this.errorCelular} > Celular no valido </label>
                         </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="Nombre"> Numero </label>
-                            <input type="name" className="form-control" placeholder="Number"
-                                   value={this.state.numero}
-                                   onChange={this.ChangeNumero}/>
+                        <div className={this.errorNumero ? 'col-md-6 form-group has-feedback has-error' : 'col-md-6 form-group has-feedback'}>
+                            <label for="Nombre" className=''> Numero </label>
+                            <div className=''>
+                                <input type="name" className="form-control " placeholder="Nombre de calle"
+                                       value={this.state.numero}
+                                       onChange={this.ChangeNumero}/>
+                            </div>
+                            <label for="Nombre" className=' small text-danger' 
+                            hidden={!this.errorNumero} > Numero no valido </label>
                         </div>
 
-
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="Nombre"> Descripcion </label>
-                            <textarea className="form-control" id="exampleTextarea" rows="3" placeholder="Description"
-                                      value={this.state.descripcion}
-                                      onChange={this.ChangeDescripcion}> </textarea>
+                        <div className={this.errorDescripcion ? 'col-md-6 form-group has-feedback has-error' : 'col-md-6 form-group has-feedback'}>
+                            <label for="Nombre" className=''> Descripcion </label>
+                            <div className=''>
+                                <textarea type="name" className="form-control " placeholder="Nombre de calle"
+                                       value={this.state.descripcion}
+                                       onChange={this.ChangeDescripcion}></textarea>
+                            </div>
+                            <label for="Nombre" className=' small text-danger' 
+                            hidden={!this.errorDescripcion} > Descripcion no valida </label>
                         </div>
+
                         <div>
-						<span>
-							<strong>{this.state.resultado}</strong>
-						</span>
                         </div>
                     </div>
 
@@ -176,8 +216,15 @@ class AltaCountry extends Component {
                         <img width="320" src={this.state.picture}/>
 
                     </div>
+                    <div hidden={!(this.state.resultado==1)} className="alert alert-success" role="alert">
+                            <strong>Se ha creado con exito</strong> 
+                    </div>
+                    <div hidden={!(this.state.resultado==2)} className="alert alert-danger" role="alert">
+                    <strong>Hay errores en el formulario!</strong> 
+                    </div>
+
                     <div className="form-group izquierda">
-                        <button className="btn btn-primary boton" onClick={this.registrar}>Registrar</button>
+                        <button className="btn btn-primary boton" onClick={this.registrar} >Registrar</button>
                         <Link to="/" type="button" className="btn btn-primary boton">Volver</Link>
                     </div>
                 </div>
