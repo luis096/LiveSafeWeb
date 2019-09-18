@@ -23,7 +23,6 @@ class Invitado extends Component {
 
     eliminar() {
         Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').doc(localStorage.getItem('idPersona'))
             .collection('Invitados').doc(this.idPersona).delete()
             .then(
                 this.props.act(this.idPersona)

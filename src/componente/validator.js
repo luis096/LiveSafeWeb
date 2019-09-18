@@ -11,22 +11,35 @@ const DECIMAL_10_DIG_BEFORE_2_DIG_AFTER_REGEXP = /^\d{0,10}(?:(?=\.)\.\d{0,2}|(?
 const CUIT_REGEXP = /^\d{2}-\d{8}-\d{1}$/;
 const NUMBER_ZERO = /^[0]+$/;
 const NOMBRE_ARCHIVOS = /^(?!((con|prn|aux)((\.[^\\/:*"$•?<>|]{1,3}$)|$))|[\s\.])[^\\/:*"$•?<>|]{1,254}$/;
+const LETRAS_REGEXP = /^[a-zA-Z ]*$/;
 
 // Se retorna TRUE si hay un error.. 
 export const validator = {
     numero,
     requerido,
     mail,
+    soloLetras,
 };
 
+
+
 function numero(valor) {
-    return NUMBER_REGEXP.test(valor) ? false : true;
+    return {error: NUMBER_REGEXP.test(valor) ? false : true,
+    mensaje: 'Solo ingresar números'};
 }
 
+
 function requerido(valor){
-    return (isNullOrUndefined(valor)||valor==='')
+    return {error: (valor===''||valor==null),
+        mensaje: 'El campo es requerido'};
 }
 
 function mail(valor) {
     return EMAIL_REGEXP.test(valor) ? false : true;
+}
+
+function soloLetras(valor) {
+    return {error: LETRAS_REGEXP.test(valor) ? false : true,
+        mensaje: 'Solo ingresar letras'};
+
 }

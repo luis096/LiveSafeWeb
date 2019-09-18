@@ -56,7 +56,6 @@ class EditarInvitado extends Component {
         });
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').doc(this.valor)
             .collection('Invitados').doc(this.idInvitado).get()
             .then(doc=> {
                 if (doc.exists) {
@@ -87,7 +86,8 @@ class EditarInvitado extends Component {
             fechaNacimiento: estrella.FechaNacimiento,
             fechaAlta: estrella.FechaAlta,
             startDate: estrella.FechaDesde,
-            endDate: estrella.FechaHasta
+            endDate: estrella.FechaHasta,
+            idPropietario: estrella.IdPropietario,
 
         });
     }
@@ -95,18 +95,18 @@ class EditarInvitado extends Component {
     editInvitado() {
 
         Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').doc(this.valor)
             .collection('Invitados').doc(this.idInvitado).set({
             Nombre: this.state.nombre,
             Apellido: this.state.apellido,
-            Estado: this.state.estado,
+            // Estado: this.state.estado,
             TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
             Documento: this.state.documento,
             Grupo: this.state.grupo,
             FechaNacimiento: this.state.fechaNacimiento,
             FechaAlta: this.state.fechaAlta,
             FechaDesde: this.state.startDate,
-            FechaHasta: this.state.endDate
+            FechaHasta: this.state.endDate,
+            IdPropietario: this.state.idPropietario,
         });
 
     }

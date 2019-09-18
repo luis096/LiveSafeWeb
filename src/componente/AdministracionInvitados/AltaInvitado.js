@@ -64,7 +64,6 @@ class AltaInvitado extends Component {
 
     addInvitado() {
         Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').doc(this.state.idPropietario)
             .collection('Invitados').add({
             Nombre: this.state.nombre,
             Apellido: this.state.apellido,
@@ -130,7 +129,7 @@ class AltaInvitado extends Component {
                 if (doc.data().Documento === this.state.documento &&
                     doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
                     this.state.idPropietario = doc.id;
-                    this.state.idCountry = doc.data().IdCountry;
+                    // this.state.idCountry = doc.data().IdCountry;
                     this.setState({
                         mensaje: doc.data().Apellido + ', ' + doc.data().Nombre
                     });
@@ -147,7 +146,7 @@ class AltaInvitado extends Component {
             TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumentoInvitado.valueOf().value),
             Documento: this.state.documentoInvitado,
             Hora: new Date(),
-            IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + this.state.idPropietario),
+            // IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + this.state.idPropietario),
             IdEncargado: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Encargados/' + localStorage.getItem('idPersona')),
             Estado: true,
             Egreso: false

@@ -33,11 +33,9 @@ class PrincialIngreso extends Component {
         this.ChangeSelect = this.ChangeSelect.bind(this);
         this.ChangeDocumento = this.ChangeDocumento.bind(this);
         this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
-        this.ChangeRadio = this.ChangeRadio.bind(this);
         this.registrar = this.registrar.bind(this);
         this.buscar = this.buscar.bind(this);
-        this.buscarPropietario = this.buscarPropietario.bind(this);
-        this.buscarInvitado = this.buscarInvitado.bind(this);
+        this.buscarPersona = this.buscarPersona.bind(this);
     }
 
     async componentDidMount() {
@@ -61,9 +59,6 @@ class PrincialIngreso extends Component {
         });
     }
 
-    ChangeRadio(event) {
-        this.setState({tipoPersona: event.currentTarget.value});
-    }
 
     ChangeSelect(value) {
         this.setState({tipoDocumento: value});
@@ -78,11 +73,7 @@ class PrincialIngreso extends Component {
     }
 
     async buscar() {
-        if (this.state.tipoPersona == 'propietario') {
-            await this.buscarPropietario();
-        } else {
-            await this.buscarInvitado();
-        }
+        await this.buscarPersona();
         if (this.state.invitadoTemp.length == 0) {
             this.setState({mensaje: 'La persona no se encuentra registrada en el sistema. Que rebote'});
         }
@@ -90,7 +81,7 @@ class PrincialIngreso extends Component {
         this.setState({busqueda: false});
     }
 
-    buscarPropietario() {
+    buscarPersona() {
         Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Propietarios')
             .get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
@@ -103,22 +94,13 @@ class PrincialIngreso extends Component {
                 }
             });
         });
-    }
-
-
-    buscarInvitado() {
-
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').get().then(querySnapshot=> {
-            querySnapshot.forEach(prop=> {
+        if(this.state.invitadoTemp.length == 0){
                 Database.collection('Country').doc(localStorage.getItem('idCountry'))
-                    .collection('Propietarios').doc(prop.id).collection('Invitados').get()
-                    .then(querySnapshot=> {
+                    .collection('Invitados').get().then(querySnapshot=> {
                         querySnapshot.forEach(doc=> {
                             if (doc.data().Documento === this.state.documento &&
                                 doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
                                 this.state.invitadoTemp.push(doc.data(), doc.id);
-                                localStorage.setItem('propietarioId', prop.id);
                                 if (doc.data().Nombre != '') {
                                     this.setState({
                                         virgen: false, mensaje: doc.data().Apellido + ', ' + doc.data().Nombre
@@ -131,10 +113,7 @@ class PrincialIngreso extends Component {
                             }
                         });
                     });
-            });
-        });
-    }
-
+        }}
 
     registrar() {
         Database.collection('Country').doc(localStorage.getItem('idCountry'))
@@ -241,25 +220,6 @@ class PrincialIngreso extends Component {
                                            disabled={!this.state.busqueda}
                                     />
                                 </div>
-                                <fieldset className="form-group">
-                                    <div className="form-check">
-                                        <label className="form-check-label">
-                                            <input type="radio" className="form-check-input"
-                                                   value='propietario'
-                                                   checked={this.state.tipoPersona === 'propietario'}
-                                                   onChange={this.ChangeRadio}/>
-                                            Propietario
-                                        </label>
-                                    </div>
-                                    <div className="form-check">
-                                        <label className="form-check-label">
-                                            <input type="radio" className="form-check-input" value='invitado'
-                                                   onChange={this.ChangeRadio}
-                                                   checked={this.state.tipoPersona === 'invitado'}/>
-                                            Invitado
-                                        </label>
-                                    </div>
-                                </fieldset>
                                 <div className="form-group">
                                     <label hidden={!this.state.observacion}>{this.state.mensaje2}</label>
                                     <textarea className="form-control" placeholder="Observation"

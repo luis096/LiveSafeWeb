@@ -22,13 +22,15 @@ class PrincipalInvitados extends Component {
     async componentDidMount() {
         const {invitados} = this.state;
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').doc(localStorage.getItem('idPersona'))
             .collection('Invitados').get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
 
-                    this.state.invitados.push(
-                        [doc.data(), doc.id]
-                    );
+                    if(doc.data().IdPropietario.id == localStorage.getItem('idPersona')){
+                        this.state.invitados.push(
+                            [doc.data(), doc.id]
+                        );
+                    }
+
                 });
             });
         this.setState({invitados});
