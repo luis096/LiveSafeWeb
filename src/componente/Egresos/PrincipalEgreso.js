@@ -116,38 +116,73 @@ class PrincialEgreso extends Component {
     }
 
     async buscarPersonas() {
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').get().then(querySnapshot=> {
-                querySnapshot.forEach(prop=> {
-                    Database.collection('Country').doc(localStorage.getItem('idCountry'))
-                        .collection('Propietarios').doc(prop.id).collection('Invitados').get()
-                        .then(querySnapshot=> {
-                            querySnapshot.forEach(doc=> {
-                                if (prop.data().Documento === this.state.documento &&
-                                    prop.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
-                                    this.state.invitadoTemp.push(prop.data(), prop.id);
-                                    this.setState({
-                                        mensaje2: 'No se encuentra ingreso de ' + prop.data().Apellido + '. Indique observaciones.'
-                                    });
-                                    this.setState({observacion: false});
-                                } else if (doc.data().Documento === this.state.documento &&
-                                    doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
-                                    this.state.invitadoTemp.push(doc.data(), doc.id);
-                                    if (doc.data().Nombre != '') {
-                                        this.setState({
-                                            mensaje2: 'No se encuentra ingreso de ' + doc.data().Apellido + '. Indique observaciones.'
-                                        });
-                                        this.setState({observacion: false});
-                                    } else {
-                                        this.setState({virgen: true, mensaje: 'Falta autentificar el invitado'});
-                                    }
-                                }
+     await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Propietarios')
+        .get().then(querySnapshot=> {
+        querySnapshot.forEach(doc=> {
+            if (doc.data().Documento === this.state.documento &&
+                doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
+                    this.state.invitadoTemp.push(doc.data(), doc.id);
+                    this.setState({
+                        mensaje2: 'No se encuentra ingreso del propietario ' + doc.data().Apellido + '. Indique observaciones.'
+                    });
+                    this.setState({observacion: false});
+            }
+        });
+    });
+    if(this.state.invitadoTemp.length == 0){
+           await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+                .collection('Invitados').get().then(querySnapshot=> {
+                    querySnapshot.forEach(doc=> {
+                        if (doc.data().Documento === this.state.documento &&
+                doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
+                        this.state.invitadoTemp.push(doc.data(), doc.id);
+                        if (doc.data().Nombre != '') {
+                            this.setState({
+                                mensaje2: 'No se encuentra ingreso del invitado' + doc.data().Apellido + '. Indique observaciones.'
                             });
-                        });
-
-
+                            this.setState({observacion: false});
+                        } else {
+                            this.setState({virgen: true, mensaje: 'Falta autentificar el invitado'});
+                        }}
+                    });
                 });
-            });
+    }
+
+
+
+
+        // await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+        //     .collection('Propietarios').get().then(querySnapshot=> {
+        //         querySnapshot.forEach(prop=> {
+        //             Database.collection('Country').doc(localStorage.getItem('idCountry'))
+        //                 .collection('Propietarios').doc(prop.id).collection('Invitados').get()
+        //                 .then(querySnapshot=> {
+        //                     querySnapshot.forEach(doc=> {
+        //                         if (prop.data().Documento === this.state.documento &&
+        //                             prop.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
+        //                             this.state.invitadoTemp.push(prop.data(), prop.id);
+        //                             this.setState({
+        //                                 mensaje2: 'No se encuentra ingreso de ' + prop.data().Apellido + '. Indique observaciones.'
+        //                             });
+        //                             this.setState({observacion: false});
+        //                         } else if (doc.data().Documento === this.state.documento &&
+        //                             doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
+        //                             this.state.invitadoTemp.push(doc.data(), doc.id);
+        //                             if (doc.data().Nombre != '') {
+        //                                 this.setState({
+        //                                     mensaje2: 'No se encuentra ingreso de ' + doc.data().Apellido + '. Indique observaciones.'
+        //                                 });
+        //                                 this.setState({observacion: false});
+        //                             } else {
+        //                                 this.setState({virgen: true, mensaje: 'Falta autentificar el invitado'});
+        //                             }
+        //                         }
+        //                     });
+        //                 });
+
+
+        //         });
+        //     });
 
 
         //    Database.collection('Personas').get().then(querySnapshot => {
@@ -178,7 +213,7 @@ class PrincialEgreso extends Component {
                 Documento: this.state.invitadoTemp[0].Documento,
                 Hora: this.state.invitadoTemp[0].Hora,
                 Egreso: true,
-                Estado: this.state.invitadoTemp[0].Estado,
+                //Estado: this.state.invitadoTemp[0].Estado,
                 IdEncargado: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Encargados/' + localStorage.getItem('idPersona'))
             });
     }

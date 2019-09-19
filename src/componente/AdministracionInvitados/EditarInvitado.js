@@ -156,7 +156,7 @@ class EditarInvitado extends Component {
             Documento: this.state.documento,
             Hora: new Date(),
             Egreso: false,
-            Estado: this.state.estado,
+            // Estado: this.state.estado,
             Descripcion: '',
             IdEncargado: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Encargados/' + localStorage.getItem('idPersona'))
         });
@@ -171,7 +171,7 @@ class EditarInvitado extends Component {
             Documento: this.state.documento,
             Hora: new Date(),
             Egreso: true,
-            Estado: this.state.estado,
+            //Estado: this.state.estado,
             Descripcion: '',
             IdEncargado: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Encargados/' + localStorage.getItem('idPersona'))
         });
