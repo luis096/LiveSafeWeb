@@ -63,7 +63,7 @@ class AltaPropietario extends Component {
                 Celular: this.state.celular,
                 TelefonoFijo: this.state.telefonoFijo,
                 Descripcion: this.state.descripcion,
-                TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento),
+                TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.value),
                 Documento: this.state.documento,
                 FechaNacimiento: this.state.fechaNacimiento,
                 FechaAlta: new Date(),
@@ -99,7 +99,7 @@ class AltaPropietario extends Component {
     }
 
     ChangeSelect(event) {
-        this.setState({tipoDocumento: event.target.value});
+        this.setState({tipoDocumento: event});
     }
 
     ChangeFechaNacimiento(event) {

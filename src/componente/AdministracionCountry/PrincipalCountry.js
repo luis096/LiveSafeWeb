@@ -12,7 +12,6 @@ import {
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { chunk } from 'lodash';
 
-
 class PrincipalCountry extends Component {
 
     constructor() {
@@ -37,7 +36,7 @@ class PrincipalCountry extends Component {
                         {
                             id: 'idCountry',
                             label: 'idCountry',
-                            editable: false
+                            editable: false,
                         },
                         {
                             id: 'nombre',
@@ -187,7 +186,7 @@ class PrincipalCountry extends Component {
                     canSelectRow: false,
                     canSaveUserConfiguration: false,
                     userConfiguration: {
-                        columnsOrder: ['idCountry', 'nombre', 'calle', 'numero', 'titular', 'celular'],
+                        columnsOrder: ['nombre', 'calle', 'numero', 'titular', 'celular'],
                         copyToClipboard: false
                     },
                     rowsPerPage: {
@@ -198,7 +197,8 @@ class PrincipalCountry extends Component {
                         {
                             title: 'Agregar un Country',
                             icon: <AddCircleIcon className='primary' ></AddCircleIcon>,
-                            onClick: ()=>alert('Coffee Time!')
+                            onClick: <Link to='/altaCountry'/>
+
                         }
                     ],
                     // selectionIcons: [

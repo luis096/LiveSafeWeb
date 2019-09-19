@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // import '../Style/Alta.css';
 import { Database, Firebase } from '../../config/config';
 import { Link } from 'react-router-dom';
-import ModalEliminar  from '../ModalEliminar'
+import ModalEliminar from '../ModalEliminar';
 import { validator } from '../validator';
 
 class AltaCountry extends Component {
@@ -74,7 +74,7 @@ class AltaCountry extends Component {
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
         this.errorNombre = validator.requerido(event.target.value);
-        if(!this.errorNombre.error){
+        if (!this.errorNombre.error) {
             this.errorNombre = validator.soloLetras(event.target.value);
         }
 
@@ -88,7 +88,7 @@ class AltaCountry extends Component {
     ChangeNumero(event) {
         this.setState({numero: event.target.value});
         this.errorNumero = validator.requerido(event.target.value);
-        if(!this.errorNumero.error){
+        if (!this.errorNumero.error) {
             this.errorNumero = validator.numero(event.target.value);
         }
     }
@@ -121,20 +121,20 @@ class AltaCountry extends Component {
                 resultado: 1
             });
         } else {
-            this.setState({resultado : 2})
+            this.setState({resultado: 2});
         }
     }
 
 
-    esValido(){
-        return(
-        this.errorNombre||
-        this.errorCalle ||
-        this.errorNumero ||
-        this.errorTitular ||
-        this.errorCelular ||
-        this.errorDescripcion
-        )
+    esValido() {
+        return (
+            this.errorNombre ||
+            this.errorCalle ||
+            this.errorNumero ||
+            this.errorTitular ||
+            this.errorCelular ||
+            this.errorDescripcion
+        );
     }
 
     render() {
@@ -148,65 +148,73 @@ class AltaCountry extends Component {
                          1- Se cambia el has-error por has-danger.
                          2- Se agrega al input la bandera, queda igual que al div principal pero con la clase is-invalid
                          3- El mensaje de error es un div SEGUIDO DEL INPUT de la clase: invalid-feedback*/}
-                        <div className={this.errorNombre.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
+                        <div
+                            className={this.errorNombre.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Nombre del Barrio </label>
                             <div className=''>
-                                <input type="name" className={this.errorNombre.error ? "form-control is-invalid ":'form-control'} placeholder="Name Country"
+                                <input type="name"
+                                       className={this.errorNombre.error ? 'form-control is-invalid ' : 'form-control'}
+                                       placeholder="Name Country"
                                        value={this.state.nombre}
                                        onChange={this.ChangeNombre}/>
                                 <div className="invalid-feedback">{this.errorNombre.mensaje}</div>
                             </div>
                         </div>
-                        <div className={this.errorTitular.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
+                        <div
+                            className={this.errorTitular.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Titular </label>
                             <div className=''>
                                 <input type="name" className="form-control " placeholder="Nombre de titular"
                                        value={this.state.titular}
                                        onChange={this.ChangeTitular}/>
                             </div>
-                            <label for="Nombre" className=' small text-danger' 
-                            hidden={!this.errorTitular.error} > {this.errorTitular.mensaje}  </label>
+                            <label for="Nombre" className=' small text-danger'
+                                   hidden={!this.errorTitular.error}> {this.errorTitular.mensaje}  </label>
                         </div>
-                        <div className={this.errorCalle.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
+                        <div
+                            className={this.errorCalle.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Calle </label>
                             <div className=''>
                                 <input type="name" className="form-control " placeholder="Nombre de calle"
                                        value={this.state.calle}
                                        onChange={this.ChangeCalle}/>
                             </div>
-                            <label for="Nombre" className=' small text-danger' 
-                            hidden={!this.errorCalle.error} > {this.errorCalle.mensaje}  </label>
+                            <label for="Nombre" className=' small text-danger'
+                                   hidden={!this.errorCalle.error}> {this.errorCalle.mensaje}  </label>
                         </div>
-                        <div className={this.errorCelular.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
+                        <div
+                            className={this.errorCelular.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Celular </label>
                             <div className=''>
                                 <input type="name" className="form-control " placeholder="Celular"
                                        value={this.state.celular}
                                        onChange={this.ChangeCelular}/>
                             </div>
-                            <label for="Nombre" className=' small text-danger' 
-                            hidden={!this.errorCelular.error} > {this.errorCelular.mensaje}  </label>
+                            <label for="Nombre" className=' small text-danger'
+                                   hidden={!this.errorCelular.error}> {this.errorCelular.mensaje}  </label>
                         </div>
-                        <div className={this.errorNumero.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
+                        <div
+                            className={this.errorNumero.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Numero </label>
                             <div className=''>
                                 <input type="name" className="form-control " placeholder="Nombre de calle"
                                        value={this.state.numero}
                                        onChange={this.ChangeNumero}/>
                             </div>
-                            <label for="Nombre" className=' small text-danger' 
-                            hidden={!this.errorNumero.error} > {this.errorNumero.mensaje}  </label>
+                            <label for="Nombre" className=' small text-danger'
+                                   hidden={!this.errorNumero.error}> {this.errorNumero.mensaje}  </label>
                         </div>
 
-                        <div className={this.errorDescripcion.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
+                        <div
+                            className={this.errorDescripcion.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Descripcion </label>
                             <div className=''>
                                 <textarea type="name" className="form-control " placeholder="Nombre de calle"
-                                       value={this.state.descripcion}
-                                       onChange={this.ChangeDescripcion}></textarea>
+                                          value={this.state.descripcion}
+                                          onChange={this.ChangeDescripcion}></textarea>
                             </div>
-                            <label for="Nombre" className=' small text-danger' 
-                            hidden={!this.errorDescripcion.error} > {this.errorDescripcion.mensaje}  </label>
+                            <label for="Nombre" className=' small text-danger'
+                                   hidden={!this.errorDescripcion.error}> {this.errorDescripcion.mensaje}  </label>
                         </div>
 
                         <div>
@@ -223,19 +231,18 @@ class AltaCountry extends Component {
                         <img width="320" src={this.state.picture}/>
 
                     </div>
-                    <div hidden={!(this.state.resultado==1)} className="alert alert-success" role="alert">
-                            <strong>Se ha creado con exito</strong> 
+                    <div hidden={!(this.state.resultado == 1)} className="alert alert-success" role="alert">
+                        <strong>Se ha creado con exito</strong>
                     </div>
-                    <div hidden={!(this.state.resultado==2)} className="alert alert-danger" role="alert">
-                    <strong>Hay errores en el formulario!</strong> 
+                    <div hidden={!(this.state.resultado == 2)} className="alert alert-danger" role="alert">
+                        <strong>Hay errores en el formulario!</strong>
                     </div>
 
                     <div className="form-group izquierda">
-                        <button className="btn btn-primary boton" onClick={this.registrar} >Registrar</button>
+                        <button className="btn btn-primary boton" onClick={this.registrar}>Registrar</button>
                         <Link to="/" type="button" className="btn btn-primary boton">Volver</Link>
                     </div>
                 </div>
-
             </div>
 
         );
