@@ -18,7 +18,7 @@ class InicioRoot extends Component {
         return (
             <div className="app container-fluid ">
                 <PrincipalCountry></PrincipalCountry>
-                {/*<PrincipalAdministrador></PrincipalAdministrador>*/}
+                <PrincipalAdministrador></PrincipalAdministrador>
             </div>
         );
     }
