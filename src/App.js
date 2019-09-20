@@ -7,14 +7,6 @@ import Encabezado from './componente/Encabezado/Encabezado';
 import { Firebase } from './config/config';
 import { Switch, Route } from 'react-router-dom';
 
-import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
-
-// Be sure to include styles at some point, probably during your bootstraping
-import '@trendmicro/react-sidenav/dist/react-sidenav.css';
-import PrincipalCountry from './componente/AdministracionCountry/PrincipalCountry';
-import PrincialIngreso from './componente/Ingresos/PrincipalIngreso';
-import PrincialEgreso from './componente/Egresos/PrincipalEgreso';
-import InicioPropietario from './componente/AdministracionPropietario/PrincipalPropietario';
 
 class App extends Component {
 
