@@ -3,7 +3,7 @@ import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import { Link } from 'react-router-dom';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-
+import { validator } from '../validator';
 
 class EditarCountry extends Component {
     constructor(props) {
@@ -28,6 +28,13 @@ class EditarCountry extends Component {
         this.registrar = this.registrar.bind(this);
         const url = this.props.location.pathname.split('/');
         this.idBarrio = url[url.length - 1];
+
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorCalle = {error: false, mensaje: ''};
+        this.errorNumero = {error: false, mensaje: ''};
+        this.errorTitular = {error: false, mensaje: ''};
+        this.errorCelular = {error: false, mensaje: ''};
+        this.errorDescripcion = {error: false, mensaje: ''};
     }
 
 
@@ -54,6 +61,7 @@ class EditarCountry extends Component {
             celular: estrella.Celular,
             descripcion: estrella.Descripcion
         });
+        
     }
 
     editCountry() {
@@ -70,31 +78,44 @@ class EditarCountry extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
+        this.errorNombre = validator.requerido(event.target.value);
+        if (!this.errorNombre.error) {
+            this.errorNombre = validator.soloLetras(event.target.value);
+        }
+
     }
 
     ChangeCalle(event) {
         this.setState({calle: event.target.value});
+        this.errorCalle = validator.soloLetras(event.target.value);
     }
 
     ChangeNumero(event) {
         this.setState({numero: event.target.value});
+        this.errorNumero = validator.requerido(event.target.value);
+        if (!this.errorNumero.error) {
+            this.errorNumero = validator.numero(event.target.value);
+        }
     }
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
+        this.errorCelular = validator.numero(event.target.value);
     }
 
     ChangeTitular(event) {
         this.setState({titular: event.target.value});
+        this.errorTitular = validator.soloLetras(event.target.value);
     }
 
     ChangeDescripcion(event) {
         this.setState({descripcion: event.target.value});
+        this.errorDescripcion = validator.numero(event.target.value);
     }
 
     registrar() {
         //Agregar validaciones para no registrar cualquier gilada
-        if (true) {
+        if (!(this.esValido())) {
             this.editCountry();
             this.setState({
                 nombre: '',
@@ -103,9 +124,21 @@ class EditarCountry extends Component {
                 titular: '',
                 celular: '',
                 descripcion: '',
-                resultado: 'Se edito con exito'
+                resultado: '1'
             });
+        } else {
+            this.setState({resultado: 2});
         }
+    }
+    esValido() {
+        return (
+            this.errorNombre ||
+            this.errorCalle ||
+            this.errorNumero ||
+            this.errorTitular ||
+            this.errorCelular ||
+            this.errorDescripcion
+        );
     }
 
 
@@ -113,7 +146,7 @@ class EditarCountry extends Component {
         return (
             <div className="col-md-12">
                 <div className="row">
-                    <legend> Registrar Alta de un Barrio</legend>
+                    <legend> Modificar Barrio</legend>
                     <div className="col-md-6  flex-container form-group">
                         <label for="Nombre"> Nombre del Barrio </label>
                         <input type="name" className="form-control" placeholder="Name Country"
@@ -158,6 +191,12 @@ class EditarCountry extends Component {
                     <strong>{this.state.resultado}</strong>
                 </span>
                 </div>
+                <div hidden={!(this.state.resultado == 1)} className="alert alert-success" role="alert">
+                        <strong>Se ha editado con exito!</strong>
+                    </div>
+                    <div hidden={!(this.state.resultado == 2)} className="alert alert-danger" role="alert">
+                        <strong>Hay errores en el formulario!</strong>
+                    </div>
                 <div className="form-group izquierda">
                     <button className="btn btn-primary boton" onClick={this.registrar}>Registrar</button>
                     <Link to="/" type="button" className="btn btn-primary boton">Volver</Link>
@@ -168,5 +207,4 @@ class EditarCountry extends Component {
         );
     }
 }
-
 export default EditarCountry;

@@ -70,7 +70,6 @@ class AltaCountry extends Component {
             });
         });
     }
-
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
         this.errorNombre = validator.requerido(event.target.value);
@@ -82,7 +81,7 @@ class AltaCountry extends Component {
 
     ChangeCalle(event) {
         this.setState({calle: event.target.value});
-        this.errorCalle = validator.numero(event.target.value);
+        this.errorCalle = validator.soloLetras(event.target.value);
     }
 
     ChangeNumero(event) {
@@ -100,7 +99,7 @@ class AltaCountry extends Component {
 
     ChangeTitular(event) {
         this.setState({titular: event.target.value});
-        this.errorTitular = validator.numero(event.target.value);
+        this.errorTitular = validator.soloLetras(event.target.value);
     }
 
     ChangeDescripcion(event) {
@@ -108,9 +107,11 @@ class AltaCountry extends Component {
         this.errorDescripcion = validator.numero(event.target.value);
     }
 
+    
+
     registrar() {
         if (!(this.esValido())) {
-            // this.addCountry();
+            this.addCountry();
             this.setState({
                 nombre: '',
                 calle: '',
@@ -148,8 +149,7 @@ class AltaCountry extends Component {
                          1- Se cambia el has-error por has-danger.
                          2- Se agrega al input la bandera, queda igual que al div principal pero con la clase is-invalid
                          3- El mensaje de error es un div SEGUIDO DEL INPUT de la clase: invalid-feedback*/}
-                        <div
-                            className={this.errorNombre.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
+                        <div className={this.errorNombre.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Nombre del Barrio </label>
                             <div className=''>
                                 <input type="name"
@@ -164,7 +164,7 @@ class AltaCountry extends Component {
                             className={this.errorTitular.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Titular </label>
                             <div className=''>
-                                <input type="name" className="form-control " placeholder="Nombre de titular"
+                                <input type="name" className="form-control " placeholder="Name Headliner"
                                        value={this.state.titular}
                                        onChange={this.ChangeTitular}/>
                             </div>
@@ -175,7 +175,7 @@ class AltaCountry extends Component {
                             className={this.errorCalle.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Calle </label>
                             <div className=''>
-                                <input type="name" className="form-control " placeholder="Nombre de calle"
+                                <input type="name" className="form-control " placeholder="Street name"
                                        value={this.state.calle}
                                        onChange={this.ChangeCalle}/>
                             </div>
@@ -197,7 +197,7 @@ class AltaCountry extends Component {
                             className={this.errorNumero.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Numero </label>
                             <div className=''>
-                                <input type="name" className="form-control " placeholder="Nombre de calle"
+                                <input type="name" className="form-control " placeholder="Street number"
                                        value={this.state.numero}
                                        onChange={this.ChangeNumero}/>
                             </div>
@@ -209,7 +209,7 @@ class AltaCountry extends Component {
                             className={this.errorDescripcion.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Descripcion </label>
                             <div className=''>
-                                <textarea type="name" className="form-control " placeholder="Nombre de calle"
+                                <textarea type="name" className="form-control " placeholder="Description"
                                           value={this.state.descripcion}
                                           onChange={this.ChangeDescripcion}></textarea>
                             </div>
