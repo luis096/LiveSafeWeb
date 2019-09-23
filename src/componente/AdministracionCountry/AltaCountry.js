@@ -81,8 +81,10 @@ class AltaCountry extends Component {
 
     ChangeCalle(event) {
         this.setState({calle: event.target.value});
-        this.errorCalle = validator.soloLetras(event.target.value);
-    }
+        this.errorCalle = validator.requerido(event.target.value);
+        if (!this.errorCalle.error) {
+            this.errorCalle = validator.soloLetras(event.target.value);
+        }    }
 
     ChangeNumero(event) {
         this.setState({numero: event.target.value});
@@ -94,24 +96,31 @@ class AltaCountry extends Component {
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
-        this.errorCelular = validator.numero(event.target.value);
+        this.errorCelular = validator.requerido(event.target.value);
+        if (!this.errorCelular.error) {
+            this.errorCelular = validator.numero(event.target.value);
+        }
     }
 
     ChangeTitular(event) {
         this.setState({titular: event.target.value});
-        this.errorTitular = validator.soloLetras(event.target.value);
+        this.errorTitular = validator.requerido(event.target.value);
+        if (!this.errorTitular.error) {
+            this.errorTitular = validator.soloLetras(event.target.value);
+        }
     }
 
     ChangeDescripcion(event) {
         this.setState({descripcion: event.target.value});
-        this.errorDescripcion = validator.numero(event.target.value);
+        this.errorDescripcion = validator.soloLetras(event.target.value);
     }
 
     
 
     registrar() {
+        console.log(this.esValido())
         if (!(this.esValido())) {
-            this.addCountry();
+            // this.addCountry();
             this.setState({
                 nombre: '',
                 calle: '',
@@ -129,12 +138,12 @@ class AltaCountry extends Component {
 
     esValido() {
         return (
-            this.errorNombre ||
-            this.errorCalle ||
-            this.errorNumero ||
-            this.errorTitular ||
-            this.errorCelular ||
-            this.errorDescripcion
+            this.errorNombre.error ||
+            this.errorCalle.error ||
+            this.errorNumero.error ||
+            this.errorTitular.error ||
+            this.errorCelular.error ||
+            this.errorDescripcion.error
         );
     }
 
@@ -164,57 +173,57 @@ class AltaCountry extends Component {
                             className={this.errorTitular.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Titular </label>
                             <div className=''>
-                                <input type="name" className="form-control " placeholder="Name Headliner"
+                                <input type="name" placeholder="Nombre de Titular"
+                                       className={this.errorTitular.error ? 'form-control is-invalid ' : 'form-control'}
                                        value={this.state.titular}
                                        onChange={this.ChangeTitular}/>
+
+                                <div className="invalid-feedback">{this.errorTitular.mensaje}</div>
                             </div>
-                            <label for="Nombre" className=' small text-danger'
-                                   hidden={!this.errorTitular.error}> {this.errorTitular.mensaje}  </label>
                         </div>
                         <div
                             className={this.errorCalle.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Calle </label>
                             <div className=''>
-                                <input type="name" className="form-control " placeholder="Street name"
+                                <input type="name" placeholder="Street name"
+                                       className={this.errorCalle.error ? 'form-control is-invalid ' : 'form-control'}
                                        value={this.state.calle}
                                        onChange={this.ChangeCalle}/>
+                                <div className="invalid-feedback">{this.errorCalle.mensaje}</div>
                             </div>
-                            <label for="Nombre" className=' small text-danger'
-                                   hidden={!this.errorCalle.error}> {this.errorCalle.mensaje}  </label>
                         </div>
                         <div
                             className={this.errorCelular.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Celular </label>
                             <div className=''>
-                                <input type="name" className="form-control " placeholder="Celular"
+                                <input type="name" placeholder="Celular"
+                                       className={this.errorCelular.error ? 'form-control is-invalid ' : 'form-control'}
                                        value={this.state.celular}
                                        onChange={this.ChangeCelular}/>
+                                <div className="invalid-feedback">{this.errorCelular.mensaje}</div>
                             </div>
-                            <label for="Nombre" className=' small text-danger'
-                                   hidden={!this.errorCelular.error}> {this.errorCelular.mensaje}  </label>
                         </div>
-                        <div
-                            className={this.errorNumero.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
+                        <div className={this.errorNumero.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Numero </label>
                             <div className=''>
-                                <input type="name" className="form-control " placeholder="Street number"
+                                <input type="name" placeholder="Street number"
+                                       className={this.errorNumero.error ? 'form-control is-invalid ' : 'form-control'}
                                        value={this.state.numero}
                                        onChange={this.ChangeNumero}/>
+                                <div className="invalid-feedback">{this.errorNumero.mensaje}</div>
                             </div>
-                            <label for="Nombre" className=' small text-danger'
-                                   hidden={!this.errorNumero.error}> {this.errorNumero.mensaje}  </label>
                         </div>
 
                         <div
                             className={this.errorDescripcion.error ? 'col-md-6 form-group has-feedback has-danger' : 'col-md-6 form-group has-feedback'}>
                             <label for="Nombre" className=''> Descripcion </label>
                             <div className=''>
-                                <textarea type="name" className="form-control " placeholder="Description"
+                                <textarea type="name" placeholder="Description"
+                                          className={this.errorDescripcion.error ? 'form-control is-invalid ' : 'form-control'}
                                           value={this.state.descripcion}
                                           onChange={this.ChangeDescripcion}></textarea>
+                                <div className="invalid-feedback">{this.errorDescripcion.mensaje}</div>
                             </div>
-                            <label for="Nombre" className=' small text-danger'
-                                   hidden={!this.errorDescripcion.error}> {this.errorDescripcion.mensaje}  </label>
                         </div>
 
                         <div>
@@ -225,19 +234,21 @@ class AltaCountry extends Component {
                         <progress value={this.state.upLoadValue} max='100'>
                             {this.state.upLoadValue}%
                         </progress>
-
+                    </div>
+                    <div>
                         <input type="file" onChange={this.handleFiles}/>
 
                         <img width="320" src={this.state.picture}/>
-
                     </div>
-                    <div hidden={!(this.state.resultado == 1)} className="alert alert-success" role="alert">
-                        <strong>Se ha creado con exito</strong>
+                    <br/>
+                    <div>
+                        <div hidden={!(this.state.resultado == 1)} className="alert alert-success text-center" role="alert">
+                            <strong>Se ha creado con exito</strong>
+                        </div>
+                        <div hidden={!(this.state.resultado == 2)} className="alert alert-danger text-center" role="alert">
+                            <strong>Hay errores en el formulario!</strong>
+                        </div>
                     </div>
-                    <div hidden={!(this.state.resultado == 2)} className="alert alert-danger" role="alert">
-                        <strong>Hay errores en el formulario!</strong>
-                    </div>
-
                     <div className="form-group izquierda">
                         <button className="btn btn-primary boton" onClick={this.registrar}>Registrar</button>
                         <Link to="/" type="button" className="btn btn-primary boton">Volver</Link>
