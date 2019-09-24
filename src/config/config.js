@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import firebase from 'firebase';
 import 'firebase/firestore';
 
 // const config = {
@@ -12,16 +12,16 @@ import 'firebase/firestore';
   // }; 
   
 const config = {
-    apiKey: "AIzaSyC_6xPis8MppwEJZOb1RC9atc0ot2oh3Iw",
-    authDomain: "livesafeweb.firebaseapp.com",
-    databaseURL: "https://livesafeweb.firebaseio.com",
-    projectId: "livesafeweb",
-    storageBucket: "livesafeweb.appspot.com",
-    messagingSenderId: "1051085981085",
-    appId: "1:1051085981085:web:3176eb985b792175591b74"
-  };
-  
-  const Firebase = firebase.initializeApp(config);
-  const Database = firebase.firestore();
+    apiKey: 'AIzaSyC_6xPis8MppwEJZOb1RC9atc0ot2oh3Iw',
+    authDomain: 'livesafeweb.firebaseapp.com',
+    databaseURL: 'https://livesafeweb.firebaseio.com',
+    projectId: 'livesafeweb',
+    storageBucket: 'livesafeweb.appspot.com',
+    messagingSenderId: '1051085981085',
+    appId: '1:1051085981085:web:3176eb985b792175591b74'
+};
 
-  export {Firebase, Database};
+const Firebase = firebase.initializeApp(config);
+const Database = firebase.firestore();
+
+export { Firebase, Database };

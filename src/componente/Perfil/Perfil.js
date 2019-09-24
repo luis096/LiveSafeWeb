@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 
-class Perfil extends Component{
-    render(){
-        return(
+class Perfil extends Component {
+    render() {
+        return (
 
             <label>Hola Mundo</label>
         );

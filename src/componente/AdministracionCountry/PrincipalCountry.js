@@ -41,71 +41,71 @@ class PrincipalCountry extends Component{
 
 
     render(){
-        return(          
+        return(
             <div className="col-12">
-             <div className="row ">
-                 <div className="col-1"></div>
+                <div className="row ">
+                    <div className="col-1"></div>
                     <div className="col-5">
-                    <label className="h2">Country</label>
-                    </div>                
+                        <label className="h2">Country</label>
+                    </div>
                     <div className="col-5 izquierda">
-                        <input className = "mr-sm-2 borde-button" control de formulario  tipo = "texto" placeholder = "Buscar"/>     
+                        <input className = "mr-sm-2 borde-button" control de formulario  tipo = "texto" placeholder = "Buscar"/>
                         <Link to='/altaCountry' type="button" className="btn btn-primary" type="submit" >Nuevo Country</Link>
                     </div>
-             </div>
-                   
-            <div className="row">
-            <div className="col-md-1"></div>
-            <div className="col-md-10 ">
-            
-            <br></br>
+                </div>
 
-            <table className="table table-hover  ">
-                <thead >
-                    <tr>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Calle</th>
-                    <th scope="col">Calle</th>
-                    <th scope="col">Titular</th>
-                    <th scope="col">Celular</th>
-                    <th scope="col">Editar</th>
-                    <th scope="col">Eliminar</th>
-                    </tr>
-                </thead>
-                
-                <tbody>
-                    { 
-                        
-                        this.state.barrios.map( barrio => {
-                            return(
-                                
-                                <Country
-                                idCountry = {barrio[1]}
-                                nombre = {barrio[0].Nombre}
-                                calle = {barrio[0].Calle}
-                                numero = {barrio[0].Numero}
-                                titular = {barrio[0].Titular}
-                                celular = {barrio[0].Celular}
-                                act = {this.actualizar}
-                                >
-                                </Country>
-                            )
-                        }
+                <div className="row">
+                    <div className="col-md-1"></div>
+                    <div className="col-md-10 ">
 
-                        )
-                    }
+                        <br></br>
 
-                </tbody>
-            </table>
+                        <table className="table table-hover  ">
+                            <thead >
+                            <tr>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Calle</th>
+                                <th scope="col">Calle</th>
+                                <th scope="col">Titular</th>
+                                <th scope="col">Celular</th>
+                                <th scope="col">Editar</th>
+                                <th scope="col">Eliminar</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {
+
+                                this.state.barrios.map( barrio => {
+                                        return(
+
+                                            <Country
+                                                idCountry = {barrio[1]}
+                                                nombre = {barrio[0].Nombre}
+                                                calle = {barrio[0].Calle}
+                                                numero = {barrio[0].Numero}
+                                                titular = {barrio[0].Titular}
+                                                celular = {barrio[0].Celular}
+                                                act = {this.actualizar}
+                                            >
+                                            </Country>
+                                        )
+                                    }
+
+                                )
+                            }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="col-md-1"></div>
+                </div>
+                <div>
+                    < hr className="my-4"></hr>
+                </div>
+                <div className="espacio"></div>
             </div>
-            <div className="col-md-1"></div>            
-            </div>
-            <div>  
-            < hr className="my-4"></hr>
-            </div>
-            <div className="espacio"></div>            
-    </div>
-    );
+        );
     }
 }
 

@@ -1,53 +1,54 @@
 import React, { Component } from 'react';
-import "../../Style/Alta.css";
-import { Database } from "../../../config/config";
-import { Link } from 'react-router-dom'
-import Servicio from "./Servicio";
+import '../../Style/Alta.css';
+import { Database } from '../../../config/config';
+import { Link } from 'react-router-dom';
+import Servicio from './Servicio';
 
 
-class PrincipalServicio extends Component{
+class PrincipalServicio extends Component {
 
-    constructor(){
+    constructor() {
         super();
-        this.state= {
+        this.state = {
             servicios: [],
-            idCountry: '',
-        }
-        this.actualizar = this.actualizar.bind(this)
+            idCountry: ''
+        };
+        this.actualizar = this.actualizar.bind(this);
     }
 
-    async componentWillMount(){
-        const { servicios } = this.state;
-        await Database.collection('Administradores').get().then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-                if(doc.data().Usuario === localStorage.getItem('mail')){
-                    this.state.idCountry = doc.data().IdCountry
-                }
-            });
-        })
-        
+    async componentWillMount() {
+        const {servicios} = this.state;
+        // await Database.collection('Administradores').get().then(querySnapshot => {
+        //     querySnapshot.forEach(doc => {
+        //         if(doc.data().Usuario === localStorage.getItem('mail')){
+        //             this.state.idCountry = doc.data().IdCountry
+        //         }
+        //     });
+        // })
+
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-        .collection('Servicios').get().then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-                this.state.servicios.push(
-                    [doc.data(), doc.id])
+            .collection('Servicios').get().then(querySnapshot=> {
+                querySnapshot.forEach(doc=> {
+                    this.state.servicios.push(
+                        [doc.data(), doc.id]);
+                });
             });
-        });
-       this.setState({servicios});
+        this.setState({servicios});
     }
 
-    actualizar(id){
-        const {servicios}=this.state;
-        this.state.servicios.map( valor => {
-            if(valor[1]== id){
-                servicios.splice(servicios.indexOf(valor),1)            }
-        })
+    actualizar(id) {
+        const {servicios} = this.state;
+        this.state.servicios.map(valor=> {
+            if (valor[1] == id) {
+                servicios.splice(servicios.indexOf(valor), 1);
+            }
+        });
         this.setState({servicios});
         this.render();
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <div className="col-12">
                 <div className="row ">
                     <div className="col-1"></div>
@@ -55,8 +56,10 @@ class PrincipalServicio extends Component{
                         <label className="h2">Servicios</label>
                     </div>
                     <div className="col-5 izquierda">
-                        <input className = "mr-sm-2 borde-button" control de formulario  tipo = "texto" placeholder = "Buscar"/>
-                        <Link to='/altaServicio' type="button" className="btn btn-primary" type="submit" >Nuevo Servicio</Link>
+                        <input className="mr-sm-2 borde-button" control de formulario tipo="texto"
+                               placeholder="Buscar"/>
+                        <Link to='/altaServicio' type="button" className="btn btn-primary" type="submit">Nuevo
+                            Servicio</Link>
                     </div>
 
                 </div>
@@ -69,9 +72,9 @@ class PrincipalServicio extends Component{
                         <br></br>
 
                         <table className="table table-hover  ">
-                            <thead >
+                            <thead>
                             <tr>
-                                <th scope="col">Nombre </th>
+                                <th scope="col">Nombre</th>
                                 <th scope="col">Estado</th>
                                 <th scope="col">Disponibilidad</th>
                                 <th scope="col">Editar</th>
@@ -81,19 +84,18 @@ class PrincipalServicio extends Component{
 
                             <tbody>
                             {
-                                this.state.servicios.map( servicios => {
-                                        return(
+                                this.state.servicios.map(servicios=> {
+                                        return (
                                             <Servicio
-                                                idServicio = {servicios[1]}
-                                                nombre = {servicios[0].Nombre}
-                                                estado = {servicios[0].Estado}
-                                                disponibilidad = {servicios[0].Disponibilidad}
-                                                act = {this.actualizar}
+                                                idServicio={servicios[1]}
+                                                nombre={servicios[0].Nombre}
+                                                estado={servicios[0].Estado}
+                                                disponibilidad={servicios[0].Disponibilidad}
+                                                act={this.actualizar}
                                             >
                                             </Servicio>
-                                        )
+                                        );
                                     }
-
                                 )
 
                             }

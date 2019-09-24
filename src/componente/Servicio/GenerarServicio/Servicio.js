@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import "../../Style/Alta.css";
-import {Database} from '../../../config/config';
-import { Link } from 'react-router-dom'
+import '../../Style/Alta.css';
+import { Database } from '../../../config/config';
+import { Link } from 'react-router-dom';
 import ModalEliminar from '../../ModalEliminar';
 
-class Servicio extends Component{
+class Servicio extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        
+
         this.idServicio = props.idServicio;
         this.nombre = props.nombre;
         this.disponibilidad = props.disponibilidad;
@@ -18,27 +18,27 @@ class Servicio extends Component{
     }
 
 
-    eliminar(){
+    eliminar() {
         Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Servicios').doc(this.idServicio).delete()
             .then(
-                    this.props.act(this.idServicio)
+                this.props.act(this.idServicio)
             )
-            .catch(err => {
+            .catch(err=> {
                 //En caso de error, hacer esto...
-            })}
-        
+            });
+    }
 
 
-    render(){
+    render() {
 
-        return(
+        return (
 
             <tr class="table-light">
                 <th scope="row">{this.nombre}</th>
-                <td>{this.estado?'Disponible':'No Disponible'}</td>
+                <td>{this.estado ? 'Disponible' : 'No Disponible'}</td>
                 <td> {this.disponibilidad}</td>
-                <td> <Link to={this.urlEditar} type="button" className="btn btn-primary">Editar</Link> </td>
-                <td> <ModalEliminar nombre='Servicio' elemento={this.nombre} borrar={this.eliminar} ></ModalEliminar></td>
+                <td><Link to={this.urlEditar} type="button" className="btn btn-primary">Editar</Link></td>
+                <td><ModalEliminar nombre='Servicio' elemento={this.nombre} borrar={this.eliminar}></ModalEliminar></td>
             </tr>
 
 

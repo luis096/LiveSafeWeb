@@ -1,27 +1,26 @@
 import React, { Component } from 'react';
-import "../Style/Alta.css";
-import PrincipalCountry from '../AdministracionCountry/PrincipalCountry'
-import PrincipalAdministrador from '../AdministracionAdministrador/PrincipalAdministrador'
+import '../Style/Alta.css';
+import PrincipalCountry from '../AdministracionCountry/PrincipalCountry';
+import PrincipalAdministrador from '../AdministracionAdministrador/PrincipalAdministrador';
 
 
-
-class InicioRoot extends Component{
+class InicioRoot extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { 
-                        propietariosList: [ ]
-                    };
+        this.state = {
+            propietariosList: []
+        };
     }
-       
-    render(){
 
-        return(
-        <div className="app container-fluid ">
+    render() {
+
+        return (
+            <div className="app container-fluid ">
                 <PrincipalCountry></PrincipalCountry>
                 <PrincipalAdministrador></PrincipalAdministrador>
-                </div>
-    );
+            </div>
+        );
     }
 }
 
