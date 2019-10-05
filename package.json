@@ -16,6 +16,7 @@
     "material-ui": "^0.20.2",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.26",
+    "node-sass": "^4.12.0",
     "rc-datepicker": "^5.0.14",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.10",
