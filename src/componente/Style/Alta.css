@@ -81,4 +81,7 @@
     color: crimson;
     margin: 10px 0;
 }
-  
+
+.izquierda {
+  text-align: end;
+}
