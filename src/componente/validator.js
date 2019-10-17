@@ -41,5 +41,4 @@ function mail(valor) {
 function soloLetras(valor) {
     return {error: LETRAS_REGEXP.test(valor) ? false : true,
         mensaje: 'Solo ingresar letras'};
-
 }

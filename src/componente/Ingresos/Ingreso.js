@@ -4,7 +4,6 @@ import { Database } from '../../config/config';
 import { Link } from 'react-router-dom';
 import ModalEliminar from '../ModalEliminar';
 import { strict } from 'assert';
-import moment from 'moment';
 
 
 class Ingreso extends Component {
@@ -42,7 +41,7 @@ class Ingreso extends Component {
                 <th scope="row">{this.nombre}, {this.apellido}</th>
                 <td> {this.documento}</td>
                 <td>{this.persona}</td>
-                <td>{moment(Date(this.hora).toLocaleString()).format('HH:mm DD/MM/YYYY')}</td>
+                <td>{'sd'}</td>
                 <td> {this.descripcion != '' && this.descripcion != undefined ? 'Si' : '-'}</td>
                 <td><ModalEliminar nombre='Ingreso' elemento={this.nombre} borrar={this.eliminar}></ModalEliminar></td>
             </tr>

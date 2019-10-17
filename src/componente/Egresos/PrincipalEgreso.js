@@ -4,7 +4,7 @@ import '../Style/Estilo.css';
 import { Database } from '../../config/config';
 import Egresos from './Egresos';
 import { Link } from 'react-router-dom';
-import Modal from 'react-bootstrap/Modal';
+import {Modal} from 'react-bootstrap';
 import Select from 'react-select';
 
 class PrincialEgreso extends Component {

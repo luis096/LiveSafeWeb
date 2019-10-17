@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import './Style/Alta.css';
-import Modal from 'react-bootstrap/Modal';
+import {Modal} from 'react-bootstrap';
 
 class ModalEliminar extends Component {
 

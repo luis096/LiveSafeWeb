@@ -3,7 +3,7 @@ import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import Ingreso from './Ingreso';
 import { Link } from 'react-router-dom';
-import Modal from 'react-bootstrap/Modal';
+import {Modal} from 'react-bootstrap';
 import Select from 'react-select';
 
 
