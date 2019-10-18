@@ -52,7 +52,7 @@ class PrincipalPropietario extends Component {
                     <div className="col-5 izquierda">
                         <input className="mr-sm-2 borde-button" control de formulario tipo="texto"
                                placeholder="Buscar"/>
-                        <Link to='/altaPropietario' type="button" className="btn btn-primary" type="submit">Nuevo
+                        <Link to='/admin/altaPropietario' type="button" className="btn btn-primary" type="submit">Nuevo
                             Propietario</Link>
                     </div>
 
