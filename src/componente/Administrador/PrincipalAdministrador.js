@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import '../Style/Alta.css';
+import '../Administrador/Index.css';
 import { Database } from '../../config/config';
 import { Link } from 'react-router-dom';
 import Administrador from './Administrador';
@@ -48,7 +49,7 @@ class PrincipalPropietario extends Component {
 
     render() {
         return (
-            <div className="col-12">
+            <div className="col-12 PrincipalAdm">
                 <div className="row ">
                     <div className="col-1"></div>
                     <div className="col-5">

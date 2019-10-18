@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import '../Style/Alta.css';
+import '../Propietario/Index.css';
 import { Database } from '../../config/config';
 import { Link } from 'react-router-dom';
 import Propietario from './Propietario';
@@ -41,7 +42,7 @@ class PrincipalPropietario extends Component {
 
     render() {
         return (
-            <div className="col-12">
+            <div className="col-12 PrincipalPropietario">
 
                 <div className="row ">
                     <div className="col-1"></div>
@@ -57,10 +58,8 @@ class PrincipalPropietario extends Component {
 
                 </div>
 
-                <div className="row">
-
-                    <div className="col-md-1"></div>
-                    <div className="col-md-10 ">
+                <div className="row conteiner">
+                    <div className="col-md-12 ">
 
                         <br></br>
 
@@ -101,7 +100,6 @@ class PrincipalPropietario extends Component {
                             </tbody>
                         </table>
                     </div>
-                    <div className="col-md-1"></div>
                 </div>
                 <div>
                     < hr className="my-4"></hr>
