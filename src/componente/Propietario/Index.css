@@ -3,9 +3,23 @@
 
      
 }
+
+.row{
+    margin: 30px 40px 15px;
+}
 .conteiner{
     margin: 0;
     }
+
+.izquierda{
+    padding: 0px 60px;
+}
+
+.boton{
+    margin: 7px;
+}
+
+
 
 .borde-button{
         margin: 0 13px 0 0;

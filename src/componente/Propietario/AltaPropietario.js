@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import '../Style/Alta.css';
+//import '../Style/Alta.css';
+import '../Propietario/Index.css';
 import { Link } from 'react-router-dom';
 import { Database, Firebase } from '../../config/config';
 
@@ -227,14 +228,14 @@ class AltaPropietario extends Component {
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="exampleInputEmail1"> Dirección de correo electrónico </label>
-                            <input type="email" className="form-control" id="exampleInputEmail1"
+                            <input type="name" className="form-control" id="exampleInputEmail1"
                                    aria-describe by="emailHelp" placeholder="Enter email"
                                    value={this.state.mail}
                                    onChange={this.ChangeMail}/>
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="exampleInputPassword1"> Contraseña </label>
-                            <input type="password" className="form-control" id="exampleInputPassword1"
+                            <input type="name" className="form-control" id="exampleInputPassword1"
                                    placeholder="Password"
                                    value={this.state.pass}
                                    onChange={this.ChangePass}/>

@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 import { Firebase, Database } from '../config/config';
 import firebase from 'firebase';
 import 'firebase/database';
-import { logo } from '../Icono2.ico';
+import  logo  from '../logoLiveSafe.png';
 import Spinner from 'react-spinner-material';
 
 class Admin extends Component {
@@ -91,8 +91,8 @@ class Admin extends Component {
             return (
                 <div className="container"><br></br>
                     <div className="text-center ">
-                        <div className=""></div>
-                        <img src={logo} width="300" height="228"></img>
+                        {/* <div className=""></div> */}
+                        <img src={logo} width="300" height="260"></img>
                     </div>
                     <div className="row">
                     <div className="card">

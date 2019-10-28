@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../Style/Alta.css';
+//import '../Style/Alta.css';
 import '../Propietario/Index.css';
 import { Database } from '../../config/config';
 import { Link } from 'react-router-dom';
