@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import '../Style/Alta.css';
+//import '../Style/Alta.css';
+import './Index.css';
 import { Link } from 'react-router-dom';
 import { Database, Firebase } from '../../config/config';
 // import { DatePicker, RangeDatePicker } from '@y0c/react-datepicker';

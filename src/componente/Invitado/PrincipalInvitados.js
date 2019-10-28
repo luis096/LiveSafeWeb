@@ -57,7 +57,6 @@ class PrincipalInvitados extends Component {
             <div className="col-12">
 
                 <div className="row ">
-                    <div className="col-1"></div>
                     <div className="col-5">
                         <label className="h2">Invitados</label>
                     </div>
@@ -85,8 +84,7 @@ class PrincipalInvitados extends Component {
 
                 <div className="row">
 
-                    <div className="col-md-1"></div>
-                    <div className="col-md-10 ">
+                    <div className="col-md-12 ">
 
                         <br></br>
 
@@ -126,7 +124,6 @@ class PrincipalInvitados extends Component {
                             </tbody>
                         </table>
                     </div>
-                    <div className="col-md-1"></div>
                 </div>
                 <div>
                     < hr className="my-4"></hr>

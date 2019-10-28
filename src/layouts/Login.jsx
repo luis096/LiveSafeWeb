@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { Firebase, Database } from '../config/config';
 import firebase from 'firebase';
+import '../layouts/Index.css';
 import 'firebase/database';
 import  logo  from '../logoLiveSafe.png';
 import Spinner from 'react-spinner-material';
@@ -120,7 +121,7 @@ class Admin extends Component {
                                     />
                                 </div>
                                 <div><label>{this.state.resultado}</label></div>
-                                <div className="form-group izquierda">
+                                <div className="form-group">
 
                                     <button className="btn btn-primary"
                                             onClick={()=> {
