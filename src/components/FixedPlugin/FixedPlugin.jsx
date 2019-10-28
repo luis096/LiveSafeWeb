@@ -18,7 +18,7 @@
 /*eslint-disable*/
 import React, { Component } from "react";
 import Toggle from "react-toggle";
-
+import './Index.css';
 import imagine1 from "assets/img/sidebar-1.jpg";
 import imagine2 from "assets/img/sidebar-2.jpg";
 import imagine3 from "assets/img/sidebar-3.jpg";
