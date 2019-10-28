@@ -27,7 +27,7 @@ class ModalEliminar extends Component {
 
         return (
             <>
-                <button variant="primary" onClick={handleShow} class="btn btn-primary">
+                <button variant="primary" onClick={handleShow} className="btn btn-primary">
                     Eliminar
                 </button>
 

@@ -24,7 +24,6 @@ class PrincipalInvitados extends Component {
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Invitados').get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
-
                     if(doc.data().IdPropietario.id == localStorage.getItem('idPersona')){
                         this.state.invitados.push(
                             [doc.data(), doc.id]
@@ -61,8 +60,8 @@ class PrincipalInvitados extends Component {
                         <label className="h2">Invitados</label>
                     </div>
                     <div className="col-5 izquierda">
-                        <input className="mr-sm-2 borde-button" control de formulario tipo="texto"
-                               placeholder="Buscar"/>
+                        {/*<input className="mr-sm-2 borde-button" */}
+                               {/*placeholder="Buscar"/>*/}
                         <button type="button" className="btn btn-primary"
                                 onClick={handleShow}
                         >Nuevo Invitado
@@ -75,7 +74,6 @@ class PrincipalInvitados extends Component {
                                 <Modal.Title>Nuevo Invitado</Modal.Title>
                             </Modal.Header>
                             <Modal.Body><AltaInvitado cerrar={handleClose}></AltaInvitado> </Modal.Body>
-
                         </Modal>
 
                     </div>

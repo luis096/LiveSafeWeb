@@ -31,7 +31,7 @@ class Propietario extends Component {
 
     render() {
         return (
-            <tr class="table-light">
+            <tr className="table-light">
                 <th scope="row">{this.nombre}, {this.apellido}</th>
                 <td>{this.documento}</td>
                 <td> {this.titular ? 'Si' : 'No'}</td>

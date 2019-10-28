@@ -176,7 +176,7 @@ class AltaInvitado extends Component {
                         <legend hidden={this.esPropietario}> Nuevo Invitado</legend>
                         <div className="col-md-6  flex-container form-group"
                              hidden={this.esPropietario}>
-                            <label for="TipoDocumento"> Tipo Documento </label>
+                            <label htmlFor="TipoDocumento"> Tipo Documento </label>
                             <Select
                                 className="select-documento"
                                 classNamePrefix="select"
@@ -192,7 +192,7 @@ class AltaInvitado extends Component {
 
                         <div className="col-md-6  flex-container form-group"
                              hidden={this.esPropietario}>
-                            <label for="NumeroDocumento"> Numero de Documento </label>
+                            <label htmlFor="NumeroDocumento"> Numero de Documento </label>
                             <input type="document" className="form-control" placeholder="Document number"
                                    value={this.state.documento}
                                    onChange={this.ChangeDocumento}
@@ -211,7 +211,7 @@ class AltaInvitado extends Component {
                         <div className="col-md-8  flex-container form-group"></div>
 
                         <div className="col-md-6  flex-container form-group">
-                            <label for="Nombre"> Grupo </label>
+                            <label htmlFor="Nombre"> Grupo </label>
                             <input type="name" className="form-control" placeholder="Name"
                                    value={this.state.grupo}
                                    onChange={this.ChangeGrupo}
@@ -282,11 +282,11 @@ class AltaInvitado extends Component {
                 </div>
 
                 <div className="form-group izquierda">
-                    <button type="button" className="btn btn-primary boton" variant="secondary"
-                            onClick={this.props.cerrar}
-                            hidden={!this.esPropietario}
-                    >Volver
-                    </button>
+                    {/*<button type="button" className="btn btn-primary boton" variant="secondary"*/}
+                            {/*onClick={this.props.cerrar}*/}
+                            {/*hidden={!this.esPropietario}*/}
+                    {/*>Volver*/}
+                    {/*</button>*/}
                     <Link to='/' type="button" className="btn btn-primary boton" variant="secondary"
                           hidden={this.esPropietario}
                     >Volver</Link>
