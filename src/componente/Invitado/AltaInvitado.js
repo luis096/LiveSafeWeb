@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 //import '../Style/Alta.css';
-import './Index.css';
+//import './Index.css';
 import { Link } from 'react-router-dom';
 import { Database, Firebase } from '../../config/config';
 // import { DatePicker, RangeDatePicker } from '@y0c/react-datepicker';
@@ -64,6 +64,12 @@ class AltaInvitado extends Component {
 
 
     addInvitado() {
+        let fechaHtml =  this.state.startDate.split('-')
+        fechaHtml[1] = (parseInt(fechaHtml[1]) - 1 )
+        const fechaDesde = new Date(fechaHtml[0], fechaHtml[1], fechaHtml[2]);
+        fechaHtml = this.state.endDate.split('-')
+        fechaHtml[1] = (parseInt(fechaHtml[1]) - 1 )
+        const fechaHasta = new Date(fechaHtml[0], fechaHtml[1], fechaHtml[2]);;
         Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Invitados').add({
             Nombre: this.state.nombre,
@@ -74,8 +80,8 @@ class AltaInvitado extends Component {
             Grupo: this.state.grupo,
             FechaNacimiento: this.state.fechaNacimiento,
             FechaAlta: new Date(),
-            FechaDesde: this.state.startDate,
-            FechaHasta: this.state.endDate,
+            FechaDesde: fechaDesde,
+            FechaHasta: fechaHasta,
             IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + this.state.idPropietario)
         });
 
@@ -176,7 +182,7 @@ class AltaInvitado extends Component {
                         <legend hidden={this.esPropietario}> Nuevo Invitado</legend>
                         <div className="col-md-6  flex-container form-group"
                              hidden={this.esPropietario}>
-                            <label for="TipoDocumento"> Tipo Documento </label>
+                            <label htmlFor="TipoDocumento"> Tipo Documento </label>
                             <Select
                                 className="select-documento"
                                 classNamePrefix="select"
@@ -192,7 +198,7 @@ class AltaInvitado extends Component {
 
                         <div className="col-md-6  flex-container form-group"
                              hidden={this.esPropietario}>
-                            <label for="NumeroDocumento"> Numero de Documento </label>
+                            <label htmlFor="NumeroDocumento"> Numero de Documento </label>
                             <input type="document" className="form-control" placeholder="Document number"
                                    value={this.state.documento}
                                    onChange={this.ChangeDocumento}
@@ -211,7 +217,7 @@ class AltaInvitado extends Component {
                         <div className="col-md-8  flex-container form-group"></div>
 
                         <div className="col-md-6  flex-container form-group">
-                            <label for="Nombre"> Grupo </label>
+                            <label htmlFor="Nombre"> Grupo </label>
                             <input type="name" className="form-control" placeholder="Name"
                                    value={this.state.grupo}
                                    onChange={this.ChangeGrupo}
@@ -282,11 +288,11 @@ class AltaInvitado extends Component {
                 </div>
 
                 <div className="form-group izquierda">
-                    <button type="button" className="btn btn-primary boton" variant="secondary"
-                            onClick={this.props.cerrar}
-                            hidden={!this.esPropietario}
-                    >Volver
-                    </button>
+                    {/*<button type="button" className="btn btn-primary boton" variant="secondary"*/}
+                            {/*onClick={this.props.cerrar}*/}
+                            {/*hidden={!this.esPropietario}*/}
+                    {/*>Volver*/}
+                    {/*</button>*/}
                     <Link to='/' type="button" className="btn btn-primary boton" variant="secondary"
                           hidden={this.esPropietario}
                     >Volver</Link>

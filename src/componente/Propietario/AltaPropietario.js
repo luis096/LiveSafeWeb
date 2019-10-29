@@ -14,7 +14,7 @@ class AltaPropietario extends Component {
             apellido: '',
             tipoDocumento: '',
             documento: '',
-            titular: '',
+            titular: 'Si',
             telefonoFijo: '',
             celular: '',
             descripcion: '',
@@ -40,6 +40,7 @@ class AltaPropietario extends Component {
         this.crearUsuario = this.crearUsuario.bind(this);
         this.ChangeRadio = this.ChangeRadio.bind(this);
         this.registrar = this.registrar.bind(this);
+        this.reset = this.reset.bind(this);
 
     }
 
@@ -123,11 +124,29 @@ class AltaPropietario extends Component {
         this.setState({titular: event.currentTarget.value});
     }
 
-    registrar() {
+    async registrar() {
         //Agregar validaciones para no registrar cualquier gilada
         if (true) {
-            this.addPropietario();
+            await this.addPropietario();
+            await this.reset();
         }
+    }
+
+    reset(){
+        this.setState({
+            nombre: '',
+            apellido: '',
+            tipoDocumento: '',
+            documento: '',
+            titular: 'Si',
+            telefonoFijo: '',
+            celular: '',
+            descripcion: '',
+            fechaNacimiento: '',
+            mail: '',
+            pass: '',
+            resultado: '',
+        })
     }
 
     async crearUsuario() {
@@ -235,7 +254,7 @@ class AltaPropietario extends Component {
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="exampleInputPassword1"> Contraseña </label>
-                            <input type="name" className="form-control" id="exampleInputPassword1"
+                            <input type="password" className="form-control" id="exampleInputPassword1"
                                    placeholder="Password"
                                    value={this.state.pass}
                                    onChange={this.ChangePass}/>
