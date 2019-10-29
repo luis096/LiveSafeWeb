@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 //import '../Style/Alta.css';
-import './Index.css';
+//import './Index.css';
 import { Link } from 'react-router-dom';
 import { Database, Firebase } from '../../config/config';
 // import { DatePicker, RangeDatePicker } from '@y0c/react-datepicker';
@@ -64,6 +64,12 @@ class AltaInvitado extends Component {
 
 
     addInvitado() {
+        let fechaHtml =  this.state.startDate.split('-')
+        fechaHtml[1] = (parseInt(fechaHtml[1]) - 1 )
+        const fechaDesde = new Date(fechaHtml[0], fechaHtml[1], fechaHtml[2]);
+        fechaHtml = this.state.endDate.split('-')
+        fechaHtml[1] = (parseInt(fechaHtml[1]) - 1 )
+        const fechaHasta = new Date(fechaHtml[0], fechaHtml[1], fechaHtml[2]);;
         Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Invitados').add({
             Nombre: this.state.nombre,
@@ -74,8 +80,8 @@ class AltaInvitado extends Component {
             Grupo: this.state.grupo,
             FechaNacimiento: this.state.fechaNacimiento,
             FechaAlta: new Date(),
-            FechaDesde: this.state.startDate,
-            FechaHasta: this.state.endDate,
+            FechaDesde: fechaDesde,
+            FechaHasta: fechaHasta,
             IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + this.state.idPropietario)
         });
 
