@@ -4,6 +4,10 @@
      
 }
 
+.flex-container.form-group{
+    text-align: left;
+}
+
 .row{
     margin: 30px 40px 15px;
 }
@@ -15,7 +19,7 @@
     padding: 0px 60px;
 }
 
-.boton{
+.btn.btn-primary.boton{
     margin: 7px;
 }
 
