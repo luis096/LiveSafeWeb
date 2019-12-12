@@ -1,12 +1,11 @@
 /*!
 
 =========================================================
-* Light Bootstrap Dashboard React - v1.3.0
+* Light Bootstrap Dashboard PRO React - v1.2.0
 =========================================================
 
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-react
+* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react
 * Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard-react/blob/master/LICENSE.md)
 
 * Coded by Creative Tim
 
@@ -17,12 +16,19 @@
 */
 /*eslint-disable*/
 import React, { Component } from "react";
-import Toggle from "react-toggle";
-import './Index.css';
-import imagine1 from "assets/img/sidebar-1.jpg";
-import imagine2 from "assets/img/sidebar-2.jpg";
-import imagine3 from "assets/img/sidebar-3.jpg";
-import imagine4 from "assets/img/sidebar-4.jpg";
+import { NavLink } from "react-router-dom";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  FacebookIcon,
+  TwitterIcon
+} from "react-share";
+import Switch from "react-bootstrap-switch";
+
+import imagine1 from "../../logoLiveSafe.png";
+import imagine2 from "../../logoLiveSafe.png";
+import imagine3 from "../../logoLiveSafe.png";
+import imagine4 from "../../logoLiveSafe.png";
 
 class FixedPlugin extends Component {
   constructor(props) {
@@ -30,16 +36,31 @@ class FixedPlugin extends Component {
     this.state = {
       classes: "dropdown show-dropdown open",
       bg_checked: true,
-      bgImage: this.props.bgImage
+      bgImage: this.props.bgImage,
+      switched: false,
+      mini_checked: this.props.mini,
+      navbar_checked: false
     };
+    this.handleClick = this.handleClick.bind(this);
+    this.onChangeClick = this.onChangeClick.bind(this);
+    this.onNavbarClick = this.onNavbarClick.bind(this);
+    this.onMiniClick = this.onMiniClick.bind(this);
   }
-  handleClick = () => {
+  handleClick() {
     this.props.handleFixedClick();
-  };
-  onChangeClick = () => {
-    this.props.handleHasImage(!this.state.bg_checked);
+  }
+  onChangeClick() {
     this.setState({ bg_checked: !this.state.bg_checked });
-  };
+    this.props.handleHasImage(this.state.bg_checked);
+  }
+  onNavbarClick() {
+    this.setState({ navbar_checked: !this.state.navbar_checked });
+    this.props.handleNavbarClick(this.state.navbar_checked);
+  }
+  onMiniClick() {
+    this.setState({ mini_checked: !this.state.mini_checked });
+    this.props.handleMiniClick(this.state.mini_checked);
+  }
   render() {
     return (
       <div className="fixed-plugin">
@@ -52,13 +73,40 @@ class FixedPlugin extends Component {
             <li className="adjustments-line">
               <p className="pull-left">Background Image</p>
               <div className="pull-right">
-                <Toggle
-                  defaultChecked={this.state.bg_checked}
+                <Switch
                   onChange={this.onChangeClick}
+                  defaultValue={this.state.bg_checked}
                 />
               </div>
               <div className="clearfix" />
             </li>
+            {window.location.pathname.indexOf("pages") > -1 ? (
+              ""
+            ) : (
+              <li className="adjustments-line">
+                <p className="pull-left">Sidebar Mini</p>
+                <div className="pull-right">
+                  <Switch
+                    onChange={this.onMiniClick}
+                    defaultValue={this.state.mini_checked}
+                  />
+                </div>
+                <div className="clearfix" />
+              </li>
+            )}
+            {window.location.pathname.indexOf("pages") > -1 ? (
+              ""
+            ) : (
+              <li className="adjustments-line">
+                <p className="pull-left">Fixed Navbar</p>
+                <div className="pull-right">
+                  <Switch
+                    onChange={this.onNavbarClick}
+                    defaultValue={this.state.navbar_checked}
+                  />
+                </div>
+              </li>
+            )}
             <li className="adjustments-line">
               <a className="switch-trigger">
                 <p>Filters</p>
@@ -177,6 +225,67 @@ class FixedPlugin extends Component {
               >
                 <img src={imagine4} alt="..." />
               </a>
+            </li>
+
+            <li className="button-container">
+              <div className="">
+                {
+                  // eslint-disable-next-line
+                }
+                <a
+                  href="https://www.creative-tim.com/product/light-bootstrap-dashboard-react?ref=lbdpr-fixed-plugin"
+                  target="_blank"
+                  className="btn btn-success btn-block btn-fill"
+                >
+                  Download free!
+                </a>
+              </div>
+            </li>
+            <li className="button-container">
+              <div className="">
+                {
+                  // eslint-disable-next-line
+                }
+                <a
+                  href="https://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react?ref=lbdpr-fixed-plugin"
+                  target="_blank"
+                  className="btn btn-warning btn-block btn-fill"
+                >
+                  Buy Pro
+                </a>
+              </div>
+            </li>
+            <li className="button-container">
+              <NavLink
+                to={"/documentation"}
+                className="btn btn-fill btn-info"
+                activeClassName="active"
+              >
+                Documentation
+              </NavLink>
+            </li>
+
+            <li className="header-title" id="sharrreTitle">
+              Thank you for sharing!
+            </li>
+
+            <li className="button-container">
+              <FacebookShareButton url="https://timcreative.github.io/light-bootstrap-dashboard-pro-react">
+                <FacebookIcon size={32} round={true} />
+              </FacebookShareButton>
+              <TwitterShareButton
+                url="https://timcreative.github.io/light-bootstrap-dashboard-pro-react"
+                title="Light Bootstrap Dashboard PRO React - Premium Bootstrap Admin Template"
+                hashtags={[
+                  "react",
+                  "reactbootstrap",
+                  "bootstrap",
+                  "creativetim"
+                ]}
+                via="creativetim"
+              >
+                <TwitterIcon size={32} round={true} />
+              </TwitterShareButton>
             </li>
           </ul>
         </div>

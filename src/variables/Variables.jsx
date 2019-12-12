@@ -1,12 +1,11 @@
 /*!
 
 =========================================================
-* Light Bootstrap Dashboard React - v1.3.0
+* Light Bootstrap Dashboard PRO React - v1.2.0
 =========================================================
 
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-react
+* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react
 * Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard-react/blob/master/LICENSE.md)
 
 * Coded by Creative Tim
 
@@ -15,6 +14,128 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
+//
+// //
+// // // For ExtendedForms view Select
+// //
+//
+
+var selectOptions = [
+  { value: "id", label: "Bahasa Indonesia" },
+  { value: "ms", label: "Bahasa Melayu" },
+  { value: "ca", label: "Català" },
+  { value: "da", label: "Dansk" },
+  { value: "de", label: "Deutsch" },
+  { value: "en", label: "English" },
+  { value: "es", label: "Español" },
+  { value: "el", label: "Eλληνικά" },
+  { value: "fr", label: "Français" },
+  { value: "it", label: "Italiano" },
+  { value: "hu", label: "Magyar" },
+  { value: "nl", label: "Nederlands" },
+  { value: "no", label: "Norsk" },
+  { value: "pl", label: "Polski" },
+  { value: "pt", label: "Português" },
+  { value: "fi", label: "Suomi" },
+  { value: "sv", label: "Svenska" },
+  { value: "tr", label: "Türkçe" },
+  { value: "is", label: "Íslenska" },
+  { value: "cs", label: "Čeština" },
+  { value: "ru", label: "Русский" },
+  { value: "th", label: "ภาษาไทย" },
+  { value: "zh", label: "中文 (简体)" },
+  { value: "zh-TW", label: "中文 (繁體)" },
+  { value: "ja", label: "日本語" },
+  { value: "ko", label: "한국어" }
+];
+
+//
+// //
+// // // For Calendar view events
+// //
+//
+var today = new Date();
+var y = today.getFullYear();
+var m = today.getMonth();
+var d = today.getDate();
+
+const events = [
+  {
+    title: "All Day Event",
+    allDay: true,
+    start: new Date(y, m, 1),
+    end: new Date(y, m, 1),
+    color: "default"
+  },
+  {
+    title: "Meeting",
+    start: new Date(y, m, d - 1, 10, 30),
+    end: new Date(y, m, d - 1, 11, 30),
+    allDay: false,
+    color: "green"
+  },
+  {
+    title: "Lunch",
+    start: new Date(y, m, d + 7, 12, 0),
+    end: new Date(y, m, d + 7, 14, 0),
+    allDay: false,
+    color: "red"
+  },
+  {
+    title: "Nud-pro Launch",
+    start: new Date(y, m, d - 2),
+    end: new Date(y, m, d - 2),
+    allDay: true,
+    color: "azure"
+  },
+  {
+    title: "Birthday Party",
+    start: new Date(y, m, d + 1, 19, 0),
+    end: new Date(y, m, d + 1, 22, 30),
+    allDay: false,
+    color: "azure"
+  },
+  {
+    title: "Click for Creative Tim",
+    start: new Date(y, m, 21),
+    end: new Date(y, m, 22),
+    color: "orange"
+  },
+  {
+    title: "Click for Google",
+    start: new Date(y, m, 21),
+    end: new Date(y, m, 22),
+    color: "orange"
+  }
+];
+
+//
+// //
+// // // For vector map row in Dashboard view
+// //
+//
+
+const us_flag = require("../logoLiveSafe.png");
+const de_flag = require("../logoLiveSafe.png");
+const au_flag = require("../logoLiveSafe.png");
+const gb_flag = require("../logoLiveSafe.png");
+const ro_flag = require("../logoLiveSafe.png");
+const br_flag = require("../logoLiveSafe.png");
+
+const table_data = [
+  { flag: us_flag, country: "USA", count: "2.920", percentage: "53.23%" },
+  { flag: de_flag, country: "Germany", count: "1.300", percentage: "20.43%" },
+  { flag: au_flag, country: "Australia", count: "760", percentage: "10.35%" },
+  {
+    flag: gb_flag,
+    country: "United Kingdom",
+    count: "690",
+    percentage: "7.87%"
+  },
+  { flag: ro_flag, country: "Romania", count: "600", percentage: "5.94%" },
+  { flag: br_flag, country: "Brasil", count: "550", percentage: "4.34%" }
+];
+
 //
 // //
 // // // For notifications
@@ -268,12 +389,13 @@ var style = {
 //
 const thArray = ["ID", "Name", "Salary", "Country", "City"];
 const tdArray = [
-  ["1", "Dakota Rice", "$36,738", "Niger", "Oud-Turnhout"],
-  ["2", "Minerva Hooper", "$23,789", "Curaçao", "Sinaai-Waas"],
-  ["3", "Sage Rodriguez", "$56,142", "Netherlands", "Baileux"],
-  ["4", "Philip Chaney", "$38,735", "Korea, South", "Overland Park"],
-  ["5", "Doris Greene", "$63,542", "Malawi", "Feldkirchen in Kärnten"],
-  ["6", "Mason Porter", "$78,615", "Chile", "Gloucester"]
+  ["Dakota Rice", "$36,738", "Niger", "Oud-Turnhout"],
+  ["Minerva Hooper", "$23,789", "Curaçao", "Sinaai-Waas"],
+  ["Sage Rodriguez", "$56,142", "Netherlands", "Baileux"],
+  ["Philip Chaney", "$38,735", "Korea, South", "Overland Park"],
+  ["Doris Greene", "$63,542", "Malawi", "Feldkirchen in Kärnten"],
+  ["Mason Porter", "$78,615", "Chile", "Gloucester"],
+  ["Mike Chaney", "$38,735", "Romania", "Bucharest"]
 ];
 
 //
@@ -496,10 +618,6 @@ var dataPie = {
   labels: ["40%", "20%", "40%"],
   series: [40, 20, 40]
 };
-var legendPie = {
-  names: ["Open", "Bounce", "Unsubscribe"],
-  types: ["info", "danger", "warning"]
-};
 
 // Data for Line Chart
 var dataSales = {
@@ -547,10 +665,6 @@ var responsiveSales = [
     }
   ]
 ];
-var legendSales = {
-  names: ["Open", "Click", "Click Second Time"],
-  types: ["info", "danger", "warning"]
-};
 
 // Data for Bar Chart
 var dataBar = {
@@ -593,24 +707,20 @@ var responsiveBar = [
     }
   ]
 ];
-var legendBar = {
-  names: ["Tesla Model S", "BMW 5 Series"],
-  types: ["info", "danger"]
-};
 
 module.exports = {
+  selectOptions, // For selets in ExtendedForms view
+  events, // For calendar in Calendar view
+  table_data, // For vector map on Dashboard view
   style, // For notifications (App container and Notifications view)
   thArray,
   tdArray, // For tables (TableList view)
   iconsArray, // For icons (Icons view)
   dataPie,
-  legendPie,
   dataSales,
   optionsSales,
   responsiveSales,
-  legendSales,
   dataBar,
   optionsBar,
-  responsiveBar,
-  legendBar // For charts (Dashboard view)
+  responsiveBar // For charts (Dashboard view)
 };

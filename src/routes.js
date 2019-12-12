@@ -1,251 +1,257 @@
+/*!
+
+=========================================================
+* Light Bootstrap Dashboard PRO React - v1.2.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react
+* Copyright 2019 Creative Tim (https://www.creative-tim.com)
+
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+*/
 import Dashboard from "views/Dashboard.jsx";
-import UserProfile from "views/UserProfile.jsx";
-import TableList from "views/TableList.jsx";
-import Typography from "views/Typography.jsx";
-import Icons from "views/Icons.jsx";
-import Maps from "views/Maps.jsx";
-import Notifications from "views/Notifications.jsx";
-import Upgrade from "views/Upgrade.jsx";
-import PrincipalCountry from 'componente/Country/PrincipalCountry.js';
-import EditarCountry from 'componente/Country/EditarCountry.js';
-import AltaCountry from 'componente/Country/AltaCountry.js';
-import PrincipalAdministrador from 'componente/Administrador/PrincipalAdministrador.js'
-import EditarAdministrador from 'componente/Administrador/EditarAdministrador.js'
-import AltaAdministrador from 'componente/Administrador/AltaAdministrador.js'
-import PrincipalServicio from 'componente/Servicio/PrincipalServicio.js'
-import EditarServicio from 'componente/Servicio/EditarServicio.js'
-import AltaServicio from 'componente/Servicio/AltaServicio.js'
-import PrincipalPropietario from 'componente/Propietario/PrincipalPropietario.js'
-import EditarPropietario from 'componente/Propietario/EditarPropietario.js'
-import AltaPropietario from 'componente/Propietario/AltaPropietario.js'
-import PrincipalEncargado from 'componente/Encargado/PrincipalEncargado.js'
-import EditarEncargado from 'componente/Encargado/EditarEncargado.js'
-import AltaEncargado from 'componente/Encargado/AltaEncargado.js'
-import InvitadoEvento from 'componente/InvitadoEvento/InvitadoEvento'
-import Invitado from 'componente/Invitado/PrincipalInvitados'
-import Ingresos from 'componente/Ingresos/PrincipalIngreso'
-import Egresos from 'componente/Egresos/PrincipalEgreso'
-import EditarInvitado from 'componente/Invitado/EditarInvitado'
+import Buttons from "views/Components/Buttons.jsx";
+import GridSystem from "views/Components/GridSystem.jsx";
+import Panels from "views/Components/Panels.jsx";
+import SweetAlert from "views/Components/SweetAlertPage.jsx";
+import Notifications from "views/Components/Notifications.jsx";
+import Icons from "views/Components/Icons.jsx";
+import Typography from "views/Components/Typography.jsx";
+import RegularForms from "views/Forms/RegularForms.jsx";
+import ExtendedForms from "views/Forms/ExtendedForms.jsx";
+import ValidationForms from "views/Forms/ValidationForms.jsx";
+import Wizard from "views/Forms/Wizard/Wizard.jsx";
+import RegularTables from "views/Tables/RegularTables.jsx";
+import ExtendedTables from "views/Tables/ExtendedTables.jsx";
+import ReactTables from "views/Tables/ReactTables.jsx";
+import GoogleMaps from "views/Maps/GoogleMaps.jsx";
+import FullScreenMap from "views/Maps/FullScreenMap.jsx";
+import VectorMap from "views/Maps/VectorMap.jsx";
+import Charts from "views/Charts.jsx";
+import Calendar from "views/Calendar.jsx";
+import UserPage from "views/Pages/UserPage.jsx";
+import LoginPage from "views/Pages/LoginPage.jsx";
+import RegisterPage from "views/Pages/RegisterPage.jsx";
+import LockScreenPage from "views/Pages/LockScreenPage.jsx";
 
-
-const dashboardRoutes = [
+var routes = [
   {
     path: "/dashboard",
+    layout: "/admin",
     name: "Dashboard",
     icon: "pe-7s-graph",
-    component: Dashboard,
-    editar: false,
-    layout: "/example"
+    component: Dashboard
   },
   {
-    path: "/table",
-    name: "Table List",
+    collapse: true,
+    path: "/components",
+    name: "Components",
+    state: "openComponents",
+    icon: "pe-7s-plugin",
+    views: [
+      {
+        path: "/buttons",
+        layout: "/admin",
+        name: "Buttons",
+        mini: "B",
+        component: Buttons
+      },
+      {
+        path: "/grid-system",
+        layout: "/admin",
+        name: "Grid System",
+        mini: "GS",
+        component: GridSystem
+      },
+      {
+        path: "/panels",
+        layout: "/admin",
+        name: "Panels",
+        mini: "P",
+        component: Panels
+      },
+      {
+        path: "/sweet-alert",
+        layout: "/admin",
+        name: "Sweet Alert",
+        mini: "SA",
+        component: SweetAlert
+      },
+      {
+        path: "/notifications",
+        layout: "/admin",
+        name: "Notifications",
+        mini: "N",
+        component: Notifications
+      },
+      {
+        path: "/icons",
+        layout: "/admin",
+        name: "Icons",
+        mini: "I",
+        component: Icons
+      },
+      {
+        path: "/typography",
+        layout: "/admin",
+        name: "Typography",
+        mini: "T",
+        component: Typography
+      }
+    ]
+  },
+  {
+    collapse: true,
+    path: "/forms",
+    name: "Forms",
+    state: "openForms",
     icon: "pe-7s-note2",
-    component: TableList,
-    editar: false,
-    layout: "/example"
+    views: [
+      {
+        path: "/regular-forms",
+        layout: "/admin",
+        name: "Regular Forms",
+        mini: "RF",
+        component: RegularForms
+      },
+      {
+        path: "/extended-forms",
+        layout: "/admin",
+        name: "Extended Forms",
+        mini: "EF",
+        component: ExtendedForms
+      },
+      {
+        path: "/validation-forms",
+        layout: "/admin",
+        name: "Validation Forms",
+        mini: "VF",
+        component: ValidationForms
+      },
+      {
+        path: "/wizard",
+        layout: "/admin",
+        name: "Wizard",
+        mini: "W",
+        component: Wizard
+      }
+    ]
   },
   {
-    path: "/typography",
-    name: "Typography",
+    collapse: true,
+    path: "/tables",
+    name: "Tables",
+    state: "openTables",
     icon: "pe-7s-news-paper",
-    component: Typography,
-    editar: false,
-    layout: "/example"
+    views: [
+      {
+        path: "/regular-tables",
+        layout: "/admin",
+        name: "Regular Tables",
+        mini: "RT",
+        component: RegularTables
+      },
+      {
+        path: "/extended-tables",
+        layout: "/admin",
+        name: "Extended Tables",
+        mini: "ET",
+        component: ExtendedTables
+      },
+      {
+        path: "/react-table",
+        layout: "/admin",
+        name: "React Table",
+        mini: "RT",
+        component: ReactTables
+      }
+    ]
   },
   {
-    path: "/icons",
-    name: "Icons",
-    icon: "pe-7s-science",
-    component: Icons,
-    editar: false,
-    layout: "/root"
-  },
-  {
+    collapse: true,
     path: "/maps",
     name: "Maps",
+    state: "openMaps",
     icon: "pe-7s-map-marker",
-    component: Maps,
-    editar: false,
-    layout: "/example"
+    views: [
+      {
+        path: "/google-maps",
+        layout: "/admin",
+        name: "Google Maps",
+        mini: "GM",
+        component: GoogleMaps
+      },
+      {
+        path: "/full-screen-maps",
+        layout: "/admin",
+        name: "Full Screen Map",
+        mini: "FSM",
+        component: FullScreenMap
+      },
+      {
+        path: "/vector-maps",
+        layout: "/admin",
+        name: "Vector Map",
+        mini: "VM",
+        component: VectorMap
+      }
+    ]
   },
   {
-    path: "/notifications",
-    name: "Notifications",
-    icon: "pe-7s-bell",
-    component: Notifications,
-    editar: false,
-    layout: "/example"
+    path: "/charts",
+    layout: "/admin",
+    name: "Charts",
+    icon: "pe-7s-graph1",
+    component: Charts
   },
   {
-    upgrade: true,
-    path: "/upgrade",
-    name: "Hello world",
-    icon: "pe-7s-rocket",
-    component: Upgrade,
-    editar: false,
-    layout: "/nulo"
+    path: "/calendar",
+    layout: "/admin",
+    name: "Calendar",
+    icon: "pe-7s-date",
+    component: Calendar
   },
   {
-    path: "/country",
-    name: "Country",
-    icon: "pe-7s-home",
-    component: PrincipalCountry,
-    editar: false,
-    layout: "/root"
-  },
-  {
-    path: "/editarCountry/:id",
-    name: "Editar un Country",
-    icon: "pe-7s-pen",
-    component: EditarCountry,
-    editar: true,
-    layout: "/root"
-  },
-  {
-    path: "/altaCountry",
-    name: "Nuevo Country",
-    icon: "pe-7s-plus",
-    component: AltaCountry,
-    editar: false,
-    layout: "/root"
-  },
-  {
-    path: "/administrador",
-    name: "Administradores",
-    icon: "pe-7s-users",
-    component: PrincipalAdministrador,
-    editar: false,
-    layout: "/root"
-  },
-  {
-    path: "/editarAdministrador/:id",
-    name: "Editar Administrador",
-    icon: "pe-7s-pen",
-    component: EditarAdministrador,
-    editar: true,
-    layout: "/root"
-  },
-  {
-    path: "/altaAdministrador",
-    name: "Nuevo Administrador",
-    icon: "pe-7s-add-user",
-    component: AltaAdministrador,
-    editar: false,
-    layout: "/root"
-  },
-  {
-    path: "/servicios",
-    name: "Servicios",
-    icon: "pe-7s-users",
-    component: PrincipalServicio,
-    editar: false,
-    layout: "/admin"
-  },
-  {
-    path: "/editarServicio/:id",
-    name: "Editar Servicio",
-    icon: "pe-7s-pen",
-    component: EditarServicio,
-    editar: true,
-    layout: "/admin"
-  },
-  {
-    path: "/altaServicio",
-    name: "Nuevo Servicio",
-    icon: "pe-7s-add-user",
-    component: AltaServicio,
-    editar: false,
-    layout: "/admin"
-  },
-  {
-    path: "/propietarios",
-    name: "Propietarios",
-    icon: "pe-7s-users",
-    component: PrincipalPropietario,
-    editar: false,
-    layout: "/admin"
-  },
-  {
-    path: "/editarPropietario/:id",
-    name: "Editar Propietario",
-    icon: "pe-7s-pen",
-    component: EditarPropietario,
-    editar: true,
-    layout: "/admin"
-  },
-  {
-    path: "/altaPropietario",
-    name: "Nuevo Propietario",
-    icon: "pe-7s-add-user",
-    component: AltaPropietario,
-    editar: false,
-    layout: "/admin"
-  },
-  {
-    path: "/encargados",
-    name: "Encargados",
-    icon: "pe-7s-users",
-    component: PrincipalEncargado,
-    editar: false,
-    layout: "/admin"
-  },
-  {
-    path: "/editarEncargado/:id",
-    name: "Editar Encargado",
-    icon: "pe-7s-pen",
-    component: EditarEncargado,
-    editar: true,
-    layout: "/admin"
-  },
-  {
-    path: "/altaEncargado",
-    name: "Nuevo Encargado",
-    icon: "pe-7s-add-user",
-    component: AltaEncargado,
-    editar: false,
-    layout: "/admin"
-  },
-  {
-    path: "/invitados",
-    name: "Mis Invitados",
-    icon: "pe-7s-add-user",
-    component: Invitado,
-    editar: false,
-    layout: "/propietario"
-  },
-  {
-    path: "/editarInvitado/:id",
-    name: "Editar Invitado",
-    icon: "pe-7s-add-user",
-    component: EditarInvitado,
-    editar: true,
-    layout: "/propietario"
-  },
-  {
-    path: "/ingresos",
-    name: "Ingresos",
-    icon: "pe-7s-add-user",
-    component: Ingresos,
-    editar: false,
-    layout: "/encargado"
-  },
-  {
-    path: "/egresos",
-    name: "Egresos",
-    icon: "pe-7s-add-user",
-    component: Egresos,
-    editar: false,
-    layout: "/encargado"
-  },
-  {
-    path: "/:id",
-    name: "Nuevo Invitado a Evento",
-    icon: "pe-7s-add-user",
-    component: InvitadoEvento,
-    editar: true,
-    layout: "/invitado"
+    collapse: true,
+    path: "/pages",
+    name: "Pages",
+    state: "openPages",
+    icon: "pe-7s-gift",
+    views: [
+      {
+        path: "/user-page",
+        layout: "/admin",
+        name: "User Page",
+        mini: "UP",
+        component: UserPage
+      },
+      {
+        path: "/login-page",
+        layout: "/auth",
+        name: "Login Page",
+        mini: "LP",
+        component: LoginPage
+      },
+      {
+        path: "/register-page",
+        layout: "/auth",
+        name: "Register",
+        mini: "RP",
+        component: RegisterPage
+      },
+      {
+        path: "/lock-screen-page",
+        layout: "/auth",
+        name: "Lock Screen Page",
+        mini: "LSP",
+        component: LockScreenPage
+      }
+    ]
   }
 ];
-
-export default dashboardRoutes;
+export default routes;
