@@ -1,16 +1,10 @@
 import React, { Component } from "react";
 import { Grid, Row, Col } from "react-bootstrap";
-// react component used to create a calendar with events on it 
 import {Calendar, momentLocalizer} from "react-big-calendar";
-// dependency plugin for react-big-calendar
 import moment from "moment";
-// react component used to create alerts
 import SweetAlert from "react-bootstrap-sweetalert";
-
 import Card from "components/Card/Card.jsx";
-
 import { events } from "variables/Variables.jsx";
-
 
 const localizer = momentLocalizer(moment);
  
@@ -26,14 +20,16 @@ class CalendarComponent extends Component {
   selectedEvent(event) {
     alert(event.title);
   }
+
   addNewEventAlert(slotInfo) {
     this.setState({
       alert: (
         <SweetAlert
           input
+          validationMsg={'El nombre es requerido para realizar la reserva.'}
           showCancel
-          style={{ display: "block", marginTop: "-100px" }}
-          title="Input something"
+          style={{ display: "block", marginTop: "-100px", position: "center" }}
+          title="Ingrese nombre del evento"
           onConfirm={e => this.addNewEvent(e, slotInfo)}
           onCancel={() => this.hideAlert()}
           confirmBtnBsStyle="info"
@@ -80,9 +76,11 @@ class CalendarComponent extends Component {
                 content={
                   <Calendar
                     selectable
+                    step={60}
                     localizer={localizer}
                     events={this.state.events}
-                    defaultView="month"
+                    defaultView="week"
+                    views={['week']}
                     scrollToTime={new Date(1970, 1, 1, 6)}
                     defaultDate={new Date()}
                     onSelectEvent={event => this.selectedEvent(event)}
