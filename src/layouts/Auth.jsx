@@ -1,21 +1,7 @@
-/*!
 
-=========================================================
-* Light Bootstrap Dashboard PRO React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
+import  LoginPage  from "../views/Pages/LoginPage.jsx"
 
 import Footer from "components/Footer/Footer.jsx";
 import AuthNavbar from "components/Navbars/AuthNavbar.jsx";
@@ -23,7 +9,7 @@ import AuthNavbar from "components/Navbars/AuthNavbar.jsx";
 // dinamically create pages routes
 import routes from "routes.js";
 
-import bgImage from "../logoLiveSafe.png";
+import bgImage from "../assets/img/fondoLogin.jpg";
 
 class Pages extends Component {
   componentWillMount() {
@@ -34,7 +20,7 @@ class Pages extends Component {
   getPageClass() {
     var pageClass = "";
     switch (this.props.location.pathname) {
-      case "/auth/login-page":
+      case "/login":
         pageClass = " login-page";
         break;
       case "/auth/register-page":
@@ -73,14 +59,14 @@ class Pages extends Component {
         <AuthNavbar />
         <div className="wrapper wrapper-full-page">
           <div
-            className={"full-page" + this.getPageClass()}
+            className={"full-page login-page"}
             data-color="black"
             data-image={bgImage}
           >
             <div className="content">
-              <Switch>{this.getRoutes(routes)}</Switch>
+              <LoginPage></LoginPage>
             </div>
-            <Footer transparent />
+            {/*<Footer transparent />*/}
             <div
               className="full-page-background"
               style={{ backgroundImage: "url(" + bgImage + ")" }}

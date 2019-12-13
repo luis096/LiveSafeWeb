@@ -1,20 +1,4 @@
-/*!
 
-=========================================================
-* Light Bootstrap Dashboard PRO React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-
-* Coded by Creative Tim
-
-========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-/*eslint-disable*/
 import React, { Component } from "react";
 import { Collapse } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
@@ -27,7 +11,7 @@ import AdminNavbarLinks from "components/Navbars/AdminNavbarLinks.jsx";
 // image for avatar in Sidebar
 import avatar from "assets/img/default-avatar.png";
 // logo for sidebar
-import logo from "logo.svg";
+import logo from "../../logoLiveSafe.png";
 
 import routes from "routes.js";
 
@@ -75,7 +59,7 @@ class Sidebar extends Component {
   // this function creates the links and collapses that appear in the sidebar (left menu)
   createLinks = routes => {
     return routes.map((prop, key) => {
-      if (prop.redirect) {
+      if (prop.redirect || ((prop.layout !== '/root' && !prop.collapse) || (prop.collapse && prop.layoutCollapse !== '/root'))) {
         return null;
       }
       if (prop.collapse) {
@@ -180,27 +164,19 @@ class Sidebar extends Component {
           ""
         )}
         <div className="logo">
-          <a
-            href="https://www.creative-tim.com?ref=lbdpr-sidebar"
-            className="simple-text logo-mini"
-            target="_blank"
-          >
+          <a className="simple-text logo-mini" target="_blank">
             <div className="logo-img">
               <img src={logo} alt="react-logo" />
             </div>
           </a>
-          <a
-            href="https://www.creative-tim.com?ref=lbdpr-sidebar"
-            className="simple-text logo-normal"
-            target="_blank"
-          >
-            Creative Tim
+          <a className="simple-text logo-normal" target="_blank">
+            LiveSafe
           </a>
         </div>
         <div className="sidebar-wrapper" ref="sidebarWrapper">
           <div className="user">
             <div className="photo">
-              <img src={avatar} alt="Avatar" />
+              <img src={avatar} alt="Avatar"/>
             </div>
             <div className="info">
               <a
@@ -211,7 +187,7 @@ class Sidebar extends Component {
                 }}
               >
                 <span>
-                  Tania Andrew
+                  {localStorage.getItem("mail")}
                   <b
                     className={
                       this.state.openAvatar ? "caret rotate-180" : "caret"
@@ -224,21 +200,21 @@ class Sidebar extends Component {
                   <li>
                     <a href="#pablo" onClick={e => e.preventDefault()}>
                       <span className="sidebar-mini">MP</span>
-                      <span className="sidebar-normal">My Profile</span>
+                      <span className="sidebar-normal">Mi Perfil</span>
                     </a>
                   </li>
                   <li>
                     <a href="#pablo" onClick={e => e.preventDefault()}>
                       <span className="sidebar-mini">EP</span>
-                      <span className="sidebar-normal">Edit Profile</span>
+                      <span className="sidebar-normal">Editar Perfil</span>
                     </a>
                   </li>
-                  <li>
-                    <a href="#pablo" onClick={e => e.preventDefault()}>
-                      <span className="sidebar-mini">S</span>
-                      <span className="sidebar-normal">Settings</span>
-                    </a>
-                  </li>
+                  {/*<li>*/}
+                    {/*<a href="#pablo" onClick={e => e.preventDefault()}>*/}
+                      {/*<span className="sidebar-mini">S</span>*/}
+                      {/*<span className="sidebar-normal">Settings</span>*/}
+                    {/*</a>*/}
+                  {/*</li>*/}
                 </ul>
               </Collapse>
             </div>

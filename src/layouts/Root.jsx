@@ -161,7 +161,6 @@ class Root extends Component {
   render() {
     return (
       <div className="wrapper">
-        {/* <NotificationSystem ref="notificationSystem" style={style} /> */}
         <Sidebar {...this.props} routes={this.state.rutasPermitidas} image={this.state.image}
         color={this.state.color}
         hasImage={this.state.hasImage}/>

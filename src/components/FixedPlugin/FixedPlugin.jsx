@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* Light Bootstrap Dashboard PRO React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-/*eslint-disable*/
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 import {
@@ -25,10 +8,10 @@ import {
 } from "react-share";
 import Switch from "react-bootstrap-switch";
 
-import imagine1 from "../../logoLiveSafe.png";
-import imagine2 from "../../logoLiveSafe.png";
-import imagine3 from "../../logoLiveSafe.png";
-import imagine4 from "../../logoLiveSafe.png";
+import imagine1 from "../../assets/img/sidebar-1.jpg";
+import imagine2 from "../../assets/img/sidebar-2.jpg";
+import imagine3 from "../../assets/img/sidebar-3.jpg";
+import imagine4 from "../../assets/img/sidebar-4.jpg";
 
 class FixedPlugin extends Component {
   constructor(props) {
@@ -225,67 +208,6 @@ class FixedPlugin extends Component {
               >
                 <img src={imagine4} alt="..." />
               </a>
-            </li>
-
-            <li className="button-container">
-              <div className="">
-                {
-                  // eslint-disable-next-line
-                }
-                <a
-                  href="https://www.creative-tim.com/product/light-bootstrap-dashboard-react?ref=lbdpr-fixed-plugin"
-                  target="_blank"
-                  className="btn btn-success btn-block btn-fill"
-                >
-                  Download free!
-                </a>
-              </div>
-            </li>
-            <li className="button-container">
-              <div className="">
-                {
-                  // eslint-disable-next-line
-                }
-                <a
-                  href="https://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react?ref=lbdpr-fixed-plugin"
-                  target="_blank"
-                  className="btn btn-warning btn-block btn-fill"
-                >
-                  Buy Pro
-                </a>
-              </div>
-            </li>
-            <li className="button-container">
-              <NavLink
-                to={"/documentation"}
-                className="btn btn-fill btn-info"
-                activeClassName="active"
-              >
-                Documentation
-              </NavLink>
-            </li>
-
-            <li className="header-title" id="sharrreTitle">
-              Thank you for sharing!
-            </li>
-
-            <li className="button-container">
-              <FacebookShareButton url="https://timcreative.github.io/light-bootstrap-dashboard-pro-react">
-                <FacebookIcon size={32} round={true} />
-              </FacebookShareButton>
-              <TwitterShareButton
-                url="https://timcreative.github.io/light-bootstrap-dashboard-pro-react"
-                title="Light Bootstrap Dashboard PRO React - Premium Bootstrap Admin Template"
-                hashtags={[
-                  "react",
-                  "reactbootstrap",
-                  "bootstrap",
-                  "creativetim"
-                ]}
-                via="creativetim"
-              >
-                <TwitterIcon size={32} round={true} />
-              </TwitterShareButton>
             </li>
           </ul>
         </div>

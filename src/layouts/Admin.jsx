@@ -1,19 +1,4 @@
-/*!
 
-=========================================================
-* Light Bootstrap Dashboard PRO React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 // this is used to create scrollbars on windows devices like the ones from apple devices
@@ -33,7 +18,7 @@ import routes from "routes.js";
 // style for notifications
 import { style } from "variables/Variables.jsx";
 
-import image from "../logoLiveSafe.png";
+import image from "../assets/img/sidebar-1.jpg";
 
 var ps;
 
@@ -47,7 +32,7 @@ class Dashboard extends Component {
       hasImage: true,
       navbar: false,
       mini: false,
-      fixedClasses: "dropdown show-dropdown open"
+      fixedClasses: "dropdown"
     };
     this.handleNotificationClick = this.handleNotificationClick.bind(this);
     this.handleImageClick = this.handleImageClick.bind(this);
@@ -153,7 +138,9 @@ class Dashboard extends Component {
       if (prop.collapse) {
         return this.getRoutes(prop.views);
       }
-      if (prop.layout === "/admin") {
+
+      if (prop.layout === "/root") {
+        console.log(localStorage.getItem('layout'));
         return (
           <Route
             path={prop.layout + prop.path}
@@ -174,7 +161,6 @@ class Dashboard extends Component {
   render() {
     return (
       <div className="wrapper">
-        <NotificationSystem ref="notificationSystem" style={style} />
         <Sidebar
           {...this.props}
           image={this.state.image}
@@ -197,7 +183,7 @@ class Dashboard extends Component {
             navbar={this.state.navbar}
           />
           <Switch>{this.getRoutes(routes)}</Switch>
-          <Footer fluid />
+          <Footer fluid/>
           <FixedPlugin
             handleImageClick={this.handleImageClick}
             handleColorClick={this.handleColorClick}

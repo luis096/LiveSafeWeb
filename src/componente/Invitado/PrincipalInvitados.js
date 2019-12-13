@@ -34,7 +34,6 @@ class PrincipalInvitados extends Component {
             });
         this.setState({invitados});
         const fechaDesde = '2019-03-12';
-        console.log(fechaDesde.split('-'))
     }
 
 
