@@ -32,7 +32,8 @@ class Dashboard extends Component {
       hasImage: true,
       navbar: false,
       mini: false,
-      fixedClasses: "dropdown"
+      fixedClasses: "dropdown",
+      usuario: ""
     };
     this.handleNotificationClick = this.handleNotificationClick.bind(this);
     this.handleImageClick = this.handleImageClick.bind(this);
@@ -41,6 +42,13 @@ class Dashboard extends Component {
     this.handleNavbarClick = this.handleNavbarClick.bind(this);
     this.handleMiniClick = this.handleMiniClick.bind(this);
     this.handleFixedClick = this.handleFixedClick.bind(this);
+
+    
+    if(localStorage.getItem('tipoUsuario') === 'Root'){
+      this.state.usuario = '/root'
+    } else if(localStorage.getItem('tipoUsuario') === 'Administrador'){
+      this.state.usuario = '/admin'
+    }
   }
   componentDidMount() {
     this.setState({ _notificationSystem: this.refs.notificationSystem });
@@ -139,8 +147,7 @@ class Dashboard extends Component {
         return this.getRoutes(prop.views);
       }
 
-      if (prop.layout === "/root") {
-        console.log(localStorage.getItem('layout'));
+      if (prop.layout === this.state.usuario) {
         return (
           <Route
             path={prop.layout + prop.path}
@@ -167,6 +174,7 @@ class Dashboard extends Component {
           color={this.state.color}
           hasImage={this.state.hasImage}
           mini={this.state.mini}
+          layoutUser = { this.state.usuario }
         />
         <div
           className={

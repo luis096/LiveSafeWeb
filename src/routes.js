@@ -24,12 +24,21 @@ import LoginPage from 'views/Pages/LoginPage.jsx';
 import RegisterPage from 'views/Pages/RegisterPage.jsx';
 import LockScreenPage from 'views/Pages/LockScreenPage.jsx';
 
+//Root
 import PrincipalCountry from 'componente/Country/PrincipalCountry.js'
 import AltaCountry from 'componente/Country/AltaCountry.js'
 import EditarCountry from 'componente/Country/EditarCountry.js'
 import PrincipalAdministrador from 'componente/Administrador/PrincipalAdministrador.js'
 import AltaAdministrador from 'componente/Administrador/AltaAdministrador.js'
 import EditarAdministrador from 'componente/Administrador/EditarAdministrador.js'
+
+//Admin
+import PrincipalPropietario from 'componente/Propietario/PrincipalPropietario.js'
+import AltaPropietario from 'componente/Propietario/AltaPropietario.js'
+import EditarPropietario from 'componente/Propietario/EditarPropietario.js'
+import PrincipalServicio from 'componente/Servicio/PrincipalServicio.js'
+import AltaServicio from 'componente/Servicio/AltaServicio'
+import EditarServicio from 'componente/Servicio/EditarServicio.js'
 
 
 var routes = [
@@ -208,7 +217,7 @@ var routes = [
     },
     {
         path: '/calendar',
-        layout: '/example',
+        layout: '/root',
         name: 'Calendar',
         icon: 'pe-7s-date',
         component: Calendar
@@ -310,6 +319,68 @@ var routes = [
                 name: 'Editar Admin.',
                 mini: 'EC',
                 component: EditarAdministrador
+            }
+        ]
+    },
+    {
+        collapse: true,
+        layoutCollapse: '/admin',
+        path: '/admin',
+        name: 'Propietario',
+        state: 'openPropietario',
+        icon: 'pe-7s-users',
+        views: [
+            {
+                path: '/propietarios',
+                layout: '/admin',
+                name: 'Propietario',
+                mini: 'P',
+                component: PrincipalPropietario
+            },
+            {
+                path: '/altaPropietario',
+                layout: '/admin',
+                name: 'Nuevo Prop.',
+                mini: 'NP',
+                component: AltaPropietario
+            },
+            {
+                path: '/editarPropietario',
+                layout: '/admin',
+                name: 'Editar Prop.',
+                mini: 'EP',
+                component: EditarPropietario
+            }
+        ]
+    },
+    {
+        collapse: true,
+        layoutCollapse: '/admin',
+        path: '/admin',
+        name: 'Servicios',
+        state: 'openServicio',
+        icon: 'pe-7s-users',
+        views: [
+            {
+                path: '/servicios',
+                layout: '/admin',
+                name: 'Servicios',
+                mini: 'S',
+                component: PrincipalServicio
+            },
+            {
+                path: '/altaServicio',
+                layout: '/admin',
+                name: 'Nuevo Servicio',
+                mini: 'NS',
+                component: AltaServicio
+            },
+            {
+                path: '/editarServicio',
+                layout: '/admin',
+                name: 'Editar Servicio',
+                mini: 'ES',
+                component: EditarServicio
             }
         ]
     },

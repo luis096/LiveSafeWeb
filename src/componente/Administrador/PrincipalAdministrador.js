@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import Administrador from './Administrador';
 
 
-class PrincipalPropietario extends Component {
+class PrincipalAdministrador extends Component {
 
     constructor() {
         super();
@@ -113,4 +113,4 @@ class PrincipalPropietario extends Component {
     }
 }
 
-export default PrincipalPropietario;
+export default PrincipalAdministrador;

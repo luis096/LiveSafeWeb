@@ -34,11 +34,11 @@ class PagesHeader extends Component {
       >
         <Navbar.Header>
           <Navbar.Brand>
-            <NavLink to={"/dashboard"} className="nav-link">
+            <NavLink to={"/"} className="nav-link">
               {"LiveSafe"}
             </NavLink>
           </Navbar.Brand>
-          <Navbar.Toggle onClick={this.mobileSidebarToggle} />
+          {/* <Navbar.Toggle onClick={this.mobileSidebarToggle} /> */}
         </Navbar.Header>
         <Navbar.Collapse>
           <ul className="nav navbar-nav navbar-right">
