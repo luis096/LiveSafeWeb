@@ -41,6 +41,10 @@ import AltaServicio from 'componente/Servicio/AltaServicio'
 import EditarServicio from 'componente/Servicio/EditarServicio.js'
 
 
+import Reserva from './componente/Reserva/PrincipalReserva.js'
+import AltaReserva from './componente/Reserva/AltaReserva.js'
+
+
 var routes = [
     {
         path: '/dashboard',
@@ -48,6 +52,20 @@ var routes = [
         name: 'Dashboard',
         icon: 'pe-7s-graph',
         component: Dashboard
+    },
+    {
+        path: '/reserva',
+        layout: '/root',
+        name: 'Reserva',
+        icon: 'pe-7s-graph',
+        component: Reserva
+    },
+    {
+        path: '/altaReserva',
+        layout: '/root',
+        name: 'Nueva Reserva',
+        icon: 'pe-7s-graph',
+        component: AltaReserva
     },
     {
         collapse: true,

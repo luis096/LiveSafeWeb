@@ -13,10 +13,12 @@ class CalendarComponent extends Component {
     super(props);
     this.state = {
       events: events,
-      alert: null
+      alert: null,
+      day: props.day
     };
     this.hideAlert = this.hideAlert.bind(this);
   }
+
   selectedEvent(event) {
     alert(event.title);
   }
@@ -38,6 +40,7 @@ class CalendarComponent extends Component {
       )
     });
   }
+
   addNewEvent(e, slotInfo) {
     var newEvents = this.state.events;
     newEvents.push({
@@ -49,7 +52,10 @@ class CalendarComponent extends Component {
       alert: null,
       events: newEvents
     });
+    console.log(this.state.events);
+    console.log(newEvents);
   }
+
   eventColors(event, start, end, isSelected) {
     var backgroundColor = "rbc-event-";
     event.color
