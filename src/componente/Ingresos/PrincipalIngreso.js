@@ -221,12 +221,15 @@ class PrincialIngreso extends Component {
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label hidden={!this.state.observacion}>{this.state.mensaje2}</label>
-                                    <textarea className="form-control" placeholder="Observation"
-                                              value={this.state.descripcion}
-                                              onChange={this.ChangeDescripcion}
-                                              hidden={!this.state.observacion}
-                                    ></textarea>
+                                    <label hidden={!this.state.observacion}>{'this.state.mensaje2'}</label>
+                                    <div hidden={!this.state.observacion}>
+                                        <textarea className="form-control" placeholder="Observacion"
+                                                value={this.state.descripcion}
+                                                onChange={this.ChangeDescripcion}
+                                                hidden={!this.state.observacion}
+                                        ></textarea>
+                                    </div>
+                                    
                                 </div>
                             </Modal.Body>
                             <Modal.Footer>
@@ -245,7 +248,7 @@ class PrincialIngreso extends Component {
                                         <div hidden={this.state.invitadoTemp.length == 0}>
                                             <label className=''>{this.state.mensaje}</label>
                                             <Link
-                                                to={this.state.virgen ? ('/editarInvitado/' + this.state.invitadoTemp[1]) : this.registrar}
+                                                to={this.state.virgen ? ('editarInvitado/' + this.state.invitadoTemp[1]) : this.registrar}
                                                 variant="primary"
                                                 onClick={this.state.virgen ? this.autenticar : this.registrar}
                                                 class="btn btn-success">

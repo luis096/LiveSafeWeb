@@ -40,6 +40,14 @@ import PrincipalServicio from 'componente/Servicio/PrincipalServicio.js'
 import AltaServicio from 'componente/Servicio/AltaServicio'
 import EditarServicio from 'componente/Servicio/EditarServicio.js'
 
+//Encargado
+import PrincipalIngreso from 'componente/Ingresos/PrincipalIngreso.js'
+import PrincipalEgreso from 'componente/Egresos/PrincipalEgreso.js'
+import AltaInvitado from 'componente/Invitado/AltaInvitado.js'
+
+//Propietario
+import PrincipalInvitado from 'componente/Invitado/PrincipalInvitados.js'
+import EditarInvitado from 'componente/Invitado/EditarInvitado.js'
 
 var routes = [
     {
@@ -383,6 +391,48 @@ var routes = [
                 component: EditarServicio
             }
         ]
+    },
+    {
+        path: '/ingresos',
+        layout: '/encargado',
+        name: 'Ingresos',
+        icon: 'pe-7s-graph',
+        component: PrincipalIngreso
+    },
+    {
+        path: '/egresos',
+        layout: '/encargado',
+        name: 'Egresos',
+        icon: 'pe-7s-graph',
+        component: PrincipalEgreso
+    },
+    {
+        path: '/editarInvitado',
+        layout: '/encargado',
+        name: 'Editar Invitado',
+        icon: 'pe-7s-graph',
+        component: EditarInvitado
+    },
+    {
+        path: '/altaInvitado',
+        layout: '/encargado',
+        name: 'Nuevo Invitado',
+        icon: 'pe-7s-graph',
+        component: AltaInvitado
+    },
+    {
+        path: '/invitados',
+        layout: '/propietario',
+        name: 'Invitado',
+        icon: 'pe-7s-graph',
+        component: PrincipalInvitado
+    },
+    {
+        path: '/editarInvitado',
+        layout: '/propietario',
+        name: 'Editar Invitado',
+        icon: 'pe-7s-graph',
+        component: EditarInvitado
     },
 ];
 export default routes;

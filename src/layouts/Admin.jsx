@@ -48,6 +48,10 @@ class Dashboard extends Component {
       this.state.usuario = '/root'
     } else if(localStorage.getItem('tipoUsuario') === 'Administrador'){
       this.state.usuario = '/admin'
+    } else if(localStorage.getItem('tipoUsuario') === 'Encargado'){
+      this.state.usuario = '/encargado'
+    } else if(localStorage.getItem('tipoUsuario') === 'Propietario'){
+      this.state.usuario = '/propietario'
     }
   }
   componentDidMount() {

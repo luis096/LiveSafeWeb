@@ -45,7 +45,9 @@ ReactDOM.render(
             <Route path="/login" render={props=><AuthLayout {...props} />}/>
             <Route path="/admin" render={props=><AdminLayout {...props} />}/>
             <Route path="/root" render={props=><AdminLayout {...props} />}/>
-            <Route path="/d" render={props=><Login {...props} />}/>
+            <Route path="/encargado" render={props=><AdminLayout {...props} />}/>
+            <Route path="/propietario" render={props=><AdminLayout {...props} />}/>
+            <Route path="/loogin" render={props=><Login {...props} />}/>
             <Redirect from="/" to="/login"/>
         </Switch>
     </HashRouter>,
