@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { Database } from '../../config/config';
-import { Link } from 'react-router-dom';
 import Select from 'react-select';
-import Calendar from 'react-calendar'
-import moment from 'moment'
-import Calendario from '../../views/Calendar.jsx'
-
+import Calendario from '../../views/Calendar.jsx';
+import { events } from 'variables/Variables.jsx';
+import Button from 'components/CustomButton/CustomButton.jsx';
 
 class AltaReserva extends Component {
 
@@ -23,11 +21,24 @@ class AltaReserva extends Component {
             minTime: '07:00:00',
             maxTime: '23:00:00',
             data: [],
+            consulta: false,
             rescheduling: false
         };
         this.addReserva = this.addReserva.bind(this);
+        this.consultar = this.consultar.bind(this);
         this.ChangeSelect = this.ChangeSelect.bind(this);
         this.registrar = this.registrar.bind(this);
+        var today = new Date();
+        var y = today.getFullYear();
+        var m = today.getMonth();
+        var d = today.getDate();
+        events.push({
+            title: 'Prueba de carga',
+            start: new Date(y, m, d - 2, 10, 30),
+            end: new Date(y, m, d - 2, 11, 30),
+            allDay: false,
+            color: 'green'
+        });
 
     }
 
@@ -52,7 +63,7 @@ class AltaReserva extends Component {
                         {
                             fechaHora: date,
                             fechaHsHasta: null,
-                            tipo:  (localStorage.getItem('idPersona') === doc.data().IdPropietario.id)?1 :2
+                            tipo: (localStorage.getItem('idPersona') === doc.data().IdPropietario.id) ? 1 : 2
                         }
                     );
 
@@ -72,28 +83,29 @@ class AltaReserva extends Component {
 
     }
 
+    consultar(){
+        this.state.consulta = true;
+    }
+
     ChangeSelect(event) {
         this.setState({servicioSeleccionado: event});
     }
 
     registrar() {
-        console.log("Registrando....");
+        console.log('Registrando....');
     }
 
     render() {
-        const {
-            dateSelected,
-        } = this.state;
         return (
             <div className="col-12 ">
                 <div className="row">
                     <legend><h1> Registrar una reserva</h1></legend>
-                    <div className="col-md-6  flex-container form-group">
+                    <div className="col-md-6  flex-container form-group row-secction">
                         <label> Servicios del Country </label>
                         <Select
                             className="col-6"
                             classNamePrefix="select"
-                            isDisabled={false}
+                            isDisabled={this.state.consulta}
                             isLoading={false}
                             isClearable={true}
                             isSearchable={true}
@@ -101,31 +113,19 @@ class AltaReserva extends Component {
                             onChange={this.ChangeSelect.bind(this)}
                         />
                     </div>
-
-                    <div className="form-group izquierda">
-                        <button className="btn btn-primary boton" onClick={this.registrar}>Registrar</button>
-                        <Link to="/" type="button" className="btn btn-primary boton"
-                        >Volver</Link>
+                    <div className="row-secction">
+                        <Button bsStyle="primary" fill wd onClick={this.consultar} disabled={this.state.consulta}>
+                            Consultar
+                        </Button>
+                        <Button bsStyle="primary" fill wd onClick={this.reestablecerBusqueda}
+                                disabled={!this.state.consulta}>
+                            Reestablecer
+                        </Button>
                     </div>
                 </div>
-                {/*<div className='row row-section'>*/}
-                    {/*<div className='col-3'>*/}
-                        {/*<Calendar*/}
-                            {/*value={dateSelected ? dateSelected : new Date()}*/}
-                            {/*locale={'es'}*/}
-                            {/*onChange={value=> {*/}
-                                {/*this.setState({dateSelected: value});*/}
-                            {/*}}*/}
-                            {/*formatMonthYear={(locale, date)=>moment(date).locale('es').format('MMMM YYYY')}*/}
-                            {/*minDate={new Date()}*/}
-                        {/*/>*/}
-                    {/*</div>*/}
-
-                {/*</div>*/}
-                <div>
-                    <Calendario>
-
-                    </Calendario>
+                <div hidden={!this.state.consulta}>
+                    <h3>{this.state.servicioSeleccionado.label || ''}</h3>
+                    <Calendario/>
                 </div>
             </div>
         );

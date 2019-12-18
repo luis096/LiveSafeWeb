@@ -1,19 +1,3 @@
-/*!
-
-=========================================================
-* Light Bootstrap Dashboard PRO React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 //
 // //
 // // // For ExtendedForms view Select
@@ -60,13 +44,13 @@ var m = today.getMonth();
 var d = today.getDate();
 
 const events = [
-  {
-    title: "All Day Event",
-    allDay: true,
-    start: new Date(y, m, 1),
-    end: new Date(y, m, 1),
-    color: "default"
-  },
+  // {
+  //   title: "All Day Event",
+  //   allDay: false,
+  //   start: new Date(y, m, 1),
+  //   end: new Date(y, m, 1),
+  //   color: "default"
+  // },
   {
     title: "Meeting",
     start: new Date(y, m, d - 1, 10, 30),
@@ -81,13 +65,13 @@ const events = [
     allDay: false,
     color: "red"
   },
-  {
-    title: "Nud-pro Launch",
-    start: new Date(y, m, d - 2),
-    end: new Date(y, m, d - 2),
-    allDay: true,
-    color: "azure"
-  },
+  // {
+  //   title: "Nud-pro Launch",
+  //   start: new Date(y, m, d - 2),
+  //   end: new Date(y, m, d - 2),
+  //   allDay: false,
+  //   color: "azure"
+  // },
   {
     title: "Birthday Party",
     start: new Date(y, m, d + 1, 19, 0),
@@ -95,18 +79,18 @@ const events = [
     allDay: false,
     color: "azure"
   },
-  {
-    title: "Click for Creative Tim",
-    start: new Date(y, m, 21),
-    end: new Date(y, m, 22),
-    color: "orange"
-  },
-  {
-    title: "Click for Google",
-    start: new Date(y, m, 21),
-    end: new Date(y, m, 22),
-    color: "orange"
-  }
+  // {
+  //   title: "Click for Creative Tim",
+  //   start: new Date(y, m, 21),
+  //   end: new Date(y, m, 22),
+  //   color: "orange"
+  // },
+  // {
+  //   title: "Click for Google",
+  //   start: new Date(y, m, 21),
+  //   end: new Date(y, m, 22),
+  //   color: "orange"
+  // }
 ];
 
 //

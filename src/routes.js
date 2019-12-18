@@ -77,7 +77,7 @@ var routes = [
     },
     {
         collapse: true,
-        layoutCollapse: '/example',
+        layoutCollapse: '/root',
         path: '/components',
         name: 'Components',
         state: 'openComponents',

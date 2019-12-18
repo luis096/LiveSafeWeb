@@ -82,7 +82,7 @@ class CalendarComponent extends Component {
                 content={
                   <Calendar
                     selectable
-                    step={60}
+                    step={30}
                     localizer={localizer}
                     events={this.state.events}
                     defaultView="week"
