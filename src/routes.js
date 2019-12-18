@@ -49,6 +49,10 @@ import AltaInvitado from 'componente/Invitado/AltaInvitado.js'
 import PrincipalInvitado from 'componente/Invitado/PrincipalInvitados.js'
 import EditarInvitado from 'componente/Invitado/EditarInvitado.js'
 
+import Reserva from './componente/Reserva/PrincipalReserva.js'
+import AltaReserva from './componente/Reserva/AltaReserva.js'
+
+
 var routes = [
     {
         path: '/dashboard',
@@ -56,6 +60,20 @@ var routes = [
         name: 'Dashboard',
         icon: 'pe-7s-graph',
         component: Dashboard
+    },
+    {
+        path: '/reserva',
+        layout: '/root',
+        name: 'Reserva',
+        icon: 'pe-7s-graph',
+        component: Reserva
+    },
+    {
+        path: '/altaReserva',
+        layout: '/root',
+        name: 'Nueva Reserva',
+        icon: 'pe-7s-graph',
+        component: AltaReserva
     },
     {
         collapse: true,
