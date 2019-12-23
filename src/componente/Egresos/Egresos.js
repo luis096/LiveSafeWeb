@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
-import { Link } from 'react-router-dom';
 import ModalEliminar from '../ModalEliminar';
 // import moment from 'moment';
 
@@ -15,9 +14,7 @@ class Egresos extends Component {
         this.documento = props.documento;
         this.hora = props.hora;
         this.descripcion = props.descripcion;
-
         this.cancelar = this.cancelar.bind(this);
-
     }
 
     cancelar() {

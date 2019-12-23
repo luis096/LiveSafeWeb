@@ -3,8 +3,7 @@ import Select from 'react-select';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import { Link } from 'react-router-dom';
-// import ReactLightCalendar from '@lls/react-light-calendar';
-// import '@lls/react-light-calendar/dist/index.css';
+
 
 class EditarInvitado extends Component {
 

@@ -17,7 +17,7 @@ class HeaderLinks extends Component {
     constructor(){
         super();
         this.state={
-            redirect: false
+            redirect: 0
         };
         this.logout = this.logout.bind(this);
     }
@@ -27,12 +27,32 @@ class HeaderLinks extends Component {
         localStorage.removeItem('user');
         localStorage.removeItem('mail');
         this.setState({
-            redirect: true
+            redirect: 1
         })
     };
+
+    opcionRedirect(num) {
+        this.setState({
+            redirect: num
+        })
+    }
+
     renderRedirect = () => {
-        if (this.state.redirect) {
-            return <Redirect to='/' />
+        console.log("asd")
+        switch (this.state.redirect){
+            case 1:
+                console.log("1")
+                return <Redirect to='/' />;
+            case 2:
+                console.log("2")
+                return <Redirect to='/miPerfil' />;
+            case 3:
+                return <Redirect to='/miBarrio' />;
+            case 4:
+                return <Redirect to='/configuraciones' />;
+            default:
+                break;
+
         }
     };
 
@@ -107,14 +127,14 @@ class HeaderLinks extends Component {
             id="basic-nav-dropdown-3"
             bsClass="dropdown-with-icons dropdown"
           >
-            <MenuItem eventKey={4.1}>
-              <i className="pe-7s-mail" /> Mi Perfil
+            <MenuItem eventKey={4.1} >
+              <i className="pe-7s-mail"/> Mi Perfil
             </MenuItem>
-            <MenuItem eventKey={4.2}>
-              <i className="pe-7s-help1" /> Editar Perfil
+            <MenuItem eventKey={4.2} >
+              <i className="pe-7s-help1"/> Mi Barrio
             </MenuItem>
             <MenuItem eventKey={4.3}>
-              <i className="pe-7s-tools" /> Configuraciones
+              <i className="pe-7s-tools"/> Configuraciones
             </MenuItem>
             <MenuItem divider />
               {this.renderRedirect()}

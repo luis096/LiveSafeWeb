@@ -15,6 +15,8 @@ import { Database, Firebase } from '../../config/config';
 import firebase from 'firebase';
 import { Redirect } from "react-router-dom";
 import Spinner from 'react-spinner-material';
+import AuthNavbar from "components/Navbars/AuthNavbar.jsx";
+import bgImage from "../../assets/img/fondoLogin.jpg";
 
 class LoginPage extends Component {
     constructor(props) {
@@ -105,46 +107,63 @@ class LoginPage extends Component {
         if (this.log) {
             if (!user) {
                 return (
-                    <Grid>
-                        <Row>
-                            <Col>
-                                <form>
-                                    <Card
-                                        hidden={this.state.cardHidden}
-                                        textCenter
-                                        content={
-                                            <div>
-                                                <FormGroup>
-                                                    <img src={logo} width="190" height="150"></img>
-                                                </FormGroup>
-                                                <FormGroup>
-                                                    <ControlLabel>Email</ControlLabel>
-                                                    <FormControl placeholder="Ingrese mail" type="email"
-                                                                 value={this.state.email}
-                                                                 onChange={this.ChangeEmail}/>
-                                                </FormGroup>
-                                                <FormGroup>
-                                                    <ControlLabel>Contraseña</ControlLabel>
-                                                    <FormControl placeholder="Contraseña" type="password"
-                                                                 value={this.state.password}
-                                                                 onChange={this.ChangePass}
-                                                                 autoComplete="off"/>
-                                                </FormGroup>
-                                            </div>
-                                        }
-                                        legend={
-                                            <Button bsStyle="info" fill wd onClick={()=> {
-                                                this.onButtonPress();
-                                            }}>
-                                                Iniciar Sesion
-                                            </Button>
-                                        }
-                                        ftTextCenter
-                                    />
-                                </form>
-                            </Col>
-                        </Row>
-                    </Grid>
+                    <div>
+                        <AuthNavbar />
+                        <div className="wrapper wrapper-full-page">
+                            <div
+                                className={"full-page login-page"}
+                                data-color="black"
+                                data-image={bgImage}
+                            >
+                                <div className="content">
+                                    <Grid>
+                                        <Row>
+                                            <Col>
+                                                <form>
+                                                    <Card
+                                                        hidden={this.state.cardHidden}
+                                                        textCenter
+                                                        content={
+                                                            <div>
+                                                                <FormGroup>
+                                                                    <img src={logo} width="190" height="150"></img>
+                                                                </FormGroup>
+                                                                <FormGroup>
+                                                                    <ControlLabel>Email</ControlLabel>
+                                                                    <FormControl placeholder="Ingrese mail" type="email"
+                                                                                 value={this.state.email}
+                                                                                 onChange={this.ChangeEmail}/>
+                                                                </FormGroup>
+                                                                <FormGroup>
+                                                                    <ControlLabel>Contraseña</ControlLabel>
+                                                                    <FormControl placeholder="Contraseña" type="password"
+                                                                                 value={this.state.password}
+                                                                                 onChange={this.ChangePass}
+                                                                                 autoComplete="off"/>
+                                                                </FormGroup>
+                                                            </div>
+                                                        }
+                                                        legend={
+                                                            <Button bsStyle="info" fill wd onClick={()=> {
+                                                                this.onButtonPress();
+                                                            }}>
+                                                                Iniciar Sesion
+                                                            </Button>
+                                                        }
+                                                        ftTextCenter
+                                                    />
+                                                </form>
+                                            </Col>
+                                        </Row>
+                                    </Grid>
+                                </div>
+                                <div
+                                    className="full-page-background"
+                                    style={{ backgroundImage: "url(" + bgImage + ")" }}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 );
             }
             else {

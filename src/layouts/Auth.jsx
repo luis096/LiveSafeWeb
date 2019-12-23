@@ -21,7 +21,7 @@ class Pages extends Component {
     var pageClass = "";
     switch (this.props.location.pathname) {
       case "/login":
-        pageClass = " login-page";
+        pageClass = "login-page";
         break;
       case "/auth/register-page":
         pageClass = " register-page";
@@ -66,7 +66,6 @@ class Pages extends Component {
             <div className="content">
               <LoginPage></LoginPage>
             </div>
-            {/*<Footer transparent />*/}
             <div
               className="full-page-background"
               style={{ backgroundImage: "url(" + bgImage + ")" }}

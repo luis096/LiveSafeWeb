@@ -22,7 +22,7 @@ class PrincipalReserva extends Component {
         const {reservas} = this.state;
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
         .collection('Propietarios').doc(localStorage.getItem('idPersona'))
-        .collection('Reservas').get().then(querySnapshot=> {
+        .collection('Reservas').orderBy('FechaDesde', 'desc').get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
                     reservas.push(
                         [doc.data(), doc.id]
@@ -42,7 +42,6 @@ class PrincipalReserva extends Component {
             }
         });
         this.setState({reservas});
-        this.render();
     }
 
     render() {
@@ -62,28 +61,32 @@ class PrincipalReserva extends Component {
                             <tr>
                                 <th scope="col">Nombre</th>
                                 <th scope="col">Estado</th>
-                                <th scope="col">Hora</th>
-                                <th scope="col">Editar</th>
-                                <th scope="col">Eliminar</th>
+                                <th scope="col">Dia</th>
+                                <th scope="col">Hora desde</th>
+                                <th scope="col">Hora hasta</th>
+                                <th scope="col">Visualizar</th>
+                                <th scope="col">Cancelar</th>
                             </tr>
                             </thead>
 
                             <tbody>
                             {
                                 this.state.reservas.map(res=> {
+                                        var desde = new Date(res[0].FechaDesde.seconds * 1000);
+                                        var hasta = new Date(res[0].FechaHasta.seconds * 1000);
                                         return (
-                                            <Reserva
-                                                idReserva={res[1]}
-                                                nombre={res[0].Nombre}
-                                                hora={res[0].Hora}
-                                                estado={res[0].Estado}
-                                                act={this.actualizar}
-                                            >
-                                            </Reserva>
+                                                <tr className="table-light">
+                                                    <th scope="row">{res[0].Nombre}</th>
+                                                    <td>{'Pendiente'}</td>
+                                                    <td>{desde.toLocaleDateString()}</td>
+                                                    <td>{desde.toLocaleTimeString()}</td>
+                                                    <td>{hasta.toLocaleTimeString()}</td>
+                                                    <td>{'Ver'}</td>
+                                                    <td><button type="button" className="btn btn-primary"
+                                                    >Cancelar</button></td>
+                                                </tr>
                                         );
-                                    }
-                                )
-
+                                    })
                             }
                             </tbody>
                         </table>

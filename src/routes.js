@@ -439,15 +439,15 @@ var routes = [
             {
                 path: '/invitados',
                 layout: '/propietario',
-                name: 'Invitado',
-                icon: 'pe-7s-graph',
+                name: 'Mis Invitados',
+                mini: 'MI',
                 component: PrincipalInvitado
             },
             {
                 path: '/editarInvitado',
                 layout: '/propietario',
                 name: 'Editar Invitado',
-                icon: 'pe-7s-graph',
+                mini: 'EI',
                 component: EditarInvitado
             },
         ]

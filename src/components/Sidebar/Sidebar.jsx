@@ -188,29 +188,29 @@ class Sidebar extends Component {
               >
                 <span>
                   {localStorage.getItem("mail")}
-                  <b
-                    className={
-                      this.state.openAvatar ? "caret rotate-180" : "caret"
-                    }
-                  />
+                  {/*<b*/}
+                    {/*className={*/}
+                      {/*this.state.openAvatar ? "caret rotate-180" : "caret"*/}
+                    {/*}*/}
+                  {/*/>*/}
                 </span>
               </a>
-              <Collapse in={this.state.openAvatar}>
-                <ul className="nav">
-                  <li>
-                    <a href="/miPerfil">
-                      <span className="sidebar-mini">MP</span>
-                      <span className="sidebar-normal">Mi Perfil</span>
-                    </a>
-                  </li>
-                  {/* <li>
-                    <a href="#pablo" onClick={e => e.preventDefault()}>
-                      <span className="sidebar-mini">EP</span>
-                      <span className="sidebar-normal">Editar Perfil</span>
-                    </a>
-                  </li> */}
-                </ul>
-              </Collapse>
+              {/*<Collapse in={this.state.openAvatar}>*/}
+                {/*<ul className="nav">*/}
+                  {/*<li>*/}
+                    {/*<a href="/">*/}
+                      {/*<span className="sidebar-mini">MP</span>*/}
+                      {/*<span className="sidebar-normal">Mi Perfil</span>*/}
+                    {/*</a>*/}
+                  {/*</li>*/}
+                  {/*/!* <li>*/}
+                    {/*<a href="#pablo" onClick={e => e.preventDefault()}>*/}
+                      {/*<span className="sidebar-mini">EP</span>*/}
+                      {/*<span className="sidebar-normal">Editar Perfil</span>*/}
+                    {/*</a>*/}
+                  {/*</li> *!/*/}
+                {/*</ul>*/}
+              {/*</Collapse>*/}
             </div>
           </div>
           <ul className="nav">

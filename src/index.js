@@ -12,10 +12,11 @@ import 'assets/css/pe-icon-7-stroke.css';
 
 import AuthLayout from 'layouts/Auth.jsx';
 // import AdminLayout from "layouts/Admin.jsx";
-import LoginLayout from 'layouts/Login.jsx';
+// import LoginLayout from 'layouts/Login.jsx';
 import DocumentationLayout from 'layouts/Components/Components.jsx';
 
 import AdminLayout from 'layouts/Admin.jsx';
+import LoginLayout from 'views/Pages/LoginPage.jsx'
 import RootLayout from 'layouts/Root.jsx';
 import EncargadoLayout from 'layouts/Encargado.jsx';
 import PropietarioLayout from 'layouts/Propietario.jsx';
@@ -42,11 +43,13 @@ hist.listen(location=> {
 ReactDOM.render(
     <HashRouter>
         <Switch>
-            <Route path="/login" render={props=><AuthLayout {...props} />}/>
+            <Route path="/login" render={props=><LoginLayout {...props} />}/>
             <Route path="/admin" render={props=><AdminLayout {...props} />}/>
             <Route path="/root" render={props=><AdminLayout {...props} />}/>
+            <Route path="/miPerfil" render={props=><Invitado {...props} />}/>
             <Route path="/encargado" render={props=><AdminLayout {...props} />}/>
             <Route path="/propietario" render={props=><AdminLayout {...props} />}/>
+            <Route path="/invitado/:id" render={props=><Invitado {...props} />}/>
             <Route path="/loogin" render={props=><Login {...props} />}/>
             <Redirect from="/" to="/login"/>
         </Switch>
