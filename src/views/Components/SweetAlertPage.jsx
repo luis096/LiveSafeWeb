@@ -1,19 +1,4 @@
-/*!
 
-=========================================================
-* Light Bootstrap Dashboard PRO React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 /*eslint-disable*/
 import React, { Component } from "react";
 import { Grid, Row, Col } from "react-bootstrap";
@@ -41,7 +26,7 @@ class SweetAlertPage extends Component {
     this.setState({
       alert: (
         <SweetAlert
-          style={{ display: "block", marginTop: "-100px" }}
+          style={{ display: "block", marginTop: "-100px", position: "center"  }}
           title="Here's a message!"
           onConfirm={() => this.hideAlert()}
           onCancel={() => this.hideAlert()}
@@ -54,7 +39,7 @@ class SweetAlertPage extends Component {
     this.setState({
       alert: (
         <SweetAlert
-          style={{ display: "block", marginTop: "-100px" }}
+          style={{ display: "block", marginTop: "-100px", position: "center"  }}
           title="Here's a message!"
           onConfirm={() => this.hideAlert()}
           onCancel={() => this.hideAlert()}
@@ -70,7 +55,7 @@ class SweetAlertPage extends Component {
       alert: (
         <SweetAlert
           success
-          style={{ display: "block", marginTop: "-100px" }}
+          style={{ display: "block", marginTop: "-100px", position: "center"  }}
           title="Good job!"
           onConfirm={() => this.hideAlert()}
           onCancel={() => this.hideAlert()}
@@ -85,7 +70,7 @@ class SweetAlertPage extends Component {
     this.setState({
       alert: (
         <SweetAlert
-          style={{ display: "block", marginTop: "-100px" }}
+          style={{ display: "block", marginTop: "-100px", position: "center"  }}
           title="HTML example"
           onConfirm={() => this.hideAlert()}
           onCancel={() => this.hideAlert()}
@@ -102,7 +87,7 @@ class SweetAlertPage extends Component {
       alert: (
         <SweetAlert
           warning
-          style={{ display: "block", marginTop: "-100px" }}
+          style={{ display: "block", marginTop: "-100px", position: "center"  }}
           title="Are you sure?"
           onConfirm={() => this.successDelete()}
           onCancel={() => this.hideAlert()}
@@ -122,7 +107,7 @@ class SweetAlertPage extends Component {
       alert: (
         <SweetAlert
           warning
-          style={{ display: "block", marginTop: "-100px" }}
+          style={{ display: "block", marginTop: "-100px", position: "center"  }}
           title="Are you sure?"
           onConfirm={() => this.successDelete()}
           onCancel={() => this.cancelDetele()}
@@ -141,7 +126,7 @@ class SweetAlertPage extends Component {
     this.setState({
       alert: (
         <SweetAlert
-          style={{ display: "block", marginTop: "-100px" }}
+          style={{ display: "block", marginTop: "-100px", position: "center"  }}
           title="Auto close alert!"
           onConfirm={() => this.hideAlert()}
           showConfirm={false}
@@ -158,7 +143,7 @@ class SweetAlertPage extends Component {
         <SweetAlert
           input
           showCancel
-          style={{ display: "block", marginTop: "-100px" }}
+          style={{ display: "block", marginTop: "-100px", position: "center"  }}
           title="Input something"
           onConfirm={e => this.inputConfirmAlert(e)}
           onCancel={() => this.hideAlert()}
@@ -177,7 +162,7 @@ class SweetAlertPage extends Component {
     this.setState({
       alert: (
         <SweetAlert
-          style={{ display: "block", marginTop: "-100px" }}
+          style={{ display: "block", marginTop: "-100px", position: "center"  }}
           onConfirm={() => this.hideAlert()}
           onCancel={() => this.hideAlert()}
           confirmBtnBsStyle="info"
@@ -195,7 +180,7 @@ class SweetAlertPage extends Component {
       alert: (
         <SweetAlert
           success
-          style={{ display: "block", marginTop: "-100px" }}
+          style={{ display: "block", marginTop: "-100px", position: "center"  }}
           title="Deleted!"
           onConfirm={() => this.hideAlert()}
           onCancel={() => this.hideAlert()}
@@ -211,7 +196,7 @@ class SweetAlertPage extends Component {
       alert: (
         <SweetAlert
           danger
-          style={{ display: "block", marginTop: "-100px" }}
+          style={{ display: "block", marginTop: "-100px", position: "center"  }}
           title="Cancelled"
           onConfirm={() => this.hideAlert()}
           onCancel={() => this.hideAlert()}

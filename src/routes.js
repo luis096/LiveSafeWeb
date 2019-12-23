@@ -43,13 +43,14 @@ import EditarServicio from 'componente/Servicio/EditarServicio.js'
 //Encargado
 import PrincipalIngreso from 'componente/Ingresos/PrincipalIngreso.js'
 import PrincipalEgreso from 'componente/Egresos/PrincipalEgreso.js'
+
 import AltaInvitado from 'componente/Invitado/AltaInvitado.js'
 
 //Propietario
 import PrincipalInvitado from 'componente/Invitado/PrincipalInvitados.js'
 import EditarInvitado from 'componente/Invitado/EditarInvitado.js'
 
-import Reserva from './componente/Reserva/PrincipalReserva.js'
+import PrincipalReserva from './componente/Reserva/PrincipalReserva.js'
 import AltaReserva from './componente/Reserva/AltaReserva.js'
 
 
@@ -62,22 +63,8 @@ var routes = [
         component: Dashboard
     },
     {
-        path: '/reserva',
-        layout: '/root',
-        name: 'Reserva',
-        icon: 'pe-7s-graph',
-        component: Reserva
-    },
-    {
-        path: '/altaReserva',
-        layout: '/root',
-        name: 'Nueva Reserva',
-        icon: 'pe-7s-graph',
-        component: AltaReserva
-    },
-    {
         collapse: true,
-        layoutCollapse: '/root',
+        layoutCollapse: '/propietario',
         path: '/components',
         name: 'Components',
         state: 'openComponents',
@@ -106,14 +93,14 @@ var routes = [
             },
             {
                 path: '/sweet-alert',
-                layout: '/admin',
+                layout: '/propietario',
                 name: 'Sweet Alert',
                 mini: 'SA',
                 component: SweetAlert
             },
             {
                 path: '/notifications',
-                layout: '/admin',
+                layout: '/propietario',
                 name: 'Notifications',
                 mini: 'N',
                 component: Notifications
@@ -243,14 +230,14 @@ var routes = [
     },
     {
         path: '/calendar',
-        layout: '/root',
+        layout: '/example',
         name: 'Calendar',
         icon: 'pe-7s-date',
         component: Calendar
     },
     {
         collapse: true,
-        layoutCollapse: '/root',
+        layoutCollapse: '/encargado',
         path: '/pages',
         name: 'Pages',
         state: 'openPages',
@@ -258,7 +245,7 @@ var routes = [
         views: [
             {
                 path: '/user-page',
-                layout: '/root',
+                layout: '/encargado',
                 name: 'User Page',
                 mini: 'UP',
                 component: UserPage
@@ -411,6 +398,61 @@ var routes = [
         ]
     },
     {
+        collapse: true,
+        layoutCollapse: '/propietario',
+        path: '/propietario',
+        name: 'Reservas',
+        state: 'openReserva',
+        icon: 'pe-7s-users',
+        views: [
+            {
+                path: '/misReservas',
+                layout: '/propietario',
+                name: 'Mis Reservas',
+                mini: 'MR',
+                component: PrincipalReserva
+            },
+            {
+                path: '/altaReserva',
+                layout: '/propietario',
+                name: 'Nueva Reserva',
+                mini: 'NR',
+                component: AltaReserva
+            }
+        ]
+    },
+    {
+        collapse: true,
+        layoutCollapse: '/propietario',
+        path: '/propietario',
+        name: 'Invitados',
+        state: 'openInvitadoProp',
+        icon: 'pe-7s-users',
+        views: [
+            {
+                path: '/altaInvitado',
+                layout: '/propietario',
+                name: 'Nuevo Invitado',
+                mini: 'NI',
+                component: AltaInvitado
+            },
+            {
+                path: '/invitados',
+                layout: '/propietario',
+                name: 'Invitado',
+                icon: 'pe-7s-graph',
+                component: PrincipalInvitado
+            },
+            {
+                path: '/editarInvitado',
+                layout: '/propietario',
+                name: 'Editar Invitado',
+                icon: 'pe-7s-graph',
+                component: EditarInvitado
+            },
+        ]
+    },
+    {
         path: '/ingresos',
         layout: '/encargado',
         name: 'Ingresos',
@@ -437,20 +479,6 @@ var routes = [
         name: 'Nuevo Invitado',
         icon: 'pe-7s-graph',
         component: AltaInvitado
-    },
-    {
-        path: '/invitados',
-        layout: '/propietario',
-        name: 'Invitado',
-        icon: 'pe-7s-graph',
-        component: PrincipalInvitado
-    },
-    {
-        path: '/editarInvitado',
-        layout: '/propietario',
-        name: 'Editar Invitado',
-        icon: 'pe-7s-graph',
-        component: EditarInvitado
-    },
+    }
 ];
 export default routes;

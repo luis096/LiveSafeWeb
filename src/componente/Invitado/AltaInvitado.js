@@ -165,7 +165,7 @@ class AltaInvitado extends Component {
         if (true) {
             this.addInvitado();
             if (this.esPropietario) {
-                this.props.cerrar();
+                console.log('ok')
             } else {
                 this.registrarIngreso();
             }

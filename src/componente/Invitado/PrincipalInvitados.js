@@ -60,33 +60,11 @@ class PrincipalInvitados extends Component {
                     <div className="col-5">
                         <label className="h2">Invitados</label>
                     </div>
-                    <div className="col-5 izquierda">
-                        {/*<input className="mr-sm-2 borde-button" */}
-                               {/*placeholder="Buscar"/>*/}
-                        <button type="button" className="btn btn-primary"
-                                onClick={handleShow}
-                        >Nuevo Invitado
-                        </button>
-                        <Modal show={show} onHide={handleClose}
-                               size="lg"
-                               aria-labelledby="contained-modal-title-vcenter"
-                               centered>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Nuevo Invitado</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body><AltaInvitado cerrar={handleClose}></AltaInvitado> </Modal.Body>
-                        </Modal>
-
-                    </div>
-
                 </div>
 
                 <div className="row">
-
                     <div className="col-md-12 ">
-
                         <br></br>
-
                         <table className="table table-hover  ">
                             <thead>
                             <tr>

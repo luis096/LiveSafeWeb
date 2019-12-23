@@ -198,23 +198,17 @@ class Sidebar extends Component {
               <Collapse in={this.state.openAvatar}>
                 <ul className="nav">
                   <li>
-                    <a href="#pablo" onClick={e => e.preventDefault()}>
+                    <a href="/miPerfil">
                       <span className="sidebar-mini">MP</span>
                       <span className="sidebar-normal">Mi Perfil</span>
                     </a>
                   </li>
-                  <li>
+                  {/* <li>
                     <a href="#pablo" onClick={e => e.preventDefault()}>
                       <span className="sidebar-mini">EP</span>
                       <span className="sidebar-normal">Editar Perfil</span>
                     </a>
-                  </li>
-                  {/*<li>*/}
-                    {/*<a href="#pablo" onClick={e => e.preventDefault()}>*/}
-                      {/*<span className="sidebar-mini">S</span>*/}
-                      {/*<span className="sidebar-normal">Settings</span>*/}
-                    {/*</a>*/}
-                  {/*</li>*/}
+                  </li> */}
                 </ul>
               </Collapse>
             </div>

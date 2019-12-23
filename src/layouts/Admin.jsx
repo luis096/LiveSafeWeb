@@ -195,7 +195,7 @@ class Dashboard extends Component {
             navbar={this.state.navbar}
           />
           <Switch>{this.getRoutes(routes)}</Switch>
-          <Footer fluid/>
+          {/* <Footer fluid/> */}
           <FixedPlugin
             handleImageClick={this.handleImageClick}
             handleColorClick={this.handleColorClick}

@@ -21,7 +21,8 @@ class PrincipalReserva extends Component {
     async componentDidMount() {
         const {reservas} = this.state;
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Reservas').get().then(querySnapshot=> {
+        .collection('Propietarios').doc(localStorage.getItem('idPersona'))
+        .collection('Reservas').get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
                     reservas.push(
                         [doc.data(), doc.id]
@@ -69,13 +70,13 @@ class PrincipalReserva extends Component {
 
                             <tbody>
                             {
-                                this.state.reservas.map(reservas=> {
+                                this.state.reservas.map(res=> {
                                         return (
                                             <Reserva
-                                                idReserva={reservas[1]}
-                                                nombre={reservas[0].Nombre}
-                                                hora={reservas[0].Hora}
-                                                estado={reservas[0].Estado}
+                                                idReserva={res[1]}
+                                                nombre={res[0].Nombre}
+                                                hora={res[0].Hora}
+                                                estado={res[0].Estado}
                                                 act={this.actualizar}
                                             >
                                             </Reserva>
