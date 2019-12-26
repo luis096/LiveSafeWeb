@@ -40,16 +40,16 @@ class PagesHeader extends Component {
           </Navbar.Brand>
           {/* <Navbar.Toggle onClick={this.mobileSidebarToggle} /> */}
         </Navbar.Header>
-        <Navbar.Collapse>
-          <ul className="nav navbar-nav navbar-right">
-            <li className={this.activeRoute("lock-screen-page")}>
-              <NavLink to={"/root/country"} className="nav-link">
-                <i className="fa fa-user-circle-o" />
-                <p>Invitado</p>
-              </NavLink>
-            </li>
-          </ul>
-        </Navbar.Collapse>
+        {/*<Navbar.Collapse>*/}
+          {/*<ul className="nav navbar-nav navbar-right">*/}
+            {/*<li className={this.activeRoute("lock-screen-page")}>*/}
+              {/*<NavLink to={"/root/country"} className="nav-link">*/}
+                {/*<i className="fa fa-user-circle-o" />*/}
+                {/*<p>Invitado</p>*/}
+              {/*</NavLink>*/}
+            {/*</li>*/}
+          {/*</ul>*/}
+        {/*</Navbar.Collapse>*/}
       </Navbar>
     );
   }

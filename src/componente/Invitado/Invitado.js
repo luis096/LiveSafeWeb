@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
-import ModalEliminar from '../ModalEliminar';
 import { NavLink } from 'react-router-dom';
 
 class Invitado extends Component {

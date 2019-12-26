@@ -20,7 +20,7 @@ import LoginLayout from 'views/Pages/LoginPage.jsx'
 import RootLayout from 'layouts/Root.jsx';
 import EncargadoLayout from 'layouts/Encargado.jsx';
 import PropietarioLayout from 'layouts/Propietario.jsx';
-import Invitado from 'layouts/Invitado-Evento.jsx';
+import Invitado from 'componente/InvitadoEvento/InvitadoEvento.js';
 import Login from 'layouts/Login.jsx';
 
 const hist = createBrowserHistory();
@@ -50,7 +50,6 @@ ReactDOM.render(
             <Route path="/encargado" render={props=><AdminLayout {...props} />}/>
             <Route path="/propietario" render={props=><AdminLayout {...props} />}/>
             <Route path="/invitado/:id" render={props=><Invitado {...props} />}/>
-            <Route path="/loogin" render={props=><Login {...props} />}/>
             <Redirect from="/" to="/login"/>
         </Switch>
     </HashRouter>,

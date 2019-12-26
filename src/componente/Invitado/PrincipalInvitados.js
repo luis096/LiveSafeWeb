@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import Invitado from './Invitado';
-import AltaInvitado from './AltaInvitado';
-import {Modal} from 'react-bootstrap';
-
 
 class PrincipalInvitados extends Component {
 
@@ -33,7 +30,6 @@ class PrincipalInvitados extends Component {
                 });
             });
         this.setState({invitados});
-        const fechaDesde = '2019-03-12';
     }
 
 
@@ -49,10 +45,6 @@ class PrincipalInvitados extends Component {
     }
 
     render() {
-        const {show} = this.state;
-
-        const handleClose = ()=>this.setState({show: false});
-        const handleShow = ()=>this.setState({show: true});
         return (
             <div className="col-12">
 
@@ -94,18 +86,11 @@ class PrincipalInvitados extends Component {
                                             </Invitado>
                                         );
                                     }
-                                )
-
-                            }
-
+                                )}
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div>
-                    < hr className="my-4"></hr>
-                </div>
-                <div className="espacio"></div>
             </div>
         );
     }

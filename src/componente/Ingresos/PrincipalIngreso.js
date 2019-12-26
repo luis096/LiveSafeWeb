@@ -75,7 +75,7 @@ class PrincialIngreso extends Component {
     async buscar() {
         await this.buscarPersona();
         if (this.state.invitadoTemp.length == 0) {
-            this.setState({mensaje: 'La persona no se encuentra registrada en el sistema. Que rebote'});
+            this.setState({mensaje: 'La persona no se encuentra registrada en el sistema.'});
         }
         await this.buscarEnIngresos();
         this.setState({busqueda: false});
