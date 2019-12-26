@@ -177,6 +177,8 @@ class AltaReserva extends Component {
         var newEvents = this.state.events;
         var datos = {
             Nombre: e,
+            Servicio: this.state.servicioSeleccionado.label,
+            Estado: 'Pendiente',
             FechaHasta: slotInfo.end,
             FechaDesde: slotInfo.start,
             IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + localStorage.getItem('idPersona')),

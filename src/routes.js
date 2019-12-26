@@ -52,6 +52,7 @@ import EditarInvitado from 'componente/Invitado/EditarInvitado.js'
 
 import PrincipalReserva from './componente/Reserva/PrincipalReserva.js'
 import AltaReserva from './componente/Reserva/AltaReserva.js'
+import VisualizarReserva from './componente/Reserva/VisualizarReserva.js'
 
 
 var routes = [
@@ -64,7 +65,7 @@ var routes = [
     },
     {
         collapse: true,
-        layoutCollapse: '/propietario',
+        layoutCollapse: '/qwe',
         path: '/components',
         name: 'Components',
         state: 'openComponents',
@@ -418,6 +419,13 @@ var routes = [
                 name: 'Nueva Reserva',
                 mini: 'NR',
                 component: AltaReserva
+            },
+            {
+                path: '/visualizarReserva',
+                layout: '/propietario',
+                name: 'Ver Reserva',
+                mini: 'VR',
+                component: VisualizarReserva
             }
         ]
     },

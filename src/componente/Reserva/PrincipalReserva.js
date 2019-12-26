@@ -74,14 +74,16 @@ class PrincipalReserva extends Component {
                                 this.state.reservas.map(res=> {
                                         var desde = new Date(res[0].FechaDesde.seconds * 1000);
                                         var hasta = new Date(res[0].FechaHasta.seconds * 1000);
+                                        var editar = '/propietario/visualizarReserva/' + res[1];
                                         return (
                                                 <tr className="table-light">
                                                     <th scope="row">{res[0].Nombre}</th>
                                                     <td>{'Pendiente'}</td>
                                                     <td>{desde.toLocaleDateString()}</td>
                                                     <td>{desde.toLocaleTimeString()}</td>
-                                                    <td>{hasta.toLocaleTimeString()}</td>
-                                                    <td>{'Ver'}</td>
+                                                    <td>{hasta.toLocaleTimeString()}</td> 
+                                                    <td><Link to={editar} type="button" className="btn btn-primary"
+                                                        >Visualizar</Link></td>
                                                     <td><button type="button" className="btn btn-primary"
                                                     >Cancelar</button></td>
                                                 </tr>
