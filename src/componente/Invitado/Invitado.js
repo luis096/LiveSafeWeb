@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import { NavLink } from 'react-router-dom';
+import Button from 'components/CustomButton/CustomButton.jsx';
+
 
 class Invitado extends Component {
 
@@ -39,20 +41,15 @@ class Invitado extends Component {
                 <td>{this.nombre}, {this.apellido}</td>
                 <td>{this.grupo}</td>
                 <td> {this.estado ? 'Activo' : 'Inactivo'}</td>
+                <td><Button bsStyle="info" fill wd disabled={!this.nombre}>Invitar</Button></td>
                 <td><NavLink
                       to={this.urlEditar}
                       className="nav-link"
                       activeClassName="active"
                     >
-                      <i className='pe-7s-pen'/>
+                    <Button bsStyle="warning" fill wd disabled={!this.nombre}>Editar</Button>
                     </NavLink></td>
-                <td><NavLink
-                      to={this.urlEditar}
-                      className="nav-link"
-                      activeClassName="active"
-                    >
-                      <i className='pe-7s-trash'/>
-                    </NavLink></td>
+                <td><Button bsStyle="danger" fill wd>Eliminar</Button></td>
             </tr>
 
 

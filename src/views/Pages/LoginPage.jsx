@@ -17,6 +17,7 @@ import { Redirect } from "react-router-dom";
 import Spinner from 'react-spinner-material';
 import AuthNavbar from "components/Navbars/AuthNavbar.jsx";
 import bgImage from "../../assets/img/fondoLogin.jpg";
+import {tipoDocumento} from '../../variables/Variables.jsx';
 
 class LoginPage extends Component {
     constructor(props) {
@@ -78,6 +79,16 @@ class LoginPage extends Component {
         this.log = true;
     }
 
+    setTipoDocumento(){
+        Database.collection('TipoDocumento').get().then(querySnapshot=> {
+            querySnapshot.forEach(doc=> {
+                tipoDocumento.push(
+                    {value: doc.id, label: doc.data().Nombre}
+                );
+            });
+        });
+    }
+
     async onButtonPress() {
         await this.obtenerValoresUsuario();
         if (this.state.tipo) {
@@ -90,6 +101,7 @@ class LoginPage extends Component {
                     this.setState({resultado: 'Fallo de autentificacion'});
                 });
         }
+        this.setTipoDocumento();
     }
 
     componentDidMount() {

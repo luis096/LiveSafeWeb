@@ -3,7 +3,8 @@ import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { Link } from 'react-router-dom';
-
+import { Modal, Alert, Grid, Row, Col } from 'react-bootstrap';
+import Select from 'react-select';
 
 class VisualizarReserva extends Component {
 
@@ -15,10 +16,23 @@ class VisualizarReserva extends Component {
             desde: null,
             hasta: null,
             invitadosConfirmados: [],
-            invitadosPendientes: []
+            invitadosPendientes: [],
+            idInvitadoCreado: null,
+            showModal: false,
+            nombre: '',
+            apellido: '',
+            documento: '',
+            tipoDocumento: '',
+            tipoD: []
         };
         const url = this.props.location.pathname.split('/');
         this.idReserva = url[url.length - 1];
+        this.modalAgregarInvitado = this.modalAgregarInvitado.bind(this);
+        this.ChangeNombre = this.ChangeNombre.bind(this);
+        this.ChangeApellido = this.ChangeApellido.bind(this);
+        this.ChangeDocumento = this.ChangeDocumento.bind(this);
+        this.ChangeSelect = this.ChangeSelect.bind(this);
+        this.agregarNuevoInvitado = this.agregarNuevoInvitado.bind(this);
         this.conexion = Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').doc(localStorage.getItem('idPersona'))
             .collection('Reservas').doc(this.idReserva);
@@ -71,18 +85,75 @@ class VisualizarReserva extends Component {
         this.setState({invitadosPendientes, invitadosConfirmados});
     }
 
-    async agregarInvitado(inv){
+    async agregarInvitado(inv, idInvitado) {
         Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Invitados').add({
             Estado: true,
-            TipoDocumento: Database.doc('TipoDocumento/' + inv.TipoDocumento),
+            Nombre: '',
+            Apellido: '',
+            FechaNacimiento: null,
+            TipoDocumento: Database.doc('TipoDocumento/' + inv.TipoDocumento.id),
             Documento: inv.Documento,
             Grupo: this.state.reserva.Nombre,
             FechaAlta: new Date(),
             FechaDesde: this.state.desde,
             FechaHasta: this.state.hasta,
             IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + localStorage.getItem('idPersona'))
+        }).then(doc=> {
+            inv.IdInvitado = doc.id;
+            this.conexion.collection('Invitados').doc(idInvitado).set(inv);
         });
+    }
+
+    modalAgregarInvitado() {
+        Database.collection('TipoDocumento').get().then(querySnapshot=> {
+            querySnapshot.forEach(doc=> {
+                this.state.tipoD.push(
+                    {value: doc.id, label: doc.data().Nombre}
+                );
+            });
+        });
+        this.setState({showModal: true});
+    }
+
+    agregarNuevoInvitado(){
+        const {invitadosConfirmados} = this.state;
+        var invitado = [{
+            Nombre: this.state.nombre,
+            Apellido: this.state.apellido,
+            Documento: this.state.documento,
+            TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
+            TipoDocumentoLabel: this.state.tipoDocumento.label,
+            Estado: true,
+            IdInvitado: ''
+        }, ""]
+        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Propietarios').doc(localStorage.getItem('idPersona'))
+            .collection('Reservas').doc(this.idReserva).collection('Invitados')
+            .add({invitado}).then( doc => {
+                invitado[1]= doc.id;
+                invitadosConfirmados.push(invitado);
+                this.setState({invitadosConfirmados})
+                this.agregarInvitado(invitado[0], doc.id);
+
+        });
+        this.setState({showModal: false});
+    }
+
+    ChangeNombre(event) {
+        this.setState({nombre: event.target.value});
+    }
+
+    ChangeApellido(event) {
+        this.setState({apellido: event.target.value});
+    }
+
+    ChangeSelect(event) {
+        this.setState({tipoDocumento: event});
+    }
+
+    ChangeDocumento(event) {
+        this.setState({documento: event.target.value});
     }
 
     render() {
@@ -120,9 +191,9 @@ class VisualizarReserva extends Component {
                 <legend/>
                 <h3>Invitados de la reserva</h3>
                 <div className="izquierda">
-                    <Link to={"/invitado/" + this.idReserva}><Button bsStyle="primary" fill wd>
-                    Agregar invitado
-                </Button></Link>
+                    <Button bsStyle="primary" fill wd onClick={this.modalAgregarInvitado}>
+                        Agregar invitado
+                    </Button>
                 </div>
                 <div className="row">
                     <div className="row-section">
@@ -154,7 +225,7 @@ class VisualizarReserva extends Component {
                                                         inv[0].Estado = false;
                                                         this.conexion.collection('Invitados').doc(inv[1]).set(inv[0]);
                                                         Database.collection('Country').doc(localStorage.getItem('idCountry'))
-                                                            .collection('Invitados').doc(inv[1]).delete();
+                                                            .collection('Invitados').doc(inv[0].IdInvitado).delete();
                                                         this.actualizar(inv[1], false);
                                                     }}>
                                                         cancelar
@@ -195,8 +266,7 @@ class VisualizarReserva extends Component {
                                                     <td>{'Pendiente'}</td>
                                                     <td><Button bsStyle="success" fill wd onClick={()=> {
                                                         inv[0].Estado = true;
-                                                        this.conexion.collection('Invitados').doc(inv[1]).set(inv[0]);
-                                                        this.agregarInvitado(inv[0]);
+                                                        this.agregarInvitado(inv[0], inv[1]);
                                                         this.actualizar(inv[1], true);
                                                     }}>
                                                         confirmar
@@ -210,6 +280,65 @@ class VisualizarReserva extends Component {
                             </div>
                         </div>
                     </div>
+
+                    <Modal
+                        show={this.state.showModal}
+                        className="col-md-10"
+                        onHide={()=>this.setState({showModal: false})}
+                    >
+                        <Modal.Header closeButton>
+                            <Modal.Title>Agregar un nuevo invitado</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <div className="col-md-6">
+                                <label> Nombre </label>
+                                <input type="name" className="form-control" placeholder="Name"
+                                       value={this.state.nombre}
+                                       onChange={this.ChangeNombre}/>
+                            </div>
+                            <div className="col-md-6">
+                                <label> Apellido </label>
+                                <input type="family-name" className="form-control" placeholder="Surname"
+                                       value={this.state.apellido}
+                                       onChange={this.ChangeApellido}/>
+                            </div>
+                            <div className="col-md-6">
+                                <label> Tipo Documento </label>
+                                <Select
+                                    className="select-documento"
+                                    classNamePrefix="select"
+                                    isDisabled={false}
+                                    isLoading={false}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    options={this.state.tipoD}
+                                    onChange={this.ChangeSelect.bind(this)}
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <label> Numero de Documento </label>
+                                <input type="document" className="form-control" placeholder="Document number"
+                                       value={this.state.documento}
+                                       onChange={this.ChangeDocumento}/>
+                            </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button
+                                simple
+                                onClick={()=>this.setState({showModal: false})}
+                            >
+                                Cerrar
+                            </Button>
+                            <Button
+                                bsStyle="success"
+                                fill
+                                onClick={this.agregarNuevoInvitado}
+                            >
+                                Agregar
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+
                 </div>
 
             </div>

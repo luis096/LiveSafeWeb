@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-// import '../Style/Alta.css';
 import { Database } from '../../config/config';
-import Reserva from './Reserva';
+import Button from 'components/CustomButton/CustomButton.jsx';
 import { Link } from 'react-router-dom';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 
 class PrincipalReserva extends Component {
@@ -13,9 +13,11 @@ class PrincipalReserva extends Component {
             reservas: [],
             idPropietario: '',
             idCountry: '',
-            show: false
+            alert: null
         };
         this.actualizar = this.actualizar.bind(this);
+        this.hideAlert = this.hideAlert.bind(this);
+        this.cancelar = this.cancelar.bind(this);
     }
 
     async componentDidMount() {
@@ -44,6 +46,66 @@ class PrincipalReserva extends Component {
         this.setState({reservas});
     }
 
+    cancelar() {
+        this.setState({
+            alert: (
+                <SweetAlert
+                    warning
+                    style={{ display: "block", marginTop: "-100px", position: "center"  }}
+                    title="¿Estas seguro?"
+                    onConfirm={() => this.successDelete()}
+                    onCancel={() => this.cancelDetele()}
+                    confirmBtnBsStyle="info"
+                    cancelBtnBsStyle="danger"
+                    confirmBtnText="Si, estoy seguro"
+                    cancelBtnText="Cancelar"
+                    showCancel
+                >
+                   ¿Esta seguro de que desea cancelar la reserva?
+                </SweetAlert>
+            )
+        });
+    }
+
+    successDelete() {
+        this.setState({
+            alert: (
+                <SweetAlert
+                    success
+                    style={{ display: "block", marginTop: "-100px", position: "center"  }}
+                    title="Reserva cancelada"
+                    onConfirm={() => this.hideAlert()}
+                    onCancel={() => this.hideAlert()}
+                    confirmBtnBsStyle="info"
+                >
+                    La reserva se cancelo correctamente.
+                </SweetAlert>
+            )
+        });
+    }
+    cancelDetele() {
+        this.setState({
+            alert: (
+                <SweetAlert
+                    danger
+                    style={{ display: "block", marginTop: "-100px", position: "center"  }}
+                    title="Se cancelo la operacion"
+                    onConfirm={() => this.hideAlert()}
+                    onCancel={() => this.hideAlert()}
+                    confirmBtnBsStyle="info"
+                >
+                    La reserva sigue vigente.
+                </SweetAlert>
+            )
+        });
+    }
+
+    hideAlert() {
+        this.setState({
+            alert: null
+        });
+    }
+
     render() {
         return (
             <div className="col-12">
@@ -53,7 +115,7 @@ class PrincipalReserva extends Component {
                         <label className="h2">Reservas</label>
                     </div>
                 </div>
-
+                {this.state.alert}
                 <div className="row">
                     <div className="col-md-10 ">
                         <table className="table table-hover">
@@ -82,10 +144,12 @@ class PrincipalReserva extends Component {
                                                     <td>{desde.toLocaleDateString()}</td>
                                                     <td>{desde.toLocaleTimeString()}</td>
                                                     <td>{hasta.toLocaleTimeString()}</td> 
-                                                    <td><Link to={editar} type="button" className="btn btn-primary"
-                                                        >Visualizar</Link></td>
-                                                    <td><button type="button" className="btn btn-primary"
-                                                    >Cancelar</button></td>
+                                                    <td><Link to={editar}><Button bsStyle="info" fill wd>
+                                                        Visualizar
+                                                    </Button></Link></td>
+                                                    <td><Button bsStyle="warning" fill wd onClick={this.cancelar}>
+                                                        Cancelar
+                                                    </Button></td>
                                                 </tr>
                                         );
                                     })

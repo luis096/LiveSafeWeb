@@ -54,8 +54,8 @@ class PrincipalInvitados extends Component {
                     </div>
                 </div>
 
-                <div className="row">
-                    <div className="col-md-12 ">
+                <div className="card">
+                    <div className="card-body col-md-10 col-md-offset-1 ">
                         <br></br>
                         <table className="table table-hover  ">
                             <thead>
@@ -64,6 +64,7 @@ class PrincipalInvitados extends Component {
                                 <th scope="col">Apellido y Nombre</th>
                                 <th scope="col">Grupo</th>
                                 <th scope="col">Estado</th>
+                                <th scope="col">Invitar a Evento</th>
                                 <th scope="col">Editar</th>
                                 <th scope="col">Eliminar</th>
                             </tr>

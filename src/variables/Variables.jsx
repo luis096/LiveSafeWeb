@@ -4,6 +4,8 @@
 // //
 //
 
+var tipoDocumento = {};
+
 var selectOptions = [
   { value: "id", label: "Bahasa Indonesia" },
   { value: "ms", label: "Bahasa Melayu" },
@@ -693,6 +695,7 @@ var responsiveBar = [
 ];
 
 module.exports = {
+  tipoDocumento,
   selectOptions, // For selets in ExtendedForms view
   events, // For calendar in Calendar view
   table_data, // For vector map on Dashboard view

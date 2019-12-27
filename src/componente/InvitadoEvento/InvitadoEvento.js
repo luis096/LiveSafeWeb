@@ -75,6 +75,7 @@ class InvitadoEvento extends Component {
             TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
             TipoDocumentoLabel: this.state.tipoDocumento.label,
             Estado: false,
+            IdInvitado: ''
         });
         this.restaurar();
     }
