@@ -280,7 +280,6 @@ class VisualizarReserva extends Component {
                             </div>
                         </div>
                     </div>
-
                     <Modal
                         show={this.state.showModal}
                         className="col-md-10"
@@ -340,7 +339,13 @@ class VisualizarReserva extends Component {
                     </Modal>
 
                 </div>
-
+                <div className="row">
+                    <div className="col-md-12 row-secction">
+                        <h4>Enlace de invitación</h4>
+                        <h5>{'/invitado/' + localStorage.getItem('idCountry') + '/' +
+                        localStorage.getItem('idPersona') + '/' + this.idReserva}</h5>
+                    </div>
+                </div>
             </div>
         );
     }

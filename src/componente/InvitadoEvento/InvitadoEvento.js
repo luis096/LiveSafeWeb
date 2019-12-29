@@ -14,9 +14,12 @@ class InvitadoEvento extends Component {
             apellido: '',
             documento: '',
             tipoDocumento: '',
-            tipoD: []
+            tipoD: [],
+            barrios: [],
         };
         const url = this.props.location.pathname.split('/');
+        this.idCountry = url[url.length - 3];
+        this.idPropietario = url[url.length - 2];
         this.idReserva = url[url.length - 1];
         this.esPropietario = !!localStorage.getItem('user');
         this.restaurar = this.restaurar.bind(this);
@@ -38,7 +41,6 @@ class InvitadoEvento extends Component {
         });
         this.setState({tipoD});
     }
-
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
@@ -66,8 +68,8 @@ class InvitadoEvento extends Component {
     }
 
     registrar() {
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').doc(localStorage.getItem('idPersona'))
+        Database.collection('Country').doc(this.idCountry)
+            .collection('Propietarios').doc(this.idPropietario)
             .collection('Reservas').doc(this.idReserva).collection('Invitados').add({
             Nombre: this.state.nombre,
             Apellido: this.state.apellido,
