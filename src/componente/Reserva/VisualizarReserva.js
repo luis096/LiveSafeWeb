@@ -5,6 +5,8 @@ import Button from 'components/CustomButton/CustomButton.jsx';
 import { Link } from 'react-router-dom';
 import { Modal, Alert, Grid, Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
+import { validator } from '../validator';
+
 
 class VisualizarReserva extends Component {
 
@@ -23,6 +25,7 @@ class VisualizarReserva extends Component {
             apellido: '',
             documento: '',
             tipoDocumento: '',
+            estado: {},
             tipoD: []
         };
         const url = this.props.location.pathname.split('/');
@@ -33,6 +36,8 @@ class VisualizarReserva extends Component {
         this.ChangeDocumento = this.ChangeDocumento.bind(this);
         this.ChangeSelect = this.ChangeSelect.bind(this);
         this.agregarNuevoInvitado = this.agregarNuevoInvitado.bind(this);
+        this.permiteAgregar = this.permiteAgregar.bind(this);
+        this.permiteConfirmar = this.permiteConfirmar.bind(this);
         this.conexion = Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').doc(localStorage.getItem('idPersona'))
             .collection('Reservas').doc(this.idReserva);
@@ -48,6 +53,7 @@ class VisualizarReserva extends Component {
                 hasta: new Date(doc.data().FechaHasta.seconds * 1000)
             });
         });
+        this.setState({estado: validator.estadoReserva(this.state.desde, this.state.hasta, this.state.reserva.Cancelado)});
         await this.conexion.collection('Invitados').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
                 if (doc.exists) {
@@ -116,7 +122,7 @@ class VisualizarReserva extends Component {
         this.setState({showModal: true});
     }
 
-    agregarNuevoInvitado(){
+    agregarNuevoInvitado() {
         const {invitadosConfirmados} = this.state;
         var invitado = [{
             Nombre: this.state.nombre,
@@ -126,15 +132,15 @@ class VisualizarReserva extends Component {
             TipoDocumentoLabel: this.state.tipoDocumento.label,
             Estado: true,
             IdInvitado: ''
-        }, ""]
+        }, ''];
         Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').doc(localStorage.getItem('idPersona'))
             .collection('Reservas').doc(this.idReserva).collection('Invitados')
-            .add({invitado}).then( doc => {
-                invitado[1]= doc.id;
-                invitadosConfirmados.push(invitado);
-                this.setState({invitadosConfirmados})
-                this.agregarInvitado(invitado[0], doc.id);
+            .add({invitado}).then(doc=> {
+            invitado[1] = doc.id;
+            invitadosConfirmados.push(invitado);
+            this.setState({invitadosConfirmados});
+            this.agregarInvitado(invitado[0], doc.id);
 
         });
         this.setState({showModal: false});
@@ -156,6 +162,15 @@ class VisualizarReserva extends Component {
         this.setState({documento: event.target.value});
     }
 
+    permiteAgregar() {
+        return !(this.state.estado.Id == 0);
+    }
+
+
+    permiteConfirmar() {
+        return (this.state.estado.Id == 2 || this.state.estado.Id == 3);
+    }
+
     render() {
         return (
             <div className="col-12">
@@ -171,7 +186,7 @@ class VisualizarReserva extends Component {
                     </div>
                     <div className="col-md-4 row-secction">
                         <h4>Estado de la reserva</h4>
-                        <label>{this.state.reserva.Estado}</label>
+                        <label>{this.state.estado ? this.state.estado.Nombre : '-'}</label>
                     </div>
                 </div>
                 <div className="row">
@@ -191,7 +206,8 @@ class VisualizarReserva extends Component {
                 <legend/>
                 <h3>Invitados de la reserva</h3>
                 <div className="izquierda">
-                    <Button bsStyle="primary" fill wd onClick={this.modalAgregarInvitado}>
+                    <Button bsStyle="primary" fill wd onClick={this.modalAgregarInvitado}
+                            disabled={this.permiteAgregar()}>
                         Agregar invitado
                     </Button>
                 </div>
@@ -221,7 +237,7 @@ class VisualizarReserva extends Component {
                                                     <td>{inv[0].TipoDocumentoLabel}</td>
                                                     <td>{inv[0].Documento}</td>
                                                     <td>{'Confirmado'}</td>
-                                                    <td><Button bsStyle="warning" fill wd onClick={()=> {
+                                                    <td><Button bsStyle="warning" fill wd disabled={this.permiteAgregar()} onClick={()=> {
                                                         inv[0].Estado = false;
                                                         this.conexion.collection('Invitados').doc(inv[1]).set(inv[0]);
                                                         Database.collection('Country').doc(localStorage.getItem('idCountry'))
@@ -264,7 +280,7 @@ class VisualizarReserva extends Component {
                                                     <td>{inv[0].TipoDocumentoLabel}</td>
                                                     <td>{inv[0].Documento}</td>
                                                     <td>{'Pendiente'}</td>
-                                                    <td><Button bsStyle="success" fill wd onClick={()=> {
+                                                    <td><Button bsStyle="success" fill wd disabled={this.permiteConfirmar()} onClick={()=> {
                                                         inv[0].Estado = true;
                                                         this.agregarInvitado(inv[0], inv[1]);
                                                         this.actualizar(inv[1], true);
@@ -282,43 +298,46 @@ class VisualizarReserva extends Component {
                     </div>
                     <Modal
                         show={this.state.showModal}
-                        className="col-md-10"
                         onHide={()=>this.setState({showModal: false})}
                     >
                         <Modal.Header closeButton>
                             <Modal.Title>Agregar un nuevo invitado</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <div className="col-md-6">
-                                <label> Nombre </label>
-                                <input type="name" className="form-control" placeholder="Name"
-                                       value={this.state.nombre}
-                                       onChange={this.ChangeNombre}/>
+                            <div className="row">
+                                <div className="row-secction">
+                                    <label> Nombre </label>
+                                    <input type="name" className="form-control" placeholder="Name"
+                                           value={this.state.nombre}
+                                           onChange={this.ChangeNombre}/>
+                                </div>
+                                <div className="row-secction">
+                                    <label> Apellido </label>
+                                    <input type="family-name" className="form-control" placeholder="Surname"
+                                           value={this.state.apellido}
+                                           onChange={this.ChangeApellido}/>
+                                </div>
                             </div>
-                            <div className="col-md-6">
-                                <label> Apellido </label>
-                                <input type="family-name" className="form-control" placeholder="Surname"
-                                       value={this.state.apellido}
-                                       onChange={this.ChangeApellido}/>
-                            </div>
-                            <div className="col-md-6">
-                                <label> Tipo Documento </label>
-                                <Select
-                                    className="select-documento"
-                                    classNamePrefix="select"
-                                    isDisabled={false}
-                                    isLoading={false}
-                                    isClearable={true}
-                                    isSearchable={true}
-                                    options={this.state.tipoD}
-                                    onChange={this.ChangeSelect.bind(this)}
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <label> Numero de Documento </label>
-                                <input type="document" className="form-control" placeholder="Document number"
-                                       value={this.state.documento}
-                                       onChange={this.ChangeDocumento}/>
+                            <div className="row">
+                                <div className="row-secction">
+                                    <label> Tipo Documento </label>
+                                    <Select
+                                        className="select-documento"
+                                        classNamePrefix="select"
+                                        isDisabled={false}
+                                        isLoading={false}
+                                        isClearable={true}
+                                        isSearchable={true}
+                                        options={this.state.tipoD}
+                                        onChange={this.ChangeSelect.bind(this)}
+                                    />
+                                </div>
+                                <div className="row-secction">
+                                    <label> Numero de Documento </label>
+                                    <input type="document" className="form-control" placeholder="Document number"
+                                           value={this.state.documento}
+                                           onChange={this.ChangeDocumento}/>
+                                </div>
                             </div>
                         </Modal.Body>
                         <Modal.Footer>

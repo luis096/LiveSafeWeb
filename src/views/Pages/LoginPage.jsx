@@ -13,11 +13,11 @@ import Checkbox from 'components/CustomCheckbox/CustomCheckbox.jsx';
 import logo from '../../logoLiveSafe.png';
 import { Database, Firebase } from '../../config/config';
 import firebase from 'firebase';
-import { Redirect } from "react-router-dom";
+import { Redirect } from 'react-router-dom';
 import Spinner from 'react-spinner-material';
-import AuthNavbar from "components/Navbars/AuthNavbar.jsx";
-import bgImage from "../../assets/img/fondoLogin.jpg";
-import {tipoDocumento} from '../../variables/Variables.jsx';
+import AuthNavbar from 'components/Navbars/AuthNavbar.jsx';
+import bgImage from '../../assets/img/fondoLogin.jpg';
+import { tipoDocumento } from '../../variables/Variables.jsx';
 
 class LoginPage extends Component {
     constructor(props) {
@@ -30,10 +30,14 @@ class LoginPage extends Component {
             result: false,
             tipo: false,
             tipoUsuario: '',
-            resultado: ''
+            resultado: '',
+            usuarioNuevo: null,
+            nuevaPass: '',
+            nuevaPassTwo: ''
         };
         this.log = false;
         this.authListener = this.authListener.bind(this);
+        this.crearUsuarioNuevo = this.crearUsuarioNuevo.bind(this);
         this.ChangeEmail = this.ChangeEmail.bind(this);
         this.ChangePass = this.ChangePass.bind(this);
         this.onButtonPress = this.onButtonPress.bind(this);
@@ -55,7 +59,7 @@ class LoginPage extends Component {
             .then(doc=> {
                 if (doc.exists) {
                     this.setState({tipo: true});
-                    this.state.tipoUsuario = doc.data().TipoUsuario.id;
+                    this.setState({tipoUsuario: doc.data().TipoUsuario.id});
                     localStorage.setItem('tipoUsuario', this.state.tipoUsuario);
                     localStorage.setItem('idCountry', doc.data().IdCountry.id);
                     localStorage.setItem('idPersona', doc.data().IdPersona.id);
@@ -79,7 +83,7 @@ class LoginPage extends Component {
         this.log = true;
     }
 
-    setTipoDocumento(){
+    setTipoDocumento() {
         Database.collection('TipoDocumento').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
                 tipoDocumento.push(
@@ -89,9 +93,25 @@ class LoginPage extends Component {
         });
     }
 
+    consultarUsuarioTemporal() {
+        console.log('consultarUsuarioTemp');
+        Database.collection('UsuarioTemp').doc(this.state.email).get().then(doc=> {
+            console.log(doc.data())
+            if (doc.exists) {
+                this.setState({usuarioNuevo: doc.data()});
+            }
+        });
+    }
+
     async onButtonPress() {
+        console.log('onBottonPresss');
         await this.obtenerValoresUsuario();
-        if (this.state.tipo) {
+
+        if (!this.state.tipoUsuario) {
+            await this.consultarUsuarioTemporal();
+        }
+
+        if (!this.state.usuarioNuevo) {
             await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
                 .then(()=> {
                     this.setState({result: true});
@@ -101,7 +121,17 @@ class LoginPage extends Component {
                     this.setState({resultado: 'Fallo de autentificacion'});
                 });
         }
-        this.setTipoDocumento();
+    }
+
+
+    async crearUsuarioNuevo() {
+        console.log('creaUsuarioNuevo');
+        const {email, nuevaPass, usuarioNuevo} = this.state;
+        await Firebase.auth().createUserWithEmailAndPassword(email, nuevaPass).then(
+            Database.collection('Usuarios').doc(email).set({usuarioNuevo}));
+        await this.obtenerValoresUsuario();
+        this.setState({result: true});
+
     }
 
     componentDidMount() {
@@ -120,10 +150,10 @@ class LoginPage extends Component {
             if (!user) {
                 return (
                     <div>
-                        <AuthNavbar />
+                        <AuthNavbar/>
                         <div className="wrapper wrapper-full-page">
                             <div
-                                className={"full-page login-page"}
+                                className={'full-page login-page'}
                                 data-color="black"
                                 data-image={bgImage}
                             >
@@ -146,19 +176,39 @@ class LoginPage extends Component {
                                                                                  value={this.state.email}
                                                                                  onChange={this.ChangeEmail}/>
                                                                 </FormGroup>
-                                                                <FormGroup>
+                                                                <FormGroup hidden={this.state.usuarioNuevo}>
                                                                     <ControlLabel>Contraseña</ControlLabel>
-                                                                    <FormControl placeholder="Contraseña" type="password"
+                                                                    <FormControl placeholder="Contraseña"
+                                                                                 type="password"
                                                                                  value={this.state.password}
+                                                                                 onChange={this.ChangePass}
+                                                                                 autoComplete="off"/>
+                                                                </FormGroup>
+                                                                <FormGroup hidden={!this.state.usuarioNuevo}>
+                                                                    <ControlLabel>Nueva Contraseña</ControlLabel>
+                                                                    <FormControl placeholder="Contraseña"
+                                                                                 type="password"
+                                                                                 value={this.state.nuevaPass}
+                                                                                 onChange={this.ChangePass}
+                                                                                 autoComplete="off"/>
+                                                                </FormGroup>
+                                                                <FormGroup hidden={!this.state.usuarioNuevo}>
+                                                                    <ControlLabel>Confirmar Nueva
+                                                                        Contraseña</ControlLabel>
+                                                                    <FormControl placeholder="Contraseña"
+                                                                                 type="password"
+                                                                                 value={this.state.nuevaPassTwo}
                                                                                  onChange={this.ChangePass}
                                                                                  autoComplete="off"/>
                                                                 </FormGroup>
                                                             </div>
                                                         }
                                                         legend={
-                                                            <Button bsStyle="info" fill wd onClick={()=> {
-                                                                this.onButtonPress();
-                                                            }}>
+                                                            <Button bsStyle="info" fill wd
+                                                                    onClick={this.state.usuarioNuevo ?
+                                                                        this.crearUsuarioNuevo :
+                                                                        this.onButtonPress
+                                                                    }>
                                                                 Iniciar Sesion
                                                             </Button>
                                                         }
@@ -171,7 +221,7 @@ class LoginPage extends Component {
                                 </div>
                                 <div
                                     className="full-page-background"
-                                    style={{ backgroundImage: "url(" + bgImage + ")" }}
+                                    style={{backgroundImage: 'url(' + bgImage + ')'}}
                                 />
                             </div>
                         </div>

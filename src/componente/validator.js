@@ -1,6 +1,4 @@
-import { isNullOrUndefined } from 'util';
-
-//Expreciones regulares para las validaciones. 
+//Expreciones regulares para las validaciones.
 const NUMBER_REGEXP = /^\d+$/;
 const DECIMAL_REGEXP = /^\d+(\.\d+){0,2}?$/;
 const EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
@@ -12,6 +10,7 @@ const CUIT_REGEXP = /^\d{2}-\d{8}-\d{1}$/;
 const NUMBER_ZERO = /^[0]+$/;
 const NOMBRE_ARCHIVOS = /^(?!((con|prn|aux)((\.[^\\/:*"$•?<>|]{1,3}$)|$))|[\s\.])[^\\/:*"$•?<>|]{1,254}$/;
 const LETRAS_REGEXP = /^[a-zA-Z ]*$/;
+const ESTADOS_RESERVAS = ['Pendiente', 'En Curso', 'Cancelado', 'Realizado'];
 
 // Se retorna TRUE si hay un error.. 
 export const validator = {
@@ -19,19 +18,24 @@ export const validator = {
     requerido,
     mail,
     soloLetras,
+    estadoReserva,
+    obtenerFecha
 };
 
 
-
 function numero(valor) {
-    return {error: NUMBER_REGEXP.test(valor) ? false : true,
-    mensaje: 'Solo ingresar números'};
+    return {
+        error: NUMBER_REGEXP.test(valor) ? false : true,
+        mensaje: 'Solo ingresar números'
+    };
 }
 
 
-function requerido(valor){
-    return {error: (valor===''||valor==null),
-        mensaje: 'El campo es requerido'};
+function requerido(valor) {
+    return {
+        error: (valor === '' || valor == null),
+        mensaje: 'El campo es requerido'
+    };
 }
 
 function mail(valor) {
@@ -39,6 +43,27 @@ function mail(valor) {
 }
 
 function soloLetras(valor) {
-    return {error: LETRAS_REGEXP.test(valor) ? false : true,
-        mensaje: 'Solo ingresar letras'};
+    return {
+        error: LETRAS_REGEXP.test(valor) ? false : true,
+        mensaje: 'Solo ingresar letras'
+    };
+}
+
+function estadoReserva(desde, hasta, cancelado) {
+    let hoy = new Date();
+    if (cancelado){
+        return {Nombre: ESTADOS_RESERVAS[2], Id: 2};
+    }
+    if (desde < hoy && hasta > hoy) {
+        return {Nombre: ESTADOS_RESERVAS[1], Id: 1};
+    } else if (desde > hoy) {
+        return {Nombre: ESTADOS_RESERVAS[0], Id: 0};
+    } else {
+        return {Nombre: ESTADOS_RESERVAS[3], Id: 3};
+    }
+}
+
+function obtenerFecha(time) {
+    return (new Date(time.seconds * 1000));
+
 }

@@ -5,6 +5,8 @@ import Button from 'components/CustomButton/CustomButton.jsx';
 import { NavLink } from 'react-router-dom';
 import { Modal, Pagination } from 'react-bootstrap';
 import Select from 'react-select';
+import { paginador } from '../Paginador';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 class PrincipalInvitados extends Component {
 
@@ -22,13 +24,17 @@ class PrincipalInvitados extends Component {
             fechaHasta: '',
             tipoD: [],
             invitadosPaginados: [],
-            numPagina: 0
+            numPagina: 0,
+            alert: null,
+            invitadoCancelar: {}
         };
         this.modalAgregarInvitado = this.modalAgregarInvitado.bind(this);
         this.agregarNuevoInvitado = this.agregarNuevoInvitado.bind(this);
         this.obtenerDocumentoLabel = this.obtenerDocumentoLabel.bind(this);
         this.paginar = this.paginar.bind(this);
-        this.cantidad = []
+        this.hideAlert = this.hideAlert.bind(this);
+        this.cancelar = this.cancelar.bind(this);
+        this.cantidad = [];
     }
 
     async componentDidMount() {
@@ -52,24 +58,13 @@ class PrincipalInvitados extends Component {
             });
         });
         this.setState({invitados});
-        for (var i = 0; i < (this.state.invitados.length / 10) ; i++){
-            this.cantidad.push(i)
-        }
+        this.cantidad = paginador.cantidad(this.state.invitados.length);
         this.paginar(0);
     }
 
-    paginar(pagina){
-        const invitadosPag = [];
-        let desde = pagina * 10;
-        let hasta = desde + 10;
-        let tam = this.state.invitados.length;
-        if(tam < hasta){
-            hasta = tam;
-        }
-        for (var i = desde; i < hasta; i++) {
-            invitadosPag.push(this.state.invitados[i])
-        }
-        this.setState({invitadosPaginados: invitadosPag, numPagina: pagina});
+    paginar(pagina) {
+        let resultado = paginador.paginar(pagina, this.state.invitados);
+        this.setState({invitadosPaginados: resultado.Elementos, numPagina: resultado.NumPagina});
     }
 
     modalAgregarInvitado() {
@@ -133,12 +128,77 @@ class PrincipalInvitados extends Component {
         this.setState({reservaSelceccionada: event});
     }
 
-    render() {
+    cancelar(inv) {
+        inv[0].Estado = !inv[0].Estado;
+        this.setState({
+            invitadoCancelar: inv,
+            alert: (
+                <SweetAlert
+                    warning
+                    style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                    title="¿Estas seguro?"
+                    onConfirm={()=>this.successDelete()}
+                    onCancel={()=>this.cancelDetele()}
+                    confirmBtnBsStyle="info"
+                    cancelBtnBsStyle="danger"
+                    confirmBtnText="Si, estoy seguro"
+                    cancelBtnText="Cancelar"
+                    showCancel
+                >
+                    ¿Esta seguro de que desea eliminar invitado?
+                </SweetAlert>
+            )
+        });
+    }
 
+    successDelete() {
+        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Invitados').doc(this.state.invitadoCancelar[1]).set(this.state.invitadoCancelar[0]);
+        this.setState({
+            alert: (
+                <SweetAlert
+                    success
+                    style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                    title="Invitado Eliminado"
+                    onConfirm={()=>this.hideAlert()}
+                    onCancel={()=>this.hideAlert()}
+                    confirmBtnBsStyle="info"
+                >
+                    El invitado se elimino correctamente
+                </SweetAlert>
+            )
+        });
+    }
+
+    hideAlert() {
+        this.setState({
+            alert: null
+        });
+    }
+
+    cancelDetele() {
+        this.setState({
+            alert: (
+                <SweetAlert
+                    danger
+                    style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                    title="Se cancelo la operacion"
+                    onConfirm={()=>this.hideAlert()}
+                    onCancel={()=>this.hideAlert()}
+                    confirmBtnBsStyle="info"
+                >
+                    El invitado no fue eliminado.
+                </SweetAlert>
+            )
+        });
+    }
+
+    render() {
         return (
             <div className="col-12">
-                <legend><h3>Mis invitados</h3></legend>
-                <div className="card">
+                <legend><h3 className="row">Mis invitados</h3></legend>
+                {this.state.alert}
+                <div className="card row">
                     <div className="card-body">
                         <table className="table table-hover">
                             <thead>
@@ -176,7 +236,9 @@ class PrincipalInvitados extends Component {
                                                     <Button bsStyle="warning" fill wd
                                                             disabled={!inv[0].Nombre}>Editar</Button>
                                                 </NavLink></td>
-                                                <td><Button bsStyle="danger" fill wd>Eliminar</Button></td>
+                                                <td><Button bsStyle="danger" fill wd onClick={ () => {
+                                                    this.cancelar(inv)
+                                                }}>Eliminar</Button></td>
                                             </tr>
                                         );
                                     }
@@ -187,15 +249,16 @@ class PrincipalInvitados extends Component {
                 </div>
                 <div className="text-center">
                     <Pagination className="pagination-no-border">
-                        <Pagination.First onClick={() => this.paginar(0)}/>
+                        <Pagination.First onClick={()=>this.paginar(0)}/>
 
                         {
-                            this.cantidad.map(num => {
-                                return (<Pagination.Item onClick={() => this.paginar(num)} active={(num == this.state.numPagina)} >{num}</Pagination.Item>)
+                            this.cantidad.map(num=> {
+                                return (<Pagination.Item onClick={()=>this.paginar(num)}
+                                                         active={(num == this.state.numPagina)}>{num + 1}</Pagination.Item>);
                             })
                         }
 
-                        <Pagination.Last onClick={() => this.paginar(this.cantidad.length - 1)}/>
+                        <Pagination.Last onClick={()=>this.paginar(this.cantidad.length - 1)}/>
                     </Pagination>
                 </div>
 

@@ -423,8 +423,9 @@ var routes = [
             {
                 path: '/visualizarReserva',
                 layout: '/propietario',
-                name: 'Ver Reserva',
+                name: 'Visualizar Reserva',
                 mini: 'VR',
+                noVisualizar: true,
                 component: VisualizarReserva
             }
         ]
@@ -456,6 +457,7 @@ var routes = [
                 layout: '/propietario',
                 name: 'Editar Invitado',
                 mini: 'EI',
+                noVisualizar: true,
                 component: EditarInvitado
             },
         ]

@@ -3,6 +3,7 @@ import Select from 'react-select';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import { Link } from 'react-router-dom';
+import {validator} from '../validator';
 
 
 class EditarInvitado extends Component {
@@ -26,9 +27,7 @@ class EditarInvitado extends Component {
             tipoD: [],// Para cargar el combo
             resultado: ''
         };
-        this.valor = (localStorage.getItem('tipoUsuario') == 'Propietario') ?
-            localStorage.getItem('idPersona') : localStorage.getItem('propietarioId');
-        this.esPropietario = localStorage.getItem('tipoUsuario') === 'Propietario' ? true : false;
+        this.esPropietario = localStorage.getItem('tipoUsuario') === 'Propietario';
         this.editInvitado = this.editInvitado.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
@@ -82,12 +81,11 @@ class EditarInvitado extends Component {
             estado: estrella.Estado,
             documento: estrella.Documento,
             grupo: estrella.Grupo,
-            fechaNacimiento: estrella.FechaNacimiento,
+            fechaNacimiento: validator.obtenerFecha(estrella.FechaNacimiento),
             fechaAlta: estrella.FechaAlta,
-            startDate: estrella.FechaDesde,
-            endDate: estrella.FechaHasta,
+            startDate: validator.obtenerFecha(estrella.FechaDesde),
+            endDate: validator.obtenerFecha(estrella.FechaHasta),
             idPropietario: estrella.IdPropietario,
-
         });
     }
 
@@ -97,7 +95,7 @@ class EditarInvitado extends Component {
             .collection('Invitados').doc(this.idInvitado).set({
             Nombre: this.state.nombre,
             Apellido: this.state.apellido,
-            // Estado: this.state.estado,
+            Estado: this.state.estado,
             TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
             Documento: this.state.documento,
             Grupo: this.state.grupo,
@@ -269,12 +267,8 @@ class EditarInvitado extends Component {
                             />
                         </div>
                     </div>
-                    <div className="form-group izquierda">
-                        <Link to='/' type="button" className="btn boton btn-primary" variant="secondary"
-                              onClick={this.props.cerrar}
-                        >Volver</Link>
-
-                        <button className="btn boton btn-primary" variant="primary" onClick={this.registrar}
+                    <div className="text-center">
+                        <button className="btn boton btn-primary" onClick={this.registrar}
                         >Registrar
                         </button>
                     </div>

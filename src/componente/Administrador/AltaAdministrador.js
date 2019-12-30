@@ -14,7 +14,6 @@ class AltaAdministrador extends Component {
             apellido: '',
             tipoDocumento: '',
             documento: '',
-            legajo: '',
             celular: '',
             descripcion: '',
             fechaNacimiento: '',
@@ -22,21 +21,18 @@ class AltaAdministrador extends Component {
             mail: '',
             pass: '',
             idCountry: '',
-            tipoD: [],// Para cargar el combo
+            tipoD: [],
             countryList: [],
             resultado: ''
         };
         this.addAdministrador = this.addAdministrador.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
-        this.ChangeLegajo = this.ChangeLegajo.bind(this);
         this.ChangeDocumento = this.ChangeDocumento.bind(this);
         this.ChangeCelular = this.ChangeCelular.bind(this);
         this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
         this.ChangeFechaNacimiento = this.ChangeFechaNacimiento.bind(this);
-        this.ChangeMail = this.ChangeMail.bind(this);
         this.crearUsuario = this.crearUsuario.bind(this);
-        this.ChangePass = this.ChangePass.bind(this);
         this.crearUsuario = this.crearUsuario.bind(this);
         this.registrar = this.registrar.bind(this);
 
@@ -46,47 +42,40 @@ class AltaAdministrador extends Component {
         const {tipoD, countryList} = this.state;
         await Database.collection('TipoDocumento').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
-
                 this.state.tipoD.push(
-                    {value: doc.data().Id, label: doc.data().Nombre}
+                    {value: doc.id, label: doc.data().Nombre}
                 );
-
             });
         });
         await Database.collection('Country').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
-
                 this.state.countryList.push(
                     {value: doc.id, label: doc.data().Nombre}
                 );
 
             });
         });
-        this.setState({tipoD});
-        this.setState({countryList});
+        this.setState({tipoD, countryList});
     }
 
 
     async addAdministrador() {
+        console.log(this.state)
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Administradores').add({
                 Nombre: this.state.nombre,
                 Apellido: this.state.apellido,
-                Legajo: this.state.legajo,
                 Documento: this.state.documento,
                 Celular: this.state.celular,
                 Descripcion: this.state.descripcion,
-                TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
+                TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.value),
                 FechaNacimiento: this.state.fechaNacimiento,
                 FechaAlta: new Date(),
-                Usuario: this.state.mail
+                Usuario: this.state.nombre + '.' + this.state.apellido + '@countryapp.com',
             }).then(doc=> {
                 this.setState({idAdminCreado: doc.id});
             });
-
         await this.crearUsuario();
-
-
     }
 
     ChangeNombre(event) {
@@ -95,10 +84,6 @@ class AltaAdministrador extends Component {
 
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
-    }
-
-    ChangeLegajo(event) {
-        this.setState({legajo: event.target.value});
     }
 
     ChangeCelular(event) {
@@ -125,38 +110,25 @@ class AltaAdministrador extends Component {
         this.setState({fechaNacimiento: event.target.value});
     }
 
-    ChangeMail(event) {
-        this.setState({mail: event.target.value});
-    }
-
-    ChangePass(event) {
-        this.setState({pass: event.target.value});
-    }
-
 
     registrar() {
-        //Agregar validaciones para no registrar cualquier gilada
+        //Verificar que el mail no se repita, en caso de repetirce nose..
         if (true) {
+            this.setState({mail: this.state.nombre + '.' + this.state.apellido + '@countryapp.com'})
             this.addAdministrador();
         }
     }
 
     async crearUsuario() {
         const {mail} = this.state;
-        const {pass} = this.state;
+        const pass = this.state.documento;
         if (true) {
-            Firebase.auth().createUserWithEmailAndPassword(mail, pass).then(
-                await Database.collection('Usuarios').doc(mail).set({
-                    NombreUsuario: mail,
-                    TipoUsuario: Database.doc('/TiposUsuario/Administrador'),
-                    IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
-                    IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Administradores/' + this.state.idAdminCreado)
-                })
-            )
-                .catch(function (error) {
-                    console.log('error :', error);
-                    //La pass debe tener al menos 6 caracteres wachina
-                });
+            await Database.collection('UsuariosTemp').doc(mail).set({
+                NombreUsuario: mail,
+                TipoUsuario: Database.doc('/TiposUsuario/Administrador'),
+                IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
+                IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Administradores/' + this.state.idAdminCreado)
+            });
         }
     }
 
@@ -187,7 +159,6 @@ class AltaAdministrador extends Component {
                                 id='documento'
                                 className="select-documento"
                                 classNamePrefix="select"
-                                // defaultValue={this.state.tipoD[0]}
                                 isDisabled={false}
                                 isLoading={false}
                                 isClearable={true}
@@ -211,18 +182,11 @@ class AltaAdministrador extends Component {
                             />
                         </div>
                         <div className="col-md-6 flex-container form-group">
-                            <label for="NumeroCelular"> Legajo </label>
-                            <input type="tel" className="form-control" placeholder="Mobile number"
-                                   value={this.state.legajo}
-                                   onChange={this.ChangeLegajo}/>
-                        </div>
-                        <div className="col-md-6 flex-container form-group">
                             <label for="Country"> Country </label>
                             <Select
                                 id='country'
                                 className="select-country"
                                 classNamePrefix="select"
-                                // defaultValue={this.state.countryList[0]}
                                 isDisabled={false}
                                 isLoading={false}
                                 isClearable={true}
@@ -241,15 +205,9 @@ class AltaAdministrador extends Component {
                             <label for="exampleInputEmail1"> Dirección de correo electrónico </label>
                             <input type="email" className="form-control" id="exampleInputEmail1"
                                    aria-describe by="emailHelp" placeholder="Enter email"
-                                   value={this.state.mail}
-                                   onChange={this.ChangeMail}/>
-                        </div>
-                        <div className="col-md-6 flex-container form-group">
-                            <label for="exampleInputPassword1"> Contraseña </label>
-                            <input type="password" className="form-control" id="exampleInputPassword1"
-                                   placeholder="Password"
-                                   value={this.state.pass}
-                                   onChange={this.ChangePass}/>
+                                   value={this.state.nombre + '.' + this.state.apellido + '@countryapp.com'}
+                                   disabled={true}
+                            />
                         </div>
                         <div className="col-md-6 flex-container form-group">
                             <label for="exampleTextarea"> Descripcion </ label>
@@ -262,8 +220,6 @@ class AltaAdministrador extends Component {
                     </div>
                     <div className="form-group izquierda">
                         <button className="btn btn-primary boton" onClick={this.registrar}>Registrar</button>
-                        <Link to="/" type="button" className="btn btn-primary boton"
-                        >Volver</Link>
                     </div>
                 </div>
             </div>

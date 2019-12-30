@@ -19,6 +19,7 @@ class AltaReserva extends Component {
             reservaLista: [],
             servicioSeleccionado: {},
             events: [],
+            consulta: false,
             alert: null
         };
         this.addReserva = this.addReserva.bind(this);
@@ -43,16 +44,19 @@ class AltaReserva extends Component {
         this.setState({reservaLista});
     }
 
-    addReserva(datos) {
+    async addReserva(datos) {
         //Se guarda en coleccion Servicios y en el Propietario que hace la reserva.
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+        let id = 0;
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.state.servicioSeleccionado.value)
-            .collection('Reservas').add(datos);
+            .collection('Reservas').add(datos).then(doc=> {
+                id = doc.id;
+            });
+        datos.IdReservaServicio = Database.doc('Country/' + localStorage.getItem('idCountry') +
+            '/Servicios/' + this.state.servicioSeleccionado.value + '/Reservas/' + id);
         Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').doc(localStorage.getItem('idPersona'))
             .collection('Reservas').add(datos);
-
-
     }
 
     async consultar() {
@@ -77,19 +81,21 @@ class AltaReserva extends Component {
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.state.servicioSeleccionado.value).collection('Reservas').get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
-                    newEvents.push({
-                        title: doc.data().Nombre,
-                        start: new Date(doc.data().FechaDesde.seconds * 1000),
-                        end: new Date(doc.data().FechaHasta.seconds * 1000),
-                        color: (idPersona === doc.data().IdPropietario.id) ? 'blue' : 'red'
-                    });
+                    if (doc.exists && !doc.data().Cancelado) {
+                        newEvents.push({
+                            title: doc.data().Nombre,
+                            start: new Date(doc.data().FechaDesde.seconds * 1000),
+                            end: new Date(doc.data().FechaHasta.seconds * 1000),
+                            color: (idPersona === doc.data().IdPropietario.id) ? 'blue' : 'red'
+                        });
+                    }
                 });
             });
-        this.setState({events: newEvents});
+        this.setState({events: newEvents, consulta: true});
     }
 
     ChangeSelect(event) {
-        this.setState({servicioSeleccionado: event, events: []});
+        this.setState({servicioSeleccionado: event, events: [], consulta: false});
     }
 
     registrar() {
@@ -178,11 +184,13 @@ class AltaReserva extends Component {
         var datos = {
             Nombre: e,
             Servicio: this.state.servicioSeleccionado.label,
-            Estado: 'Pendiente',
+            Cancelado: false,
+            FechaAlta: new Date(),
             FechaHasta: slotInfo.end,
             FechaDesde: slotInfo.start,
             IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + localStorage.getItem('idPersona')),
-            IdServicio: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Servicios/' + this.state.servicioSeleccionado.value)
+            IdServicio: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Servicios/' + this.state.servicioSeleccionado.value),
+            IdReservaServicio: null
         };
         newEvents.push({
             title: e,
@@ -238,7 +246,7 @@ class AltaReserva extends Component {
                     </div>
                 </div>
                 {this.state.alert}
-                <div hidden={!(this.state.events.length)}>
+                <div hidden={!(this.state.consulta)}>
                     <Grid fluid>
                         <Row>
                             <Col md={10} mdOffset={1}>

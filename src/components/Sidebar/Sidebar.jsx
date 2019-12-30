@@ -56,10 +56,11 @@ class Sidebar extends Component {
     }
     return false;
   }
-  // this function creates the links and collapses that appear in the sidebar (left menu)
+
   createLinks = routes => {
     return routes.map((prop, key) => {
-      if (prop.redirect || ((prop.layout !== this.props.layoutUser && !prop.collapse) || (prop.collapse && prop.layoutCollapse !== this.props.layoutUser))) {
+      if (prop.redirect || ((prop.layout !== this.props.layoutUser && !prop.collapse) ||
+          (prop.collapse && prop.layoutCollapse !== this.props.layoutUser) || prop.noVisualizar )) {
         return null;
       }
       if (prop.collapse) {
@@ -188,42 +189,14 @@ class Sidebar extends Component {
               >
                 <span>
                   {localStorage.getItem("mail")}
-                  {/*<b*/}
-                    {/*className={*/}
-                      {/*this.state.openAvatar ? "caret rotate-180" : "caret"*/}
-                    {/*}*/}
-                  {/*/>*/}
                 </span>
               </a>
-              {/*<Collapse in={this.state.openAvatar}>*/}
-                {/*<ul className="nav">*/}
-                  {/*<li>*/}
-                    {/*<a href="/">*/}
-                      {/*<span className="sidebar-mini">MP</span>*/}
-                      {/*<span className="sidebar-normal">Mi Perfil</span>*/}
-                    {/*</a>*/}
-                  {/*</li>*/}
-                  {/*/!* <li>*/}
-                    {/*<a href="#pablo" onClick={e => e.preventDefault()}>*/}
-                      {/*<span className="sidebar-mini">EP</span>*/}
-                      {/*<span className="sidebar-normal">Editar Perfil</span>*/}
-                    {/*</a>*/}
-                  {/*</li> *!/*/}
-                {/*</ul>*/}
-              {/*</Collapse>*/}
             </div>
           </div>
           <ul className="nav">
-            {/*
-              If we are on responsive, we want both links from navbar and sidebar
-              to appear in sidebar, so we render here HeaderLinks
-            */}
+
             {this.state.width <= 992 ? <AdminNavbarLinks /> : null}
-            {/*
-              here we render the links in the sidebar if the link is simple,
-              we make a simple link, if not, we have to create a collapsible group,
-              with the speciffic parent button and with it's children which are the links
-            */}
+
             {this.createLinks(routes)}
           </ul>
         </div>
