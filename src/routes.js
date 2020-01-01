@@ -54,6 +54,9 @@ import PrincipalReserva from './componente/Reserva/PrincipalReserva.js'
 import AltaReserva from './componente/Reserva/AltaReserva.js'
 import VisualizarReserva from './componente/Reserva/VisualizarReserva.js'
 
+//Todos
+import MiPerfil from './componente/Perfil/MiPerfil';
+
 
 var routes = [
     {
@@ -489,6 +492,14 @@ var routes = [
         name: 'Nuevo Invitado',
         icon: 'pe-7s-graph',
         component: AltaInvitado
-    }
+    },
+    {
+        path: '/miPerfil',
+        layout: '/propietario',
+        name: 'Mi Perfil',
+        icon: 'null',
+        noVisualizar: true,
+        component: UserPage
+    },
 ];
 export default routes;

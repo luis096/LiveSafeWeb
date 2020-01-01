@@ -47,19 +47,19 @@ class UserPage extends Component {
     const user = localStorage.getItem('tipoUsuario');
     switch (user) {
       case "Root":
-        this.datos = Database.collection('Root').doc(localStorage.getItem('idPersona'))
+        this.datos = Database.collection('Root').doc(localStorage.getItem('idPersona'));
         break;
       case "Administrador":
         this.datos = Database.collection('Country').doc(localStorage.getItem('idCountry'))
-              .collection('Administradores').doc(localStorage.getItem('idPersona'))
+              .collection('Administradores').doc(localStorage.getItem('idPersona'));
         break;
       case "Propietario":
         this.datos = Database.collection('Country').doc(localStorage.getItem('idCountry'))
-        .collection('Propietarios').doc(localStorage.getItem('idPersona'))
+        .collection('Propietarios').doc(localStorage.getItem('idPersona'));
         break;
       case "Encargado":
         this.datos = Database.collection('Country').doc(localStorage.getItem('idCountry'))
-              .collection('Encargados').doc(localStorage.getItem('idPersona'))
+              .collection('Encargados').doc(localStorage.getItem('idPersona'));
         break;
     }
     await this.consultar()

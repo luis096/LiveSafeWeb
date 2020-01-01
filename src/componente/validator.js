@@ -65,5 +65,4 @@ function estadoReserva(desde, hasta, cancelado) {
 
 function obtenerFecha(time) {
     return (new Date(time.seconds * 1000));
-
 }
