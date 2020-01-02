@@ -9,8 +9,9 @@ export const filtros = {
 
 function filtroNombre(elementos, filtro) {
     let filtrado = [];
+    filtro = filtro.toLowerCase().trim();
     elementos.map( e =>{
-        if (e[0].Nombre == filtro){
+        if (e[0].Nombre.toLowerCase() == filtro){
             filtrado.push(e);
         }
     });
@@ -19,8 +20,9 @@ function filtroNombre(elementos, filtro) {
 
 function filtroApellido(elementos, filtro) {
     let filtrado = [];
+    filtro = filtro.toLowerCase().trim();
     elementos.map( e =>{
-        if (e[0].Apellido == filtro){
+        if (e[0].Apellido.toLowerCase() == filtro){
             filtrado.push(e);
         }
     });

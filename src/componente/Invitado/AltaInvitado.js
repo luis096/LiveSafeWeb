@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { Link } from 'react-router-dom';
-import { Database, Firebase } from '../../config/config';
+import { Database} from '../../config/config';
 import Button from 'components/CustomButton/CustomButton.jsx';
+import { validator } from '../validator';
 
 
 class AltaInvitado extends Component {
@@ -44,6 +44,7 @@ class AltaInvitado extends Component {
         this.registrar = this.registrar.bind(this);
         this.buscarPropietario = this.buscarPropietario.bind(this);
         this.registrarIngreso = this.registrarIngreso.bind(this);
+        this.errorTipoDocumento = {error: false, mensaje: ''};
     }
 
     async componentDidMount() {
@@ -109,6 +110,8 @@ class AltaInvitado extends Component {
 
     ChangeSelectInvitado(value) {
         this.setState({tipoDocumentoInvitado: value});
+        this.errorTipoDocumento = validator.requerido(value?value.value:null);
+        console.log(this.errorTipoDocumento)
     }
 
     ChangeDocumentoInvitado(event) {
@@ -160,21 +163,28 @@ class AltaInvitado extends Component {
     }
 
     registrar() {
-        if (true) {
+        if (!this.esInvalido()) {
             this.addInvitado();
             if (this.esPropietario) {
                 console.log('ok');
             } else {
                 this.registrarIngreso();
             }
+        } else {
+            alert('Es invalido')
         }
     }
 
-
+    esInvalido() {
+        //Debe de validar que el campo no sea null. en caso de serlo cambiar el error a true para que se pinte.
+        return (
+            this.errorTipoDocumento.error
+        );
+    }
     render() {
         return (
             <div className="col-12">
-                <legend><h3>Nuevo Invitado</h3></legend>
+                <legend><h3 className="row">Nuevo Invitado</h3></legend>
                 <div className="row" hidden={this.esPropietario}>
                     <div className="col-md-3 row-secction">
                         <label>Tipo Documento</label>
@@ -265,8 +275,15 @@ class AltaInvitado extends Component {
                             isSearchable={true}
                             options={this.state.tipoD}
                             onChange={this.ChangeSelectInvitado.bind(this)}
-
+                            styles={ this.errorTipoDocumento.error?{
+                                control: (base, state) => ({
+                                    ...base,
+                                    borderColor: "red",
+                                    boxShadow: "red"
+                                })}:{}}
                         />
+                        <label className='small text-danger'
+                               hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
                     </div>
                     <div className="col-md-4 row-secction">
                         <label> Numero de Documento Invitado </label>

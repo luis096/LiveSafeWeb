@@ -224,7 +224,7 @@ class AltaReserva extends Component {
     render() {
         return (
             <div className="col-12 ">
-                <legend><h3> Registrar una reserva</h3></legend>
+                <legend><h3 className="row"> Registrar una reserva</h3></legend>
                 <div className="row">
                     <div className="col-md-6  flex-container form-group row-secction">
                         <label> Servicios del Country </label>

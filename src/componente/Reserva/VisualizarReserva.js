@@ -174,7 +174,7 @@ class VisualizarReserva extends Component {
     render() {
         return (
             <div className="col-12">
-                <legend><h3> Visualizar reserva</h3></legend>
+                <legend><h3 className="row"> Visualizar reserva</h3></legend>
                 <div className="row">
                     <div className="col-md-4 row-secction">
                         <h4>Nombre del servicio</h4>
@@ -204,7 +204,7 @@ class VisualizarReserva extends Component {
                     </div>
                 </div>
                 <legend/>
-                <h3>Invitados de la reserva</h3>
+                <h3 className="row">Invitados de la reserva</h3>
                 <div className="izquierda">
                     <Button bsStyle="primary" fill wd onClick={this.modalAgregarInvitado}
                             disabled={this.permiteAgregar()}>

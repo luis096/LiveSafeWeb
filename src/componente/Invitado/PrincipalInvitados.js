@@ -47,6 +47,9 @@ class PrincipalInvitados extends Component {
         this.hideAlert = this.hideAlert.bind(this);
         this.cancelar = this.cancelar.bind(this);
         this.cantidad = [];
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorDocumento = {error: false, mensaje: ''};
     }
 
     async componentDidMount() {
@@ -209,29 +212,59 @@ class PrincipalInvitados extends Component {
     async consultar() {
         let resultado = this.state.invitados;
         const {nombre, apellido, documento, estado} = this.state;
-        if (nombre && nombre != ''){
-            resultado = filtros.filtroNombre(resultado, nombre)
+        if(this.esInvalido()){
+            this.setState({
+                alert: (
+                    <SweetAlert
+                        style={{ display: "block", marginTop: "-100px", position: "center"}}
+                        title="Hay errores en los filtros"
+                        onConfirm={() => this.hideAlert()}
+                        onCancel={() => this.hideAlert()}
+                        confirmBtnBsStyle="danger"
+                    />
+                )
+            });
+            return;
         }
-        if (apellido && apellido != ''){
-            resultado = filtros.filtroApellido(resultado, apellido)
+
+        if (nombre && nombre != '') {
+            resultado = filtros.filtroNombre(resultado, nombre);
         }
-        if (estado && estado.value != null){
-            resultado = filtros.filtroEstado(resultado, estado.value)
+        if (apellido && apellido != '') {
+            resultado = filtros.filtroApellido(resultado, apellido);
         }
-        if (documento && documento != ''){
-            resultado = filtros.filtroDocumento(resultado, documento)
+        if (estado && estado.value != null) {
+            resultado = filtros.filtroEstado(resultado, estado.value);
         }
-        this.setState({invitadosFiltrados: resultado})
+        if (documento && documento != '') {
+            resultado = filtros.filtroDocumento(resultado, documento);
+        }
+        this.setState({invitadosFiltrados: resultado});
         this.cantidad = paginador.cantidad(resultado.length);
-        await this.paginar(0, resultado)
+        await this.paginar(0, resultado);
+    }
+
+    esInvalido() {
+        return (
+            this.errorNombre.error ||
+            this.errorApellido.error ||
+            this.errorDocumento.error
+        );
     }
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
+        // Si fuese requerido:
+        // this.errorNombre = validator.requerido(event.target.value);
+        // if (!this.errorNombre.error) {
+        //     this.errorNombre = validator.soloLetras(event.target.value);
+        // }
+        this.errorNombre = validator.soloLetras(event.target.value);
     }
 
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
+        this.errorApellido = validator.soloLetras(event.target.value);
     }
 
     ChangeSelectEstado(value) {
@@ -240,44 +273,56 @@ class PrincipalInvitados extends Component {
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
+        this.errorDocumento = validator.numero(event.target.value);
     }
 
     render() {
         return (
             <div className="col-12">
                 <legend><h3 className="row">Mis invitados</h3></legend>
-                <div className="row">
-                    <h5>Filtros de busqueda</h5>
-                    <div className="col-md-3 row-secction">
-                        <label>Nombre</label>
-                        <input className="form-control" value={this.state.nombre}
-                               onChange={this.ChangeNombre}
-                        />
+                <div className="row card">
+                    <div className="card-body">
+                        <h5 className="row">Filtros de busqueda</h5>
+                        <div className="col-md-3 row-secction">
+                            <label>Nombre</label>
+                            <input className={this.errorNombre.error ? 'form-control error' : 'form-control'}
+                                   value={this.state.nombre}
+                                   onChange={this.ChangeNombre} placeholder="Nombre"
+                            />
+                            <label className='small text-danger'
+                                   hidden={!this.errorNombre.error}>{this.errorNombre.mensaje}</label>
+                        </div>
+                        <div className="col-md-3 row-secction">
+                            <label>Apellido</label>
+                            <input className={this.errorApellido.error ? 'form-control error' : 'form-control'}
+                                   value={this.state.apellido}
+                                   onChange={this.ChangeApellido} placeholder="Apellido"
+                            />
+                            <label className='small text-danger'
+                                   hidden={!this.errorApellido.error}>{this.errorApellido.mensaje}</label>
+                        </div>
+                        <div className="col-md-3 row-secction">
+                            <label>Nro Documento</label>
+                            <input className={this.errorDocumento.error ? 'form-control error' : 'form-control'}
+                                   value={this.state.documento}
+                                   onChange={this.ChangeDocumento} placeholder="Nro Documento"
+                            />
+                            <label className='small text-danger'
+                                   hidden={!this.errorDocumento.error}>{this.errorDocumento.mensaje}</label>
+                        </div>
+                        <div className="col-md-3 row-secction">
+                            <label>Estado</label>
+                            <Select
+                                isDisabled={false}
+                                isLoading={false}
+                                isClearable={true}
+                                isSearchable={true}
+                                options={[{value: 1, label: 'Activo'}, {value: 0, label: 'Inactivo'}]}
+                                onChange={this.ChangeSelectEstado.bind(this)}
+                            />
+                        </div>
                     </div>
-                    <div className="col-md-3 row-secction">
-                        <label>Apellido</label>
-                        <input className="form-control" value={this.state.apellido}
-                               onChange={this.ChangeApellido}
-                        />
-                    </div>
-                    <div className="col-md-3 row-secction">
-                        <label>Nro Documento</label>
-                        <input className="form-control" value={this.state.documento}
-                               onChange={this.ChangeDocumento}
-                        />
-                    </div>
-                    <div className="col-md-3 row-secction">
-                        <label>Estado</label>
-                        <Select
-                            classNamePrefix="select"
-                            isDisabled={false}
-                            isLoading={false}
-                            isClearable={true}
-                            isSearchable={true}
-                            options={[{value: 1, label: 'Activo'}, {value: 0, label: 'Inactivo'}]}
-                            onChange={this.ChangeSelectEstado.bind(this)}
-                        />
-                    </div>
+
                 </div>
                 <div className="izquierda">
                     <Button bsStyle="info" fill wd onClick={this.consultar}>
@@ -285,7 +330,7 @@ class PrincipalInvitados extends Component {
                     </Button>
                 </div>
                 {this.state.alert}
-                <div className="card row">
+                <div className="card row" hidden={!this.state.invitadosFiltrados.length}>
                     <h4 className="row">Invitados ({this.state.invitadosFiltrados.length})</h4>
                     <div className="card-body">
                         <table className="table table-hover">
@@ -303,7 +348,7 @@ class PrincipalInvitados extends Component {
 
                             <tbody>
                             {
-                                this.state.invitadosPaginados.map(inv => {
+                                this.state.invitadosPaginados.map(inv=> {
                                         return (
                                             <tr className="table-light">
                                                 <th>{inv[0].Documento}</th>
@@ -334,7 +379,7 @@ class PrincipalInvitados extends Component {
                         </table>
                     </div>
                 </div>
-                <div className="text-center">
+                <div className="text-center" hidden={!this.state.invitadosFiltrados.length}>
                     <Pagination className="pagination-no-border">
                         <Pagination.First onClick={()=>this.paginar(0)}/>
 
@@ -347,6 +392,12 @@ class PrincipalInvitados extends Component {
 
                         <Pagination.Last onClick={()=>this.paginar(this.cantidad.length - 1)}/>
                     </Pagination>
+                </div>
+                <div className="row card" hidden={this.state.invitadosFiltrados.length}>
+                    <div className="card-body">
+                        <h4 className="row">No se encontraron resultados.</h4>
+                    </div>
+
                 </div>
 
                 <Modal
