@@ -71,11 +71,12 @@ class PrincipalInvitados extends Component {
         });
         this.setState({invitados, invitadosFiltrados: invitados});
         this.cantidad = paginador.cantidad(this.state.invitadosFiltrados.length);
-        this.paginar(0);
+        this.paginar(0, invitados);
     }
 
-    paginar(pagina) {
-        let resultado = paginador.paginar(pagina, this.state.invitadosFiltrados);
+    paginar(pagina, elementos) {
+        let paginaElementos = elementos || this.state.invitadosFiltrados;
+        let resultado = paginador.paginar(pagina, paginaElementos);
         this.setState({invitadosPaginados: resultado.Elementos, numPagina: resultado.NumPagina});
     }
 
@@ -205,7 +206,7 @@ class PrincipalInvitados extends Component {
         });
     }
 
-    consultar() {
+    async consultar() {
         let resultado = this.state.invitados;
         const {nombre, apellido, documento, estado} = this.state;
         if (nombre && nombre != ''){
@@ -222,7 +223,7 @@ class PrincipalInvitados extends Component {
         }
         this.setState({invitadosFiltrados: resultado})
         this.cantidad = paginador.cantidad(resultado.length);
-        this.paginar(0)
+        await this.paginar(0, resultado)
     }
 
     ChangeNombre(event) {
@@ -302,11 +303,10 @@ class PrincipalInvitados extends Component {
 
                             <tbody>
                             {
-                                this.state.invitadosFiltrados.map(inv=> {
+                                this.state.invitadosPaginados.map(inv => {
                                         return (
-
                                             <tr className="table-light">
-                                                <th scope="row">{inv[0].Documento}</th>
+                                                <th>{inv[0].Documento}</th>
                                                 <td>{inv[0].Nombre}, {inv[0].Apellido}</td>
                                                 <td>{inv[0].Grupo}</td>
                                                 <td> {inv[0].Estado ? 'Activo' : 'Inactivo'}</td>
