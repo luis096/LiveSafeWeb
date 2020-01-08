@@ -10,16 +10,11 @@ import 'assets/sass/light-bootstrap-dashboard-pro-react.scss?v=1.2.0';
 import 'assets/css/demo.css';
 import 'assets/css/pe-icon-7-stroke.css';
 
-import AuthLayout from 'layouts/Auth.jsx';
-// import AdminLayout from "layouts/Admin.jsx";
-// import LoginLayout from 'layouts/Login.jsx';
-import DocumentationLayout from 'layouts/Components/Components.jsx';
+
 
 import AdminLayout from 'layouts/Admin.jsx';
 import LoginLayout from 'views/Pages/LoginPage.jsx'
-import RootLayout from 'layouts/Root.jsx';
-import EncargadoLayout from 'layouts/Encargado.jsx';
-import PropietarioLayout from 'layouts/Propietario.jsx';
+
 import Invitado from 'componente/InvitadoEvento/InvitadoEvento.js';
 import Login from 'layouts/Login.jsx';
 

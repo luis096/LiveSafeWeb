@@ -407,7 +407,7 @@ var routes = [
         path: '/propietario',
         name: 'Reservas',
         state: 'openReserva',
-        icon: 'pe-7s-users',
+        icon: 'pe-7s-date',
         views: [
             {
                 path: '/misReservas',
@@ -499,7 +499,7 @@ var routes = [
         name: 'Mi Perfil',
         icon: 'null',
         noVisualizar: true,
-        component: UserPage
+        component: MiPerfil
     },
 ];
 export default routes;

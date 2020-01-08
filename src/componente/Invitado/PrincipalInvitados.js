@@ -93,12 +93,15 @@ class PrincipalInvitados extends Component {
             .collection('Propietarios').doc(localStorage.getItem('idPersona'))
             .collection('Reservas').orderBy('FechaDesde', 'desc').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
-                reservas.push(
-                    {
-                        value: doc.id, label: doc.data().Nombre,
-                        fechaDesde: doc.data().FechaDesde, fechaHasta: doc.data().FechaHasta
-                    }
-                );
+                if (!doc.data().Cancelado && validator.obtenerFecha(doc.data().FechaDesde) > new Date()){
+                    reservas.push(
+                        {
+                            value: doc.id, label: doc.data().Nombre,
+                            fechaDesde: doc.data().FechaDesde, fechaHasta: doc.data().FechaHasta
+                        }
+                    );
+                }
+
             });
         });
         this.setState({reservas});
@@ -283,49 +286,52 @@ class PrincipalInvitados extends Component {
                 <div className="row card">
                     <div className="card-body">
                         <h5 className="row">Filtros de busqueda</h5>
-                        <div className="col-md-3 row-secction">
-                            <label>Nombre</label>
-                            <input className={this.errorNombre.error ? 'form-control error' : 'form-control'}
-                                   value={this.state.nombre}
-                                   onChange={this.ChangeNombre} placeholder="Nombre"
-                            />
-                            <label className='small text-danger'
-                                   hidden={!this.errorNombre.error}>{this.errorNombre.mensaje}</label>
+                        <div className='row'>
+                            <div className="col-md-3 row-secction">
+                                <label>Nombre</label>
+                                <input className={this.errorNombre.error ? 'form-control error' : 'form-control'}
+                                       value={this.state.nombre}
+                                       onChange={this.ChangeNombre} placeholder="Nombre"
+                                />
+                                <label className='small text-danger'
+                                       hidden={!this.errorNombre.error}>{this.errorNombre.mensaje}</label>
+                            </div>
+                            <div className="col-md-3 row-secction">
+                                <label>Apellido</label>
+                                <input className={this.errorApellido.error ? 'form-control error' : 'form-control'}
+                                       value={this.state.apellido}
+                                       onChange={this.ChangeApellido} placeholder="Apellido"
+                                />
+                                <label className='small text-danger'
+                                       hidden={!this.errorApellido.error}>{this.errorApellido.mensaje}</label>
+                            </div>
+                            <div className="col-md-3 row-secction">
+                                <label>Nro Documento</label>
+                                <input className={this.errorDocumento.error ? 'form-control error' : 'form-control'}
+                                       value={this.state.documento}
+                                       onChange={this.ChangeDocumento} placeholder="Nro Documento"
+                                />
+                                <label className='small text-danger'
+                                       hidden={!this.errorDocumento.error}>{this.errorDocumento.mensaje}</label>
+                            </div>
+                            <div className="col-md-3 row-secction">
+                                <label>Estado</label>
+                                <Select
+                                    isDisabled={false}
+                                    isLoading={false}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    options={[{value: 1, label: 'Activo'}, {value: 0, label: 'Inactivo'}]}
+                                    onChange={this.ChangeSelectEstado.bind(this)}
+                                />
+                            </div>
                         </div>
-                        <div className="col-md-3 row-secction">
-                            <label>Apellido</label>
-                            <input className={this.errorApellido.error ? 'form-control error' : 'form-control'}
-                                   value={this.state.apellido}
-                                   onChange={this.ChangeApellido} placeholder="Apellido"
-                            />
-                            <label className='small text-danger'
-                                   hidden={!this.errorApellido.error}>{this.errorApellido.mensaje}</label>
-                        </div>
-                        <div className="col-md-3 row-secction">
-                            <label>Nro Documento</label>
-                            <input className={this.errorDocumento.error ? 'form-control error' : 'form-control'}
-                                   value={this.state.documento}
-                                   onChange={this.ChangeDocumento} placeholder="Nro Documento"
-                            />
-                            <label className='small text-danger'
-                                   hidden={!this.errorDocumento.error}>{this.errorDocumento.mensaje}</label>
-                        </div>
-                        <div className="col-md-3 row-secction">
-                            <label>Estado</label>
-                            <Select
-                                isDisabled={false}
-                                isLoading={false}
-                                isClearable={true}
-                                isSearchable={true}
-                                options={[{value: 1, label: 'Activo'}, {value: 0, label: 'Inactivo'}]}
-                                onChange={this.ChangeSelectEstado.bind(this)}
-                            />
-                        </div>
+
                     </div>
 
                 </div>
                 <div className="izquierda">
-                    <Button bsStyle="info" fill wd onClick={this.consultar}>
+                    <Button bsStyle="primary" fill wd onClick={this.consultar}>
                         Consultar
                     </Button>
                 </div>
@@ -354,7 +360,7 @@ class PrincipalInvitados extends Component {
                                                 <th>{inv[0].Documento}</th>
                                                 <td>{inv[0].Nombre}, {inv[0].Apellido}</td>
                                                 <td>{inv[0].Grupo}</td>
-                                                <td> {inv[0].Estado ? 'Activo' : 'Inactivo'}</td>
+                                                <td>{inv[0].Estado ? 'Activo' : 'Inactivo'}</td>
                                                 <td><Button bsStyle="info" fill wd
                                                             disabled={!inv[0].Nombre} onClick={()=> {
                                                     this.setState({invitadoReserva: inv});
@@ -397,7 +403,6 @@ class PrincipalInvitados extends Component {
                     <div className="card-body">
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>
-
                 </div>
 
                 <Modal

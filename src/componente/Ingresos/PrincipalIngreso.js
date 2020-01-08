@@ -3,9 +3,8 @@ import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import Ingreso from './Ingreso';
 import { Link } from 'react-router-dom';
-import {Modal} from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import Select from 'react-select';
-
 
 class PrincialIngreso extends Component {
 
@@ -29,7 +28,6 @@ class PrincialIngreso extends Component {
             observacion: false,
             tipoPersona: 'propietario'
         };
-        this.actualizar = this.actualizar.bind(this);
         this.ChangeSelect = this.ChangeSelect.bind(this);
         this.ChangeDocumento = this.ChangeDocumento.bind(this);
         this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
@@ -39,12 +37,11 @@ class PrincialIngreso extends Component {
     }
 
     async componentDidMount() {
-        const {ingresos} = this.state;
-
+        const {ingresos, tipoD} = this.state;
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Ingresos').get().then(querySnapshot=> {
+            .collection('Ingresos').orderBy('Hora', 'desc').get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
-                    this.state.ingresos.push(
+                    ingresos.push(
                         [doc.data(), doc.id]
                     );
                 });
@@ -52,13 +49,13 @@ class PrincialIngreso extends Component {
         this.setState({ingresos});
         await Database.collection('TipoDocumento').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
-                this.state.tipoD.push(
+                tipoD.push(
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
         });
+        this.setState({tipoD});
     }
-
 
     ChangeSelect(value) {
         this.setState({tipoDocumento: value});
@@ -82,42 +79,46 @@ class PrincialIngreso extends Component {
     }
 
     buscarPersona() {
+        const { invitadoTemp } = this.state;
         Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Propietarios')
             .get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
                 if (doc.data().Documento === this.state.documento &&
-                    doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
-                    this.state.invitadoTemp.push(doc.data(), doc.id);
+                    doc.data().TipoDocumento.id === this.state.tipoDocumento.value) {
+                    invitadoTemp.push(doc.data(), doc.id);
                     this.setState({
                         virgen: false, mensaje: doc.data().Apellido + ', ' + doc.data().Nombre
                     });
                 }
             });
         });
-        if(this.state.invitadoTemp.length == 0){
-                Database.collection('Country').doc(localStorage.getItem('idCountry'))
-                    .collection('Invitados').get().then(querySnapshot=> {
-                        querySnapshot.forEach(doc=> {
-                            if (doc.data().Documento === this.state.documento &&
-                                doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
-                                this.state.invitadoTemp.push(doc.data(), doc.id);
-                                if (doc.data().Nombre != '') {
-                                    this.setState({
-                                        virgen: false, mensaje: doc.data().Apellido + ', ' + doc.data().Nombre
-                                    });
-                                } else {
-                                    this.setState({
-                                        virgen: true, mensaje: 'Falta autentificar visitante'
-                                    });
-                                }
-                            }
-                        });
-                    });
-        }}
+        if (invitadoTemp.length == 0) {
+            Database.collection('Country').doc(localStorage.getItem('idCountry'))
+                .collection('Invitados').get().then(querySnapshot=> {
+                querySnapshot.forEach(doc=> {
+                    if (doc.data().Documento === this.state.documento &&
+                        doc.data().TipoDocumento.id === this.state.tipoDocumento.value) {
+                        invitadoTemp.push(doc.data(), doc.id);
+                        if (doc.data().Nombre != '') {
+                            this.setState({
+                                virgen: false, mensaje: doc.data().Apellido + ', ' + doc.data().Nombre
+                            });
+                        } else {
+                            this.setState({
+                                virgen: true, mensaje: 'Falta autentificar al visitante'
+                            });
+                        }
+                    }
+                });
+            });
+        }
+        this.setState({invitadoTemp})
+    }
 
     registrar() {
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Ingresos').add({
+        const { ingresos } = this.state;
+        let id = 0;
+        let ingreso = {
             Nombre: this.state.invitadoTemp[0].Nombre,
             Apellido: this.state.invitadoTemp[0].Apellido,
             TipoDocumento: this.state.invitadoTemp[0].TipoDocumento,
@@ -127,43 +128,32 @@ class PrincialIngreso extends Component {
             Estado: this.state.estado,
             Descripcion: this.state.descripcion,
             IdEncargado: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Encargados/' + localStorage.getItem('idPersona'))
-        });
+        };
+        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Ingresos').add(ingreso).then(doc => id = doc.id);
         this.setState({
             show: false, tipoDocumento: '', documento: '',
             virgen: false, busqueda: true, invitadoTemp: [], mensaje: '', observacion: false
         });
-        this.setState({ingresos: []});
-        this.render();
+        ingresos.push([ingreso, id]);
+        this.setState({ingresos});
     }
-
 
     async buscarEnIngresos() {
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Ingresos').orderBy('Hora', 'asc').get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
                     if (doc.data().Documento === this.state.documento &&
-                        doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value && !doc.data().Egreso
+                        doc.data().TipoDocumento.id === this.state.tipoDocumento.value && !doc.data().Egreso
                     ) {
                         this.setState({observacion: true});
                     } else if (doc.data().Documento === this.state.documento &&
-                        doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value && doc.data().Egreso) {
+                        doc.data().TipoDocumento.id === this.state.tipoDocumento.value && doc.data().Egreso) {
                         this.setState({observacion: false});
                     }
 
                 });
             });
-    }
-
-
-    actualizar(id) {
-        const {ingresos} = this.state;
-        this.state.ingresos.map(valor=> {
-            if (valor[1] == id) {
-                ingresos.splice(ingresos.indexOf(valor), 1);
-            }
-        });
-        this.setState({ingresos});
-        this.render();
     }
 
     render() {
@@ -179,19 +169,10 @@ class PrincialIngreso extends Component {
         };
         return (
             <div className="col-12">
-
-                <div className="row ">
-                    <div className="col-1"></div>
-                    <div className="col-5">
-                        <label className="h2">Ingresos</label>
-                    </div>
+                <legend><h3 className="row">Ingresos</h3></legend>
+                <div className="row">
                     <div className="col-5 izquierda">
-                        <input className="mr-sm-2 borde-button" control de formulario tipo="texto"
-                               placeholder="Buscar"/>
-                        <button type="button" className="btn btn-primary"
-                                onClick={handleShow}
-                        >Nuevo Ingreso
-                        </button>
+                        <button type="button" className="btn btn-primary" onClick={handleShow}>Nuevo Ingreso</button>
                         <Modal show={show} onHide={handleClose}>
                             <Modal.Header closeButton>
                                 <Modal.Title>Buscar persona</Modal.Title>
@@ -209,7 +190,6 @@ class PrincialIngreso extends Component {
                                         isSearchable={true}
                                         options={this.state.tipoD}
                                         onChange={this.ChangeSelect.bind(this)}
-
                                     />
                                 </div>
                                 <div className="form-group">
@@ -224,12 +204,12 @@ class PrincialIngreso extends Component {
                                     <label hidden={!this.state.observacion}>{'this.state.mensaje2'}</label>
                                     <div hidden={!this.state.observacion}>
                                         <textarea className="form-control" placeholder="Observacion"
-                                                value={this.state.descripcion}
-                                                onChange={this.ChangeDescripcion}
-                                                hidden={!this.state.observacion}
+                                                  value={this.state.descripcion}
+                                                  onChange={this.ChangeDescripcion}
+                                                  hidden={!this.state.observacion}
                                         ></textarea>
                                     </div>
-                                    
+
                                 </div>
                             </Modal.Body>
                             <Modal.Footer>
@@ -264,18 +244,11 @@ class PrincialIngreso extends Component {
                                 )}
                             </Modal.Footer>
                         </Modal>
-
                     </div>
-
                 </div>
 
                 <div className="row">
-
-                    <div className="col-md-1"></div>
                     <div className="col-md-10 ">
-
-                        <br></br>
-
                         <table className="table table-hover  ">
                             <thead>
                             <tr>
@@ -287,38 +260,27 @@ class PrincialIngreso extends Component {
                                 <th scope="col">Cancelar</th>
                             </tr>
                             </thead>
-
                             <tbody>
                             {
 
-                                this.state.ingresos.map(ingresos=> {
+                                this.state.ingresos.map(ing=> {
                                         return (
-
-                                            <Ingreso
-                                                idIngreso={ingresos[1]}
-                                                nombre={ingresos[0].Nombre}
-                                                apellido={ingresos[0].Apellido}
-
-                                                documento={ingresos[0].Documento}
-                                                descripcion={ingresos[0].Descripcion}
-                                                hora={ingresos[0].Hora}
-                                                act={this.actualizar}
-                                            >
-                                            </Ingreso>
+                                            <tr className="table-light">
+                                                <th scope="row">{ing[0].Nombre}, {ing[0].Apellido}</th>
+                                                <td>{ing[0].Documento}</td>
+                                                <td>{ing[0].Persona}</td>
+                                                <td>{'sd'}</td>
+                                                <td>{ing[0].Descripcion? 'Si' : '-'}</td>
+                                                <td>{'cancelar'}</td>
+                                            </tr>
                                         );
                                     }
                                 )
                             }
-
                             </tbody>
                         </table>
                     </div>
-                    <div className="col-md-1"></div>
                 </div>
-                <div>
-                    < hr className="my-4"></hr>
-                </div>
-                <div className="espacio"></div>
             </div>
         );
     }

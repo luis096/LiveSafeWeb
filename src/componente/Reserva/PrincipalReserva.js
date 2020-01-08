@@ -129,6 +129,7 @@ class PrincipalReserva extends Component {
                             <thead>
                             <tr>
                                 <th scope="col">Nombre</th>
+                                <th scope="col">Servicio</th>
                                 <th scope="col">Estado</th>
                                 <th scope="col">Dia</th>
                                 <th scope="col">Hora desde</th>
@@ -147,6 +148,7 @@ class PrincipalReserva extends Component {
                                     return (
                                         <tr className="table-light">
                                             <th scope="row">{res[0].Nombre}</th>
+                                            <th scope="row">{res[0].Servicio}</th>
                                             <td>{estado.Nombre}</td>
                                             <td>{desde.toLocaleDateString()}</td>
                                             <td>{desde.toLocaleTimeString()}</td>

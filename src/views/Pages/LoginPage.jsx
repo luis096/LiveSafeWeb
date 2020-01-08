@@ -40,18 +40,31 @@ class LoginPage extends Component {
         this.crearUsuarioNuevo = this.crearUsuarioNuevo.bind(this);
         this.ChangeEmail = this.ChangeEmail.bind(this);
         this.ChangePass = this.ChangePass.bind(this);
+        this.ChangeNuevaPass = this.ChangeNuevaPass.bind(this);
+        this.ChangeNuevaPassTwo = this.ChangeNuevaPassTwo.bind(this);
         this.onButtonPress = this.onButtonPress.bind(this);
         this.obtenerValoresUsuario = this.obtenerValoresUsuario.bind(this);
     }
 
+    componentDidMount() {
+        setTimeout(function () { this.setState({cardHidden: false});}.bind(this), 700);
+        this.authListener();
+    }
 
     ChangeEmail(event) {
         this.setState({email: event.target.value});
-
     }
 
     ChangePass(event) {
         this.setState({password: event.target.value});
+    }
+
+    ChangeNuevaPass(event) {
+        this.setState({nuevaPass: event.target.value});
+    }
+
+    ChangeNuevaPassTwo(event) {
+        this.setState({nuevaPassTwo: event.target.value});
     }
 
     async obtenerValoresUsuario() {
@@ -67,7 +80,6 @@ class LoginPage extends Component {
                 }
             });
     }
-
 
     authListener() {
         Firebase.auth().onAuthStateChanged((user)=> {
@@ -94,9 +106,7 @@ class LoginPage extends Component {
     }
 
     consultarUsuarioTemporal() {
-        console.log('consultarUsuarioTemp');
-        Database.collection('UsuarioTemp').doc(this.state.email).get().then(doc=> {
-            console.log(doc.data())
+        Database.collection('UsuariosTemp').doc(this.state.email).get().then(doc=> {
             if (doc.exists) {
                 this.setState({usuarioNuevo: doc.data()});
             }
@@ -104,14 +114,11 @@ class LoginPage extends Component {
     }
 
     async onButtonPress() {
-        console.log('onBottonPresss');
         await this.obtenerValoresUsuario();
 
         if (!this.state.tipoUsuario) {
             await this.consultarUsuarioTemporal();
-        }
-
-        if (!this.state.usuarioNuevo) {
+        } else {
             await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
                 .then(()=> {
                     this.setState({result: true});
@@ -123,25 +130,13 @@ class LoginPage extends Component {
         }
     }
 
-
     async crearUsuarioNuevo() {
-        console.log('creaUsuarioNuevo');
         const {email, nuevaPass, usuarioNuevo} = this.state;
         await Firebase.auth().createUserWithEmailAndPassword(email, nuevaPass).then(
-            Database.collection('Usuarios').doc(email).set({usuarioNuevo}));
+            Database.collection('Usuarios').doc(email).set(usuarioNuevo));
         await this.obtenerValoresUsuario();
-        this.setState({result: true});
-
-    }
-
-    componentDidMount() {
-        setTimeout(
-            function () {
-                this.setState({cardHidden: false});
-            }.bind(this),
-            700
-        );
-        this.authListener();
+        Database.collection('UsuariosTemp').doc(this.state.email).delete();
+        this.setState({user: true});
     }
 
     render() {
@@ -189,7 +184,7 @@ class LoginPage extends Component {
                                                                     <FormControl placeholder="Contraseña"
                                                                                  type="password"
                                                                                  value={this.state.nuevaPass}
-                                                                                 onChange={this.ChangePass}
+                                                                                 onChange={this.ChangeNuevaPass}
                                                                                  autoComplete="off"/>
                                                                 </FormGroup>
                                                                 <FormGroup hidden={!this.state.usuarioNuevo}>
@@ -198,7 +193,7 @@ class LoginPage extends Component {
                                                                     <FormControl placeholder="Contraseña"
                                                                                  type="password"
                                                                                  value={this.state.nuevaPassTwo}
-                                                                                 onChange={this.ChangePass}
+                                                                                 onChange={this.ChangeNuevaPassTwo}
                                                                                  autoComplete="off"/>
                                                                 </FormGroup>
                                                             </div>
@@ -254,7 +249,7 @@ class LoginPage extends Component {
         } else {
             return (
                 <div>
-                    <Spinner size={120} spinnerColor={'#333'} spinnerWidth={2} visible={true}></Spinner>
+                    <Spinner size={120} spinnerColor={'blue'} spinnerWidth={8} visible={true}></Spinner>
                 </div>
             );
         }

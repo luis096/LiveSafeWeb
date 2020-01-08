@@ -1,3 +1,5 @@
+import {Database} from '../config/config';
+
 //Expreciones regulares para las validaciones.
 const NUMBER_REGEXP = /^\d*$/;
 const DECIMAL_REGEXP = /^\d+(\.\d+){0,2}?$/;
@@ -12,6 +14,7 @@ const NOMBRE_ARCHIVOS = /^(?!((con|prn|aux)((\.[^\\/:*"$•?<>|]{1,3}$)|$))|[\s\
 const LETRAS_REGEXP = /^[a-zA-Z ]*$/;
 const ESTADOS_RESERVAS = ['Pendiente', 'En Curso', 'Cancelado', 'Realizado'];
 
+
 // Se retorna TRUE si hay un error.. 
 export const validator = {
     numero,
@@ -19,7 +22,8 @@ export const validator = {
     mail,
     soloLetras,
     estadoReserva,
-    obtenerFecha
+    obtenerFecha,
+    validarMail
 };
 
 
@@ -65,4 +69,12 @@ function estadoReserva(desde, hasta, cancelado) {
 
 function obtenerFecha(time) {
     return (new Date(time.seconds * 1000));
+}
+
+async function validarMail(mail) {
+    let valido = true;
+    await Database.collection('Usuarios').doc(mail).get().then(doc => {
+        valido = !doc.exists;
+    });
+    return valido;
 }

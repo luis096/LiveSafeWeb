@@ -239,7 +239,7 @@ class AltaReserva extends Component {
                             onChange={this.ChangeSelect.bind(this)}
                         />
                     </div>
-                    <div className="row-secction">
+                    <div className="row-secction" style={{paddingTop: '25px'}}>
                         <Button bsStyle="primary" fill wd onClick={this.consultar}>
                             Consultar
                         </Button>

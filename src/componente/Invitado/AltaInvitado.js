@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { Database} from '../../config/config';
+import { Database } from '../../config/config';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
 
@@ -110,8 +110,8 @@ class AltaInvitado extends Component {
 
     ChangeSelectInvitado(value) {
         this.setState({tipoDocumentoInvitado: value});
-        this.errorTipoDocumento = validator.requerido(value?value.value:null);
-        console.log(this.errorTipoDocumento)
+        this.errorTipoDocumento = validator.requerido(value ? value.value : null);
+        console.log(this.errorTipoDocumento);
     }
 
     ChangeDocumentoInvitado(event) {
@@ -171,7 +171,7 @@ class AltaInvitado extends Component {
                 this.registrarIngreso();
             }
         } else {
-            alert('Es invalido')
+            alert('Es invalido');
         }
     }
 
@@ -181,124 +181,130 @@ class AltaInvitado extends Component {
             this.errorTipoDocumento.error
         );
     }
+
     render() {
         return (
             <div className="col-12">
                 <legend><h3 className="row">Nuevo Invitado</h3></legend>
-                <div className="row" hidden={this.esPropietario}>
-                    <div className="col-md-3 row-secction">
-                        <label>Tipo Documento</label>
-                        <Select
-                            className="select-documento"
-                            classNamePrefix="select"
-                            isDisabled={false}
-                            isLoading={false}
-                            isClearable={true}
-                            isSearchable={true}
-                            options={this.state.tipoD}
-                            onChange={this.ChangeSelect.bind(this)}
-                        />
-                    </div>
-                    <div className="col-md-3 row-secction">
-                        <label>Número de Documento</label>
-                        <input className="form-control" placeholder="Número de Documento"
-                               value={this.state.documento}
-                               onChange={this.ChangeDocumento}
-                        />
-                    </div>
-                    <div className="col-md-4 row-secction">
-                        <label>Propietario encontrado</label>
-                        <input className="form-control" placeholder="Realize la busqueda"
-                               value={this.state.mensaje}
-                               disabled={true}
-                        />
-                    </div>
-                    <div className="col-md-2 row-secction">
-                        <Button bsStyle="info" fill wd onClick={this.buscarPropietario}>
-                            Buscar Propietario
-                        </Button>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6 row-secction">
-                        <label> Grupo </label>
-                        <input type="name" className="form-control" placeholder="Name"
-                               value={this.state.grupo}
-                               onChange={this.ChangeGrupo}
-                        />
-                    </div>
-                    <div className="col-md-3 row-secction">
-                        <label> Fecha Desde </label>
-                        <input type="date" className="form-control" name="FechaDesde"
-                               step="1" min="1920-01-01" value={this.state.startDate}
-                               onChange={this.ChangeFechaDesde}
-                               disabled={!this.esPropietario}
-                        />
-                    </div>
-                    <div className="col-md-3 row-secction">
-                        <label> Fecha Hasta </label>
-                        <input type="date" className="form-control" name="FechaHasta"
-                               step="1" min="1920-01-01" value={this.state.endDate}
-                               disabled={!this.esPropietario}
-                               onChange={this.ChangeFechaHasta}
-                        />
-                    </div>
-                </div>
+                <div className="row card">
+                    <div className="card-body">
+                        <div className="row" hidden={this.esPropietario}>
+                            <div className="col-md-3 row-secction">
+                                <label>Tipo Documento</label>
+                                <Select
+                                    className="select-documento"
+                                    classNamePrefix="select"
+                                    isDisabled={false}
+                                    isLoading={false}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    options={this.state.tipoD}
+                                    onChange={this.ChangeSelect.bind(this)}
+                                />
+                            </div>
+                            <div className="col-md-3 row-secction">
+                                <label>Número de Documento</label>
+                                <input className="form-control" placeholder="Número de Documento"
+                                       value={this.state.documento}
+                                       onChange={this.ChangeDocumento}
+                                />
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label>Propietario encontrado</label>
+                                <input className="form-control" placeholder="Realize la busqueda"
+                                       value={this.state.mensaje}
+                                       disabled={true}
+                                />
+                            </div>
+                            <div className="col-md-2 row-secction">
+                                <Button bsStyle="info" fill wd onClick={this.buscarPropietario}>
+                                    Buscar Propietario
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6 row-secction">
+                                <label> Grupo </label>
+                                <input type="name" className="form-control" placeholder="Name"
+                                       value={this.state.grupo}
+                                       onChange={this.ChangeGrupo}
+                                />
+                            </div>
+                            <div className="col-md-3 row-secction">
+                                <label> Fecha Desde </label>
+                                <input type="date" className="form-control" name="FechaDesde"
+                                       step="1" min="1920-01-01" value={this.state.startDate}
+                                       onChange={this.ChangeFechaDesde}
+                                       disabled={!this.esPropietario}
+                                />
+                            </div>
+                            <div className="col-md-3 row-secction">
+                                <label> Fecha Hasta </label>
+                                <input type="date" className="form-control" name="FechaHasta"
+                                       step="1" min="1920-01-01" value={this.state.endDate}
+                                       disabled={!this.esPropietario}
+                                       onChange={this.ChangeFechaHasta}
+                                />
+                            </div>
+                        </div>
 
-                <div className="row" hidden={this.esPropietario}>
-                    <div className="col-md-6 row-secction">
-                        <label> Nombre </label>
-                        <input type="name" className="form-control" placeholder="Nombre"
-                               value={this.state.nombre}
-                               onChange={this.ChangeNombre}
+                        <div className="row" hidden={this.esPropietario}>
+                            <div className="col-md-6 row-secction">
+                                <label> Nombre </label>
+                                <input type="name" className="form-control" placeholder="Nombre"
+                                       value={this.state.nombre}
+                                       onChange={this.ChangeNombre}
 
-                        />
-                    </div>
-                    <div className="col-md-6 row-secction">
-                        <label> Apellido </label>
-                        <input type="family-name" className="form-control" placeholder="Apellido"
-                               value={this.state.apellido}
-                               onChange={this.ChangeApellido}
-                        />
-                    </div>
-                </div>
+                                />
+                            </div>
+                            <div className="col-md-6 row-secction">
+                                <label> Apellido </label>
+                                <input type="family-name" className="form-control" placeholder="Apellido"
+                                       value={this.state.apellido}
+                                       onChange={this.ChangeApellido}
+                                />
+                            </div>
+                        </div>
 
-                <div className="row">
-                    <div className="col-md-4 row-secction">
-                        <label> Tipo Documento Invitado </label>
-                        <Select
-                            className="select-documento"
-                            classNamePrefix="select"
-                            isDisabled={false}
-                            isLoading={false}
-                            isClearable={true}
-                            isSearchable={true}
-                            options={this.state.tipoD}
-                            onChange={this.ChangeSelectInvitado.bind(this)}
-                            styles={ this.errorTipoDocumento.error?{
-                                control: (base, state) => ({
-                                    ...base,
-                                    borderColor: "red",
-                                    boxShadow: "red"
-                                })}:{}}
-                        />
-                        <label className='small text-danger'
-                               hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
-                    </div>
-                    <div className="col-md-4 row-secction">
-                        <label> Numero de Documento Invitado </label>
-                        <input type="document" className="form-control" placeholder="Numero de documento"
-                               value={this.state.documentoInvitado}
-                               onChange={this.ChangeDocumentoInvitado}
+                        <div className="row">
+                            <div className="col-md-4 row-secction">
+                                <label> Tipo Documento Invitado </label>
+                                <Select
+                                    className="select-documento"
+                                    classNamePrefix="select"
+                                    isDisabled={false}
+                                    isLoading={false}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    options={this.state.tipoD}
+                                    onChange={this.ChangeSelectInvitado.bind(this)}
+                                    styles={this.errorTipoDocumento.error ? {
+                                        control: (base, state)=>({
+                                            ...base,
+                                            borderColor: 'red',
+                                            boxShadow: 'red'
+                                        })
+                                    } : {}}
+                                />
+                                <label className='small text-danger'
+                                       hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Numero de Documento Invitado </label>
+                                <input type="document" className="form-control" placeholder="Numero de documento"
+                                       value={this.state.documentoInvitado}
+                                       onChange={this.ChangeDocumentoInvitado}
 
-                        />
-                    </div>
-                    <div className="col-md-4 row-secction" hidden={this.esPropietario}>
-                        <label> Fecha de Nacimiento </label>
-                        <input type="date" className="form-control" name="FechaNacimiento"
-                               step="1" min="1920-01-01"
-                               onChange={this.ChangeFechaNacimiento}
-                        />
+                                />
+                            </div>
+                            <div className="col-md-4 row-secction" hidden={this.esPropietario}>
+                                <label> Fecha de Nacimiento </label>
+                                <input type="date" className="form-control" name="FechaNacimiento"
+                                       step="1" min="1920-01-01"
+                                       onChange={this.ChangeFechaNacimiento}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="text-center">
