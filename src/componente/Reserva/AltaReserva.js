@@ -7,6 +7,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Card from 'components/Card/Card.jsx';
+import { validator } from '../validator';
 
 moment.locale('es');
 const localizer = momentLocalizer(moment);
@@ -20,7 +21,9 @@ class AltaReserva extends Component {
             servicioSeleccionado: {},
             events: [],
             consulta: false,
-            alert: null
+            alert: null,
+            min: new Date(2019, 0, 1, 8, 0),
+            max: new Date(2019, 0, 1, 18, 0)
         };
         this.addReserva = this.addReserva.bind(this);
         this.consultar = this.consultar.bind(this);
@@ -78,6 +81,15 @@ class AltaReserva extends Component {
             return;
         }
         var idPersona = localStorage.getItem('idPersona');
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Servicios').doc(this.state.servicioSeleccionado.value).get().then(
+                doc => {
+                    this.setState({
+                        min: validator.obtenerFecha(doc.data().HoraDesde),
+                        max: validator.obtenerFecha(doc.data().HoraHasta)
+                    });
+                }
+            );
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.state.servicioSeleccionado.value).collection('Reservas').get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
@@ -250,17 +262,15 @@ class AltaReserva extends Component {
                     <Grid fluid>
                         <Row>
                             <Col md={10} mdOffset={1}>
-
                                 <h3>{this.state.servicioSeleccionado ? this.state.servicioSeleccionado.label : 'Sin servicio seleccionado'}</h3>
-
                                 <Card
                                     calendar
                                     content={
                                         <Calendar
                                             selectable
                                             step={30}
-                                            min={new Date(2019, 0, 1, 8, 0)}
-                                            max={new Date(2019, 0, 1, 17, 0)}
+                                            min={this.state.min}
+                                            max={this.state.max}
                                             localizer={localizer}
                                             events={this.state.events}
                                             defaultView="week"

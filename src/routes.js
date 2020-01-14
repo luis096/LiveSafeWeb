@@ -127,7 +127,7 @@ var routes = [
     },
     {
         collapse: true,
-        layoutCollapse: '/example',
+        layoutCollapse: '/admin',
         path: '/forms',
         name: 'Forms',
         state: 'openForms',
@@ -357,15 +357,16 @@ var routes = [
             {
                 path: '/altaPropietario',
                 layout: '/admin',
-                name: 'Nuevo Prop.',
+                name: 'Nuevo Propietario',
                 mini: 'NP',
                 component: AltaPropietario
             },
             {
                 path: '/editarPropietario',
                 layout: '/admin',
-                name: 'Editar Prop.',
+                name: 'Editar Propietario',
                 mini: 'EP',
+                noVisualizar: true,
                 component: EditarPropietario
             }
         ]
@@ -397,6 +398,7 @@ var routes = [
                 layout: '/admin',
                 name: 'Editar Servicio',
                 mini: 'ES',
+                noVisualizar: true,
                 component: EditarServicio
             }
         ]
@@ -502,4 +504,5 @@ var routes = [
         component: MiPerfil
     },
 ];
+
 export default routes;
