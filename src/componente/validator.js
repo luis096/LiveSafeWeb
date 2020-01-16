@@ -13,6 +13,7 @@ const NUMBER_ZERO = /^[0]+$/;
 const NOMBRE_ARCHIVOS = /^(?!((con|prn|aux)((\.[^\\/:*"$•?<>|]{1,3}$)|$))|[\s\.])[^\\/:*"$•?<>|]{1,254}$/;
 const LETRAS_REGEXP = /^[a-zA-Z ]*$/;
 const ESTADOS_RESERVAS = ['Pendiente', 'En Curso', 'Cancelado', 'Realizado'];
+const ESTADOS_RESERVAee = '.where("FechaDesde", ">", new Date())'
 
 
 // Se retorna TRUE si hay un error.. 
@@ -23,7 +24,8 @@ export const validator = {
     soloLetras,
     estadoReserva,
     obtenerFecha,
-    validarMail
+    validarMail,
+    fechaRango
 };
 
 
@@ -77,4 +79,29 @@ async function validarMail(mail) {
         valido = !doc.exists;
     });
     return valido;
+}
+
+function fechaRango(desde, hasta, bool) {
+    if (!desde || !hasta){
+        return {
+        error: false,
+        mensaje: ''
+    };}
+    if (desde >= hasta && bool){
+        return {
+            error: true,
+            mensaje: 'La fecha desde debe ser menor a la fecha hasta'
+        };
+    } else if (desde >= hasta){
+        return {
+            error: true,
+            mensaje: 'La fecha hasta debe ser mayor a la fecha desde'
+        };
+    } else{
+        return {
+            error: false,
+            mensaje: ''
+        };
+    }
+
 }

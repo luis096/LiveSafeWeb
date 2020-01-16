@@ -127,7 +127,7 @@ var routes = [
     },
     {
         collapse: true,
-        layoutCollapse: '/admin',
+        layoutCollapse: '/example',
         path: '/forms',
         name: 'Forms',
         state: 'openForms',
@@ -135,28 +135,28 @@ var routes = [
         views: [
             {
                 path: '/regular-forms',
-                layout: '/admin',
+                layout: '/example',
                 name: 'Regular Forms',
                 mini: 'RF',
                 component: RegularForms
             },
             {
                 path: '/extended-forms',
-                layout: '/admin',
+                layout: '/example',
                 name: 'Extended Forms',
                 mini: 'EF',
                 component: ExtendedForms
             },
             {
                 path: '/validation-forms',
-                layout: '/admin',
+                layout: '/example',
                 name: 'Validation Forms',
                 mini: 'VF',
                 component: ValidationForms
             },
             {
                 path: '/wizard',
-                layout: '/admin',
+                layout: '/example',
                 name: 'Wizard',
                 mini: 'W',
                 component: Wizard
@@ -304,6 +304,7 @@ var routes = [
                 layout: '/root',
                 name: 'Editar Country',
                 mini: 'EC',
+                noVisualizar: true,
                 component: EditarCountry
             }
         ]
@@ -326,7 +327,7 @@ var routes = [
             {
                 path: '/altaAdministrador',
                 layout: '/root',
-                name: 'Nuevo Admin.',
+                name: 'Nuevo Administrador',
                 mini: 'NB',
                 component: AltaAdministrador
             },
@@ -335,6 +336,7 @@ var routes = [
                 layout: '/root',
                 name: 'Editar Admin.',
                 mini: 'EC',
+                noVisualizar: true,
                 component: EditarAdministrador
             }
         ]
@@ -486,6 +488,7 @@ var routes = [
         layout: '/encargado',
         name: 'Editar Invitado',
         icon: 'pe-7s-graph',
+        noVisualizar: true,
         component: EditarInvitado
     },
     {
@@ -493,6 +496,7 @@ var routes = [
         layout: '/encargado',
         name: 'Nuevo Invitado',
         icon: 'pe-7s-graph',
+        noVisualizar: true,
         component: AltaInvitado
     },
     {

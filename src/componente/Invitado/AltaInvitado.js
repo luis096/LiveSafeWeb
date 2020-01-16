@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { Database } from '../../config/config';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
+import Datetime from "react-datetime";
 
 
 class AltaInvitado extends Component {
@@ -232,18 +233,17 @@ class AltaInvitado extends Component {
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label> Fecha Desde </label>
-                                <input type="date" className="form-control" name="FechaDesde"
-                                       step="1" min="1920-01-01" value={this.state.startDate}
-                                       onChange={this.ChangeFechaDesde}
-                                       disabled={!this.esPropietario}
+                                <Datetime
+                                    inputProps={{ placeholder: "Fecha Desde" }}
+                                    defaultValue={new Date()}
                                 />
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label> Fecha Hasta </label>
-                                <input type="date" className="form-control" name="FechaHasta"
-                                       step="1" min="1920-01-01" value={this.state.endDate}
-                                       disabled={!this.esPropietario}
-                                       onChange={this.ChangeFechaHasta}
+                                <Datetime
+                                    className="has-error"
+                                    inputProps={{ placeholder: "Fecha Hasta" }}
+                                    defaultValue={new Date()}
                                 />
                             </div>
                         </div>
@@ -270,7 +270,6 @@ class AltaInvitado extends Component {
                             <div className="col-md-4 row-secction">
                                 <label> Tipo Documento Invitado </label>
                                 <Select
-                                    className="select-documento"
                                     classNamePrefix="select"
                                     isDisabled={false}
                                     isLoading={false}

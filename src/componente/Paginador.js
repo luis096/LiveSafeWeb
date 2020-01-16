@@ -2,7 +2,8 @@ const TAMANIO_PAGINA = 10;
 
 export const paginador = {
     paginar,
-    cantidad
+    cantidad,
+    getTamPagina
 };
 
 function paginar(pagina, todos) {
@@ -25,4 +26,8 @@ function cantidad(tam) {
         array.push(i);
     }
     return (array);
+}
+
+function getTamPagina() {
+    return (TAMANIO_PAGINA);
 }

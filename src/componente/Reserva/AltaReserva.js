@@ -5,6 +5,7 @@ import Button from 'components/CustomButton/CustomButton.jsx';
 import { Grid, Row, Col } from 'react-bootstrap';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
+import 'moment/locale/es';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Card from 'components/Card/Card.jsx';
 import { validator } from '../validator';
@@ -23,7 +24,8 @@ class AltaReserva extends Component {
             consulta: false,
             alert: null,
             min: new Date(2019, 0, 1, 8, 0),
-            max: new Date(2019, 0, 1, 18, 0)
+            max: new Date(2019, 0, 1, 18, 0),
+            dias: []
         };
         this.addReserva = this.addReserva.bind(this);
         this.consultar = this.consultar.bind(this);
@@ -83,21 +85,23 @@ class AltaReserva extends Component {
         var idPersona = localStorage.getItem('idPersona');
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.state.servicioSeleccionado.value).get().then(
-                doc => {
+                doc=> {
                     this.setState({
                         min: validator.obtenerFecha(doc.data().HoraDesde),
-                        max: validator.obtenerFecha(doc.data().HoraHasta)
+                        max: validator.obtenerFecha(doc.data().HoraHasta),
+                        dias: doc.data().Disponibilidad
                     });
                 }
             );
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Servicios').doc(this.state.servicioSeleccionado.value).collection('Reservas').get().then(querySnapshot=> {
+            .collection('Servicios').doc(this.state.servicioSeleccionado.value).collection('Reservas')
+            .where("FechaHasta", ">", new Date()).get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
                     if (doc.exists && !doc.data().Cancelado) {
                         newEvents.push({
-                            title: doc.data().Nombre,
-                            start: new Date(doc.data().FechaDesde.seconds * 1000),
-                            end: new Date(doc.data().FechaHasta.seconds * 1000),
+                            title: (idPersona === doc.data().IdPropietario.id) ? doc.data().Nombre: 'Reservado',
+                            start: validator.obtenerFecha(doc.data().FechaDesde),
+                            end: validator.obtenerFecha(doc.data().FechaHasta),
                             color: (idPersona === doc.data().IdPropietario.id) ? 'blue' : 'red'
                         });
                     }
@@ -235,8 +239,8 @@ class AltaReserva extends Component {
 
     render() {
         return (
-            <div className="col-12 ">
-                <legend><h3 className="row"> Registrar una reserva</h3></legend>
+            <div className="col-12">
+                <legend><h3 className="row">Nueva Reserva</h3></legend>
                 <div className="row">
                     <div className="col-md-6  flex-container form-group row-secction">
                         <label> Servicios del Country </label>

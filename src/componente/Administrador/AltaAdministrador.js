@@ -133,7 +133,7 @@ class AltaAdministrador extends Component {
         if (true) {
             await Database.collection('UsuariosTemp').doc(mail).set({
                 NombreUsuario: mail,
-                TipoUsuario: Database.doc('/TipoUsuario/Administrador'),
+                TipoUsuario: Database.doc('/TiposUsuario/Administrador'),
                 IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
                 IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Administradores/' + this.state.idAdminCreado)
             });

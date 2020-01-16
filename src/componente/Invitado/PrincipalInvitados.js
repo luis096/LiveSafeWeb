@@ -257,11 +257,6 @@ class PrincipalInvitados extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
-        // Si fuese requerido:
-        // this.errorNombre = validator.requerido(event.target.value);
-        // if (!this.errorNombre.error) {
-        //     this.errorNombre = validator.soloLetras(event.target.value);
-        // }
         this.errorNombre = validator.soloLetras(event.target.value);
     }
 
@@ -291,8 +286,7 @@ class PrincipalInvitados extends Component {
                                 <label>Nombre</label>
                                 <input className={this.errorNombre.error ? 'form-control error' : 'form-control'}
                                        value={this.state.nombre}
-                                       onChange={this.ChangeNombre} placeholder="Nombre"
-                                />
+                                       onChange={this.ChangeNombre} placeholder="Nombre"/>
                                 <label className='small text-danger'
                                        hidden={!this.errorNombre.error}>{this.errorNombre.mensaje}</label>
                             </div>
@@ -342,6 +336,7 @@ class PrincipalInvitados extends Component {
                         <table className="table table-hover">
                             <thead>
                             <tr>
+                                <th scope="col">Indice</th>
                                 <th scope="col">Documento</th>
                                 <th scope="col">Apellido y Nombre</th>
                                 <th scope="col">Grupo</th>
@@ -354,9 +349,10 @@ class PrincipalInvitados extends Component {
 
                             <tbody>
                             {
-                                this.state.invitadosPaginados.map(inv=> {
+                                this.state.invitadosPaginados.map((inv, ind)=> {
                                         return (
                                             <tr className="table-light">
+                                                <th>{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
                                                 <th>{inv[0].Documento}</th>
                                                 <td>{inv[0].Nombre}, {inv[0].Apellido}</td>
                                                 <td>{inv[0].Grupo}</td>
