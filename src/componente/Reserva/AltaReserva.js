@@ -65,7 +65,6 @@ class AltaReserva extends Component {
     }
 
     async consultar() {
-        var newEvents = [];
         if (!(this.state.servicioSeleccionado && this.state.servicioSeleccionado.value)) {
             this.setState({
                 alert: (
@@ -82,7 +81,6 @@ class AltaReserva extends Component {
             });
             return;
         }
-        var idPersona = localStorage.getItem('idPersona');
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.state.servicioSeleccionado.value).get().then(
                 doc=> {
@@ -93,21 +91,8 @@ class AltaReserva extends Component {
                     });
                 }
             );
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Servicios').doc(this.state.servicioSeleccionado.value).collection('Reservas')
-            .where("FechaHasta", ">", new Date()).get().then(querySnapshot=> {
-                querySnapshot.forEach(doc=> {
-                    if (doc.exists && !doc.data().Cancelado) {
-                        newEvents.push({
-                            title: (idPersona === doc.data().IdPropietario.id) ? doc.data().Nombre: 'Reservado',
-                            start: validator.obtenerFecha(doc.data().FechaDesde),
-                            end: validator.obtenerFecha(doc.data().FechaHasta),
-                            color: (idPersona === doc.data().IdPropietario.id) ? 'blue' : 'red'
-                        });
-                    }
-                });
-            });
-        this.setState({events: newEvents, consulta: true});
+        this.navigate(new Date());
+        this.setState({consulta: true});
     }
 
     ChangeSelect(event) {
@@ -196,8 +181,8 @@ class AltaReserva extends Component {
     }
 
     addNewEvent(e, slotInfo) {
-        var newEvents = this.state.events;
-        var datos = {
+        let newEvents = this.state.events;
+        let datos = {
             Nombre: e,
             Servicio: this.state.servicioSeleccionado.label,
             Cancelado: false,
@@ -222,7 +207,7 @@ class AltaReserva extends Component {
     }
 
     eventColors(event, start, end, isSelected) {
-        var backgroundColor = 'rbc-event-';
+        let backgroundColor = 'rbc-event-';
         event.color
             ? (backgroundColor = backgroundColor + event.color)
             : (backgroundColor = backgroundColor + 'default');
@@ -235,6 +220,32 @@ class AltaReserva extends Component {
         this.setState({
             alert: null
         });
+    }
+
+    async navigate(time){
+        let anio = time.getFullYear();
+        let mes = time.getMonth();
+        let dia = time.getDate();
+        let hasta = new Date(anio, mes,(dia + 8));
+        let desde = new Date(anio, mes, dia);
+        let idPersona = localStorage.getItem('idPersona');
+        let newEvents = [];
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Servicios').doc(this.state.servicioSeleccionado.value).collection('Reservas')
+            .where("FechaDesde", ">=", desde).where("FechaDesde", "<=", hasta).get().then(querySnapshot=> {
+                querySnapshot.forEach(doc=> {
+                    if (doc.exists && !doc.data().Cancelado) {
+                        newEvents.push({
+                            title: (idPersona === doc.data().IdPropietario.id) ? doc.data().Nombre: 'Reservado',
+                            start: validator.obtenerFecha(doc.data().FechaDesde),
+                            end: validator.obtenerFecha(doc.data().FechaHasta),
+                            color: (idPersona === doc.data().IdPropietario.id) ? 'blue' : 'red'
+                        });
+                    }
+                });
+            });
+        this.setState({events: newEvents});
+        console.log(this.state.events)
     }
 
     render() {
@@ -279,6 +290,7 @@ class AltaReserva extends Component {
                                             events={this.state.events}
                                             defaultView="week"
                                             views={['week']}
+                                            onNavigate={(nav)=> this.navigate(nav)}
                                             scrollToTime={new Date(2019, 11, 21, 6)}
                                             defaultDate={new Date()}
                                             onSelectEvent={event=>this.selectedEvent(event)}

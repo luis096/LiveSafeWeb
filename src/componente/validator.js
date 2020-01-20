@@ -25,7 +25,8 @@ export const validator = {
     estadoReserva,
     obtenerFecha,
     validarMail,
-    fechaRango
+    fechaRango,
+    isValid
 };
 
 
@@ -104,4 +105,14 @@ function fechaRango(desde, hasta, bool) {
         };
     }
 
+}
+
+function isValid(errores){
+    let invalid = false;
+    errores.map((error) =>{
+        if(error.error){
+            invalid = true;
+        }
+    });
+    return !invalid;
 }

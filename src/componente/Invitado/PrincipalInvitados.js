@@ -16,10 +16,6 @@ class PrincipalInvitados extends Component {
         super();
         this.state = {
             invitados: [],
-            invitadosFiltrados: [],
-            invitadosPaginados: [],
-            idPropietario: '',
-            idCountry: '',
             showModal: false,
             reservas: [],
             reservaSeleccionada: '',
@@ -27,13 +23,16 @@ class PrincipalInvitados extends Component {
             fechaDesde: '',
             fechaHasta: '',
             tipoD: [],
-            numPagina: 0,
+            numPagina: -1,
+            ultimo: [],
+            primero: [],
             alert: null,
-            nombre: null,
-            apellido: null,
+            nombre: '',
+            apellido: '',
             estado: null,
-            documento: null,
-            invitadoCancelar: {}
+            documento: '',
+            invitadoCancelar: {},
+            estadoLista: [{value: true, label: 'Activo'}, {value: false, label: 'Inactivo'}]
         };
         this.modalAgregarInvitado = this.modalAgregarInvitado.bind(this);
         this.agregarNuevoInvitado = this.agregarNuevoInvitado.bind(this);
@@ -42,45 +41,157 @@ class PrincipalInvitados extends Component {
         this.ChangeApellido = this.ChangeApellido.bind(this);
         this.ChangeDocumento = this.ChangeDocumento.bind(this);
         this.ChangeSelectEstado = this.ChangeSelectEstado.bind(this);
-        this.paginar = this.paginar.bind(this);
         this.consultar = this.consultar.bind(this);
+        this.reestablecer = this.reestablecer.bind(this);
         this.hideAlert = this.hideAlert.bind(this);
         this.cancelar = this.cancelar.bind(this);
         this.cantidad = [];
+        this.total = 0;
         this.errorNombre = {error: false, mensaje: ''};
         this.errorApellido = {error: false, mensaje: ''};
         this.errorDocumento = {error: false, mensaje: ''};
     }
 
     async componentDidMount() {
-        const {invitados} = this.state;
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Invitados').get().then(querySnapshot=> {
-                querySnapshot.forEach(doc=> {
-                    if (doc.data().IdPropietario.id == localStorage.getItem('idPersona')) {
-                        this.state.invitados.push(
-                            [doc.data(), doc.id]
-                        );
-                    }
-
-                });
-            });
+        const {tipoD} = this.state;
         await Database.collection('TipoDocumento').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
-                this.state.tipoD.push(
+                tipoD.push(
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
         });
-        this.setState({invitados, invitadosFiltrados: invitados});
-        this.cantidad = paginador.cantidad(this.state.invitadosFiltrados.length);
-        this.paginar(0, invitados);
+        this.setState({tipoD});
     }
 
-    paginar(pagina, elementos) {
-        let paginaElementos = elementos || this.state.invitadosFiltrados;
-        let resultado = paginador.paginar(pagina, paginaElementos);
-        this.setState({invitadosPaginados: resultado.Elementos, numPagina: resultado.NumPagina});
+    ChangeNombre(event) {
+        this.setState({nombre: event.target.value});
+        this.errorNombre = validator.soloLetras(event.target.value);
+    }
+
+    ChangeApellido(event) {
+        this.setState({apellido: event.target.value});
+        this.errorApellido = validator.soloLetras(event.target.value);
+    }
+
+    ChangeSelectEstado(value) {
+        this.setState({estado: value});
+    }
+
+    ChangeDocumento(event) {
+        this.setState({documento: event.target.value});
+        this.errorDocumento = validator.numero(event.target.value);
+    }
+
+    async consultar(pagina, nueva) {
+        let {invitados} = this.state;
+        if (!validator.isValid([this.errorNombre, this.errorDocumento, this.errorApellido])) {
+            this.setState({
+                alert: (
+                    <SweetAlert
+                        style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                        title="Hay errores en los filtros"
+                        onConfirm={()=>this.hideAlert()}
+                        onCancel={()=>this.hideAlert()}
+                        confirmBtnBsStyle="danger"
+                    />
+                )
+            });
+            return;
+        }
+
+        if (nueva) {
+            this.setState({
+                ultimo: [],
+                primero: [],
+                numPagina: -1
+            });
+        }
+        if (this.cantidad.length && (this.cantidad.length <= pagina || pagina < 0)) {
+            return;
+        }
+
+        let con = await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Invitados');
+
+        let total = con;
+
+        if (pagina > 0) {
+            if (pagina > this.state.numPagina) {
+                let ultimo = this.state.ultimo[this.state.numPagina];
+                con = con.startAfter(ultimo);
+            } else {
+                let primero = this.state.primero[pagina];
+                con = con.startAt(primero);
+            }
+        }
+
+        con = con.limit(paginador.getTamPagina());
+        let ref = Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + localStorage.getItem('idPersona'));
+        con = con.where('IdPropietario', '==', ref);
+        total = total.where('IdPropietario', '==', ref);
+
+        if (this.state.apellido) {
+            con = con.where('Apellido', '==', this.state.apellido);
+            total = total.where('Apellido', '==', this.state.apellido);
+        }
+        if (this.state.documento) {
+            con = con.where('Documento', '==', this.state.documento);
+            total = total.where('Documento', '==', this.state.documento);
+        }
+        if (this.state.nombre) {
+            con = con.where('Nombre', '==', this.state.nombre);
+            total = total.where('Nombre', '==', this.state.nombre);
+        }
+        if (this.state.estado) {
+            con = con.where('Estado', '==', this.state.estado.value);
+            total = total.where('Estado', '==', this.state.estado.value);
+        }
+
+        if (nueva) {
+            await total.get().then((doc)=> {
+                this.total = doc.docs.length;
+            });
+        }
+
+        invitados = [];
+        let ultimo = null;
+        let primero = null;
+        await con.get().then(querySnapshot=> {
+            querySnapshot.forEach(doc=> {
+                if (!primero) {
+                    primero = doc;
+                }
+                ultimo = doc;
+                invitados.push(
+                    [doc.data(), doc.id]
+                );
+            });
+        });
+        if ((pagina > this.state.numPagina || this.state.numPagina < 0) && !this.state.ultimo[pagina]) {
+            this.state.ultimo.push(ultimo);
+            this.state.primero.push(primero);
+        }
+        if (nueva) {
+            this.cantidad = paginador.cantidad(this.total);
+        }
+        this.setState({invitados, numPagina: (pagina)});
+    }
+
+    reestablecer() {
+        this.setState({
+            invitados: [],
+            numPagina: -1,
+            ultimo: [],
+            primero: [],
+            nombre: '',
+            apellido: '',
+            estado: null,
+            documento: ''
+        });
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorDocumento = {error: false, mensaje: ''};
     }
 
     modalAgregarInvitado() {
@@ -93,7 +204,7 @@ class PrincipalInvitados extends Component {
             .collection('Propietarios').doc(localStorage.getItem('idPersona'))
             .collection('Reservas').orderBy('FechaDesde', 'desc').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
-                if (!doc.data().Cancelado && validator.obtenerFecha(doc.data().FechaDesde) > new Date()){
+                if (!doc.data().Cancelado && validator.obtenerFecha(doc.data().FechaDesde) > new Date()) {
                     reservas.push(
                         {
                             value: doc.id, label: doc.data().Nombre,
@@ -104,8 +215,7 @@ class PrincipalInvitados extends Component {
 
             });
         });
-        this.setState({reservas});
-        this.setState({showModal: true});
+        this.setState({reservas, showModal: true});
     }
 
     agregarNuevoInvitado() {
@@ -212,68 +322,6 @@ class PrincipalInvitados extends Component {
         });
     }
 
-    async consultar() {
-        let resultado = this.state.invitados;
-        const {nombre, apellido, documento, estado} = this.state;
-        if(this.esInvalido()){
-            this.setState({
-                alert: (
-                    <SweetAlert
-                        style={{ display: "block", marginTop: "-100px", position: "center"}}
-                        title="Hay errores en los filtros"
-                        onConfirm={() => this.hideAlert()}
-                        onCancel={() => this.hideAlert()}
-                        confirmBtnBsStyle="danger"
-                    />
-                )
-            });
-            return;
-        }
-
-        if (nombre && nombre != '') {
-            resultado = filtros.filtroNombre(resultado, nombre);
-        }
-        if (apellido && apellido != '') {
-            resultado = filtros.filtroApellido(resultado, apellido);
-        }
-        if (estado && estado.value != null) {
-            resultado = filtros.filtroEstado(resultado, estado.value);
-        }
-        if (documento && documento != '') {
-            resultado = filtros.filtroDocumento(resultado, documento);
-        }
-        this.setState({invitadosFiltrados: resultado});
-        this.cantidad = paginador.cantidad(resultado.length);
-        await this.paginar(0, resultado);
-    }
-
-    esInvalido() {
-        return (
-            this.errorNombre.error ||
-            this.errorApellido.error ||
-            this.errorDocumento.error
-        );
-    }
-
-    ChangeNombre(event) {
-        this.setState({nombre: event.target.value});
-        this.errorNombre = validator.soloLetras(event.target.value);
-    }
-
-    ChangeApellido(event) {
-        this.setState({apellido: event.target.value});
-        this.errorApellido = validator.soloLetras(event.target.value);
-    }
-
-    ChangeSelectEstado(value) {
-        this.setState({estado: value});
-    }
-
-    ChangeDocumento(event) {
-        this.setState({documento: event.target.value});
-        this.errorDocumento = validator.numero(event.target.value);
-    }
-
     render() {
         return (
             <div className="col-12">
@@ -315,23 +363,29 @@ class PrincipalInvitados extends Component {
                                     isLoading={false}
                                     isClearable={true}
                                     isSearchable={true}
-                                    options={[{value: 1, label: 'Activo'}, {value: 0, label: 'Inactivo'}]}
+                                    value = {this.state.estado}
+                                    options={this.state.estadoLista}
                                     onChange={this.ChangeSelectEstado.bind(this)}
                                 />
                             </div>
                         </div>
-
                     </div>
-
                 </div>
                 <div className="izquierda">
-                    <Button bsStyle="primary" fill wd onClick={this.consultar}>
+                    <Button bsStyle="default" fill wd onClick={()=> {
+                        this.reestablecer();
+                    }}>
+                        Reestablecer
+                    </Button>
+                    <Button bsStyle="primary" fill wd onClick={()=> {
+                        this.consultar(0, true);
+                    }}>
                         Consultar
                     </Button>
                 </div>
                 {this.state.alert}
-                <div className="card row" hidden={!this.state.invitadosFiltrados.length}>
-                    <h4 className="row">Invitados ({this.state.invitadosFiltrados.length})</h4>
+                <div className="card row" hidden={!this.state.invitados.length}>
+                    <h4 className="row">Invitados ({this.total})</h4>
                     <div className="card-body">
                         <table className="table table-hover">
                             <thead>
@@ -349,7 +403,7 @@ class PrincipalInvitados extends Component {
 
                             <tbody>
                             {
-                                this.state.invitadosPaginados.map((inv, ind)=> {
+                                this.state.invitados.map((inv, ind)=> {
                                         return (
                                             <tr className="table-light">
                                                 <th>{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
@@ -381,21 +435,21 @@ class PrincipalInvitados extends Component {
                         </table>
                     </div>
                 </div>
-                <div className="text-center" hidden={!this.state.invitadosFiltrados.length}>
+                <div className="text-center" hidden={!this.state.invitados.length}>
                     <Pagination className="pagination-no-border">
-                        <Pagination.First onClick={()=>this.paginar(0)}/>
+                        <Pagination.First onClick={()=>this.consultar((this.state.numPagina - 1), false)}/>
 
                         {
                             this.cantidad.map(num=> {
-                                return (<Pagination.Item onClick={()=>this.paginar(num)}
-                                                         active={(num == this.state.numPagina)}>{num + 1}</Pagination.Item>);
+                                return (<Pagination.Item
+                                    active={(num == this.state.numPagina)}>{num + 1}</Pagination.Item>);
                             })
                         }
 
-                        <Pagination.Last onClick={()=>this.paginar(this.cantidad.length - 1)}/>
+                        <Pagination.Last onClick={()=>this.consultar((this.state.numPagina + 1), false)}/>
                     </Pagination>
                 </div>
-                <div className="row card" hidden={this.state.invitadosFiltrados.length}>
+                <div className="row card" hidden={this.state.invitados.length}>
                     <div className="card-body">
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>

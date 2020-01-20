@@ -17,10 +17,8 @@ class PrincipalReserva extends Component {
             reservas: [],
             reservasFiltradas: [],
             reservasPaginados: [],
-            idPropietario: '',
-            idCountry: '',
             alert: null,
-            numPagina: 0,
+            numPagina: -1,
             reservaCancelar: [],
             nombre: '',
             servicio: '',
@@ -28,6 +26,8 @@ class PrincipalReserva extends Component {
             estado: null,
             desde: null,
             hasta: null,
+            ultimo: [],
+            primero: [],
             errorDesde: {error: false, mensaje: ''},
             errorHasta: {error: false, mensaje: ''}
 
@@ -37,8 +37,8 @@ class PrincipalReserva extends Component {
         this.ChangeDesde = this.ChangeDesde.bind(this);
         this.ChangeHasta = this.ChangeHasta.bind(this);
         this.cancelar = this.cancelar.bind(this);
-        this.paginar = this.paginar.bind(this);
         this.cantidad = [];
+        this.total = 0;
         this.errorNombre = {error: false, mensaje: ''};
         this.errorServicio = {error: false, mensaje: ''};
     }
@@ -74,7 +74,7 @@ class PrincipalReserva extends Component {
     }
 
     async componentDidMount() {
-        const {reservas, serviciosLista} = this.state;
+        const {serviciosLista} = this.state;
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
@@ -83,25 +83,128 @@ class PrincipalReserva extends Component {
                     );
                 });
             });
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').doc(localStorage.getItem('idPersona'))
-            .collection('Reservas').orderBy('FechaDesde', 'desc').get().then(querySnapshot=> {
-                querySnapshot.forEach(doc=> {
-                    reservas.push(
-                        [doc.data(), doc.id]
-                    );
-
-                });
-            });
-        this.setState({reservas, serviciosLista, reservasFiltradas: reservas});
-        this.cantidad = paginador.cantidad(this.state.reservas.length);
-        this.paginar(0, reservas);
+        this.setState({serviciosLista});
+        //this.cantidad = paginador.cantidad(this.state.reservas.length);
     }
 
-    paginar(pagina, elementos) {
-        let paginaElementos = elementos || this.state.reservasFiltradas;
-        let resultado = paginador.paginar(pagina, paginaElementos);
-        this.setState({reservasPaginados: resultado.Elementos, numPagina: resultado.NumPagina});
+
+    async consultar(pagina, nueva) {
+        let {reservas} = this.state;
+
+        if(!validator.isValid([this.errorNombre, this.state.errorDesde, this.state.errorHasta])){
+            this.setState({
+                alert: (
+                    <SweetAlert
+                        style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                        title="Error"
+                        onConfirm={()=>this.hideAlert()}
+                        onCancel={()=>this.hideAlert()}
+                        confirmBtnBsStyle="danger"
+                    >
+                        Hay errores en los filtros.
+                    </SweetAlert>
+                )
+            });
+            return;
+        }
+
+        if (nueva) {
+            this.setState({
+                ultimo: [],
+                primero: [],
+                numPagina: -1
+            });
+        }
+        if (this.cantidad.length && (this.cantidad.length <= pagina || pagina < 0)) {
+            return;
+        }
+
+        let con = await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Propietarios').doc(localStorage.getItem('idPersona'))
+            .collection('Reservas').orderBy('FechaDesde', 'desc');
+
+        let total = con;
+
+        if (pagina > 0) {
+            if (pagina > this.state.numPagina) {
+                let ultimo = this.state.ultimo[this.state.numPagina];
+                con = con.startAfter(ultimo);
+            } else {
+                let primero = this.state.primero[pagina];
+                con = con.startAt(primero);
+            }
+        }
+
+        con = con.limit(paginador.getTamPagina());
+
+        if (this.state.desde) {
+            con = con.where('FechaDesde', '>=', this.state.desde);
+            total = total.where('FechaDesde', '>=', this.state.desde);
+        }
+        if (this.state.hasta) {
+            con = con.where('FechaDesde', '<=', this.state.hasta);
+            total = total.where('FechaDesde', '<=', this.state.hasta);
+        }
+        if (this.state.servicio && this.state.servicio.label) {
+            con = con.where('Servicio', '==', this.state.servicio.label);
+            total = total.where('Servicio', '==', this.state.servicio.label);
+        }
+        if (this.state.nombre) {
+            con = con.where('Nombre', '==', this.state.nombre);
+            total = total.where('Nombre', '==', this.state.nombre);
+        }
+        if (this.state.estado && this.state.estado.value) {
+            con = con.where('Estado', '==', this.state.estado.value);
+            total = total.where('Estado', '==', this.state.estado.value);
+        }
+
+        if (nueva) {
+            await total.get().then((doc)=> {
+                this.total = doc.docs.length;
+            });
+        }
+
+        reservas = [];
+        let ultimo = null;
+        let primero = null;
+        await con.get().then(querySnapshot=> {
+            querySnapshot.forEach(doc=> {
+                if (!primero) {
+                    primero = doc;
+                }
+                ultimo = doc;
+                reservas.push(
+                    [doc.data(), doc.id]
+                );
+            });
+        });
+
+        if ((pagina > this.state.numPagina || this.state.numPagina < 0) && !this.state.ultimo[pagina]) {
+            this.state.ultimo.push(ultimo);
+            this.state.primero.push(primero);
+        }
+        if (nueva) {
+            this.cantidad = paginador.cantidad(this.total);
+        }
+
+        this.setState({reservas, numPagina: (pagina)});
+    }
+
+    reestablecer() {
+        this.setState({
+            reservas: [],
+            alert: null,
+            numPagina: -1,
+            reservaCancelar: [],
+            nombre: '',
+            servicio: '',
+            estado: null,
+            desde: null,
+            hasta: null,
+            errorDesde: {error: false, mensaje: ''},
+            errorHasta: {error: false, mensaje: ''}
+        });
+        this.errorNombre = {error: false, mensaje: ''};
     }
 
     cancelar(res) {
@@ -199,6 +302,7 @@ class PrincipalReserva extends Component {
                                     isClearable={true}
                                     isSearchable={true}
                                     options={this.state.serviciosLista}
+                                    value={this.state.servicio}
                                     onChange={this.ChangeServicio.bind(this)}
                                 />
                             </div>
@@ -209,6 +313,7 @@ class PrincipalReserva extends Component {
                                     isLoading={false}
                                     isClearable={true}
                                     isSearchable={true}
+                                    value={this.state.estado}
                                     options={[{value: 1, label: 'Pendiente'}, {value: 0, label: 'En curso'},
                                         {value: 2, label: 'Realizado'}, {value: 3, label: 'Cancelado'}]}
                                     onChange={this.ChangeSelectEstado.bind(this)}
@@ -243,19 +348,21 @@ class PrincipalReserva extends Component {
                 </div>
 
                 <div className="izquierda">
-                    <Button bsStyle="secondary" fill wd onClick={()=> {
+                    <Button bsStyle="default" fill wd onClick={()=> {
+                        this.reestablecer();
                     }}>
                         Reestablecer
                     </Button>
                     <Button bsStyle="primary" fill wd onClick={()=> {
+                        this.consultar(0, true);
                     }}>
                         Consultar
                     </Button>
                 </div>
 
 
-                <div className="card row" hidden={!this.state.reservasFiltradas.length}>
-                    <h4 className="row">Reservas ({this.state.reservasFiltradas.length})</h4>
+                <div className="card row" hidden={!this.state.reservas.length}>
+                    <h4 className="row">Reservas ({this.total})</h4>
                     <div className="card-body">
                         <table className="table table-hover">
                             <thead>
@@ -273,11 +380,11 @@ class PrincipalReserva extends Component {
                             </thead>
                             <tbody>
                             {
-                                this.state.reservasPaginados.map((res, ind)=> {
-                                    var desde = new Date(res[0].FechaDesde.seconds * 1000);
-                                    var hasta = new Date(res[0].FechaHasta.seconds * 1000);
-                                    var editar = '/propietario/visualizarReserva/' + res[1];
-                                    var estado = validator.estadoReserva(desde, hasta, res[0].Cancelado);
+                                this.state.reservas.map((res, ind)=> {
+                                    let desde = new Date(res[0].FechaDesde.seconds * 1000);
+                                    let hasta = new Date(res[0].FechaHasta.seconds * 1000);
+                                    let editar = '/propietario/visualizarReserva/' + res[1];
+                                    let estado = validator.estadoReserva(desde, hasta, res[0].Cancelado);
                                     return (
                                         <tr className="table-light">
                                             <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
@@ -305,19 +412,24 @@ class PrincipalReserva extends Component {
                         </table>
                     </div>
                 </div>
-                <div className="text-center">
+                <div className="text-center" hidden={!this.state.reservas.length}>
                     <Pagination className="pagination-no-border">
-                        <Pagination.First onClick={()=>this.paginar(0)}/>
+                        <Pagination.First onClick={()=>this.consultar((this.state.numPagina - 1), false)}/>
 
                         {
                             this.cantidad.map(num=> {
-                                return (<Pagination.Item onClick={()=>this.paginar(num)}
-                                                         active={(num == this.state.numPagina)}>{num + 1}</Pagination.Item>);
+                                return (<Pagination.Item
+                                    active={(num == this.state.numPagina)}>{num + 1}</Pagination.Item>);
                             })
                         }
 
-                        <Pagination.Last onClick={()=>this.paginar(this.cantidad.length - 1)}/>
+                        <Pagination.Last onClick={()=>this.consultar((this.state.numPagina + 1), false)}/>
                     </Pagination>
+                </div>
+                <div className="row card" hidden={this.state.reservas.length}>
+                    <div className="card-body">
+                        <h4 className="row">No se encontraron resultados.</h4>
+                    </div>
                 </div>
             </div>
         );
