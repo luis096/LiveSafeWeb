@@ -1,20 +1,27 @@
 import React, { Component } from 'react';
-import {Database} from '../../config/config';
-import "../Style/Alta.css";
+import { Database } from '../../config/config';
+import '../Style/Alta.css';
 import Select from 'react-select';
+import Button from 'components/CustomButton/CustomButton.jsx';
 
 
-class InvitadoEvento extends Component{
+class InvitadoEvento extends Component {
 
-    constructor(){
-        super();
-        this.state= {
+    constructor(props) {
+        super(props);
+        this.state = {
             nombre: '',
             apellido: '',
             documento: '',
             tipoDocumento: '',
-           tipoD: [],
-        }
+            tipoD: [],
+            barrios: [],
+        };
+        const url = this.props.location.pathname.split('/');
+        this.idCountry = url[url.length - 3];
+        this.idPropietario = url[url.length - 2];
+        this.idReserva = url[url.length - 1];
+        this.esPropietario = !!localStorage.getItem('user');
         this.restaurar = this.restaurar.bind(this);
         this.registrar = this.registrar.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
@@ -35,7 +42,6 @@ class InvitadoEvento extends Component{
         this.setState({tipoD});
     }
 
-
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
     }
@@ -52,68 +58,72 @@ class InvitadoEvento extends Component{
         this.setState({documento: event.target.value});
     }
 
-    restaurar(){
+    restaurar() {
         this.setState({
             nombre: '',
             apellido: '',
             documento: '',
-            tipoDocumento: '',
-        })
+            tipoDocumento: ''
+        });
     }
-    
-    registrar(){
+
+    registrar() {
+        Database.collection('Country').doc(this.idCountry)
+            .collection('Propietarios').doc(this.idPropietario)
+            .collection('Reservas').doc(this.idReserva).collection('Invitados').add({
+            Nombre: this.state.nombre,
+            Apellido: this.state.apellido,
+            Documento: this.state.documento,
+            TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
+            TipoDocumentoLabel: this.state.tipoDocumento.label,
+            Estado: false,
+            IdInvitado: ''
+        });
         this.restaurar();
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <div className="content">
-                <div className="form-group">
-                    <div>
-                        <label className="h2">Registrarme en un evento</label>
-                    </div>
-                </div>
-
+                <legend><h3>Agregar invitado a un evento</h3></legend>
                 <div className="card">
                     <div className="card-body">
-
-                    <div className="col-md-6  flex-container form-group">
-                            <label for="Nombre"> Nombre </label>
+                        <div className="col-md-6">
+                            <label> Nombre </label>
                             <input type="name" className="form-control" placeholder="Name"
                                    value={this.state.nombre}
                                    onChange={this.ChangeNombre}/>
-                    </div>
-                    <div className="col-md-6  flex-container form-group">
-                            <label for="Apellido"> Apellido </label>
+                        </div>
+                        <div className="col-md-6">
+                            <label> Apellido </label>
                             <input type="family-name" className="form-control" placeholder="Surname"
                                    value={this.state.apellido}
                                    onChange={this.ChangeApellido}/>
-                    </div>
-                    <div className="col-md-6  flex-container form-group">
-                        <label for="TipoDocumento"> Tipo Documento </label>
-                        <Select
-                            className="select-documento"
-                            classNamePrefix="select"
-                            isDisabled={false}
-                            isLoading={false}
-                            isClearable={true}
-                            isSearchable={true}
-                            options={this.state.tipoD}
-                            onChange={this.ChangeSelect.bind(this)}
-                        />
-                    </div>
-                    <div className="col-md-6  flex-container form-group">
-                        <label for="NumeroDocumento"> Numero de Documento </label>
-                        <input type="document" className="form-control" placeholder="Document number"
-                                value={this.state.documento}
-                                onChange={this.ChangeDocumento}/>
-                    </div>
-
+                        </div>
+                        <div className="col-md-6">
+                            <label> Tipo Documento </label>
+                            <Select
+                                className="select-documento"
+                                classNamePrefix="select"
+                                isDisabled={false}
+                                isLoading={false}
+                                isClearable={true}
+                                isSearchable={true}
+                                options={this.state.tipoD}
+                                onChange={this.ChangeSelect.bind(this)}
+                            />
+                        </div>
+                        <div className="col-md-6">
+                            <label> Numero de Documento </label>
+                            <input type="document" className="form-control" placeholder="Document number"
+                                   value={this.state.documento}
+                                   onChange={this.ChangeDocumento}/>
+                        </div>
                     </div>
                 </div>
-                <div className="form-group izquierda">
-                    <button className="btn btn-primary boton" onClick={this.restaurar}>Restaurar</button>
-                    <button className="btn btn-primary boton" onClick={this.registrar}>Registrar</button>
+                <div className="form-group">
+                    <Button bsStyle="primary" fill wd onClick={this.restaurar}>Limpiar</Button>
+                    <Button bsStyle="primary" fill wd onClick={this.registrar}>Agregar invitado</Button>
                 </div>
             </div>
         );

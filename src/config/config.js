@@ -1,6 +1,7 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
 
+// Base de CountryApp
 // const config = {
 //     apiKey: 'AIzaSyCuck_TCGJv5gSVrNVsRD-9r4amZ4CrwUM',
 //     authDomain: 'countryapp-f0ce1.firebaseapp.com',
@@ -11,6 +12,7 @@ import 'firebase/firestore';
 //     appId: '1:810428216960:web:ffe81dcac50290a2'
 // };
 
+// Base de LiveSafe
 const config = {
     apiKey: 'AIzaSyC_6xPis8MppwEJZOb1RC9atc0ot2oh3Iw',
     authDomain: 'livesafeweb.firebaseapp.com',
@@ -23,5 +25,6 @@ const config = {
 
 const Firebase = firebase.initializeApp(config);
 const Database = firebase.firestore();
+const Storage = firebase.storage();
 
-export { Firebase, Database };
+export { Firebase, Database, Storage };

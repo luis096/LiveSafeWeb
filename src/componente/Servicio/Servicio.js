@@ -12,7 +12,7 @@ class Servicio extends Component {
         this.nombre = props.nombre;
         this.disponibilidad = props.disponibilidad;
         this.estado = props.estado;
-        this.urlEditar = '/editarServicio/' + props.idServicio;
+        this.urlEditar = 'editarServicio/' + props.idServicio;
         this.eliminar = this.eliminar.bind(this);
     }
 

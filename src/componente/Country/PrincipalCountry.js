@@ -20,12 +20,13 @@ class PrincipalCountry extends Component{
         const { barrios } = this.state;
         await Database.collection('Country').get().then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                this.state.barrios.push(
+                barrios.push(
                     [doc.data(),doc.id]
                 )
             });
         });
         this.setState({barrios});
+        console.log(this.state.barrios)
     }
 
     actualizar(id){

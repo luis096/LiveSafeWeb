@@ -53,7 +53,8 @@ class Root extends Component {
       title: <span data-notify="icon" className="pe-7s-gift" />,
       message: (
         <div>
-          Lalalla
+          Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for
+          every web developer.
         </div>
       ),
       level: level,
@@ -130,18 +131,18 @@ class Root extends Component {
       default:
         break;
     }
-    _notificationSystem.addNotification({
-      title: <span data-notify="icon" className="pe-7s-close-circle"/>,
-      message: (
-        <div>
-          <span><strong>Error: </strong></span><br/>
-          Hay errores en el formulario.
-        </div>
-      ),
-      level: "error",
-      position: "tc",
-      autoDismiss: 15
-    });
+    // _notificationSystem.addNotification({
+    //   title: <span data-notify="icon" className="pe-7s-gift" />,
+    //   message: (
+    //     <div>
+    //       Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for
+    //       every web developer.
+    //     </div>
+    //   ),
+    //   level: level,
+    //   position: "tr",
+    //   autoDismiss: 15
+    // });
   }
   componentDidUpdate(e) {
     if (
@@ -160,7 +161,7 @@ class Root extends Component {
   render() {
     return (
       <div className="wrapper">
-          <NotificationSystem ref="notificationSystem" style={style} />
+        {/* <NotificationSystem ref="notificationSystem" style={style} /> */}
         <Sidebar {...this.props} routes={this.state.rutasPermitidas} image={this.state.image}
         color={this.state.color}
         hasImage={this.state.hasImage}/>

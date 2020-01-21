@@ -91,8 +91,7 @@ class Admin extends Component {
         if (!user) {
             return (
                 <div className="container"><br></br>
-                    <div className="text-center ">
-                        {/* <div className=""></div> */}
+                    <div className="text-center">
                         <img src={logo} width="300" height="260"></img>
                     </div>
                     <div className="row">

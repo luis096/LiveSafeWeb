@@ -1,12 +1,11 @@
 /*!
 
 =========================================================
-* Light Bootstrap Dashboard React - v1.3.0
+* Light Bootstrap Dashboard PRO React - v1.2.0
 =========================================================
 
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-react
+* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react
 * Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard-react/blob/master/LICENSE.md)
 
 * Coded by Creative Tim
 
@@ -16,13 +15,33 @@
 
 */
 import React, { Component } from "react";
-import { FormGroup, ControlLabel, FormControl, Row } from "react-bootstrap";
+import {
+  FormGroup,
+  ControlLabel,
+  FormControl,
+  InputGroup
+} from "react-bootstrap";
 
-function FieldGroup({ label, ...props }) {
+function FieldGroup({
+  label,
+  addonLeft,
+  addonRight,
+  validationState,
+  ...props
+}) {
+  if (addonLeft !== undefined || addonRight !== undefined)
+    return (
+      <InputGroup>
+        {addonLeft ? <InputGroup.Addon>{addonLeft}</InputGroup.Addon> : ""}
+        <FormControl {...props} />
+        {addonRight ? <InputGroup.Addon>{addonRight}</InputGroup.Addon> : ""}
+      </InputGroup>
+    );
   return (
-    <FormGroup>
-      <ControlLabel>{label}</ControlLabel>
+    <FormGroup validationState={validationState ? validationState : null}>
+      {label ? <ControlLabel>{label}</ControlLabel> : ""}
       <FormControl {...props} />
+      {validationState ? <FormControl.Feedback /> : ""}
     </FormGroup>
   );
 }
@@ -33,11 +52,11 @@ export class FormInputs extends Component {
     for (var i = 0; i < this.props.ncols.length; i++) {
       row.push(
         <div key={i} className={this.props.ncols[i]}>
-          <FieldGroup {...this.props.properties[i]} />
+          <FieldGroup {...this.props.proprieties[i]} />
         </div>
       );
     }
-    return <Row>{row}</Row>;
+    return <div className="row">{row}</div>;
   }
 }
 

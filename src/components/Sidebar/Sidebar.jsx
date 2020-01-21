@@ -1,157 +1,203 @@
-/*!
 
-=========================================================
-* Light Bootstrap Dashboard React - v1.3.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { Component } from "react";
+import { Collapse } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import { NavDropdown, MenuItem, Dropdown} from 'react-bootstrap'
-import { UncontrolledCollapse, Button, CardBody, Card } from 'reactstrap';
-import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
+// this is used to create scrollbars on windows devices like the ones from apple devices
+import PerfectScrollbar from "perfect-scrollbar";
+import "perfect-scrollbar/css/perfect-scrollbar.css";
 
+import AdminNavbarLinks from "components/Navbars/AdminNavbarLinks.jsx";
 
+// image for avatar in Sidebar
+import avatar from "assets/img/default-avatar.png";
+// logo for sidebar
 import logo from "../../logoLiveSafe.png";
+
+import routes from "routes.js";
+
+var ps;
 
 class Sidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      ...this.getCollapseStates(routes),
+      openAvatar: false,
+      isWindows: navigator.platform.indexOf("Win") > -1 ? true : false,
       width: window.innerWidth
     };
   }
-  activeRoute(routeName) {
-    return this.props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
+  // this creates the intial state of this component based on the collapse routes
+  // that it gets through this.props.routes
+  getCollapseStates = routes => {
+    let initialState = {};
+    routes.map((prop, key) => {
+      if (prop.collapse) {
+        initialState = {
+          [prop.state]: this.getCollapseInitialState(prop.views),
+          ...this.getCollapseStates(prop.views),
+          ...initialState
+        };
+      }
+      return null;
+    });
+    return initialState;
+  };
+  // this verifies if any of the collapses should be default opened on a rerender of this component
+  // for example, on the refresh of the page,
+  // while on the src/views/forms/RegularForms.jsx - route /admin/regular-forms
+  getCollapseInitialState(routes) {
+    for (let i = 0; i < routes.length; i++) {
+      if (routes[i].collapse && this.getCollapseInitialState(routes[i].views)) {
+        return true;
+      } else if (window.location.href.indexOf(routes[i].path) !== -1) {
+        return true;
+      }
+    }
+    return false;
   }
+
+  createLinks = routes => {
+    return routes.map((prop, key) => {
+      if (prop.redirect || ((prop.layout !== this.props.layoutUser && !prop.collapse) ||
+          (prop.collapse && prop.layoutCollapse !== this.props.layoutUser) || prop.noVisualizar )) {
+        return null;
+      }
+      if (prop.collapse) {
+        var st = {};
+        st[prop["state"]] = !this.state[prop.state];
+        return (
+          <li
+            className={this.getCollapseInitialState(prop.views) ? "active" : ""}
+            key={key}
+          >
+            <a
+              href="/"
+              onClick={e => {
+                e.preventDefault();
+                this.setState(st);
+              }}
+            >
+              <i className={prop.icon} />
+              <p>
+                {prop.name}
+                <b
+                  className={
+                    this.state[prop.state] ? "caret rotate-180" : "caret"
+                  }
+                />
+              </p>
+            </a>
+            <Collapse in={this.state[prop.state]}>
+              <ul className="nav">{this.createLinks(prop.views)}</ul>
+            </Collapse>
+          </li>
+        );
+      }
+      return (
+        <li className={this.activeRoute(prop.layout + prop.path)} key={key}>
+          <NavLink
+            to={prop.layout + prop.path}
+            className="nav-link"
+            activeClassName="active"
+          >
+            {prop.icon ? (
+              <>
+                <i className={prop.icon} />
+                <p>{prop.name}</p>
+              </>
+            ) : (
+              <>
+                <span className="sidebar-mini">{prop.mini}</span>
+                <span className="sidebar-normal">{prop.name}</span>
+              </>
+            )}
+          </NavLink>
+        </li>
+      );
+    });
+  };
+  // verifies if routeName is the one active (in browser input)
+  activeRoute = routeName => {
+    return this.props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
+  };
+  // if the windows width changes CSS has to make some changes
+  // this functions tell react what width is the window
   updateDimensions() {
     this.setState({ width: window.innerWidth });
   }
+  componentDidUpdate() {
+    if (navigator.platform.indexOf("Win") > -1) {
+      setTimeout(() => {
+        ps.update();
+      }, 350);
+    }
+  }
   componentDidMount() {
-    this.updateDimensions();
+    // add event listener for windows resize
     window.addEventListener("resize", this.updateDimensions.bind(this));
+    // if you are using a Windows Machine, the scrollbars will have a Mac look
+    if (navigator.platform.indexOf("Win") > -1) {
+      ps = new PerfectScrollbar(this.refs.sidebarWrapper);
+    }
+    this.updateDimensions();
+  }
+  componentWillUnmount() {
+    // we need to destroy the false scrollbar when we navigate
+    // to a page that doesn't have this component rendered
+    if (navigator.platform.indexOf("Win") > -1) {
+      ps.destroy();
+    }
   }
   render() {
-    const sidebarBackground = {
-      backgroundImage: "url(" + this.props.image + ")"
-    };
     return (
       <div
-        id="sidebar"
         className="sidebar"
         data-color={this.props.color}
         data-image={this.props.image}
       >
-          {this.props.hasImage ? (
-            <div className="sidebar-background" style={sidebarBackground} />
-          ) : (
-            null
-          )}
+        {this.props.hasImage ? (
+          <div
+            className="sidebar-background"
+            style={{ backgroundImage: "url(" + this.props.image + ")" }}
+          />
+        ) : (
+          ""
+        )}
         <div className="logo">
-          <a
-            href="#"
-            className="simple-text logo-mini"
-          >
+          <a className="simple-text logo-mini" target="_blank">
             <div className="logo-img">
-              <img src={logo} alt="logo_image" />
+              <img src={logo} alt="react-logo" />
             </div>
           </a>
-          <a
-            href="#"
-            className="simple-text logo-normal"
-          >
-           Live Safe
+          <a className="simple-text logo-normal" target="_blank">
+            LiveSafe
           </a>
         </div>
-        <div className="sidebar-wrapper">
+        <div className="sidebar-wrapper" ref="sidebarWrapper">
+          <div className="user">
+            <div className="photo">
+              <img src={avatar} alt="Avatar"/>
+            </div>
+            <div className="info">
+              <a
+                href="/"
+                onClick={e => {
+                  e.preventDefault();
+                  this.setState({ openAvatar: !this.state.openAvatar });
+                }}
+              >
+                <span>
+                  {localStorage.getItem("userName") || 'ANON'}
+                </span>
+              </a>
+            </div>
+          </div>
           <ul className="nav">
-            {this.state.width <= 991 ? <AdminNavbarLinks /> : null}
-            
-            {this.props.routes.map((prop, key) => {
-              let name = prop.icon;
-              let nameTwo = '#' + prop.icon;
-              if (!prop.redirect)
-                return (
-                  <li
-                    className={
-                      prop.upgrade
-                        ? "active active-pro"
-                        : this.activeRoute(prop.layout + prop.path)
-                    }
-                    key={key}
-                    id={name}
-                  >
-                  {/* <div>
-                    <i className={prop.icon}/>
-                    <p>{prop.name}</p>
-                  </div>
-                    
-    <UncontrolledCollapse toggler={nameTwo}>
-                    <NavLink
-                      to={prop.layout + prop.path}
-                      className="nav-link"
-                      activeClassName="active"
-                    >
-                      <i className={prop.icon} />
-                      <p>{prop.name}</p>
-                    </NavLink>
-    </UncontrolledCollapse></li> */}
-                  {/* // <li
-                  //   className={
-                  //     prop.upgrade
-                  //       ? "active active-pro"
-                  //       : this.activeRoute(prop.layout + prop.path)
-                  //   }
-                  //   key={key}
-                  // > */}
-                    <NavLink
-                      to={prop.layout + prop.path}
-                      className="nav-link"
-                      activeClassName="active"
-                    >
-                      <i className={prop.icon} />
-                      <p>{prop.name}</p>
-                    </NavLink>
-                  
-                  </li>
 
+            {this.state.width <= 992 ? <AdminNavbarLinks /> : null}
 
-                //   <Dropdown
-                //   className={
-                //     prop.upgrade
-                //       ? "active active-pro"
-                //       : this.activeRoute(prop.layout + prop.path)
-                //   }
-                //   key={key}
-                //   eventKey={2}
-                //   title="Dropdown"
-                //   id="basic-nav-dropdown-right"
-                // >
-                //   <MenuItem eventKey={2.1}><NavLink
-                //       to={prop.layout + prop.path}
-                //       className="nav-link"
-                //       activeClassName="active"
-                //     >
-                //       <i className={prop.icon} />
-                //       <p>{prop.name}</p>
-                //     </NavLink></MenuItem>
-                //   <MenuItem eventKey={2.2}>Another action</MenuItem>
-                //   <MenuItem divider />
-                //   <MenuItem eventKey={2.5}>Separated link</MenuItem>
-                // </Dropdown>
-                );
-              return null;
-            })}
+            {this.createLinks(routes)}
           </ul>
         </div>
       </div>

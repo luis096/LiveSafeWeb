@@ -1,10 +1,10 @@
-import { isNullOrUndefined } from 'util';
+import {Database} from '../config/config';
 
-//Expreciones regulares para las validaciones. 
-const NUMBER_REGEXP = /^\d+$/;
+//Expreciones regulares para las validaciones.
+const NUMBER_REGEXP = /^\d*$/;
 const DECIMAL_REGEXP = /^\d+(\.\d+){0,2}?$/;
 const EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
-const LETTERS_REGEXP = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+/;
+const LETTERS_REGEXP = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]*$/;
 const DECIMAL_WITH_TWO_DIGITS_REGEXP = /^[0-9]+(.[0-9]{0,2})?$/;
 const DECIMAL_10_DIG_BEFORE_3_DIG_AFTER_REGEXP = /^\d{0,10}(?:(?=\.)\.\d{0,3}|(?!\.))$/;
 const DECIMAL_10_DIG_BEFORE_2_DIG_AFTER_REGEXP = /^\d{0,10}(?:(?=\.)\.\d{0,2}|(?!\.))$/;
@@ -12,6 +12,9 @@ const CUIT_REGEXP = /^\d{2}-\d{8}-\d{1}$/;
 const NUMBER_ZERO = /^[0]+$/;
 const NOMBRE_ARCHIVOS = /^(?!((con|prn|aux)((\.[^\\/:*"$•?<>|]{1,3}$)|$))|[\s\.])[^\\/:*"$•?<>|]{1,254}$/;
 const LETRAS_REGEXP = /^[a-zA-Z ]*$/;
+const ESTADOS_RESERVAS = ['Pendiente', 'En Curso', 'Cancelado', 'Realizado'];
+const ESTADOS_RESERVAee = '.where("FechaDesde", ">", new Date())'
+
 
 // Se retorna TRUE si hay un error.. 
 export const validator = {
@@ -19,19 +22,27 @@ export const validator = {
     requerido,
     mail,
     soloLetras,
+    estadoReserva,
+    obtenerFecha,
+    validarMail,
+    fechaRango,
+    isValid
 };
 
 
-
 function numero(valor) {
-    return {error: NUMBER_REGEXP.test(valor) ? false : true,
-    mensaje: 'Solo ingresar números'};
+    return {
+        error: NUMBER_REGEXP.test(valor) ? false : true,
+        mensaje: 'Solo ingresar números'
+    };
 }
 
 
-function requerido(valor){
-    return {error: (valor===''||valor==null),
-        mensaje: 'El campo es requerido'};
+function requerido(valor) {
+    return {
+        error: (valor === '' || valor == null),
+        mensaje: 'El campo es requerido'
+    };
 }
 
 function mail(valor) {
@@ -39,6 +50,69 @@ function mail(valor) {
 }
 
 function soloLetras(valor) {
-    return {error: LETRAS_REGEXP.test(valor) ? false : true,
-        mensaje: 'Solo ingresar letras'};
+    return {
+        error: LETTERS_REGEXP.test(valor) ? false : true,
+        mensaje: 'Solo ingresar letras'
+    };
+}
+
+function estadoReserva(desde, hasta, cancelado) {
+    let hoy = new Date();
+    if (cancelado){
+        return {Nombre: ESTADOS_RESERVAS[2], Id: 2};
+    }
+    if (desde < hoy && hasta > hoy) {
+        return {Nombre: ESTADOS_RESERVAS[1], Id: 1};
+    } else if (desde > hoy) {
+        return {Nombre: ESTADOS_RESERVAS[0], Id: 0};
+    } else {
+        return {Nombre: ESTADOS_RESERVAS[3], Id: 3};
+    }
+}
+
+function obtenerFecha(time) {
+    return (new Date(time.seconds * 1000));
+}
+
+async function validarMail(mail) {
+    let valido = true;
+    await Database.collection('Usuarios').doc(mail).get().then(doc => {
+        valido = !doc.exists;
+    });
+    return valido;
+}
+
+function fechaRango(desde, hasta, bool) {
+    if (!desde || !hasta){
+        return {
+        error: false,
+        mensaje: ''
+    };}
+    if (desde >= hasta && bool){
+        return {
+            error: true,
+            mensaje: 'La fecha desde debe ser menor a la fecha hasta'
+        };
+    } else if (desde >= hasta){
+        return {
+            error: true,
+            mensaje: 'La fecha hasta debe ser mayor a la fecha desde'
+        };
+    } else{
+        return {
+            error: false,
+            mensaje: ''
+        };
+    }
+
+}
+
+function isValid(errores){
+    let invalid = false;
+    errores.map((error) =>{
+        if(error.error){
+            invalid = true;
+        }
+    });
+    return !invalid;
 }

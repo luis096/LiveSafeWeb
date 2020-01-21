@@ -148,56 +148,6 @@ class PrincialEgreso extends Component {
                 });
     }
 
-
-
-
-        // await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-        //     .collection('Propietarios').get().then(querySnapshot=> {
-        //         querySnapshot.forEach(prop=> {
-        //             Database.collection('Country').doc(localStorage.getItem('idCountry'))
-        //                 .collection('Propietarios').doc(prop.id).collection('Invitados').get()
-        //                 .then(querySnapshot=> {
-        //                     querySnapshot.forEach(doc=> {
-        //                         if (prop.data().Documento === this.state.documento &&
-        //                             prop.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
-        //                             this.state.invitadoTemp.push(prop.data(), prop.id);
-        //                             this.setState({
-        //                                 mensaje2: 'No se encuentra ingreso de ' + prop.data().Apellido + '. Indique observaciones.'
-        //                             });
-        //                             this.setState({observacion: false});
-        //                         } else if (doc.data().Documento === this.state.documento &&
-        //                             doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
-        //                             this.state.invitadoTemp.push(doc.data(), doc.id);
-        //                             if (doc.data().Nombre != '') {
-        //                                 this.setState({
-        //                                     mensaje2: 'No se encuentra ingreso de ' + doc.data().Apellido + '. Indique observaciones.'
-        //                                 });
-        //                                 this.setState({observacion: false});
-        //                             } else {
-        //                                 this.setState({virgen: true, mensaje: 'Falta autentificar el invitado'});
-        //                             }
-        //                         }
-        //                     });
-        //                 });
-
-
-        //         });
-        //     });
-
-
-        //    Database.collection('Personas').get().then(querySnapshot => {
-        //         querySnapshot.forEach(doc => {
-        //             if(doc.data().Documento === this.state.documento &&
-        //             doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value){
-        //                 if(doc.data().IdTipoPersona.id === 'Propietario'){
-        //                     this.state.invitadoTemp.push(doc.data(), doc.id)
-        //                     this.setState({
-        //                         mensaje2: 'No se encuentra ingreso de ' + doc.data().Apellido + '. Indique
-        // observaciones.' }) this.setState({observacion: false}) } else{ if (doc.data().Nombre !=''){
-        // this.state.invitadoTemp.push(doc.data(), doc.id) this.setState({ mensaje2: 'No se encuentra ingreso de ' +
-        // doc.data().Apellido + '. Indique observaciones.' }) this.setState({observacion: false}) }else{
-        // this.state.invitadoTemp.push(doc.data(), doc.id) this.setState({virgen: true, mensaje: 'Falta autentificar
-        // el invitado'}) } } }  })})
         if (this.state.invitadoTemp.length == 0 && !this.state.virgen && this.state.observacion) {
             this.setState({noExisteInvitado: true});
         }
@@ -279,8 +229,6 @@ class PrincialEgreso extends Component {
                         <label className="h2">Egreso</label>
                     </div>
                     <div className="col-5 izquierda">
-                        <input className="mr-sm-2 borde-button" control de formulario tipo="texto"
-                               placeholder="Buscar"/>
                         <button type="button" className="btn btn-primary"
                                 onClick={handleShow}
                         >Nuevo Egreso
@@ -315,11 +263,13 @@ class PrincialEgreso extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label hidden={this.state.observacion}>{this.state.mensaje2}</label>
-                                    <textarea className="form-control" placeholder="Observation"
-                                              value={this.state.descripcion}
-                                              onChange={this.ChangeDescripcion}
-                                              hidden={this.state.observacion}
-                                    ></textarea>
+                                    <div hidden={this.state.observacion}>
+                                        <textarea className="form-control" placeholder="Observation"
+                                                  value={this.state.descripcion}
+                                                  onChange={this.ChangeDescripcion}
+                                        ></textarea>
+                                    </div>
+
                                 </div>
                             </Modal.Body>
                             <Modal.Footer>

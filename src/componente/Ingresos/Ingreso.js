@@ -23,7 +23,6 @@ class Ingreso extends Component {
     }
 
     eliminar() {
-        console.log(this.nombre);
         Database.collection('Ingreso').doc(this.idIngreso).delete()
             .then(
                 this.props.act(this.idIngreso)

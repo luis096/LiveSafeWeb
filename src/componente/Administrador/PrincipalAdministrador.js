@@ -3,10 +3,9 @@ import '../Style/Alta.css';
 import '../Administrador/Index.css';
 import { Database } from '../../config/config';
 import { Link } from 'react-router-dom';
-import Administrador from './Administrador';
 
 
-class PrincipalPropietario extends Component {
+class PrincipalAdministrador extends Component {
 
     constructor() {
         super();
@@ -20,20 +19,40 @@ class PrincipalPropietario extends Component {
 
     async componentDidMount() {
         const {administradores} = this.state;
+        let idBarrios = [];
+        // await Database.collection('Country').get().then(querySnapshot=> {
+        //     querySnapshot.forEach(country=> {
+        //         Database.collection('Country').doc(country.id)
+        //             .collection('Administradores').get()
+        //             .then(querySnapshot=> {
+        //                 querySnapshot.forEach(doc=> {
+        //                     administradores.push(
+        //                         [doc.data(), doc.id]
+        //                     );
+        //                 });
+        //             });
+        //     });
+        // });
         await Database.collection('Country').get().then(querySnapshot=> {
-            querySnapshot.forEach(country=> {
-                Database.collection('Country').doc(country.id)
-                    .collection('Administradores').get()
-                    .then(querySnapshot=> {
-                        querySnapshot.forEach(doc=> {
-                            this.state.administradores.push(
-                                [doc.data(), doc.id]
-                            );
-                        });
-                    });
+            querySnapshot.forEach(doc=> {
+                idBarrios.push(doc.id)
             });
         });
+
+        idBarrios.map(id => {
+            Database.collection('Country').doc(id)
+                .collection('Administradores').get()
+                .then(querySnapshot=> {
+                    querySnapshot.forEach(doc=> {
+                        administradores.push(
+                            [doc.data(), doc.id]
+                        );
+                    });
+                });
+        });
+
         this.setState({administradores});
+        console.log(this.state.administradores)
     }
 
 
@@ -49,25 +68,15 @@ class PrincipalPropietario extends Component {
 
     render() {
         return (
-            <div className="col-12 PrincipalAdm">
+            <div className="col-12 ">
                 <div className="row ">
-                    <div className="col-1"></div>
                     <div className="col-5">
                         <label className="h2">Administradores</label>
-                    </div>
-                    <div className="col-5 izquierda">
-                        <Link to='/altaAdministrador' type="button" className="btn btn-primary">Nuevo
-                            Administrador</Link>
                     </div>
                 </div>
 
                 <div className="row">
-
-                    <div className="col-md-1"></div>
-                    <div className="col-md-10 ">
-
-                        <br></br>
-
+                    <div className="col-md-10">
                         <table className="table table-hover">
                             <thead>
                             <tr>
@@ -82,18 +91,16 @@ class PrincipalPropietario extends Component {
 
                             <tbody>
                             {
-                                this.state.administradores.map(admin=> {
+                                this.state.administradores.map(admin => {
                                         return (
-                                            <Administrador
-                                                idAdministrador={admin[1]}
-                                                nombre={admin[0].Nombre}
-                                                apellido={admin[0].Apellido}
-                                                legajo={admin[0].Legajo}
-                                                documento={admin[0].Documento}
-                                                celular={admin[0].Celular}
-                                                act={this.actualizar}
-                                            >
-                                            </Administrador>
+                                            <tr>
+                                                <th scope="row">{admin[0].Nombre}, {admin[0].Apellido}</th>
+                                                <td>{admin[0].Documento}</td>
+                                                <td> {admin[0].Legajo}</td>
+                                                <td>{admin[0].Celular}</td>
+                                                <td>{'editar'}</td>
+                                                <td>{'asd'}</td>
+                                            </tr>
                                         );
                                     }
                                 )
@@ -102,15 +109,10 @@ class PrincipalPropietario extends Component {
                             </tbody>
                         </table>
                     </div>
-                    <div className="col-md-1"></div>
                 </div>
-                <div>
-                    < hr className="my-4"></hr>
-                </div>
-                <div className="espacio"></div>
             </div>
         );
     }
 }
 
-export default PrincipalPropietario;
+export default PrincipalAdministrador;
