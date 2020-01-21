@@ -47,6 +47,7 @@ class HeaderLinks extends Component {
 
     miPerfilRedirect() {
         if (this.state.redirectPerfil) {
+            this.state.redirectPerfil = false;
             return <Redirect to='miPerfil'/>;
         }
     }
@@ -57,10 +58,24 @@ class HeaderLinks extends Component {
         });
     }
 
+    miBarrioRedirect() {
+        if (this.state.redirectBarrio) {
+            this.state.redirectBarrio = false;
+            return <Redirect to='miCountry'/>;
+        }
+    }
+
     configuracion() {
         this.setState({
             redirectConf: true
         });
+    }
+
+    miConfiguracionRedirect() {
+        if (this.state.redirectConf) {
+            this.state.redirectConf = false;
+            return <Redirect to='configuraciones'/>;
+        }
     }
 
     renderRedirect = ()=> {
@@ -154,20 +169,22 @@ class HeaderLinks extends Component {
                         bsClass="dropdown-with-icons dropdown"
                     >
                         <MenuItem eventKey={4.1} onClick={this.miPerfil}>
-                            <i className="pe-7s-mail"/> Mi Perfil
+                            <i className="pe-7s-id"/> Mi Perfil
                         </MenuItem>
+                        {this.miPerfilRedirect()}
                         <MenuItem eventKey={4.2} onClick={this.miBarrio}>
-                            <i className="pe-7s-help1"/> Mi Barrio
+                            <i className="pe-7s-home"/> Mi Barrio
                         </MenuItem>
+                        {this.miBarrioRedirect()}
                         <MenuItem eventKey={4.3} onClick={this.configuracion}>
                             <i className="pe-7s-tools"/> Configuraciones
                         </MenuItem>
-                        {this.miPerfilRedirect()}
+                        {this.miConfiguracionRedirect()}
                         <MenuItem divider/>
                         {this.renderRedirect()}
                         <MenuItem eventKey={4.5} onClick={this.setRedirect}>
                             <div className="text-danger">
-                                <i className="pe-7s-close-circle"/> Log out
+                                <i className="pe-7s-back-2"/> Log out
                             </div>
                         </MenuItem>
                     </NavDropdown>

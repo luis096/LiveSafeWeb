@@ -193,7 +193,7 @@ class MiPerfil extends Component {
                                                     disabled: true
                                                 },
                                                 {
-                                                    label: 'Nro Documento',
+                                                    label: 'Número de Documento',
                                                     type: 'text',
                                                     bsClass: 'form-control',
                                                     value: this.state.nroDocumento,

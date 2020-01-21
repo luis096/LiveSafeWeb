@@ -108,6 +108,9 @@ class AltaReserva extends Component {
     }
 
     addNewEventAlert(slotInfo) {
+        if (slotInfo.start === slotInfo.end) {
+            return;
+        }
         if (slotInfo.start < new Date()) {
             this.setState({
                 alert: (
@@ -222,21 +225,21 @@ class AltaReserva extends Component {
         });
     }
 
-    async navigate(time){
+    async navigate(time) {
         let anio = time.getFullYear();
         let mes = time.getMonth();
         let dia = time.getDate();
-        let hasta = new Date(anio, mes,(dia + 8));
+        let hasta = new Date(anio, mes, (dia + 8));
         let desde = new Date(anio, mes, dia);
         let idPersona = localStorage.getItem('idPersona');
         let newEvents = [];
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.state.servicioSeleccionado.value).collection('Reservas')
-            .where("FechaDesde", ">=", desde).where("FechaDesde", "<=", hasta).get().then(querySnapshot=> {
+            .where('FechaDesde', '>=', desde).where('FechaDesde', '<=', hasta).get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
                     if (doc.exists && !doc.data().Cancelado) {
                         newEvents.push({
-                            title: (idPersona === doc.data().IdPropietario.id) ? doc.data().Nombre: 'Reservado',
+                            title: (idPersona === doc.data().IdPropietario.id) ? doc.data().Nombre : 'Reservado',
                             start: validator.obtenerFecha(doc.data().FechaDesde),
                             end: validator.obtenerFecha(doc.data().FechaHasta),
                             color: (idPersona === doc.data().IdPropietario.id) ? 'blue' : 'red'
@@ -245,39 +248,42 @@ class AltaReserva extends Component {
                 });
             });
         this.setState({events: newEvents});
-        console.log(this.state.events)
     }
 
     render() {
         return (
             <div className="col-12">
                 <legend><h3 className="row">Nueva Reserva</h3></legend>
-                <div className="row">
-                    <div className="col-md-6  flex-container form-group row-secction">
-                        <label> Servicios del Country </label>
-                        <Select
-                            className="col-6"
-                            classNamePrefix="select"
-                            isDisabled={false}
-                            isLoading={false}
-                            isClearable={true}
-                            isSearchable={true}
-                            options={this.state.reservaLista}
-                            onChange={this.ChangeSelect.bind(this)}
-                        />
-                    </div>
-                    <div className="row-secction" style={{paddingTop: '25px'}}>
-                        <Button bsStyle="primary" fill wd onClick={this.consultar}>
-                            Consultar
-                        </Button>
+                <div className="row card col-md-6">
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-10 row-secction">
+                                <label> Servicios del Country </label>
+                                <Select
+                                    className="col-6"
+                                    classNamePrefix="select"
+                                    isDisabled={false}
+                                    isLoading={false}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    options={this.state.reservaLista}
+                                    onChange={this.ChangeSelect.bind(this)}
+                                />
+                            </div>
+                            <div className="col-md-2 row-secction" style={{paddingTop: '25px'}}>
+                                <Button bsStyle="primary" fill wd onClick={this.consultar}>
+                                    Consultar
+                                </Button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {this.state.alert}
                 <div hidden={!(this.state.consulta)}>
                     <Grid fluid>
                         <Row>
-                            <Col md={10} mdOffset={1}>
-                                <h3>{this.state.servicioSeleccionado ? this.state.servicioSeleccionado.label : 'Sin servicio seleccionado'}</h3>
+                            <Col md={12}>
+                                <h3>Servicio: {this.state.servicioSeleccionado ? this.state.servicioSeleccionado.label : 'Sin servicio seleccionado'}</h3>
                                 <Card
                                     calendar
                                     content={
@@ -290,12 +296,12 @@ class AltaReserva extends Component {
                                             events={this.state.events}
                                             defaultView="week"
                                             views={['week']}
-                                            onNavigate={(nav)=> this.navigate(nav)}
+                                            onNavigate={(nav)=>this.navigate(nav)}
                                             scrollToTime={new Date(2019, 11, 21, 6)}
                                             defaultDate={new Date()}
-                                            onSelectEvent={event=>this.selectedEvent(event)}
+                                            onSelectEvent={event=>this.selectedEvent(event)} // quitar
                                             onSelectSlot={slotInfo=>this.addNewEventAlert(slotInfo)}
-                                            eventPropGetter={this.eventColors}
+                                            eventPropGetter={this.eventColors} //quitar
                                         />
                                     }
                                 />

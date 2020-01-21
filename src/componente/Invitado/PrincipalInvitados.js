@@ -90,11 +90,13 @@ class PrincipalInvitados extends Component {
                 alert: (
                     <SweetAlert
                         style={{display: 'block', marginTop: '-100px', position: 'center'}}
-                        title="Hay errores en los filtros"
+                        title="Error"
                         onConfirm={()=>this.hideAlert()}
                         onCancel={()=>this.hideAlert()}
                         confirmBtnBsStyle="danger"
-                    />
+                    >
+                        Hay errores en los filtros.
+                    </SweetAlert>
                 )
             });
             return;

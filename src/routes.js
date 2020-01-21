@@ -55,7 +55,9 @@ import AltaReserva from './componente/Reserva/AltaReserva.js'
 import VisualizarReserva from './componente/Reserva/VisualizarReserva.js'
 
 //Todos
-import MiPerfil from './componente/Perfil/MiPerfil';
+import MiPerfil from 'componente/Perfil/MiPerfil'
+import MiCountry from 'componente/Perfil/MiCountry'
+import Config from 'componente/Perfil/Configuraciones'
 
 
 var routes = [
@@ -446,18 +448,18 @@ var routes = [
         icon: 'pe-7s-users',
         views: [
             {
-                path: '/altaInvitado',
-                layout: '/propietario',
-                name: 'Nuevo Invitado',
-                mini: 'NI',
-                component: AltaInvitado
-            },
-            {
                 path: '/invitados',
                 layout: '/propietario',
                 name: 'Mis Invitados',
                 mini: 'MI',
                 component: PrincipalInvitado
+            },
+            {
+                path: '/altaInvitado',
+                layout: '/propietario',
+                name: 'Nuevo Invitado',
+                mini: 'NI',
+                component: AltaInvitado
             },
             {
                 path: '/editarInvitado',
@@ -503,10 +505,27 @@ var routes = [
         path: '/miPerfil',
         layout: '/propietario',
         name: 'Mi Perfil',
-        icon: 'null',
+        icon: 'pe-7s-graph',
         noVisualizar: true,
         component: MiPerfil
     },
+    {
+        path: '/miCountry',
+        layout: '/propietario',
+        name: 'Mi Barrio',
+        icon: 'pe-7s-graph',
+        noVisualizar: true,
+        component: MiCountry
+    },
+    {
+        path: '/configuraciones',
+        layout: '/propietario',
+        name: 'Configuraciones',
+        icon: 'pe-7s-graph',
+        noVisualizar: true,
+        component: Config
+    },
+
 ];
 
 export default routes;

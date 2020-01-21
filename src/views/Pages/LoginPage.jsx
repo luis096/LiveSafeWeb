@@ -77,6 +77,7 @@ class LoginPage extends Component {
                     localStorage.setItem('idCountry', doc.data().IdCountry.id);
                     localStorage.setItem('idPersona', doc.data().IdPersona.id);
                     localStorage.setItem('mail', doc.data().NombreUsuario);
+                    localStorage.setItem('userName', doc.data().UserName);
                 }
             });
     }

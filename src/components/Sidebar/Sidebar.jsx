@@ -188,7 +188,7 @@ class Sidebar extends Component {
                 }}
               >
                 <span>
-                  {localStorage.getItem("mail")}
+                  {localStorage.getItem("userName") || 'ANON'}
                 </span>
               </a>
             </div>

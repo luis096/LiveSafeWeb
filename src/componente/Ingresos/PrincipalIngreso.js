@@ -236,8 +236,8 @@ class PrincialIngreso extends Component {
                                             </Link>
                                         </div>
                                         <div hidden={this.state.invitadoTemp.length != 0}>
-                                            <label className=''>{this.state.mensaje}</label>
-                                            <Link to={'/altaInvitado'} type="button" className="btn btn-success">Nuevo
+                                            <label>{this.state.mensaje}</label>
+                                            <Link to={'/encargado/altaInvitado'} type="button" className="btn btn-success">Nuevo
                                                 Invitado</Link>
                                         </div>
                                     </>

@@ -41,7 +41,6 @@ ReactDOM.render(
             <Route path="/login" render={props=><LoginLayout {...props} />}/>
             <Route path="/admin" render={props=><AdminLayout {...props} />}/>
             <Route path="/root" render={props=><AdminLayout {...props} />}/>
-            <Route path="/miPerfil" render={props=><Invitado {...props} />}/>
             <Route path="/encargado" render={props=><AdminLayout {...props} />}/>
             <Route path="/propietario" render={props=><AdminLayout {...props} />}/>
             <Route path="/invitado/:id" render={props=><Invitado {...props} />}/>

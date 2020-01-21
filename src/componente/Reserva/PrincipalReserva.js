@@ -30,7 +30,6 @@ class PrincipalReserva extends Component {
             primero: [],
             errorDesde: {error: false, mensaje: ''},
             errorHasta: {error: false, mensaje: ''}
-
         };
         this.hideAlert = this.hideAlert.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
@@ -70,7 +69,6 @@ class PrincipalReserva extends Component {
             errorHasta: validator.fechaRango(this.state.desde, new Date(event), false),
             errorDesde: validator.fechaRango(this.state.desde, new Date(event), true)
         });
-
     }
 
     async componentDidMount() {
@@ -84,7 +82,6 @@ class PrincipalReserva extends Component {
                 });
             });
         this.setState({serviciosLista});
-        //this.cantidad = paginador.cantidad(this.state.reservas.length);
     }
 
 
