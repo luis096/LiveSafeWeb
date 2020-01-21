@@ -243,7 +243,7 @@ var routes = [
     },
     {
         collapse: true,
-        layoutCollapse: '/encargado',
+        layoutCollapse: '/example',
         path: '/pages',
         name: 'Pages',
         state: 'openPages',
@@ -251,7 +251,7 @@ var routes = [
         views: [
             {
                 path: '/user-page',
-                layout: '/encargado',
+                layout: '/example',
                 name: 'User Page',
                 mini: 'UP',
                 component: UserPage
@@ -475,14 +475,14 @@ var routes = [
         path: '/ingresos',
         layout: '/encargado',
         name: 'Ingresos',
-        icon: 'pe-7s-graph',
+        icon: 'pe-7s-next-2',
         component: PrincipalIngreso
     },
     {
         path: '/egresos',
         layout: '/encargado',
         name: 'Egresos',
-        icon: 'pe-7s-graph',
+        icon: 'pe-7s-back-2',
         component: PrincipalEgreso
     },
     {

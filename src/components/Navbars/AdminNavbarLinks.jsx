@@ -32,8 +32,7 @@ class HeaderLinks extends Component {
 
     setRedirect = ()=> {
         Firebase.auth().signOut();
-        localStorage.removeItem('user');
-        localStorage.removeItem('mail');
+        localStorage.clear();
         this.setState({
             redirect: true
         });
@@ -82,19 +81,6 @@ class HeaderLinks extends Component {
         if (this.state.redirect) {
             return <Redirect to='/'/>;
         }
-        // } else if(this.state.redirectPerfil){
-        //     return <Redirect to='/miPerfil'/>;
-        // }else if(this.state.redirectBarrio){
-        //     return <Redirect to='/miBarrio'/>;
-        // }else if(this.state.redirectConf){
-        //     return <Redirect to='/configuraciones'/>;
-        // }
-        // this.setState({
-        //     redirect: false,
-        //     redirectPerfil: false,
-        //     redirectBarrio: false,
-        //     redirectConf: false
-        // })
     };
 
     logout() {
@@ -184,7 +170,7 @@ class HeaderLinks extends Component {
                         {this.renderRedirect()}
                         <MenuItem eventKey={4.5} onClick={this.setRedirect}>
                             <div className="text-danger">
-                                <i className="pe-7s-back-2"/> Log out
+                                <i className="pe-7s-back-2"/> Cerrar Sesion
                             </div>
                         </MenuItem>
                     </NavDropdown>

@@ -72,7 +72,7 @@ class Sidebar extends Component {
             key={key}
           >
             <a
-              href="#pablo"
+              href="/"
               onClick={e => {
                 e.preventDefault();
                 this.setState(st);
@@ -181,7 +181,7 @@ class Sidebar extends Component {
             </div>
             <div className="info">
               <a
-                href="#pablo"
+                href="/"
                 onClick={e => {
                   e.preventDefault();
                   this.setState({ openAvatar: !this.state.openAvatar });

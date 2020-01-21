@@ -16,6 +16,14 @@ class Configuraciones extends Component {
 
     }
 
+    reestablecer(){
+        // let user = firebase.auth().currentUser;
+        // let newPassword = getASecureRandomPassword();
+        //
+        // user.updatePassword(newPassword).then(() => {
+        //     // Actualizar pass.
+        // })
+    }
 
     render() {
         return (

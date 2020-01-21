@@ -15,6 +15,8 @@ import 'assets/css/pe-icon-7-stroke.css';
 import AdminLayout from 'layouts/Admin.jsx';
 import LoginLayout from 'views/Pages/LoginPage.jsx'
 
+import Inicio from 'componente/Inicio'
+
 import Invitado from 'componente/InvitadoEvento/InvitadoEvento.js';
 import Login from 'layouts/Login.jsx';
 
@@ -39,12 +41,13 @@ ReactDOM.render(
     <HashRouter>
         <Switch>
             <Route path="/login" render={props=><LoginLayout {...props} />}/>
+            <Route path="/inicio" render={props=><Inicio {...props} />}/>
             <Route path="/admin" render={props=><AdminLayout {...props} />}/>
             <Route path="/root" render={props=><AdminLayout {...props} />}/>
             <Route path="/encargado" render={props=><AdminLayout {...props} />}/>
             <Route path="/propietario" render={props=><AdminLayout {...props} />}/>
             <Route path="/invitado/:id" render={props=><Invitado {...props} />}/>
-            <Redirect from="/" to="/login"/>
+            <Redirect from="/" to="/inicio"/>
         </Switch>
     </HashRouter>,
     document.getElementById('root')

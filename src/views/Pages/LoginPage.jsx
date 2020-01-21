@@ -17,13 +17,13 @@ import { Redirect } from 'react-router-dom';
 import Spinner from 'react-spinner-material';
 import AuthNavbar from 'components/Navbars/AuthNavbar.jsx';
 import bgImage from '../../assets/img/fondoLogin.jpg';
-import { tipoDocumento } from '../../variables/Variables.jsx';
 
 class LoginPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
             cardHidden: true,
+            log: false,
             email: '',
             password: '',
             user: null,
@@ -33,10 +33,9 @@ class LoginPage extends Component {
             resultado: '',
             usuarioNuevo: null,
             nuevaPass: '',
-            nuevaPassTwo: ''
+            nuevaPassTwo: '',
+            login: false
         };
-        this.log = false;
-        this.authListener = this.authListener.bind(this);
         this.crearUsuarioNuevo = this.crearUsuarioNuevo.bind(this);
         this.ChangeEmail = this.ChangeEmail.bind(this);
         this.ChangePass = this.ChangePass.bind(this);
@@ -47,8 +46,7 @@ class LoginPage extends Component {
     }
 
     componentDidMount() {
-        setTimeout(function () { this.setState({cardHidden: false});}.bind(this), 700);
-        this.authListener();
+        setTimeout(function () { this.setState({cardHidden: false}) }.bind(this), 700);
     }
 
     ChangeEmail(event) {
@@ -82,30 +80,6 @@ class LoginPage extends Component {
             });
     }
 
-    authListener() {
-        Firebase.auth().onAuthStateChanged((user)=> {
-            if (user) {
-                this.setState({user});
-                localStorage.setItem('user', user.uid);
-                localStorage.setItem('mail', user.email);
-            } else {
-                this.setState({user: null});
-                localStorage.removeItem('user');
-            }
-        });
-        this.log = true;
-    }
-
-    setTipoDocumento() {
-        Database.collection('TipoDocumento').get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
-                tipoDocumento.push(
-                    {value: doc.id, label: doc.data().Nombre}
-                );
-            });
-        });
-    }
-
     consultarUsuarioTemporal() {
         Database.collection('UsuariosTemp').doc(this.state.email).get().then(doc=> {
             if (doc.exists) {
@@ -123,9 +97,6 @@ class LoginPage extends Component {
             await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
                 .then(()=> {
                     this.setState({result: true});
-                })
-                .catch(()=> {
-                    this.setState({result: false});
                     this.setState({resultado: 'Fallo de autentificacion'});
                 });
         }
@@ -140,120 +111,89 @@ class LoginPage extends Component {
         this.setState({user: true});
     }
 
-    render() {
-        const {user} = this.state;
-        if (this.log) {
-            if (!user) {
-                return (
-                    <div>
-                        <AuthNavbar/>
-                        <div className="wrapper wrapper-full-page">
-                            <div
-                                className={'full-page login-page'}
-                                data-color="black"
-                                data-image={bgImage}
-                            >
-                                <div className="content">
-                                    <Grid>
-                                        <Row>
-                                            <Col>
-                                                <form>
-                                                    <Card
-                                                        hidden={this.state.cardHidden}
-                                                        textCenter
-                                                        content={
-                                                            <div>
-                                                                <FormGroup>
-                                                                    <img src={logo} width="190" height="150"></img>
-                                                                </FormGroup>
-                                                                <FormGroup>
-                                                                    <ControlLabel>Email</ControlLabel>
-                                                                    <FormControl placeholder="Ingrese mail" type="email"
-                                                                                 value={this.state.email}
-                                                                                 onChange={this.ChangeEmail}/>
-                                                                </FormGroup>
-                                                                <FormGroup hidden={this.state.usuarioNuevo}>
-                                                                    <ControlLabel>Contraseña</ControlLabel>
-                                                                    <FormControl placeholder="Contraseña"
-                                                                                 type="password"
-                                                                                 value={this.state.password}
-                                                                                 onChange={this.ChangePass}
-                                                                                 autoComplete="off"/>
-                                                                </FormGroup>
-                                                                <FormGroup hidden={!this.state.usuarioNuevo}>
-                                                                    <ControlLabel>Nueva Contraseña</ControlLabel>
-                                                                    <FormControl placeholder="Contraseña"
-                                                                                 type="password"
-                                                                                 value={this.state.nuevaPass}
-                                                                                 onChange={this.ChangeNuevaPass}
-                                                                                 autoComplete="off"/>
-                                                                </FormGroup>
-                                                                <FormGroup hidden={!this.state.usuarioNuevo}>
-                                                                    <ControlLabel>Confirmar Nueva
-                                                                        Contraseña</ControlLabel>
-                                                                    <FormControl placeholder="Contraseña"
-                                                                                 type="password"
-                                                                                 value={this.state.nuevaPassTwo}
-                                                                                 onChange={this.ChangeNuevaPassTwo}
-                                                                                 autoComplete="off"/>
-                                                                </FormGroup>
-                                                            </div>
-                                                        }
-                                                        legend={
-                                                            <Button bsStyle="info" fill wd
-                                                                    onClick={this.state.usuarioNuevo ?
-                                                                        this.crearUsuarioNuevo :
-                                                                        this.onButtonPress
-                                                                    }>
-                                                                Iniciar Sesion
-                                                            </Button>
-                                                        }
-                                                        ftTextCenter
-                                                    />
-                                                </form>
-                                            </Col>
-                                        </Row>
-                                    </Grid>
-                                </div>
-                                <div
-                                    className="full-page-background"
-                                    style={{backgroundImage: 'url(' + bgImage + ')'}}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                );
-            }
-            else {
-                if (this.state.tipoUsuario === 'Root' || localStorage.getItem('tipoUsuario') === 'Root') {
-                    return (<div>
-                        <Redirect to="/root/country"></Redirect>
-                    </div>);
-                } else if (this.state.tipoUsuario === 'Administrador' || localStorage.getItem('tipoUsuario') === 'Administrador') {
-                    return (<div>
-                        <Redirect to="/admin/propietarios"></Redirect>
-                    </div>);
-                } else if (this.state.tipoUsuario === 'Encargado' || localStorage.getItem('tipoUsuario') === 'Encargado') {
-                    return (<div>
-                        <Redirect to="/encargado/ingresos"></Redirect>
-                    </div>);
-                } else if (this.state.tipoUsuario === 'Propietario' || localStorage.getItem('tipoUsuario') === 'Propietario') {
-                    return (<div>
-                        <Redirect to="/propietario/invitados"></Redirect>
-                    </div>);
-                } else {
-                    return (<div>
-                        Error, comuniquese con google.
-                    </div>);
-                }
-            }
-        } else {
-            return (
-                <div>
-                    <Spinner size={120} spinnerColor={'blue'} spinnerWidth={8} visible={true}></Spinner>
-                </div>
-            );
+    redirect() {
+        if (this.state.result) {
+            return <Redirect to="/"/>;
         }
+    }
+
+    render() {
+        return (
+            <div>
+                <AuthNavbar/>
+                <div className="wrapper wrapper-full-page">
+                    <div className={'full-page login-page'} data-color="black" data-image={bgImage}>
+                        <div className="content">
+                            <Grid>
+                                <Row>
+                                    <Col>
+                                        <form>
+                                            <Card
+                                                hidden={this.state.cardHidden}
+                                                textCenter
+                                                content={
+                                                    <div>
+                                                        <FormGroup>
+                                                            <img src={logo} width="190" height="150"></img>
+                                                        </FormGroup>
+                                                        <FormGroup>
+                                                            <ControlLabel>Email</ControlLabel>
+                                                            <FormControl placeholder="Ingrese mail" type="email"
+                                                                         value={this.state.email}
+                                                                         onChange={this.ChangeEmail}/>
+                                                        </FormGroup>
+                                                        <FormGroup hidden={this.state.usuarioNuevo}>
+                                                            <ControlLabel>Contraseña</ControlLabel>
+                                                            <FormControl placeholder="Contraseña"
+                                                                         type="password"
+                                                                         value={this.state.password}
+                                                                         onChange={this.ChangePass}
+                                                                         autoComplete="off"/>
+                                                        </FormGroup>
+                                                        <FormGroup hidden={!this.state.usuarioNuevo}>
+                                                            <ControlLabel>Nueva Contraseña</ControlLabel>
+                                                            <FormControl placeholder="Contraseña"
+                                                                         type="password"
+                                                                         value={this.state.nuevaPass}
+                                                                         onChange={this.ChangeNuevaPass}
+                                                                         autoComplete="off"/>
+                                                        </FormGroup>
+                                                        <FormGroup hidden={!this.state.usuarioNuevo}>
+                                                            <ControlLabel>Confirmar Nueva
+                                                                Contraseña</ControlLabel>
+                                                            <FormControl placeholder="Contraseña"
+                                                                         type="password"
+                                                                         value={this.state.nuevaPassTwo}
+                                                                         onChange={this.ChangeNuevaPassTwo}
+                                                                         autoComplete="off"/>
+                                                        </FormGroup>
+                                                    </div>
+                                                }
+                                                legend={
+                                                    <Button bsStyle="info" fill wd
+                                                            onClick={this.state.usuarioNuevo ?
+                                                                this.crearUsuarioNuevo :
+                                                                this.onButtonPress
+                                                            }>
+                                                        Iniciar Sesion
+                                                    </Button>
+                                                }
+                                                ftTextCenter
+                                            />
+                                        </form>
+                                    </Col>
+                                </Row>
+                            </Grid>
+                        </div>
+                        <div
+                            className="full-page-background"
+                            style={{backgroundImage: 'url(' + bgImage + ')'}}
+                        />
+                    </div>
+                </div>
+                {this.redirect()}
+            </div>
+        );
     }
 }
 

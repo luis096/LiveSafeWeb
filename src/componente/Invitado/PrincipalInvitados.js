@@ -7,7 +7,6 @@ import { Modal, Pagination } from 'react-bootstrap';
 import Select from 'react-select';
 import { paginador } from '../Paginador';
 import { validator } from '../validator';
-import { filtros } from '../Filtros.js';
 import SweetAlert from 'react-bootstrap-sweetalert';
 
 class PrincipalInvitados extends Component {
