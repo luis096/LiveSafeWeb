@@ -58,16 +58,7 @@ class PrincialIngreso extends Component {
     }
 
     async componentDidMount() {
-        const {ingresos, tipoD} = this.state;
-        // await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-        //     .collection('Ingresos').orderBy('Hora', 'desc').get().then(querySnapshot=> {
-        //         querySnapshot.forEach(doc=> {
-        //             ingresos.push(
-        //                 [doc.data(), doc.id]
-        //             );
-        //         });
-        //     });
-        // this.setState({ingresos});
+        const { tipoD } = this.state;
         await Database.collection('TipoDocumento').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
                 tipoD.push(
@@ -215,24 +206,23 @@ class PrincialIngreso extends Component {
 
     buscarPersona() {
         const { invitadoTemp } = this.state;
+        let refTipoDocumento = Database.doc('TipoDocumento/' + this.state.tipoDocumento.value);
         Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Propietarios')
-            .get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
-                if (doc.data().Documento === this.state.documento &&
-                    doc.data().TipoDocumento.id === this.state.tipoDocumento.value) {
+            .where('Documento', '==', this.state.documento).where('TipoDocumento', '==', refTipoDocumento)
+            .get().then( querySnapshot => { querySnapshot.forEach(doc=> {
+                if (doc.exists) {
                     invitadoTemp.push(doc.data(), doc.id);
                     this.setState({
                         virgen: false, mensaje: doc.data().Apellido + ', ' + doc.data().Nombre
                     });
                 }
-            });
+            })
         });
         if (invitadoTemp.length == 0) {
-            Database.collection('Country').doc(localStorage.getItem('idCountry'))
-                .collection('Invitados').get().then(querySnapshot=> {
-                querySnapshot.forEach(doc=> {
-                    if (doc.data().Documento === this.state.documento &&
-                        doc.data().TipoDocumento.id === this.state.tipoDocumento.value) {
+            Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Invitados')
+                .where('Documento', '==', this.state.documento).where('TipoDocumento', '==', refTipoDocumento)
+                .get().then(querySnapshot => { querySnapshot.forEach(doc=> {
+                    if (doc.exists) {
                         invitadoTemp.push(doc.data(), doc.id);
                         if (doc.data().Nombre != '') {
                             this.setState({
@@ -270,23 +260,21 @@ class PrincialIngreso extends Component {
             show: false, tipoDocumento: '', documento: '',
             virgen: false, busqueda: true, invitadoTemp: [], mensaje: '', observacion: false
         });
-        ingresos.push([ingreso, id]);
         this.setState({ingresos});
     }
 
     async buscarEnIngresos() {
+        let refTipoDocumento = Database.doc('TipoDocumento/' + this.state.tipoDocumento.value);
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Ingresos').orderBy('Hora', 'asc').get().then(querySnapshot=> {
+            .collection('Ingresos').orderBy('Hora', 'asc')
+            .where('Documento', '==', this.state.documento).where('TipoDocumento', '==', refTipoDocumento)
+            .get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
-                    if (doc.data().Documento === this.state.documento &&
-                        doc.data().TipoDocumento.id === this.state.tipoDocumento.value && !doc.data().Egreso
-                    ) {
+                    if (!doc.data().Egreso) {
                         this.setState({observacion: true});
-                    } else if (doc.data().Documento === this.state.documento &&
-                        doc.data().TipoDocumento.id === this.state.tipoDocumento.value && doc.data().Egreso) {
+                    } else if (doc.data().Egreso) {
                         this.setState({observacion: false});
                     }
-
                 });
             });
     }
@@ -312,7 +300,6 @@ class PrincialIngreso extends Component {
             <div className="col-12">
                 <legend><h3 className="row">Ingresos</h3></legend>
                 {this.state.alert}
-
                 <div className="row izquierda">
                     <div className="col-5 izquierda">
                         <Button bsStyle="danger" fill wd onClick={handleShow}>Nuevo Ingreso</Button>
@@ -322,9 +309,8 @@ class PrincialIngreso extends Component {
                             </Modal.Header>
                             <Modal.Body>
                                 <div className="form-group">
-                                    <label for="TipoDocumento"> Tipo Documento </label>
+                                    <label> Tipo Documento </label>
                                     <Select
-                                        className="select-documento"
                                         classNamePrefix="select"
                                         value={this.state.tipoDocumento}
                                         isDisabled={!this.state.busqueda}
@@ -336,15 +322,16 @@ class PrincialIngreso extends Component {
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label for="NumeroDocumento"> Numero de Documento </label>
-                                    <input type="document" className="form-control" placeholder="Document number"
+                                    <label> Número de Documento </label>
+                                    <input type="document" className="form-control" placeholder="Numero de Documento"
                                            value={this.state.documento}
                                            onChange={this.ChangeDocumento}
                                            disabled={!this.state.busqueda}
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label hidden={!this.state.observacion}>{'this.state.mensaje2'}</label>
+                                    <label hidden={!this.state.observacion}>
+                                        La persona no registra una salida del barrio</label>
                                     <div hidden={!this.state.observacion}>
                                         <textarea className="form-control" placeholder="Observacion"
                                                   value={this.state.descripcion}
@@ -358,19 +345,15 @@ class PrincialIngreso extends Component {
                             <Modal.Footer>
                                 {this.state.busqueda && (
                                     <div>
-
                                         <Button bsStyle="danger" fill wd onClick={handleClose}>Cancelar</Button>
                                         <Button bsStyle="success" fill wd onClick={this.buscar}>Buscar</Button>
-
                                     </div>)
                                 }
                                 {!this.state.busqueda && (<>
-
                                         <div hidden={this.state.invitadoTemp.length == 0}>
-                                            <label className=''>{this.state.mensaje}</label>
+                                            <label>{this.state.mensaje}</label>
                                             <Link
                                                 to={this.state.virgen ? ('editarInvitado/' + this.state.invitadoTemp[1]) : this.registrar}
-                                                variant="primary"
                                                 onClick={this.state.virgen ? this.autenticar : this.registrar}
                                                 class="btn btn-success">
                                                 {this.state.virgen ? 'Autentificar' : 'Registrar'}
@@ -455,23 +438,23 @@ class PrincialIngreso extends Component {
                             </thead>
                             <tbody>
                             {
-
                                 this.state.ingresos.map((ing, ind)=> {
-                                        return (
-                                            <tr className="table-light">
-                                                <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                                <th scope="row">{ing[0].Nombre}, {ing[0].Apellido}</th>
-                                                <td>{ing[0].Documento}</td>
-                                                <td>{'-'}</td>
-                                                <td>{'-'}</td>
-                                                <td>{ing[0].Descripcion? 'Si' : '-'}</td>
-                                                <td><Button bsStyle="warning" fill wd onClick={()=> {
-                                                                console.log('cancelar')
-                                                            }}>
-                                                    Cancelar
-                                                </Button></td>
-                                            </tr>
-                                        );
+                                    let hora = ing[0].Hora? new Date(ing[0].Hora.seconds * 1000): new Date();
+                                    return (
+                                        <tr className="table-light">
+                                            <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
+                                            <th scope="row">{ing[0].Nombre}, {ing[0].Apellido}</th>
+                                            <td>{ing[0].Documento}</td>
+                                            <td>{'-'}</td>
+                                            <td>{ hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString() }</td>
+                                            <td>{ing[0].Descripcion ? 'Si' : 'No'}</td>
+                                            <td><Button bsStyle="warning" fill wd onClick={()=> {
+                                                            console.log('cancelar')
+                                                        }}>
+                                                Cancelar
+                                            </Button></td>
+                                        </tr>
+                                    );
                                     }
                                 )
                             }

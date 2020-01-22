@@ -155,7 +155,7 @@ class AltaInvitado extends Component {
     }
 
     registrar() {
-        if (!validator.isValid([this.errorTipoDocumento])) {
+        if (validator.isValid([this.errorTipoDocumento])) {
             this.addInvitado();
             if (!this.esPropietario) {
                 this.registrarIngreso();
