@@ -18,7 +18,7 @@ import routes from "routes.js";
 // style for notifications
 import { style } from "variables/Variables.jsx";
 
-import image from "../assets/img/sidebar-1.jpg";
+import image from "../assets/img/sidebar-2.jpg";
 
 var ps;
 
@@ -196,18 +196,18 @@ class Dashboard extends Component {
           />
           <Switch>{this.getRoutes(routes)}</Switch>
           {/* <Footer fluid/> */}
-          <FixedPlugin
-            handleImageClick={this.handleImageClick}
-            handleColorClick={this.handleColorClick}
-            handleHasImage={this.handleHasImage}
-            handleNavbarClick={this.handleNavbarClick}
-            handleMiniClick={this.handleMiniClick}
-            bgColor={this.state["color"]}
-            bgImage={this.state["image"]}
-            mini={this.state["mini"]}
-            handleFixedClick={this.handleFixedClick}
-            fixedClasses={this.state.fixedClasses}
-          />
+          {/*<FixedPlugin*/}
+            {/*handleImageClick={this.handleImageClick}*/}
+            {/*handleColorClick={this.handleColorClick}*/}
+            {/*handleHasImage={this.handleHasImage}*/}
+            {/*handleNavbarClick={this.handleNavbarClick}*/}
+            {/*handleMiniClick={this.handleMiniClick}*/}
+            {/*bgColor={this.state["color"]}*/}
+            {/*bgImage={this.state["image"]}*/}
+            {/*mini={this.state["mini"]}*/}
+            {/*handleFixedClick={this.handleFixedClick}*/}
+            {/*fixedClasses={this.state.fixedClasses}*/}
+          {/*/>*/}
         </div>
       </div>
     );

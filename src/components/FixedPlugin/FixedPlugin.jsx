@@ -52,47 +52,48 @@ class FixedPlugin extends Component {
             <i className="fa fa-cog fa-2x" />
           </div>
           <ul className="dropdown-menu">
-            <li className="header-title">Configuration</li>
-            <li className="adjustments-line">
-              <p className="pull-left">Background Image</p>
-              <div className="pull-right">
-                <Switch
-                  onChange={this.onChangeClick}
-                  defaultValue={this.state.bg_checked}
-                />
-              </div>
-              <div className="clearfix" />
-            </li>
-            {window.location.pathname.indexOf("pages") > -1 ? (
-              ""
-            ) : (
-              <li className="adjustments-line">
-                <p className="pull-left">Sidebar Mini</p>
-                <div className="pull-right">
-                  <Switch
-                    onChange={this.onMiniClick}
-                    defaultValue={this.state.mini_checked}
-                  />
-                </div>
-                <div className="clearfix" />
-              </li>
-            )}
-            {window.location.pathname.indexOf("pages") > -1 ? (
-              ""
-            ) : (
-              <li className="adjustments-line">
-                <p className="pull-left">Fixed Navbar</p>
-                <div className="pull-right">
-                  <Switch
-                    onChange={this.onNavbarClick}
-                    defaultValue={this.state.navbar_checked}
-                  />
-                </div>
-              </li>
-            )}
+            <li className="header-title">Configuración</li>
+            <legend></legend>
+            {/*<li className="adjustments-line">*/}
+              {/*<p className="pull-left">Background Image</p>*/}
+              {/*<div className="pull-right">*/}
+                {/*<Switch*/}
+                  {/*onChange={this.onChangeClick}*/}
+                  {/*defaultValue={this.state.bg_checked}*/}
+                {/*/>*/}
+              {/*</div>*/}
+              {/*<div className="clearfix" />*/}
+            {/*</li>*/}
+            {/*{window.location.pathname.indexOf("pages") > -1 ? (*/}
+              {/*""*/}
+            {/*) : (*/}
+              {/*<li className="adjustments-line">*/}
+                {/*<p className="pull-left">Sidebar Mini</p>*/}
+                {/*<div className="pull-right">*/}
+                  {/*<Switch*/}
+                    {/*onChange={this.onMiniClick}*/}
+                    {/*defaultValue={this.state.mini_checked}*/}
+                  {/*/>*/}
+                {/*</div>*/}
+                {/*<div className="clearfix" />*/}
+              {/*</li>*/}
+            {/*)}*/}
+            {/*{window.location.pathname.indexOf("pages") > -1 ? (*/}
+              {/*""*/}
+            {/*) : (*/}
+              {/*<li className="adjustments-line">*/}
+                {/*<p className="pull-left">Fixed Navbar</p>*/}
+                {/*<div className="pull-right">*/}
+                  {/*<Switch*/}
+                    {/*onChange={this.onNavbarClick}*/}
+                    {/*defaultValue={this.state.navbar_checked}*/}
+                  {/*/>*/}
+                {/*</div>*/}
+              {/*</li>*/}
+            {/*)}*/}
             <li className="adjustments-line">
               <a className="switch-trigger">
-                <p>Filters</p>
+                <p>Colores</p>
                 <div className="pull-right">
                   <span
                     className={
@@ -164,7 +165,7 @@ class FixedPlugin extends Component {
                 <div className="clearfix" />
               </a>
             </li>
-            <li className="header-title">Sidebar Images</li>
+            <li className="header-title">Fondo</li>
             <li className={this.state["bgImage"] === imagine1 ? "active" : ""}>
               <a
                 className="img-holder switch-trigger"

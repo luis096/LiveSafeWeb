@@ -30,7 +30,6 @@ class AltaReserva extends Component {
         this.addReserva = this.addReserva.bind(this);
         this.consultar = this.consultar.bind(this);
         this.ChangeSelect = this.ChangeSelect.bind(this);
-        this.registrar = this.registrar.bind(this);
         this.hideAlert = this.hideAlert.bind(this);
 
     }
@@ -97,10 +96,6 @@ class AltaReserva extends Component {
 
     ChangeSelect(event) {
         this.setState({servicioSeleccionado: event, events: [], consulta: false});
-    }
-
-    registrar() {
-        console.log('Registrando....');
     }
 
     selectedEvent(event) {
@@ -229,6 +224,7 @@ class AltaReserva extends Component {
         let anio = time.getFullYear();
         let mes = time.getMonth();
         let dia = time.getDate();
+        dia = dia - time.getDay();
         let hasta = new Date(anio, mes, (dia + 8));
         let desde = new Date(anio, mes, dia);
         let idPersona = localStorage.getItem('idPersona');
@@ -242,7 +238,7 @@ class AltaReserva extends Component {
                             title: (idPersona === doc.data().IdPropietario.id) ? doc.data().Nombre : 'Reservado',
                             start: validator.obtenerFecha(doc.data().FechaDesde),
                             end: validator.obtenerFecha(doc.data().FechaHasta),
-                            color: (idPersona === doc.data().IdPropietario.id) ? 'blue' : 'red'
+                            color: (idPersona === doc.data().IdPropietario.id) ? 'green' : 'blue'
                         });
                     }
                 });
@@ -299,9 +295,9 @@ class AltaReserva extends Component {
                                             onNavigate={(nav)=>this.navigate(nav)}
                                             scrollToTime={new Date(2019, 11, 21, 6)}
                                             defaultDate={new Date()}
-                                            onSelectEvent={event=>this.selectedEvent(event)} // quitar
+                                            // onSelectEvent={event=>this.selectedEvent(event)}
                                             onSelectSlot={slotInfo=>this.addNewEventAlert(slotInfo)}
-                                            eventPropGetter={this.eventColors} //quitar
+                                            // eventPropGetter={this.eventColors} //quitar
                                         />
                                     }
                                 />

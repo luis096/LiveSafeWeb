@@ -147,8 +147,7 @@ class LoginPage extends Component {
                                                             <FormControl placeholder="Contraseña"
                                                                          type="password"
                                                                          value={this.state.password}
-                                                                         onChange={this.ChangePass}
-                                                                         autoComplete="off"/>
+                                                                         onChange={this.ChangePass}/>
                                                         </FormGroup>
                                                         <FormGroup hidden={!this.state.usuarioNuevo}>
                                                             <ControlLabel>Nueva Contraseña</ControlLabel>
