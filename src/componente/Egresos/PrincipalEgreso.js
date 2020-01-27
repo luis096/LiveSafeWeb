@@ -12,6 +12,7 @@ import { paginador } from '../Paginador';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { Pagination } from 'react-bootstrap';
 import Datetime from 'react-datetime';
+import { operacion } from '../Operaciones';
 
 
 class PrincialEgreso extends Component {
@@ -335,88 +336,6 @@ class PrincialEgreso extends Component {
             <div className="col-12">
                 <legend><h3 className="row">Egresos</h3></legend>
                 {this.state.alert}
-                <div className="row izquierda">
-
-                        <Button bsStyle="danger" fill wd onClick={handleShow}>Nuevo Egreso</Button>
-                        <Modal show={show} onHide={handleClose}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Buscar persona</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                <div className="form-group">
-                                    <label> Tipo Documento </label>
-                                    <Select
-                                        className="select-documento"
-                                        classNamePrefix="select"
-                                        value={this.state.tipoDocumento}
-                                        isDisabled={!this.state.busqueda}
-                                        isLoading={false}
-                                        isClearable={true}
-                                        isSearchable={true}
-                                        options={this.state.tipoD}
-                                        onChange={this.ChangeSelect.bind(this)}
-
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label> Numero de Documento </label>
-                                    <input type="document" className="form-control" placeholder="Document number"
-                                           value={this.state.documento}
-                                           onChange={this.ChangeDocumento}
-                                           disabled={!this.state.busqueda}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label hidden={this.state.observacion}>{this.state.mensaje2}</label>
-                                    <div hidden={this.state.observacion}>
-                                        <textarea className="form-control" placeholder="Observation"
-                                                  value={this.state.descripcion}
-                                                  onChange={this.ChangeDescripcion}
-                                        ></textarea>
-                                    </div>
-
-                                </div>
-                            </Modal.Body>
-                            <Modal.Footer>
-                                {this.state.busqueda && (
-                                    <div>
-                                        <button variant="secondary" onClick={handleClose} class="btn btn-danger">
-                                            Cancelar
-                                        </button>
-                                        <button variant="primary" onClick={this.buscar} class="btn btn-success">
-                                            Buscar
-                                        </button>
-                                    </div>)
-                                }
-                                {!this.state.busqueda && (<>
-                                        <div hidden={this.state.noExisteInvitado}>
-
-                                            <label>{this.state.mensaje}</label>
-
-                                            <div hidden={!this.state.virgen}>
-                                                <Link to={'/editarInvitado/' + this.state.invitadoTemp[1]}
-                                                      class="btn btn-success">
-                                                    Autentificar
-                                                </Link>
-                                            </div>
-                                            <div hidden={this.state.virgen}>
-                                                <button onClick={this.registrar} class="btn btn-success">
-                                                    Registrar
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div hidden={!this.state.noExisteInvitado}>
-                                            <label>No existe la persona ingresada. Llame al 911 y tenga cuidado.</label>
-                                        </div>
-                                    </>
-                                )}
-                            </Modal.Footer>
-
-                        </Modal>
-
-                </div>
-
-
                 <div className="row card">
                     <div className="card-body">
                         <h5 className="row">Filtros de busqueda</h5>
@@ -475,8 +394,8 @@ class PrincialEgreso extends Component {
                             <tr>
                                 <th scope="col">Indice</th>
                                 <th scope="col">Nombre y Apellido</th>
+                                <th scope="col">Tipo Documento</th>
                                 <th scope="col">Documento</th>
-                                <th scope="col">Persona</th>
                                 <th scope="col">Fecha y Hora</th>
                                 <th scope="col">Observacion</th>
                                 <th scope="col">Cancelar</th>
@@ -487,15 +406,16 @@ class PrincialEgreso extends Component {
                             {
 
                                 this.state.egresos.map((egr, ind)=> {
-                                        let hora = egr[0].Hora ? new Date(egr[0].Hora.seconds * 1000) : new Date();
+                                        let hora = validator.obtenerFecha(egr[0].Hora)
+
                                         return (
                                             <tr className="table-light">
                                                 <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                                <th scope="row">{egr[0].Nombre}, {egr[0].Apellido}</th>
+                                                <td scope="row">{egr[0].Nombre}, {egr[0].Apellido}</td>
+                                                <td>{operacion.obtenerDocumentoLabel(egr[0].TipoDocumento.id, this.state.tipoD)}</td>
                                                 <td>{egr[0].Documento}</td>
-                                                <td>{'-'}</td>
                                                 <td>{hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}</td>
-                                                <td>{egr[0].Descripcion ? 'Si' : 'No'}</td>
+                                                <td>{egr[0].Observacion ? 'Si' : 'No'}</td>
                                                 <td><Button bsStyle="warning" fill wd onClick={()=> {
                                                     console.log('cancelar');
                                                 }}>

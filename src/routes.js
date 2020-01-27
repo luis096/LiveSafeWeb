@@ -44,6 +44,7 @@ import EditarServicio from 'componente/Servicio/EditarServicio.js'
 import PrincipalIngreso from 'componente/Ingresos/PrincipalIngreso.js'
 import AltaIngreso from 'componente/Ingresos/AltaIngreso'
 import PrincipalEgreso from 'componente/Egresos/PrincipalEgreso.js'
+import AltaEgreso from 'componente/Egresos/AltaEgreso'
 
 import AltaInvitado from 'componente/Invitado/AltaInvitado.js'
 
@@ -514,9 +515,9 @@ var routes = [
             {
                 path: '/altaEgreso',
                 layout: '/encargado',
-                name: 'Nueva Egreso',
+                name: 'Nuevo Egreso',
                 mini: 'NE',
-                component: AltaIngreso
+                component: AltaEgreso
             }
         ]
     },

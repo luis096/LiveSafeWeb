@@ -422,8 +422,7 @@ class PrincipalInvitados extends Component {
                                                     className="nav-link"
                                                     activeClassName="active"
                                                 >
-                                                    <Button bsStyle="warning" fill wd
-                                                            disabled={!inv[0].Nombre}>Editar</Button>
+                                                    <Button bsStyle="warning" fill wd>Editar</Button>
                                                 </NavLink></td>
                                                 <td><Button bsStyle="danger" fill wd onClick={()=> {
                                                     this.cancelar(inv);

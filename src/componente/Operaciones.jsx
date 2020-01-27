@@ -54,20 +54,3 @@ function obtenerReferenciaConId(num, id) {
         + PERFILES[num] + id);
     return resultado;
 }
-
-//
-// async buscarEnIngresos() {
-//     let refTipoDocumento = Database.doc('TipoDocumento/' + this.state.tipoDocumento.value);
-//     await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-//         .collection('Ingresos').orderBy('Hora', 'asc')
-//         .where('Documento', '==', this.state.documento).where('TipoDocumento', '==', refTipoDocumento)
-//         .get().then(querySnapshot=> {
-//             querySnapshot.forEach(doc=> {
-//                 if (!doc.data().Egreso) {
-//                     this.setState({observacion: true});
-//                 } else if (doc.data().Egreso) {
-//                     this.setState({observacion: false});
-//                 }
-//             });
-//         });
-// }

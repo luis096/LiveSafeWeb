@@ -11,6 +11,7 @@ import { paginador } from '../Paginador';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { Pagination } from 'react-bootstrap';
 import Datetime from 'react-datetime';
+import { errorHTML } from '../Error';
 
 
 class PrincialIngreso extends Component {
@@ -19,21 +20,9 @@ class PrincialIngreso extends Component {
         super();
         this.state = {
             ingresos: [],
-            invitadoTemp: [],
-            idCountry: '',
-            idEncargado: '',
-            hora: '',
-            estado: false,
-            show: '',
-            tipoDocumento: '',
             documento: '',
-            descripcion: '',
+            apellido: '',
             tipoD: [],
-            busqueda: true,
-            virgen: false,
-            mensaje: '',
-            observacion: false,
-            tipoPersona: 'propietario',
             alert: null,
             desde: null,
             hasta: null,
@@ -43,21 +32,16 @@ class PrincialIngreso extends Component {
             errorHasta: {error: false, mensaje: ''}
         };
         this.hideAlert = this.hideAlert.bind(this);
-        this.errorIngreso = this.errorIngreso.bind(this);
-        this.handleShow = this.handleShow.bind(this);
-        this.handleClose = this.handleClose.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
+        this.ChangeApellido = this.ChangeApellido.bind(this);
         this.ChangeDesde = this.ChangeDesde.bind(this);
         this.ChangeHasta = this.ChangeHasta.bind(this);
-        this.ChangeSelect = this.ChangeSelect.bind(this);
         this.ChangeDocumento = this.ChangeDocumento.bind(this);
-        this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
-        this.registrar = this.registrar.bind(this);
-        this.buscar = this.buscar.bind(this);
-        this.buscarPersona = this.buscarPersona.bind(this);
         this.cantidad = [];
         this.total = 0;
         this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorDocumento = {error: false, mensaje: ''};
     }
 
     async componentDidMount() {
@@ -72,21 +56,19 @@ class PrincialIngreso extends Component {
         this.setState({tipoD});
     }
 
-    ChangeSelect(value) {
-        this.setState({tipoDocumento: value});
-    }
-
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
-    }
-
-    ChangeDescripcion(event) {
-        this.setState({descripcion: event.target.value});
+        this.errorDocumento = validator.numero(event.target.value);
     }
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
         this.errorNombre = validator.soloLetras(event.target.value);
+    }
+
+    ChangeApellido(event) {
+        this.setState({apellido: event.target.value});
+        this.errorApellido = validator.soloLetras(event.target.value);
     }
 
     ChangeDesde(event) {
@@ -153,16 +135,24 @@ class PrincialIngreso extends Component {
         con = con.limit(paginador.getTamPagina());
 
         if (this.state.desde) {
-            con = con.where('FechaDesde', '>=', this.state.desde);
-            total = total.where('FechaDesde', '>=', this.state.desde);
+            con = con.where('Hora', '>=', this.state.desde);
+            total = total.where('Hora', '>=', this.state.desde);
         }
         if (this.state.hasta) {
-            con = con.where('FechaDesde', '<=', this.state.hasta);
-            total = total.where('FechaDesde', '<=', this.state.hasta);
+            con = con.where('Hora', '<=', this.state.hasta);
+            total = total.where('Hora', '<=', this.state.hasta);
         }
         if (this.state.nombre) {
             con = con.where('Nombre', '==', this.state.nombre);
             total = total.where('Nombre', '==', this.state.nombre);
+        }
+        if (this.state.apellido) {
+            con = con.where('Apellido', '==', this.state.nombre);
+            total = total.where('Apellido', '==', this.state.nombre);
+        }
+        if (this.state.documento) {
+            con = con.where('Documento', '==', this.state.nombre);
+            total = total.where('Documento', '==', this.state.nombre);
         }
 
         if (nueva) {
@@ -197,136 +187,30 @@ class PrincialIngreso extends Component {
         this.setState({ingresos, numPagina: (pagina)});
     }
 
-
-    async buscar() {
-        await this.buscarPersona();
-        if (this.state.invitadoTemp.length == 0) {
-            this.setState({mensaje: 'La persona no se encuentra registrada en el sistema.'});
-        }
-        await this.buscarEnIngresos();
-        this.setState({busqueda: false});
-    }
-
-    buscarPersona() {
-        const {invitadoTemp} = this.state;
-        let refTipoDocumento = Database.doc('TipoDocumento/' + this.state.tipoDocumento.value);
-        Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Propietarios')
-            .where('Documento', '==', this.state.documento).where('TipoDocumento', '==', refTipoDocumento)
-            .get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
-                if (doc.exists) {
-                    invitadoTemp.push(doc.data(), doc.id);
-                    this.setState({
-                        virgen: false, mensaje: doc.data().Apellido + ', ' + doc.data().Nombre
-                    });
-                }
-            });
-        });
-        if (invitadoTemp.length == 0) {
-            Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Invitados')
-                .where('Documento', '==', this.state.documento).where('TipoDocumento', '==', refTipoDocumento)
-                .get().then(querySnapshot=> {
-                querySnapshot.forEach(doc=> {
-                    if (doc.exists) {
-                        if (doc.data().Estado) {
-                            if (!validator.validarInvitado(doc.data().FechaDesde, doc.data().FechaHasta)) {
-                                this.errorIngreso('La persona no esta invitada en este momento');
-                            } else {
-                                invitadoTemp.push(doc.data(), doc.id);
-                                if (doc.data().Nombre != '') {
-                                    this.setState({
-                                        virgen: false, mensaje: doc.data().Apellido + ', ' + doc.data().Nombre
-                                    });
-                                } else {
-                                    this.setState({
-                                        virgen: true, mensaje: 'Falta autentificar al visitante'
-                                    });
-                                }
-                            }
-
-                        } else {
-                            this.errorIngreso('El invitado no esta autorizado al ingreso');
-                        }
-
-                    }
-                });
-            });
-        }
-        this.setState({invitadoTemp});
-    }
-
-    registrar() {
-        const {ingresos} = this.state;
-        let id = 0;
-        let ingreso = {
-            Nombre: this.state.invitadoTemp[0].Nombre,
-            Apellido: this.state.invitadoTemp[0].Apellido,
-            TipoDocumento: this.state.invitadoTemp[0].TipoDocumento,
-            Documento: this.state.invitadoTemp[0].Documento,
-            Hora: new Date(),
-            Egreso: false,
-            Estado: this.state.estado,
-            Descripcion: this.state.descripcion,
-            IdEncargado: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Encargados/' + localStorage.getItem('idPersona'))
-        };
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Ingresos').add(ingreso).then(doc=>id = doc.id);
-        this.setState({
-            show: false, tipoDocumento: '', documento: '',
-            virgen: false, busqueda: true, invitadoTemp: [], mensaje: '', observacion: false
-        });
-        this.setState({ingresos});
-    }
-
-    async buscarEnIngresos() {
-        let refTipoDocumento = Database.doc('TipoDocumento/' + this.state.tipoDocumento.value);
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Ingresos').orderBy('Hora', 'asc')
-            .where('Documento', '==', this.state.documento).where('TipoDocumento', '==', refTipoDocumento)
-            .get().then(querySnapshot=> {
-                querySnapshot.forEach(doc=> {
-                    if (!doc.data().Egreso) {
-                        this.setState({observacion: true});
-                    } else if (doc.data().Egreso) {
-                        this.setState({observacion: false});
-                    }
-                });
-            });
-    }
-
-    errorIngreso(msg) {
-        this.setState({
-            alert: (
-                <SweetAlert
-                    style={{display: 'block', marginTop: '-100px', position: 'center'}}
-                    title="Error"
-                    onConfirm={()=>this.hideAlert()}
-                    onCancel={()=>this.hideAlert()}
-                    confirmBtnBsStyle="danger">
-                    {msg}
-                </SweetAlert>
-            ),
-        });
-    }
-
     hideAlert() {
         this.setState({
             alert: null
         });
-        this.handleClose();
     }
 
-    handleShow() {
-        this.setState({show: true});
-        localStorage.setItem('editarInvitado', 'Ingreso');
-        localStorage.setItem('idEncargado', this.state.idEncargado);
-    };
-
-    handleClose() {
+    reestablecer(){
         this.setState({
-            show: false, tipoDocumento: '', documento: '',
-            virgen: false, busqueda: true, invitadoTemp: [], mensaje: '', observacion: false
+            ingresos: [],
+            documento: '',
+            nombre: '',
+            apellido: '',
+            desde: null,
+            hasta: null,
+            ultimo: [],
+            primero: [],
+            errorDesde: {error: false, mensaje: ''},
+            errorHasta: {error: false, mensaje: ''}
         });
+        this.cantidad = [];
+        this.total = 0;
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorDocumento = {error: false, mensaje: ''};
     }
 
     render() {
@@ -334,89 +218,35 @@ class PrincialIngreso extends Component {
             <div className="col-12">
                 <legend><h3 className="row">Ingresos</h3></legend>
                 {this.state.alert}
-                <div className="row izquierda">
-                    <div className="col-5 izquierda">
-                        <Button bsStyle="danger" fill wd onClick={this.handleShow}>Nuevo Ingreso</Button>
-                        <Link to={'/encargado/altaIngreso'}><Button bsStyle="danger" fill wd>
-                            Nuevo ingreso V2.0
-                        </Button></Link>
-                        <Modal show={this.state.show} onHide={this.handleClose} size="lg">
-                            <Modal.Header closeButton>
-                                <Modal.Title>Buscar persona</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                <div className="form-group">
-                                    <label> Tipo Documento </label>
-                                    <Select
-                                        classNamePrefix="select"
-                                        value={this.state.tipoDocumento}
-                                        isDisabled={!this.state.busqueda}
-                                        isLoading={false}
-                                        isClearable={true}
-                                        isSearchable={true}
-                                        options={this.state.tipoD}
-                                        onChange={this.ChangeSelect.bind(this)}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label> Número de Documento </label>
-                                    <input type="document" className="form-control" placeholder="Numero de Documento"
-                                           value={this.state.documento}
-                                           onChange={this.ChangeDocumento}
-                                           disabled={!this.state.busqueda}
-                                    />
-                                </div>
-                                <div className="form-group" hidden={!this.state.observacion}>
-                                    <label>La persona no registra una salida del barrio</label>
-                                    <div>
-                                        <textarea className="form-control" placeholder="Observacion"
-                                                  value={this.state.descripcion}
-                                                  onChange={this.ChangeDescripcion}
-                                        ></textarea>
-                                    </div>
-                                </div>
-                            </Modal.Body>
-                            <Modal.Footer>
-                                {this.state.busqueda && (
-                                    <div>
-                                        <Button bsStyle="danger" fill wd onClick={this.handleClose}>Cancelar</Button>
-                                        <Button bsStyle="success" fill wd onClick={this.buscar}>Buscar</Button>
-                                    </div>)
-                                }
-                                {!this.state.busqueda && (<>
-                                        <div hidden={this.state.invitadoTemp.length == 0}>
-                                            <label>{this.state.mensaje}</label>
-                                            <Link
-                                                to={this.state.virgen ? ('editarInvitado/' + this.state.invitadoTemp[1]) : this.registrar}
-                                                onClick={this.state.virgen ? this.autenticar : this.registrar}
-                                                class="btn btn-success">
-                                                {this.state.virgen ? 'Autentificar' : 'Registrar'}
-                                            </Link>
-                                        </div>
-                                        <div hidden={this.state.invitadoTemp.length != 0}>
-                                            <label>{this.state.mensaje}</label>
-                                            <Link to={'/encargado/altaInvitado'} type="button"
-                                                  className="btn btn-success">Nuevo
-                                                Invitado</Link>
-                                        </div>
-                                    </>
-                                )}
-                            </Modal.Footer>
-                        </Modal>
-                    </div>
-                </div>
                 <div className="row card">
                     <div className="card-body">
                         <h5 className="row">Filtros de busqueda</h5>
                         <div className='row'>
                             <div className="col-md-4 row-secction">
                                 <label>Nombre</label>
-                                <input className={this.errorNombre.error ? 'form-control error' : 'form-control'}
+                                <input className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                        value={this.state.nombre}
                                        onChange={this.ChangeNombre} placeholder="Nombre"/>
-                                <label className='small text-danger'
-                                       hidden={!this.errorNombre.error}>{this.errorNombre.mensaje}</label>
+                                {errorHTML.errorLabel(this.errorNombre)}
                             </div>
+                            <div className="col-md-4 row-secction">
+                                <label>Apellido</label>
+                                <input className={errorHTML.classNameError(this.errorApellido, 'form-control')}
+                                       value={this.state.apellido}
+                                       onChange={this.ChangeApellido} placeholder="Apellido"
+                                />
+                                {errorHTML.errorLabel(this.errorApellido)}
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label>Numero Documento</label>
+                                <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
+                                       value={this.state.documento}
+                                       onChange={this.ChangeDocumento} placeholder="Nro Documento"
+                                />
+                                {errorHTML.errorLabel(this.errorDocumento)}
+                            </div>
+                        </div>
+                        <div className='row'>
                             <div className="col-md-4 row-secction">
                                 <label>Fecha Desde</label>
                                 <Datetime
@@ -445,7 +275,7 @@ class PrincialIngreso extends Component {
 
                 <div className="izquierda">
                     <Button bsStyle="default" fill wd onClick={()=> {
-                        // this.reestablecer();
+                         this.reestablecer();
                     }}>
                         Reestablecer
                     </Button>
@@ -465,7 +295,6 @@ class PrincialIngreso extends Component {
                                 <th scope="col">Indice</th>
                                 <th scope="col">Nombre y Apellido</th>
                                 <th scope="col">Documento</th>
-                                <th scope="col">Persona</th>
                                 <th scope="col">Fecha y Hora</th>
                                 <th scope="col">Observacion</th>
                                 <th scope="col">Cancelar</th>
@@ -480,9 +309,8 @@ class PrincialIngreso extends Component {
                                                 <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
                                                 <th scope="row">{ing[0].Nombre}, {ing[0].Apellido}</th>
                                                 <td>{ing[0].Documento}</td>
-                                                <td>{'-'}</td>
                                                 <td>{hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}</td>
-                                                <td>{ing[0].Descripcion ? 'Si' : 'No'}</td>
+                                                <td>{ing[0].Observacion ? 'Si' : 'No'}</td>
                                                 <td><Button bsStyle="warning" fill wd onClick={()=> {
                                                     console.log('cancelar');
                                                 }}>
