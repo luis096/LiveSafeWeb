@@ -12,7 +12,13 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import { Pagination } from 'react-bootstrap';
 import Datetime from 'react-datetime';
 import { errorHTML } from '../Error';
+import { operacion } from '../Operaciones';
+import ReactExport from "react-data-export";
+import GeneradorExcel from '../Reportes/GeneradorExcel';
 
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 class PrincialIngreso extends Component {
 
@@ -21,7 +27,9 @@ class PrincialIngreso extends Component {
         this.state = {
             ingresos: [],
             documento: '',
+            tipoDocumento: '',
             apellido: '',
+            descargar: false,
             tipoD: [],
             alert: null,
             desde: null,
@@ -32,10 +40,13 @@ class PrincialIngreso extends Component {
             errorHasta: {error: false, mensaje: ''}
         };
         this.hideAlert = this.hideAlert.bind(this);
+        this.descargar = this.descargar.bind(this);
+        this.obtenerConsulta = this.obtenerConsulta.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
         this.ChangeDesde = this.ChangeDesde.bind(this);
         this.ChangeHasta = this.ChangeHasta.bind(this);
+        this.ChangeSelect = this.ChangeSelect.bind(this);
         this.ChangeDocumento = this.ChangeDocumento.bind(this);
         this.cantidad = [];
         this.total = 0;
@@ -65,6 +76,11 @@ class PrincialIngreso extends Component {
         this.setState({nombre: event.target.value});
         this.errorNombre = validator.soloLetras(event.target.value);
     }
+
+    ChangeSelect(value) {
+        this.setState({tipoDocumento: value});
+    }
+
 
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
@@ -118,9 +134,11 @@ class PrincialIngreso extends Component {
             return;
         }
 
-        let con = await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Ingresos');
+        // let con = await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Ingresos');
+        let con = this.obtenerConsulta(true);
 
-        let total = con;
+        // let total = con;
+        let total = this.obtenerConsulta(false);
 
         if (pagina > 0) {
             if (pagina > this.state.numPagina) {
@@ -130,29 +148,6 @@ class PrincialIngreso extends Component {
                 let primero = this.state.primero[pagina];
                 con = con.startAt(primero);
             }
-        }
-
-        con = con.limit(paginador.getTamPagina());
-
-        if (this.state.desde) {
-            con = con.where('Hora', '>=', this.state.desde);
-            total = total.where('Hora', '>=', this.state.desde);
-        }
-        if (this.state.hasta) {
-            con = con.where('Hora', '<=', this.state.hasta);
-            total = total.where('Hora', '<=', this.state.hasta);
-        }
-        if (this.state.nombre) {
-            con = con.where('Nombre', '==', this.state.nombre);
-            total = total.where('Nombre', '==', this.state.nombre);
-        }
-        if (this.state.apellido) {
-            con = con.where('Apellido', '==', this.state.nombre);
-            total = total.where('Apellido', '==', this.state.nombre);
-        }
-        if (this.state.documento) {
-            con = con.where('Documento', '==', this.state.nombre);
-            total = total.where('Documento', '==', this.state.nombre);
         }
 
         if (nueva) {
@@ -197,6 +192,7 @@ class PrincialIngreso extends Component {
         this.setState({
             ingresos: [],
             documento: '',
+            tipoDocumento: '',
             nombre: '',
             apellido: '',
             desde: null,
@@ -213,6 +209,58 @@ class PrincialIngreso extends Component {
         this.errorDocumento = {error: false, mensaje: ''};
     }
 
+    descargar(){
+        let columnas = [
+            {label:'Nombre' , value:'Nombre'},
+            {label:'Apellido' , value:'Apellido'},
+            {label:'Documento' , value:'Documento'},
+            {label:'Observacion' , value:'Observacion'},
+            ];
+        let elementos = [];
+
+        if (this.state.descargar){
+            let con = this.obtenerConsulta(false)
+            con.get().then(querySnapshot=> {
+                querySnapshot.forEach(doc=> {
+                    elementos.push(doc.data());
+                });
+            });
+
+            return (<GeneradorExcel elementos={elementos} estructura={columnas} pagina={'Ingresos'}
+                                show={this.state.descargar}
+                                ocultar={()=>this.setState({descargar:false})}/>)
+        }
+    }
+
+    obtenerConsulta(conLimite){
+        let con = Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Ingresos');
+        if (conLimite){
+            con = con.limit(paginador.getTamPagina());
+        }
+
+        if (this.state.desde) {
+            con = con.where('Hora', '>=', this.state.desde);
+        }
+        if (this.state.hasta) {
+            con = con.where('Hora', '<=', this.state.hasta);
+        }
+        if (this.state.nombre) {
+            con = con.where('Nombre', '==', this.state.nombre);
+        }
+        if (this.state.apellido) {
+            con = con.where('Apellido', '==', this.state.apellido);
+        }
+        if (this.state.documento) {
+            con = con.where('Documento', '==', this.state.documento);
+        }
+        if (this.state.tipoDocumento && this.state.tipoDocumento.value) {
+            let tipoDocumentoRef = operacion.obtenerReferenciaDocumento(this.state.tipoDocumento);
+            con = con.where('TipoDocumento', '==', tipoDocumentoRef);
+        }
+
+        return con;
+    }
+
     render() {
         return (
             <div className="col-12">
@@ -222,14 +270,14 @@ class PrincialIngreso extends Component {
                     <div className="card-body">
                         <h5 className="row">Filtros de busqueda</h5>
                         <div className='row'>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label>Nombre</label>
                                 <input className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                        value={this.state.nombre}
                                        onChange={this.ChangeNombre} placeholder="Nombre"/>
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label>Apellido</label>
                                 <input className={errorHTML.classNameError(this.errorApellido, 'form-control')}
                                        value={this.state.apellido}
@@ -237,7 +285,17 @@ class PrincialIngreso extends Component {
                                 />
                                 {errorHTML.errorLabel(this.errorApellido)}
                             </div>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
+                                <label>Tipo Documento</label>
+                                <Select
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    value={this.state.tipoDocumento}
+                                    options={this.state.tipoD}
+                                    onChange={this.ChangeSelect.bind(this)}
+                                />
+                            </div>
+                            <div className="col-md-3 row-secction">
                                 <label>Numero Documento</label>
                                 <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
                                        value={this.state.documento}
@@ -247,7 +305,7 @@ class PrincialIngreso extends Component {
                             </div>
                         </div>
                         <div className='row'>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label>Fecha Desde</label>
                                 <Datetime
                                     className={this.state.errorDesde.error ? 'has-error' : ''}
@@ -258,7 +316,7 @@ class PrincialIngreso extends Component {
                                 <label className='small text-danger'
                                        hidden={!this.state.errorDesde.error}>{this.state.errorDesde.mensaje}</label>
                             </div>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label>Fecha Hasta</label>
                                 <Datetime
                                     className={this.state.errorHasta.error ? 'has-error' : ''}
@@ -285,9 +343,18 @@ class PrincialIngreso extends Component {
                         Consultar
                     </Button>
                 </div>
-
+                {this.descargar()}
                 <div className="card row" hidden={!this.state.ingresos.length}>
-                    <h4 className="row">Ingresos ({this.total})</h4>
+                    <div className="row">
+                        <div className="col-md-6 row-secction">
+                            <h4 style={{margin: '0px'}}>Ingresos ({this.total})</h4>
+                        </div>
+                        <div className="col-md-6 row-secction izquierda">
+                            <Button bsStyle="success" fill onClick={()=> {
+                                this.setState({descargar: true});
+                            }}> <i className="pe-7s-download"/> </Button>
+                        </div>
+                    </div>
                     <div className="card-body">
                         <table className="table table-hover">
                             <thead>

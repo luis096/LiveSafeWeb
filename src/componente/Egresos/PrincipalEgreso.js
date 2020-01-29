@@ -13,6 +13,7 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import { Pagination } from 'react-bootstrap';
 import Datetime from 'react-datetime';
 import { operacion } from '../Operaciones';
+import { errorHTML } from '../Error';
 
 
 class PrincialEgreso extends Component {
@@ -21,21 +22,9 @@ class PrincialEgreso extends Component {
         super();
         this.state = {
             egresos: [],
-            invitadoTemp: [],
-            idCountry: '',
-            idEncargado: '',
-            hora: '',
-            show: '',
-            tipoDocumento: '',
             documento: '',
+            apellido: '',
             tipoD: [],
-            busqueda: true,
-            mensaje: '',
-            mensaje2: '',
-            descripcion: '',
-            observacion: true,
-            virgen: false,
-            noExisteInvitado: false,
             nombre: '',
             alert: null,
             desde: null,
@@ -49,16 +38,13 @@ class PrincialEgreso extends Component {
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeDesde = this.ChangeDesde.bind(this);
         this.ChangeHasta = this.ChangeHasta.bind(this);
-        this.ChangeSelect = this.ChangeSelect.bind(this);
+        this.ChangeApellido = this.ChangeApellido.bind(this);
         this.ChangeDocumento = this.ChangeDocumento.bind(this);
-        this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
-        this.registrar = this.registrar.bind(this);
-        this.buscar = this.buscar.bind(this);
-        this.seteoEgreso = this.seteoEgreso.bind(this);
-        this.buscarPersonas = this.buscarPersonas.bind(this);
         this.cantidad = [];
         this.total = 0;
         this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorDocumento = {error: false, mensaje: ''};
     }
 
     async componentDidMount() {
@@ -75,21 +61,19 @@ class PrincialEgreso extends Component {
         this.setState({tipoD});
     }
 
-    ChangeDescripcion(event) {
-        this.setState({descripcion: event.target.value});
-    }
-
-    ChangeSelect(value) {
-        this.setState({tipoDocumento: value});
-    }
-
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
+        this.errorDocumento = validator.numero(event.target.value);
     }
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
         this.errorNombre = validator.soloLetras(event.target.value);
+    }
+
+    ChangeApellido(event) {
+        this.setState({apellido: event.target.value});
+        this.errorApellido = validator.soloLetras(event.target.value);
     }
 
     ChangeDesde(event) {
@@ -156,16 +140,24 @@ class PrincialEgreso extends Component {
         con = con.limit(paginador.getTamPagina());
 
         if (this.state.desde) {
-            con = con.where('FechaDesde', '>=', this.state.desde);
-            total = total.where('FechaDesde', '>=', this.state.desde);
+            con = con.where('Hora', '>=', this.state.desde);
+            total = total.where('Hora', '>=', this.state.desde);
         }
         if (this.state.hasta) {
-            con = con.where('FechaDesde', '<=', this.state.hasta);
-            total = total.where('FechaDesde', '<=', this.state.hasta);
+            con = con.where('Hora', '<=', this.state.hasta);
+            total = total.where('Hora', '<=', this.state.hasta);
         }
         if (this.state.nombre) {
             con = con.where('Nombre', '==', this.state.nombre);
             total = total.where('Nombre', '==', this.state.nombre);
+        }
+        if (this.state.apellido) {
+            con = con.where('Apellido', '==', this.state.apellido);
+            total = total.where('Apellido', '==', this.state.apellido);
+        }
+        if (this.state.documento) {
+            con = con.where('Documento', '==', this.state.documento);
+            total = total.where('Documento', '==', this.state.documento);
         }
 
         if (nueva) {
@@ -200,138 +192,33 @@ class PrincialEgreso extends Component {
         this.setState({egresos, numPagina: (pagina)});
     }
 
-    async buscar() {
-
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Ingresos').orderBy('Hora', 'asc').get().then(querySnapshot=> {
-                querySnapshot.forEach(doc=> {
-                    if (doc.data().Documento === this.state.documento &&
-                        doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
-                        this.setState({
-                            mensaje: doc.data().Apellido + ', ' + doc.data().Nombre
-                        });
-                        if (!doc.data().Egreso) {
-
-                            this.state.invitadoTemp = [doc.data(), doc.id];
-                            this.setState({
-                                observacion: true
-                            });
-                        } else {
-
-                            this.state.invitadoTemp = [doc.data(), doc.id];
-                            this.setState({
-                                mensaje2: 'No se encuentra ingreso de ' + doc.data().Apellido + '. Indique observaciones.'
-                            });
-                            this.setState({observacion: false});
-                        }
-
-
-                    }
-                });
-            });
-        if (!this.state.invitadoTemp.length) {
-            //Buscar persona porque no esta regstrado un ingreso de la misma
-            await this.buscarPersonas();
-        }
-        this.setState({busqueda: false});
-    }
-
-    async buscarPersonas() {
-        let refTipoDocumento = Database.doc('TipoDocumento/' + this.state.tipoDocumento.value);
-        Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Propietarios')
-            .where('Documento', '==', this.state.documento).where('TipoDocumento', '==', refTipoDocumento)
-            .get().then( querySnapshot => { querySnapshot.forEach(doc=> {
-                    if (doc.data().Documento === this.state.documento &&
-                        doc.data().TipoDocumento.id === this.state.tipoDocumento.valueOf().value) {
-                        this.state.invitadoTemp.push(doc.data(), doc.id);
-                        this.setState({
-                            mensaje2: 'No se encuentra ingreso del propietario ' + doc.data().Apellido + '. Indique observaciones.'
-                        });
-                        this.setState({observacion: false});
-                    }
-                });
-            });
-        if (!this.state.invitadoTemp.length) {
-            Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Invitados')
-                .where('Documento', '==', this.state.documento).where('TipoDocumento', '==', refTipoDocumento)
-                .get().then(querySnapshot => { querySnapshot.forEach(doc=> {
-                    if (doc.exists) {
-                        this.state.invitadoTemp.push(doc.data(), doc.id);
-                        if (doc.data().Nombre != '') {
-                            this.setState({
-                                mensaje2: 'No se encuentra ingreso del invitado' + doc.data().Apellido + '. Indique observaciones.'
-                            });
-                            this.setState({observacion: false});
-                        } else {
-                            this.setState({virgen: true, mensaje: 'Falta autentificar el invitado'});
-                        }
-                    }
-                    });
-                });
-        }
-
-        if (!this.state.invitadoTemp.length && !this.state.virgen && this.state.observacion) {
-            this.setState({noExisteInvitado: true});
-        }
-    }
-
-    seteoEgreso() {
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Ingresos').doc(this.state.invitadoTemp[1]).set(
-            {
-                Nombre: this.state.invitadoTemp[0].Nombre,
-                Apellido: this.state.invitadoTemp[0].Apellido,
-                TipoDocumento: this.state.invitadoTemp[0].TipoDocumento,
-                Documento: this.state.invitadoTemp[0].Documento,
-                Hora: this.state.invitadoTemp[0].Hora,
-                Egreso: true,
-                IdEncargado: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Encargados/' + localStorage.getItem('idPersona'))
-            });
-    }
-
-    async registrar() {
-
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Egresos').add({
-                Nombre: this.state.invitadoTemp[0].Nombre,
-                Apellido: this.state.invitadoTemp[0].Apellido,
-                TipoDocumento: this.state.invitadoTemp[0].TipoDocumento,
-                Documento: this.state.invitadoTemp[0].Documento,
-                Hora: new Date(),
-                Descripcion: this.state.descripcion,
-                IdEncargado: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Encargados/' + localStorage.getItem('idPersona'))
-            });
-        if (this.state.observacion) {
-            this.seteoEgreso();
-        }
-        this.setState({
-            show: false, tipoDocumento: '', documento: '',
-            observacion: true, busqueda: true,
-            invitadoTemp: [], mensaje: '', mensaje2: '',
-            noExisteInvitado: false, virgen: false, descripcion: ''
-        });
-    }
-
     hideAlert() {
         this.setState({
             alert: null
         });
     }
 
-    render() {
-        const {show} = this.state;
-
-        const handleClose = ()=>this.setState({
-            show: false, tipoDocumento: '', documento: '',
-            observacion: true, busqueda: true,
-            invitadoTemp: [], mensaje: '', mensaje2: '',
-            noExisteInvitado: false, virgen: false, descripcion: ''
+    reestablecer(){
+        this.setState({
+            egresos: [],
+            documento: '',
+            apellido: '',
+            nombre: '',
+            desde: null,
+            hasta: null,
+            ultimo: [],
+            primero: [],
+            errorDesde: {error: false, mensaje: ''},
+            errorHasta: {error: false, mensaje: ''}
         });
-        const handleShow = ()=> {
-            this.setState({show: true});
-            localStorage.setItem('editarInvitado', 'Egreso');
-            localStorage.setItem('idEncargado', this.state.idEncargado);
-        };
+        this.cantidad = [];
+        this.total = 0;
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorDocumento = {error: false, mensaje: ''};
+    }
+
+    render() {
         return (
             <div className="col-12">
                 <legend><h3 className="row">Egresos</h3></legend>
@@ -342,12 +229,29 @@ class PrincialEgreso extends Component {
                         <div className='row'>
                             <div className="col-md-4 row-secction">
                                 <label>Nombre</label>
-                                <input className={this.errorNombre.error ? 'form-control error' : 'form-control'}
+                                <input className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                        value={this.state.nombre}
                                        onChange={this.ChangeNombre} placeholder="Nombre"/>
-                                <label className='small text-danger'
-                                       hidden={!this.errorNombre.error}>{this.errorNombre.mensaje}</label>
+                                {errorHTML.errorLabel(this.errorNombre)}
                             </div>
+                            <div className="col-md-4 row-secction">
+                                <label>Apellido</label>
+                                <input className={errorHTML.classNameError(this.errorApellido, 'form-control')}
+                                       value={this.state.apellido}
+                                       onChange={this.ChangeApellido} placeholder="Apellido"
+                                />
+                                {errorHTML.errorLabel(this.errorApellido)}
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label>Numero Documento</label>
+                                <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
+                                       value={this.state.documento}
+                                       onChange={this.ChangeDocumento} placeholder="Nro Documento"
+                                />
+                                {errorHTML.errorLabel(this.errorDocumento)}
+                            </div>
+                        </div>
+                        <div className='row'>
                             <div className="col-md-4 row-secction">
                                 <label>Fecha Desde</label>
                                 <Datetime
@@ -376,7 +280,7 @@ class PrincialEgreso extends Component {
 
                 <div className="izquierda">
                     <Button bsStyle="default" fill wd onClick={()=> {
-                        // this.reestablecer();
+                        this.reestablecer();
                     }}>
                         Reestablecer
                     </Button>

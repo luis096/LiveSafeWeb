@@ -44,7 +44,7 @@ class AltaAdministrador extends Component {
         const {tipoD, countryList} = this.state;
         await Database.collection('TipoDocumento').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
-                this.state.tipoD.push(
+                tipoD.push(
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });

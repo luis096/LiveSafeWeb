@@ -39,6 +39,9 @@ import EditarPropietario from 'componente/Propietario/EditarPropietario.js'
 import PrincipalServicio from 'componente/Servicio/PrincipalServicio.js'
 import AltaServicio from 'componente/Servicio/AltaServicio'
 import EditarServicio from 'componente/Servicio/EditarServicio.js'
+import PrincipalEncargado from 'componente/Encargado/PrincipalEncargado'
+import AltaEncargado from 'componente/Encargado/AltaEncargado'
+import EditarEncargado from 'componente/Encargado/EditarEncargado'
 
 //Encargado
 import PrincipalIngreso from 'componente/Ingresos/PrincipalIngreso.js'
@@ -72,8 +75,8 @@ var routes = [
     },
     {
         collapse: true,
-        layoutCollapse: '/juju',
-        path: '/components',
+        layoutCollapse: '/Components',
+        path: '/Components',
         name: 'Components',
         state: 'openComponents',
         icon: 'pe-7s-plugin',
@@ -114,8 +117,8 @@ var routes = [
                 component: Notifications
             },
             {
-                path: '/icons',
-                layout: '/admin',
+                path: '/encargado',
+                layout: '/encargado',
                 name: 'Icons',
                 mini: 'I',
                 component: Icons
@@ -306,7 +309,7 @@ var routes = [
             {
                 path: '/editarCountry',
                 layout: '/root',
-                name: 'Editar Country',
+                name: 'Editar Barrio',
                 mini: 'EC',
                 noVisualizar: true,
                 component: EditarCountry
@@ -374,6 +377,38 @@ var routes = [
                 mini: 'EP',
                 noVisualizar: true,
                 component: EditarPropietario
+            }
+        ]
+    },
+    {
+        collapse: true,
+        layoutCollapse: '/admin',
+        path: '/admin',
+        name: 'Encargados',
+        state: 'openEncargado',
+        icon: 'pe-7s-user',
+        views: [
+            {
+                path: '/encargado',
+                layout: '/admin',
+                name: 'Encargado',
+                mini: 'EN',
+                component: PrincipalEncargado
+            },
+            {
+                path: '/altaEncargado',
+                layout: '/admin',
+                name: 'Nuevo Encargado',
+                mini: 'NE',
+                component: AltaEncargado
+            },
+            {
+                path: '/editarEncargado',
+                layout: '/admin',
+                name: 'Editar Encargado',
+                mini: 'EE',
+                noVisualizar: true,
+                component: EditarEncargado
             }
         ]
     },
