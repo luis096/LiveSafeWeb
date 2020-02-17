@@ -197,6 +197,7 @@ class PrincipalAdministrador extends Component {
             administradores: [],
             numPagina: -1,
             nombre: '',
+            apellido: '',
             desde: null,
             hasta: null,
             ultimo: [],
@@ -233,7 +234,7 @@ class PrincipalAdministrador extends Component {
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-4 row-secction">
-                                <label>Nombre</label>
+                                <label>Apellido</label>
                                 <input className={ errorHTML.classNameError(this.errorApellido, 'form-control') }
                                        value={this.state.apellido}
                                        onChange={this.ChangeApellido} placeholder="Apellido"/>
@@ -276,7 +277,7 @@ class PrincipalAdministrador extends Component {
 
                 <div className="izquierda">
                     <Button bsStyle="default" fill wd onClick={()=> {
-                        // this.reestablecer();
+                        this.reestablecer();
                     }}>
                         Reestablecer
                     </Button>
@@ -319,7 +320,7 @@ class PrincipalAdministrador extends Component {
                                             <td>{adm[0].Documento}</td>
                                             <td>{nacimiento.toLocaleDateString()}</td>
                                             <td>{adm[0].Celular}</td>
-                                            <td>{alta.toLocaleTimeString()}</td>
+                                            <td>{alta.toLocaleString()}</td>
                                             <td><Link to={editar}><Button bsStyle="warning" fill wd>
                                                 Editar
                                             </Button></Link></td>

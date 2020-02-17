@@ -8,18 +8,22 @@ export const paginador = {
     getTamPagina
 };
 
-async function paginar(coneccion, arrayCondiciones, arrayValores, nueva, cantidad, paginaActual, paginaNueva, principio, fin) {
+async function paginar(con, total, totalNum, nueva, cantidad, paginaActual, paginaNueva, principio, fin) {
 
-    let total = coneccion;
-    let con = coneccion.limit(paginador.getTamPagina());
     let pagina = {
         elementos: [],
         numPagina: 0,
-        cantidad: [],
+        cantidad: cantidad,
         primerDoc: principio,
         ultimoDoc: fin,
-        total: 0
+        total: totalNum
     };
+
+    if (nueva) {
+        fin = [];
+        principio = [];
+        paginaActual = -1;
+    }
 
     if (paginaNueva > 0) {
         if (paginaNueva > paginaActual) {
@@ -30,14 +34,6 @@ async function paginar(coneccion, arrayCondiciones, arrayValores, nueva, cantida
             con = con.startAt(primero);
         }
     }
-
-    arrayValores.map((value, i) => {
-        if (value) {
-            con = con.where(arrayCondiciones[i].atributo, arrayCondiciones[i].condicion, value);
-            total = total.where(arrayCondiciones[i].atributo, arrayCondiciones[i].condicion, value);
-        }
-    });
-
 
     if (nueva) {
         await total.get().then((doc)=> {
@@ -57,14 +53,15 @@ async function paginar(coneccion, arrayCondiciones, arrayValores, nueva, cantida
         });
     });
 
-    if ((paginaNueva > paginaActual || paginaActual < 0) && !pagina.ultimoDoc[paginaNueva]) {
+    if ((paginaNueva > paginaActual || paginaActual < 0) && !fin[paginaNueva]) {
         pagina.ultimoDoc.push(ultimoElemento);
         pagina.primerDoc.push(primerElemento);
     }
-    if (cantidad) {
+    if (!cantidad.length) {
         pagina.cantidad = paginador.cantidad(pagina.total);
+    } else {
+        pagina.cantidad = cantidad;
     }
-
     return pagina;
 }
 

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import '../Style/Alta.css';
-import { Link } from 'react-router-dom';
 import { Database, Firebase } from '../../config/config';
 import { validator } from '../validator';
+import Button from 'components/CustomButton/CustomButton.jsx';
+import Datetime from 'react-datetime';
 
 class AltaAdministrador extends Component {
 
@@ -16,15 +16,12 @@ class AltaAdministrador extends Component {
             tipoDocumento: '',
             documento: '',
             celular: '',
-            descripcion: '',
-            fechaNacimiento: '',
+            fechaNacimiento: new Date(),
             fechaAlta: '',
             mail: '@countryapp.com',
-            pass: '',
             idCountry: '',
             tipoD: [],
             countryList: [],
-            resultado: '',
             errorMail: {error: false, mensaje: ''}
         };
         this.addAdministrador = this.addAdministrador.bind(this);
@@ -32,10 +29,8 @@ class AltaAdministrador extends Component {
         this.ChangeApellido = this.ChangeApellido.bind(this);
         this.ChangeDocumento = this.ChangeDocumento.bind(this);
         this.ChangeCelular = this.ChangeCelular.bind(this);
-        this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
         this.ChangeMail = this.ChangeMail.bind(this);
         this.ChangeFechaNacimiento = this.ChangeFechaNacimiento.bind(this);
-        this.crearUsuario = this.crearUsuario.bind(this);
         this.crearUsuario = this.crearUsuario.bind(this);
         this.registrar = this.registrar.bind(this);
     }
@@ -68,9 +63,8 @@ class AltaAdministrador extends Component {
                 Apellido: this.state.apellido,
                 Documento: this.state.documento,
                 Celular: this.state.celular,
-                Descripcion: this.state.descripcion,
                 TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.value),
-                FechaNacimiento: this.state.fechaNacimiento,
+                FechaNacimiento: new Date(this.state.fechaNacimiento),
                 FechaAlta: new Date(),
                 Usuario: this.state.mail,
             }).then(doc=> {
@@ -100,11 +94,6 @@ class AltaAdministrador extends Component {
         this.state.errorMail = {error: false, mensaje: ''};
     }
 
-    ChangeDescripcion(event) {
-        this.setState({descripcion: event.target.value});
-    }
-
-
     ChangeSelect(value) {
         this.setState({tipoDocumento: value});
     }
@@ -114,7 +103,7 @@ class AltaAdministrador extends Component {
     }
 
     ChangeFechaNacimiento(event) {
-        this.setState({fechaNacimiento: event.target.value});
+        this.setState({fechaNacimiento: event});
     }
 
 
@@ -130,104 +119,100 @@ class AltaAdministrador extends Component {
     async crearUsuario() {
         const {mail} = this.state;
         const pass = this.state.documento;
-        if (true) {
+
             await Database.collection('UsuariosTemp').doc(mail).set({
                 NombreUsuario: mail,
                 TipoUsuario: Database.doc('/TiposUsuario/Administrador'),
                 IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
                 IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Administradores/' + this.state.idAdminCreado)
             });
-        }
+
     }
 
 
     render() {
         return (
-            <div className="col-md-12 ">
-                <div>
-                    <div className="row">
-                        <legend> Registrar Administrador</legend>
-                        <div className="col-md-6 flex-container form-group">
-                            <label> Nombre </label>
-                            <input type="name" className="form-control" placeholder="Name"
-                                   value={this.state.nombre}
-                                   onChange={this.ChangeNombre}
-                            />
+            <div className="col-12">
+                <legend><h3 className="row">Nuevo Administrador</h3></legend>
+                {this.state.alert}
+                <div className="row card">
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-4 row-secction">
+                                <label> Nombre </label>
+                                <input type="name" className="form-control" placeholder="Nombre"
+                                       value={this.state.nombre}
+                                       onChange={this.ChangeNombre}
+                                />
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Apellido </label>
+                                <input className="form-control" placeholder="Apellido"
+                                       value={this.state.apellido}
+                                       onChange={this.ChangeApellido}/>
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Fecha de Nacimiento </label>
+                                <Datetime
+                                    inputProps={{placeholder: 'Fecha de Nacimiento'}}
+                                    timeFormat={false}
+                                    value={this.state.fechaNacimiento}
+                                    onChange={this.ChangeFechaNacimiento}
+                                />
+                            </div>
                         </div>
-                        <div className="col-md-6 flex-container form-group">
-                            <label> Apellido </label>
-                            <input type="family-name" className="form-control" placeholder="Surname"
-                                   value={this.state.apellido}
-                                   onChange={this.ChangeApellido}/>
+                        <div className="row">
+                            <div className="col-md-4 row-secction">
+                                <label> Numero de Documento </label>
+                                <input className="form-control"
+                                       placeholder="Numero de Documento"
+                                       value={this.state.documento}
+                                       onChange={this.ChangeDocumento}/>
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Tipo de Documento </label>
+                                <Select
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    options={this.state.tipoD}
+                                    value = {this.state.tipoDocumento }
+                                    onChange={this.ChangeSelect.bind(this)}
+                                />
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Celular </label>
+                                <input className="form-control" placeholder="Celular"
+                                       value={this.state.celular}
+                                       onChange={this.ChangeCelular}
+                                />
+                            </div>
                         </div>
-                        <div className="col-md-6 flex-container form-group">
-                            <label> Tipo Documento </label>
-                            <Select
-                                id='documento'
-                                className="select-documento"
-                                classNamePrefix="select"
-                                isDisabled={false}
-                                isLoading={false}
-                                isClearable={true}
-                                isSearchable={true}
-                                options={this.state.tipoD}
-                                onChange={this.ChangeSelect.bind(this)}
-                            />
+                        <div className="row">
+                            <div className="col-md-6 row-secction">
+                                <label> Dirección de correo electrónico </label>
+                                <input type="email" className={this.state.errorMail.error? "form-control error":"form-control"}
+                                       placeholder="ingrese el mail"
+                                       onChange={this.ChangeMail}
+                                       value={this.state.mail}/>
+                                <label className='small text-danger'
+                                       hidden={!this.state.errorMail.error}>{this.state.errorMail.mensaje}</label>
+                            </div>
+                            <div className="col-md-6 row-secction">
+                                <label> Country </label>
+                                <Select
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    options={this.state.countryList}
+                                    onChange={this.ChangeSelectCountry.bind(this)}
+                                />
+                            </div>
                         </div>
-                        <div className="col-md-6 flex-container form-group">
-                            <label> Numero de Documento </label>
-                            <input type="document" className="form-control"
-                                   placeholder="Document number"
-                                   value={this.state.documento}
-                                   onChange={this.ChangeDocumento}/>
                         </div>
-                        <div className="col-md-6 flex-container form-group">
-                            <label> Fecha de Nacimiento </label>
-                            <input type="date" className="form-control" name="FechaNacimiento"
-                                   step="1" min="1920-01-01"
-                                   onChange={this.ChangeFechaNacimiento}
-                            />
-                        </div>
-                        <div className="col-md-6 flex-container form-group">
-                            <label> Country </label>
-                            <Select
-                                id='country'
-                                className="select-country"
-                                classNamePrefix="select"
-                                isDisabled={false}
-                                isLoading={false}
-                                isClearable={true}
-                                isSearchable={true}
-                                options={this.state.countryList}
-                                onChange={this.ChangeSelectCountry.bind(this)}
-                            />
-                        </div>
-                        <div className="col-md-6 flex-container form-group">
-                            <label> Celular </label>
-                            <input type="tel" className="form-control" placeholder="Mobile number"
-                                   value={this.state.celular}
-                                   onChange={this.ChangeCelular}/>
-                        </div>
-                        <div className="col-md-6 flex-container form-group">
-                            <label> Dirección de correo electrónico </label>
-                            <input type="email" className={this.state.errorMail.error? "form-control error":"form-control"}
-                                   placeholder="ingrese el mail"
-                                   onChange={this.ChangeMail}
-                                   value={this.state.mail}/>
-                            <label className='small text-danger'
-                                   hidden={!this.state.errorMail.error}>{this.state.errorMail.mensaje}</label>
-                        </div>
-                        <div className="col-md-6 flex-container form-group">
-                            <label> Descripcion </ label>
-                            <textarea className="form-control" id="exampleTextarea" rows="3"
-                                      value={this.state.descripcion}
-                                      onChange={this.ChangeDescripcion}
-                            ></textarea>
-                        </div>
-                    </div>
-                    <div className="form-group izquierda">
-                        <button className="btn btn-primary boton" onClick={this.registrar}>Registrar</button>
-                    </div>
+                </div>
+                <div className="text-center">
+                    <Button bsStyle="primary" fill wd onClick={this.registrar}>
+                        Registrar
+                    </Button>
                 </div>
             </div>
         );

@@ -341,7 +341,7 @@ var routes = [
             {
                 path: '/editarAdministrador',
                 layout: '/root',
-                name: 'Editar Admin.',
+                name: 'Editar Administrador',
                 mini: 'EC',
                 noVisualizar: true,
                 component: EditarAdministrador
@@ -391,7 +391,7 @@ var routes = [
             {
                 path: '/encargado',
                 layout: '/admin',
-                name: 'Encargado',
+                name: 'Encargados',
                 mini: 'EN',
                 component: PrincipalEncargado
             },

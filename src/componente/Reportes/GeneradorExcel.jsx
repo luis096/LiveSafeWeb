@@ -18,7 +18,6 @@ class GeneradorExcel extends Component {
             elementos: props.elementos,
             estructura: props.estructura,
             pagina: props.pagina,
-            show: props.show,
             name: '',
         };
         this.ChangeName = this.ChangeName.bind(this);
@@ -31,7 +30,7 @@ class GeneradorExcel extends Component {
     render() {
         return (
             <div>
-                <Modal show={this.state.show} onHide={()=>{this.setState({show: false}); this.props.ocultar()}}>
+                <Modal show={true} onHide={()=>{this.props.ocultar()}}>
                     <Modal.Header closeButton>
                         <Modal.Title>Exportar Archivo</Modal.Title>
                     </Modal.Header>
@@ -39,7 +38,7 @@ class GeneradorExcel extends Component {
                         <label>Nombre del Archivo: </label>
                         <input className={'form-control'}
                                value={this.state.name}
-                               onChange={this.ChangeName} placeholder="Nombre archivo"
+                               onChange={this.ChangeName} placeholder="Nombre del archivo"
                         />
                     </Modal.Body>
                     <Modal.Footer>

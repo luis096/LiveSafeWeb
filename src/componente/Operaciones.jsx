@@ -3,13 +3,20 @@ import { Database } from '../config/config';
 
 
 const PERFILES = ['/Root/', '/Administradores/', '/Encargados/', '/Propietarios/'];
+const DIAS = ['Lun', 'Mar','Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
+const EstadosServicioSelect = [{value: true, label:'Disponible'}, {value: false, label:'No Disponible'}];
+
+export const constantes = {
+    EstadosServicioSelect,
+};
 
 export const operacion = {
     obtenerTiposDocumento,
     obtenerDocumentoLabel,
     obtenerReferenciaDocumento,
     obtenerMiReferencia,
-    obtenerReferenciaConId
+    obtenerReferenciaConId,
+    obtenerDisponibleString
 };
 
 async function obtenerTiposDocumento() {
@@ -52,5 +59,15 @@ function obtenerMiReferencia(num) {
 function obtenerReferenciaConId(num, id) {
     let resultado = Database.doc('Country/' + localStorage.getItem('idCountry')
         + PERFILES[num] + id);
+    return resultado;
+}
+
+function obtenerDisponibleString(value){
+    let resultado = '';
+    value.map((dia, i)=>{
+        if(dia){
+            resultado += '-' + DIAS[i];
+        }
+    });
     return resultado;
 }

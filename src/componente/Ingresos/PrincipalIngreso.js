@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import Ingreso from './Ingreso';
 import { Link } from 'react-router-dom';
@@ -15,6 +14,7 @@ import { errorHTML } from '../Error';
 import { operacion } from '../Operaciones';
 import ReactExport from "react-data-export";
 import GeneradorExcel from '../Reportes/GeneradorExcel';
+import { columns } from '../Reportes/Columns';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -29,9 +29,11 @@ class PrincialIngreso extends Component {
             documento: '',
             tipoDocumento: '',
             apellido: '',
+            nombre: '',
             descargar: false,
             tipoD: [],
             alert: null,
+            numPagina: -1,
             desde: null,
             hasta: null,
             ultimo: [],
@@ -104,7 +106,6 @@ class PrincialIngreso extends Component {
     }
 
     async consultar(pagina, nueva) {
-        let {ingresos} = this.state;
 
         if (!validator.isValid([this.errorNombre, this.state.errorDesde, this.state.errorHasta])) {
             this.setState({
@@ -115,6 +116,8 @@ class PrincialIngreso extends Component {
                         onConfirm={()=>this.hideAlert()}
                         onCancel={()=>this.hideAlert()}
                         confirmBtnBsStyle="danger"
+                        openAnim
+                        closeAnim
                     >
                         Hay errores en los filtros.
                     </SweetAlert>
@@ -123,63 +126,25 @@ class PrincialIngreso extends Component {
             return;
         }
 
-        if (nueva) {
-            this.setState({
-                ultimo: [],
-                primero: [],
-                numPagina: -1
-            });
-        }
         if (this.cantidad.length && (this.cantidad.length <= pagina || pagina < 0)) {
             return;
         }
 
-        // let con = await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Ingresos');
         let con = this.obtenerConsulta(true);
-
-        // let total = con;
         let total = this.obtenerConsulta(false);
 
-        if (pagina > 0) {
-            if (pagina > this.state.numPagina) {
-                let ultimo = this.state.ultimo[this.state.numPagina];
-                con = con.startAfter(ultimo);
-            } else {
-                let primero = this.state.primero[pagina];
-                con = con.startAt(primero);
-            }
-        }
+        let resultado = await paginador.paginar(con, total, this.total, nueva,this.cantidad, this.state.numPagina,
+            pagina,this.state.primero, this.state.ultimo);
 
-        if (nueva) {
-            await total.get().then((doc)=> {
-                this.total = doc.docs.length;
-            });
-        }
+        this.cantidad = resultado.cantidad;
+        this.total = resultado.total;
 
-        ingresos = [];
-        let ultimo = null;
-        let primero = null;
-        await con.get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
-                if (!primero) {
-                    primero = doc;
-                }
-                ultimo = doc;
-                ingresos.push(
-                    [doc.data(), doc.id]
-                );
-            });
+        this.setState({
+            ingresos: resultado.elementos,
+            numPagina: (pagina),
+            primero: resultado.primerDoc,
+            ultimo: resultado.ultimoDoc
         });
-
-        if ((pagina > this.state.numPagina || this.state.numPagina < 0) && !this.state.ultimo[pagina]) {
-            this.state.ultimo.push(ultimo);
-            this.state.primero.push(primero);
-        }
-        if (nueva) {
-            this.cantidad = paginador.cantidad(this.total);
-        }
-
-        this.setState({ingresos, numPagina: (pagina)});
     }
 
     hideAlert() {
@@ -210,24 +175,22 @@ class PrincialIngreso extends Component {
     }
 
     descargar(){
-        let columnas = [
-            {label:'Nombre' , value:'Nombre'},
-            {label:'Apellido' , value:'Apellido'},
-            {label:'Documento' , value:'Documento'},
-            {label:'Observacion' , value:'Observacion'},
-            ];
+        let columnas = columns.INGRESOS;
         let elementos = [];
 
         if (this.state.descargar){
             let con = this.obtenerConsulta(false)
+            let datos = {};
             con.get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
-                    elementos.push(doc.data());
+                    datos = doc.data();
+                    datos.Hora = validator.obtenerFecha(doc.data().Hora).toLocaleString();
+                    datos.TipoDocumento = operacion.obtenerDocumentoLabel(datos.TipoDocumento.id, this.state.tipoD);
+                    datos.Tipo = datos.IdPropietario? 'Invitado':'Propietario';
+                    elementos.push(datos);
                 });
             });
-
             return (<GeneradorExcel elementos={elementos} estructura={columnas} pagina={'Ingresos'}
-                                show={this.state.descargar}
                                 ocultar={()=>this.setState({descargar:false})}/>)
         }
     }
@@ -352,7 +315,7 @@ class PrincialIngreso extends Component {
                         <div className="col-md-6 row-secction izquierda">
                             <Button bsStyle="success" fill onClick={()=> {
                                 this.setState({descargar: true});
-                            }}> <i className="pe-7s-download"/> </Button>
+                            }}>Descargar</Button>
                         </div>
                     </div>
                     <div className="card-body">

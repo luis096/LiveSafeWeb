@@ -14,6 +14,14 @@ import { Pagination } from 'react-bootstrap';
 import Datetime from 'react-datetime';
 import { operacion } from '../Operaciones';
 import { errorHTML } from '../Error';
+import ReactExport from "react-data-export";
+import GeneradorExcel from '../Reportes/GeneradorExcel';
+import { columns } from '../Reportes/Columns';
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+
 
 
 class PrincialEgreso extends Component {
@@ -22,6 +30,7 @@ class PrincialEgreso extends Component {
         super();
         this.state = {
             egresos: [],
+            descargar: false,
             documento: '',
             apellido: '',
             tipoD: [],
@@ -35,6 +44,8 @@ class PrincialEgreso extends Component {
             errorHasta: {error: false, mensaje: ''}
         };
         this.hideAlert = this.hideAlert.bind(this);
+        this.descargar = this.descargar.bind(this);
+        this.obtenerConsulta = this.obtenerConsulta.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeDesde = this.ChangeDesde.bind(this);
         this.ChangeHasta = this.ChangeHasta.bind(this);
@@ -123,9 +134,9 @@ class PrincialEgreso extends Component {
             return;
         }
 
-        let con = await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Egresos');
 
-        let total = con;
+        let con = this.obtenerConsulta(true);
+        let total = this.obtenerConsulta(false);
 
         if (pagina > 0) {
             if (pagina > this.state.numPagina) {
@@ -135,29 +146,6 @@ class PrincialEgreso extends Component {
                 let primero = this.state.primero[pagina];
                 con = con.startAt(primero);
             }
-        }
-
-        con = con.limit(paginador.getTamPagina());
-
-        if (this.state.desde) {
-            con = con.where('Hora', '>=', this.state.desde);
-            total = total.where('Hora', '>=', this.state.desde);
-        }
-        if (this.state.hasta) {
-            con = con.where('Hora', '<=', this.state.hasta);
-            total = total.where('Hora', '<=', this.state.hasta);
-        }
-        if (this.state.nombre) {
-            con = con.where('Nombre', '==', this.state.nombre);
-            total = total.where('Nombre', '==', this.state.nombre);
-        }
-        if (this.state.apellido) {
-            con = con.where('Apellido', '==', this.state.apellido);
-            total = total.where('Apellido', '==', this.state.apellido);
-        }
-        if (this.state.documento) {
-            con = con.where('Documento', '==', this.state.documento);
-            total = total.where('Documento', '==', this.state.documento);
         }
 
         if (nueva) {
@@ -190,6 +178,52 @@ class PrincialEgreso extends Component {
         }
 
         this.setState({egresos, numPagina: (pagina)});
+    }
+
+    descargar(){
+        let columnas = columns.INGRESOS;
+        let elementos = [];
+
+        if (this.state.descargar){
+            let con = this.obtenerConsulta(false)
+            let datos = {};
+            con.get().then(querySnapshot=> {
+                querySnapshot.forEach(doc=> {
+                    datos = doc.data();
+                    datos.Hora = validator.obtenerFecha(doc.data().Hora).toLocaleString();
+                    datos.TipoDocumento = operacion.obtenerDocumentoLabel(datos.TipoDocumento.id, this.state.tipoD);
+                    datos.Tipo = datos.IdPropietario? 'Invitado':'Propietario';
+                    elementos.push(datos);
+                });
+            });
+            return (<GeneradorExcel elementos={elementos} estructura={columnas} pagina={'Ingresos'}
+                                    ocultar={()=>this.setState({descargar:false})}/>)
+        }
+    }
+
+    obtenerConsulta(conLimite){
+        let con = Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Egresos');
+        if (conLimite){
+            con = con.limit(paginador.getTamPagina());
+        }
+
+        if (this.state.desde) {
+            con = con.where('Hora', '>=', this.state.desde);
+        }
+        if (this.state.hasta) {
+            con = con.where('Hora', '<=', this.state.hasta);
+        }
+        if (this.state.nombre) {
+            con = con.where('Nombre', '==', this.state.nombre);
+        }
+        if (this.state.apellido) {
+            con = con.where('Apellido', '==', this.state.apellido);
+        }
+        if (this.state.documento) {
+            con = con.where('Documento', '==', this.state.documento);
+        }
+
+        return con;
     }
 
     hideAlert() {
@@ -290,8 +324,18 @@ class PrincialEgreso extends Component {
                         Consultar
                     </Button>
                 </div>
+                {this.descargar()}
                 <div className="card row" hidden={!this.state.egresos.length}>
-                    <h4 className="row">Egresos ({this.total})</h4>
+                    <div className="row">
+                        <div className="col-md-6 row-secction">
+                            <h4 style={{margin: '0px'}}>Egresos ({this.total})</h4>
+                        </div>
+                        <div className="col-md-6 row-secction izquierda">
+                            <Button bsStyle="success" fill onClick={()=> {
+                                this.setState({descargar: true});
+                            }}>Descargar</Button>
+                        </div>
+                    </div>
                     <div className="card-body">
                         <table className="table table-hover">
                             <thead>

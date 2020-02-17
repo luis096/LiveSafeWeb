@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import Datetime from 'react-datetime';
