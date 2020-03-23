@@ -40,7 +40,9 @@
     "react-tagsinput": "^3.19.0",
     "react-toggle": "4.0.2",
     "reactstrap": "^8.0.1",
-    "wnumb": "^1.2.0"
+    "tempa-xlsx": "^0.8.20",
+    "wnumb": "^1.2.0",
+    "xlsx": "^0.15.5"
   },
   "devDependencies": {
     "@types/googlemaps": "3.30.19",
