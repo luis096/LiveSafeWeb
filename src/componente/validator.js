@@ -1,4 +1,4 @@
-import {Database} from '../config/config';
+import { Database } from '../config/config';
 
 //Expreciones regulares para las validaciones.
 const NUMBER_REGEXP = /^\d*$/;
@@ -13,7 +13,7 @@ const NUMBER_ZERO = /^[0]+$/;
 const NOMBRE_ARCHIVOS = /^(?!((con|prn|aux)((\.[^\\/:*"$•?<>|]{1,3}$)|$))|[\s\.])[^\\/:*"$•?<>|]{1,254}$/;
 const LETRAS_REGEXP = /^[a-zA-Z ]*$/;
 const ESTADOS_RESERVAS = ['Pendiente', 'En Curso', 'Cancelado', 'Realizado'];
-const ESTADOS_RESERVAee = '.where("FechaDesde", ">", new Date())'
+const ESTADOS_RESERVAee = '.where("FechaDesde", ">", new Date())';
 
 
 // Se retorna TRUE si hay un error.. 
@@ -26,13 +26,14 @@ export const validator = {
     obtenerFecha,
     validarMail,
     fechaRango,
-    isValid
+    isValid,
+    validarInvitado
 };
 
 
 function numero(valor) {
     return {
-        error: NUMBER_REGEXP.test(valor) ? false : true,
+        error: !NUMBER_REGEXP.test(valor),
         mensaje: 'Solo ingresar números'
     };
 }
@@ -58,7 +59,7 @@ function soloLetras(valor) {
 
 function estadoReserva(desde, hasta, cancelado) {
     let hoy = new Date();
-    if (cancelado){
+    if (cancelado) {
         return {Nombre: ESTADOS_RESERVAS[2], Id: 2};
     }
     if (desde < hoy && hasta > hoy) {
@@ -71,34 +72,38 @@ function estadoReserva(desde, hasta, cancelado) {
 }
 
 function obtenerFecha(time) {
+    if (!time){
+        return new Date();
+    }
     return (new Date(time.seconds * 1000));
 }
 
 async function validarMail(mail) {
     let valido = true;
-    await Database.collection('Usuarios').doc(mail).get().then(doc => {
+    await Database.collection('Usuarios').doc(mail).get().then(doc=> {
         valido = !doc.exists;
     });
     return valido;
 }
 
 function fechaRango(desde, hasta, bool) {
-    if (!desde || !hasta){
+    if (!desde || !hasta) {
         return {
-        error: false,
-        mensaje: ''
-    };}
-    if (desde >= hasta && bool){
+            error: false,
+            mensaje: ''
+        };
+    }
+    if (desde >= hasta && bool) {
         return {
             error: true,
             mensaje: 'La fecha desde debe ser menor a la fecha hasta'
         };
-    } else if (desde >= hasta){
+    } else if (desde >= hasta) {
         return {
             error: true,
             mensaje: 'La fecha hasta debe ser mayor a la fecha desde'
         };
-    } else{
+    } else {
         return {
             error: false,
             mensaje: ''
@@ -107,12 +112,17 @@ function fechaRango(desde, hasta, bool) {
 
 }
 
-function isValid(errores){
+function isValid(errores) {
     let invalid = false;
-    errores.map((error) =>{
-        if(error.error){
+    errores.map((error)=> {
+        if (error.error) {
             invalid = true;
         }
     });
     return !invalid;
+}
+
+function validarInvitado(desde, hasta) {
+    let hoy = new Date();
+    return (validator.obtenerFecha(desde) <= hoy && validator.obtenerFecha(hasta) >= hoy);
 }

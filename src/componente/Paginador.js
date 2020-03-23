@@ -1,3 +1,5 @@
+import { Database } from '../config/config';
+
 const TAMANIO_PAGINA = 10;
 
 export const paginador = {
@@ -6,23 +8,66 @@ export const paginador = {
     getTamPagina
 };
 
-function paginar(pagina, todos) {
-    const elementos = [];
-    let desde = pagina * TAMANIO_PAGINA;
-    let hasta = desde + TAMANIO_PAGINA;
-    let tam = todos.length;
-    if (tam < hasta) {
-        hasta = tam;
+async function paginar(con, total, totalNum, nueva, cantidad, paginaActual, paginaNueva, principio, fin) {
+
+    let pagina = {
+        elementos: [],
+        numPagina: 0,
+        cantidad: cantidad,
+        primerDoc: principio,
+        ultimoDoc: fin,
+        total: totalNum
+    };
+
+    if (nueva) {
+        fin = [];
+        principio = [];
+        paginaActual = -1;
     }
-    for (var i = desde; i < hasta; i++) {
-        elementos.push(todos[i]);
+
+    if (paginaNueva > 0) {
+        if (paginaNueva > paginaActual) {
+            let ultimo = fin[paginaActual];
+            con = con.startAfter(ultimo);
+        } else {
+            let primero = principio[paginaNueva];
+            con = con.startAt(primero);
+        }
     }
-    return ({Elementos: elementos, NumPagina: pagina});
+
+    if (nueva) {
+        await total.get().then((doc)=> {
+             pagina.total = doc.docs.length;
+        });
+    }
+
+    let ultimoElemento = null;
+    let primerElemento = null;
+    await con.get().then(querySnapshot=> {
+        querySnapshot.forEach(doc=> {
+            if (!primerElemento) {
+                primerElemento = doc;
+            }
+            ultimoElemento = doc;
+            pagina.elementos.push( [doc.data(), doc.id] );
+        });
+    });
+
+    if ((paginaNueva > paginaActual || paginaActual < 0) && !fin[paginaNueva]) {
+        pagina.ultimoDoc.push(ultimoElemento);
+        pagina.primerDoc.push(primerElemento);
+    }
+    if (!cantidad.length) {
+        pagina.cantidad = paginador.cantidad(pagina.total);
+    } else {
+        pagina.cantidad = cantidad;
+    }
+    return pagina;
 }
 
 function cantidad(tam) {
     let array = [];
-    for (var i = 0; i < (tam / TAMANIO_PAGINA); i++) {
+    for (let i = 0; i < (tam / TAMANIO_PAGINA); i++) {
         array.push(i);
     }
     return (array);

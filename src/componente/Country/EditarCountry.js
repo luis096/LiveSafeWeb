@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
-import { Link } from 'react-router-dom';
+import Button from 'components/CustomButton/CustomButton.jsx';
 
 
 class EditarCountry extends Component {
@@ -13,11 +13,10 @@ class EditarCountry extends Component {
             calle: '',
             numero: '',
             titular: '',
+            fechaAlta: '',
             celular: '',
-            descripcion: '',
-            resultado: ''
+            descripcion: ''
         };
-        this.editCountry = this.editCountry.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeCalle = this.ChangeCalle.bind(this);
         this.ChangeNumero = this.ChangeNumero.bind(this);
@@ -31,40 +30,19 @@ class EditarCountry extends Component {
 
 
     async componentDidMount() {
-        const {barrio} = this.state;
-        await Database.collection('Country').doc(this.idBarrio).get()
-            .then(doc=> {
-                if (doc.exists) {
-                    this.state.barrio.push(doc.data());
-                } else {
-                    //Si no existe, hacer esto...
-                }
-            })
-            .catch(err=> {
-                //En caso de error, hacer esto...
-            });
-        this.setState({barrio});
-        const estrella = this.state.barrio[0];
-        this.setState({
-            nombre: estrella.Nombre,
-            calle: estrella.Calle,
-            numero: estrella.Numero,
-            titular: estrella.Titular,
-            celular: estrella.Celular,
-            descripcion: estrella.Descripcion
+        await Database.collection('Country').doc(this.idBarrio).get().then(doc=> {
+            if (doc.exists) {
+                this.setState({
+                    nombre: doc.data().Nombre,
+                    calle: doc.data().Calle,
+                    numero: doc.data().Numero,
+                    titular: doc.data().Titular,
+                    celular: doc.data().Celular,
+                    fechaAlta: doc.data().FechaAlta,
+                    descripcion: doc.data().Descripcion
+                });
+            }
         });
-    }
-
-    editCountry() {
-        Database.collection('Country').doc(this.idBarrio).set({
-            Nombre: this.state.nombre,
-            Calle: this.state.calle,
-            Numero: this.state.numero,
-            Titular: this.state.titular,
-            Celular: this.state.celular,
-            Descripcion: this.state.descripcion
-        });
-
     }
 
     ChangeNombre(event) {
@@ -92,78 +70,76 @@ class EditarCountry extends Component {
     }
 
     registrar() {
-        //Agregar validaciones para no registrar cualquier gilada
-        if (true) {
-            this.editCountry();
-            this.setState({
-                nombre: '',
-                calle: '',
-                numero: '',
-                titular: '',
-                celular: '',
-                descripcion: '',
-                resultado: 'Se edito con exito'
-            });
-        }
+        Database.collection('Country').doc(this.idBarrio).update({
+            Nombre: this.state.nombre,
+            Calle: this.state.calle,
+            Numero: this.state.numero,
+            Titular: this.state.titular,
+            Celular: this.state.celular,
+            Descripcion: this.state.descripcion
+        });
     }
 
 
     render() {
         return (
-            <div className="content">
-                 <div className="form-group">
-                    <label className="h2">Editar barrio</label>
-                 </div>
-                <div className="row">
-                    <div className="col-md-6  flex-container form-group">
-                        <label for="Nombre"> Nombre del Barrio </label>
-                        <input type="name" className="form-control" placeholder="Name Country"
-                               value={this.state.nombre}
-                               onChange={this.ChangeNombre}/>
-                    </div>
-                    <div className="col-md-6  flex-container form-group">
-                        <label for="Nombre"> Titular </label>
-                        <input type="name" className="form-control" placeholder="Name Headline"
-                               value={this.state.titular}
-                               onChange={this.ChangeTitular}/>
-                    </div>
-                    <div className="col-md-6  flex-container form-group">
-                        <label for="Nombre"> Calle </label>
-                        <input type="name" className="form-control" placeholder="Street"
-                               value={this.state.calle}
-                               onChange={this.ChangeCalle}/>
-                    </div>
-                    <div className="col-md-6  flex-container form-group">
-                        <label for="Nombre"> Celular </label>
-                        <input type="name" className="form-control" placeholder="Mobile"
-                               value={this.state.celular}
-                               onChange={this.ChangeCelular}/>
-                    </div>
-                    <div className="col-md-6  flex-container form-group">
-                        <label for="Nombre"> Numero </label>
-                        <input type="name" className="form-control" placeholder="Number"
-                               value={this.state.numero}
-                               onChange={this.ChangeNumero}/>
-                    </div>
-
-
-                    <div className="col-md-6  flex-container form-group">
-                        <label for="Nombre"> Descripcion </label>
-                        <textarea className="form-control" id="exampleTextarea" rows="3" placeholder="Description"
-                                  value={this.state.descripcion}
-                                  onChange={this.ChangeDescripcion}> </textarea>
+            <div className="col-12">
+                <legend><h3 className="row">Editar barrio</h3></legend>
+                {this.state.alert}
+                <div className="row card">
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-6 row-secction">
+                                <label> Nombre del barrio </label>
+                                <input className="form-control" placeholder="Nombre"
+                                       value={this.state.nombre}
+                                       onChange={this.ChangeNombre}
+                                />
+                            </div>
+                            <div className="col-md-6 row-secction">
+                                <label> Titular </label>
+                                <input className="form-control" placeholder="Titular"
+                                       value={this.state.titular}
+                                       onChange={this.ChangeTitular}
+                                />
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-4 row-secction">
+                                <label> Calle </label>
+                                <input className="form-control" placeholder="Calle"
+                                       value={this.state.calle}
+                                       onChange={this.ChangeCalle}/>
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Numero </label>
+                                <input className="form-control" placeholder="Numero"
+                                       value={this.state.numero}
+                                       onChange={this.ChangeNumero}/>
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Celular </label>
+                                <input className="form-control" placeholder="Celular"
+                                       value={this.state.celular}
+                                       onChange={this.ChangeCelular}/>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6 row-secction">
+                                <label> Descripcion </label>
+                                <textarea className="form-control" rows="3"
+                                          placeholder="Description"
+                                          value={this.state.descripcion}
+                                          onChange={this.ChangeDescripcion}/>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div>
-                <span>
-                    <strong>{this.state.resultado}</strong>
-                </span>
+                <div className="text-center">
+                    <Button bsStyle="primary" fill wd onClick={this.registrar}>
+                        Registrar
+                    </Button>
                 </div>
-                <div className="form-group izquierda">
-                    <button className="btn btn-primary boton" onClick={this.registrar}>Registrar</button>
-                    <Link to="/admin/country" type="button" className="btn btn-primary boton">Volver</Link>
-                </div>
-
             </div>
 
         );

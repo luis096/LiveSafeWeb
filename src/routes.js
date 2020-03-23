@@ -39,10 +39,15 @@ import EditarPropietario from 'componente/Propietario/EditarPropietario.js'
 import PrincipalServicio from 'componente/Servicio/PrincipalServicio.js'
 import AltaServicio from 'componente/Servicio/AltaServicio'
 import EditarServicio from 'componente/Servicio/EditarServicio.js'
+import PrincipalEncargado from 'componente/Encargado/PrincipalEncargado'
+import AltaEncargado from 'componente/Encargado/AltaEncargado'
+import EditarEncargado from 'componente/Encargado/EditarEncargado'
 
 //Encargado
 import PrincipalIngreso from 'componente/Ingresos/PrincipalIngreso.js'
+import AltaIngreso from 'componente/Ingresos/AltaIngreso'
 import PrincipalEgreso from 'componente/Egresos/PrincipalEgreso.js'
+import AltaEgreso from 'componente/Egresos/AltaEgreso'
 
 import AltaInvitado from 'componente/Invitado/AltaInvitado.js'
 
@@ -70,8 +75,8 @@ var routes = [
     },
     {
         collapse: true,
-        layoutCollapse: '/juju',
-        path: '/components',
+        layoutCollapse: '/Components',
+        path: '/Components',
         name: 'Components',
         state: 'openComponents',
         icon: 'pe-7s-plugin',
@@ -112,8 +117,8 @@ var routes = [
                 component: Notifications
             },
             {
-                path: '/icons',
-                layout: '/admin',
+                path: '/encargado',
+                layout: '/encargado',
                 name: 'Icons',
                 mini: 'I',
                 component: Icons
@@ -304,7 +309,7 @@ var routes = [
             {
                 path: '/editarCountry',
                 layout: '/root',
-                name: 'Editar Country',
+                name: 'Editar Barrio',
                 mini: 'EC',
                 noVisualizar: true,
                 component: EditarCountry
@@ -336,7 +341,7 @@ var routes = [
             {
                 path: '/editarAdministrador',
                 layout: '/root',
-                name: 'Editar Admin.',
+                name: 'Editar Administrador',
                 mini: 'EC',
                 noVisualizar: true,
                 component: EditarAdministrador
@@ -347,14 +352,14 @@ var routes = [
         collapse: true,
         layoutCollapse: '/admin',
         path: '/admin',
-        name: 'Propietario',
+        name: 'Propietarios',
         state: 'openPropietario',
         icon: 'pe-7s-users',
         views: [
             {
                 path: '/propietarios',
                 layout: '/admin',
-                name: 'Propietario',
+                name: 'Propietarios',
                 mini: 'P',
                 component: PrincipalPropietario
             },
@@ -379,9 +384,41 @@ var routes = [
         collapse: true,
         layoutCollapse: '/admin',
         path: '/admin',
+        name: 'Encargados',
+        state: 'openEncargado',
+        icon: 'pe-7s-user',
+        views: [
+            {
+                path: '/encargado',
+                layout: '/admin',
+                name: 'Encargados',
+                mini: 'EN',
+                component: PrincipalEncargado
+            },
+            {
+                path: '/altaEncargado',
+                layout: '/admin',
+                name: 'Nuevo Encargado',
+                mini: 'NE',
+                component: AltaEncargado
+            },
+            {
+                path: '/editarEncargado',
+                layout: '/admin',
+                name: 'Editar Encargado',
+                mini: 'EE',
+                noVisualizar: true,
+                component: EditarEncargado
+            }
+        ]
+    },
+    {
+        collapse: true,
+        layoutCollapse: '/admin',
+        path: '/admin',
         name: 'Servicios',
         state: 'openServicio',
-        icon: 'pe-7s-users',
+        icon: 'pe-7s-news-paper',
         views: [
             {
                 path: '/servicios',
@@ -472,18 +509,52 @@ var routes = [
         ]
     },
     {
-        path: '/ingresos',
-        layout: '/encargado',
+        collapse: true,
+        layoutCollapse: '/encargado',
+        path: '/encargado',
         name: 'Ingresos',
+        state: 'openIngresos',
         icon: 'pe-7s-next-2',
-        component: PrincipalIngreso
+        views: [
+            {
+                path: '/ingresos',
+                layout: '/encargado',
+                name: 'Ingresos',
+                mini: 'IN',
+                component: PrincipalIngreso
+            },
+            {
+                path: '/altaIngreso',
+                layout: '/encargado',
+                name: 'Nueva Ingreso',
+                mini: 'NI',
+                component: AltaIngreso
+            }
+        ]
     },
     {
-        path: '/egresos',
-        layout: '/encargado',
+        collapse: true,
+        layoutCollapse: '/encargado',
+        path: '/encargado',
         name: 'Egresos',
+        state: 'openEgresos',
         icon: 'pe-7s-back-2',
-        component: PrincipalEgreso
+        views: [
+            {
+                path: '/egresos',
+                layout: '/encargado',
+                name: 'Egresos',
+                mini: 'EG',
+                component: PrincipalEgreso
+            },
+            {
+                path: '/altaEgreso',
+                layout: '/encargado',
+                name: 'Nuevo Egreso',
+                mini: 'NE',
+                component: AltaEgreso
+            }
+        ]
     },
     {
         path: '/editarInvitado',
@@ -501,6 +572,7 @@ var routes = [
         noVisualizar: true,
         component: AltaInvitado
     },
+    //Se repiten en los distintos perfiles
     {
         path: '/miPerfil',
         layout: '/propietario',
@@ -520,6 +592,54 @@ var routes = [
     {
         path: '/configuraciones',
         layout: '/propietario',
+        name: 'Configuraciones',
+        icon: 'pe-7s-graph',
+        noVisualizar: true,
+        component: Config
+    },
+    {
+        path: '/miPerfil',
+        layout: '/encargado',
+        name: 'Mi Perfil',
+        icon: 'pe-7s-graph',
+        noVisualizar: true,
+        component: MiPerfil
+    },
+    {
+        path: '/miCountry',
+        layout: '/encargado',
+        name: 'Mi Barrio',
+        icon: 'pe-7s-graph',
+        noVisualizar: true,
+        component: MiCountry
+    },
+    {
+        path: '/configuraciones',
+        layout: '/encargado',
+        name: 'Configuraciones',
+        icon: 'pe-7s-graph',
+        noVisualizar: true,
+        component: Config
+    },
+    {
+        path: '/miPerfil',
+        layout: '/admin',
+        name: 'Mi Perfil',
+        icon: 'pe-7s-graph',
+        noVisualizar: true,
+        component: MiPerfil
+    },
+    {
+        path: '/miCountry',
+        layout: '/admin',
+        name: 'Mi Barrio',
+        icon: 'pe-7s-graph',
+        noVisualizar: true,
+        component: MiCountry
+    },
+    {
+        path: '/configuraciones',
+        layout: '/admin',
         name: 'Configuraciones',
         icon: 'pe-7s-graph',
         noVisualizar: true,

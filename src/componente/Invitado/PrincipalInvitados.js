@@ -8,6 +8,7 @@ import Select from 'react-select';
 import { paginador } from '../Paginador';
 import { validator } from '../validator';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { errorHTML } from '../Error';
 
 class PrincipalInvitados extends Component {
 
@@ -333,29 +334,26 @@ class PrincipalInvitados extends Component {
                         <div className='row'>
                             <div className="col-md-3 row-secction">
                                 <label>Nombre</label>
-                                <input className={this.errorNombre.error ? 'form-control error' : 'form-control'}
+                                <input className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                        value={this.state.nombre}
                                        onChange={this.ChangeNombre} placeholder="Nombre"/>
-                                <label className='small text-danger'
-                                       hidden={!this.errorNombre.error}>{this.errorNombre.mensaje}</label>
+                                {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label>Apellido</label>
-                                <input className={this.errorApellido.error ? 'form-control error' : 'form-control'}
+                                <input className={errorHTML.classNameError(this.errorApellido, 'form-control')}
                                        value={this.state.apellido}
                                        onChange={this.ChangeApellido} placeholder="Apellido"
                                 />
-                                <label className='small text-danger'
-                                       hidden={!this.errorApellido.error}>{this.errorApellido.mensaje}</label>
+                                {errorHTML.errorLabel(this.errorApellido)}
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label>Nro Documento</label>
-                                <input className={this.errorDocumento.error ? 'form-control error' : 'form-control'}
+                                <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
                                        value={this.state.documento}
                                        onChange={this.ChangeDocumento} placeholder="Nro Documento"
                                 />
-                                <label className='small text-danger'
-                                       hidden={!this.errorDocumento.error}>{this.errorDocumento.mensaje}</label>
+                                {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label>Estado</label>
@@ -392,6 +390,7 @@ class PrincipalInvitados extends Component {
                             <thead>
                             <tr>
                                 <th scope="col">Indice</th>
+                                <th scope="col">Tipo Documento</th>
                                 <th scope="col">Documento</th>
                                 <th scope="col">Apellido y Nombre</th>
                                 <th scope="col">Grupo</th>
@@ -408,7 +407,8 @@ class PrincipalInvitados extends Component {
                                         return (
                                             <tr className="table-light">
                                                 <th>{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                                <th>{inv[0].Documento}</th>
+                                                <td>{this.obtenerDocumentoLabel(inv[0].TipoDocumento.id)}</td>
+                                                <td>{inv[0].Documento}</td>
                                                 <td>{inv[0].Nombre}, {inv[0].Apellido}</td>
                                                 <td>{inv[0].Grupo}</td>
                                                 <td>{inv[0].Estado ? 'Activo' : 'Inactivo'}</td>
@@ -422,8 +422,7 @@ class PrincipalInvitados extends Component {
                                                     className="nav-link"
                                                     activeClassName="active"
                                                 >
-                                                    <Button bsStyle="warning" fill wd
-                                                            disabled={!inv[0].Nombre}>Editar</Button>
+                                                    <Button bsStyle="warning" fill wd>Editar</Button>
                                                 </NavLink></td>
                                                 <td><Button bsStyle="danger" fill wd onClick={()=> {
                                                     this.cancelar(inv);

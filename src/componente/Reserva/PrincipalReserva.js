@@ -8,6 +8,7 @@ import { Pagination } from 'react-bootstrap';
 import { validator } from '../validator';
 import Select from 'react-select';
 import Datetime from 'react-datetime';
+import { errorHTML } from '../Error';
 
 class PrincipalReserva extends Component {
 
@@ -29,7 +30,7 @@ class PrincipalReserva extends Component {
             ultimo: [],
             primero: [],
             errorDesde: {error: false, mensaje: ''},
-            errorHasta: {error: false, mensaje: ''}
+            errorHasta: {error: false, mensaje: ''},
         };
         this.hideAlert = this.hideAlert.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
@@ -39,7 +40,6 @@ class PrincipalReserva extends Component {
         this.cantidad = [];
         this.total = 0;
         this.errorNombre = {error: false, mensaje: ''};
-        this.errorServicio = {error: false, mensaje: ''};
     }
 
     ChangeSelectEstado(value) {
@@ -284,11 +284,10 @@ class PrincipalReserva extends Component {
                         <div className='row'>
                             <div className="col-md-4 row-secction">
                                 <label>Nombre</label>
-                                <input className={this.errorNombre.error ? 'form-control error' : 'form-control'}
+                                <input className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
                                        value={this.state.nombre}
                                        onChange={this.ChangeNombre} placeholder="Nombre"/>
-                                <label className='small text-danger'
-                                       hidden={!this.errorNombre.error}>{this.errorNombre.mensaje}</label>
+                                {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label>Servicio</label>
@@ -321,24 +320,22 @@ class PrincipalReserva extends Component {
                             <div className="col-md-4 row-secction">
                                 <label>Fecha Desde</label>
                                 <Datetime
-                                    className={this.state.errorDesde.error ? 'has-error' : ''}
+                                    className={errorHTML.classNameErrorDate(this.state.errorDesde, '') }
                                     value={this.state.desde}
                                     onChange={this.ChangeDesde}
                                     inputProps={{placeholder: 'Fecha Desde'}}
                                 />
-                                <label className='small text-danger'
-                                       hidden={!this.state.errorDesde.error}>{this.state.errorDesde.mensaje}</label>
+                                {errorHTML.errorLabel(this.state.errorDesde)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label>Fecha Hasta</label>
                                 <Datetime
-                                    className={this.state.errorHasta.error ? 'has-error' : ''}
+                                    className={errorHTML.classNameErrorDate(this.state.errorHasta, '')}
                                     value={this.state.hasta}
                                     onChange={this.ChangeHasta}
                                     inputProps={{placeholder: 'Fecha Hasta'}}
                                 />
-                                <label className='small text-danger'
-                                       hidden={!this.state.errorHasta.error}>{this.state.errorHasta.mensaje}</label>
+                                {errorHTML.errorLabel(this.state.errorHasta)}
                             </div>
                         </div>
                     </div>
@@ -396,7 +393,6 @@ class PrincipalReserva extends Component {
                                             </Button></Link></td>
                                             <td><Button bsStyle="warning" fill wd disabled={estado.Id != 0}
                                                         onClick={()=> {
-
                                                             this.cancelar(res);
                                                         }}>
                                                 Cancelar

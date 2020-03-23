@@ -118,27 +118,26 @@ class HeaderLinks extends Component {
                     {/*<MenuItem divider />*/}
                     {/*<MenuItem eventKey={2.5}>Another action</MenuItem>*/}
                     {/*</NavDropdown>*/}
-                    {/*<NavDropdown*/}
-                    {/*eventKey={3}*/}
-                    {/*title={*/}
-                    {/*<div>*/}
-                    {/*<i className="fa fa-bell-o" />*/}
-                    {/*<span className="notification">5</span>*/}
-                    {/*<p className="hidden-md hidden-lg">*/}
-                    {/*Notifications*/}
-                    {/*<b className="caret" />*/}
-                    {/*</p>*/}
-                    {/*</div>*/}
-                    {/*}*/}
-                    {/*noCaret*/}
-                    {/*id="basic-nav-dropdown-2"*/}
-                    {/*>*/}
-                    {/*<MenuItem eventKey={3.1}>Notification 1</MenuItem>*/}
-                    {/*<MenuItem eventKey={3.2}>Notification 2</MenuItem>*/}
-                    {/*<MenuItem eventKey={3.3}>Notification 3</MenuItem>*/}
-                    {/*<MenuItem eventKey={3.4}>Notification 4</MenuItem>*/}
-                    {/*<MenuItem eventKey={3.5}>Another notifications</MenuItem>*/}
-                    {/*</NavDropdown>*/}
+                    <NavDropdown
+                    eventKey={3}
+                    title={
+                    <div>
+                    <i className="fa fa-bell-o" />
+                    <span className="notification">4</span>
+                    <p className="hidden-md hidden-lg">
+                    Notificaciones
+                    <b className="caret" />
+                    </p>
+                    </div>
+                    }
+                    noCaret
+                    id="basic-nav-dropdown-2"
+                    >
+                    <MenuItem eventKey={3.1}>Notification 1</MenuItem>
+                    <MenuItem eventKey={3.2}>Notification 2</MenuItem>
+                    <MenuItem eventKey={3.3}>Notification 3</MenuItem>
+                    <MenuItem eventKey={3.4}>Notification 4</MenuItem>
+                    </NavDropdown>
                     <NavDropdown
                         eventKey={4}
                         title={
