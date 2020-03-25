@@ -22,7 +22,6 @@ const ENCARGADOS = [
     {label:'Apellido' , value:'Apellido'},
     {label:'Documento' , value:'Documento'},
     {label:'Tipo Documento' , value:'TipoDocumento'},
-    {label:'Legajo' , value:'Legajo'},
     {label:'Fecha Alta' , value:'FechaAlta'},
 ];
 

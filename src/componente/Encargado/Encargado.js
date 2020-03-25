@@ -11,7 +11,6 @@ class Encargado extends Component {
         this.idEncargado = props.idEncargado;
         this.nombre = props.nombre;
         this.apellido = props.apellido;
-        this.legajo = props.legajo;
         this.documento = props.documento;
         this.celular = props.celular;
         this.urlEditar = '/editarEncargado/' + props.idEncargado;
@@ -37,7 +36,6 @@ class Encargado extends Component {
             <tr class="table-light">
                 <th scope="row">{this.nombre}, {this.apellido}</th>
                 <td>{this.documento}</td>
-                <td> {this.legajo}</td>
                 <td>{this.celular}</td>
                 <td><Link to={this.urlEditar} type="button" className="btn btn-primary"
                 >Editar</Link></td>

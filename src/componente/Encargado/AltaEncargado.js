@@ -15,7 +15,6 @@ class AltaEncargado extends Component {
             apellido: '',
             tipoDocumento: '',
             documento: '',
-            legajo: '',
             celular: '',
             descripcion: '',
             fechaNacimiento: '',
@@ -29,7 +28,6 @@ class AltaEncargado extends Component {
         this.addEncargado = this.addEncargado.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
-        this.ChangeLegajo = this.ChangeLegajo.bind(this);
         this.ChangeDocumento = this.ChangeDocumento.bind(this);
         this.ChangeCelular = this.ChangeCelular.bind(this);
         this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
@@ -59,7 +57,6 @@ class AltaEncargado extends Component {
             .collection('Encargados').add({
                 Nombre: this.state.nombre,
                 Apellido: this.state.apellido,
-                Legajo: this.state.legajo,
                 Documento: this.state.documento,
                 Celular: this.state.celular,
                 Descripcion: this.state.descripcion,
@@ -82,9 +79,6 @@ class AltaEncargado extends Component {
         this.setState({apellido: event.target.value});
     }
 
-    ChangeLegajo(event) {
-        this.setState({legajo: event.target.value});
-    }
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
@@ -189,12 +183,6 @@ class AltaEncargado extends Component {
                                step="1" min="1920-01-01"
                                onChange={this.ChangeFechaNacimiento}
                         />
-                    </div>
-                    <div className="col-md-6  flex-container form-group">
-                        <label for="NumeroCelular"> Legajo </label>
-                        <input type="tel" className="form-control" placeholder="Mobile number"
-                               value={this.state.legajo}
-                               onChange={this.ChangeLegajo}/>
                     </div>
                     <div className="col-md-6  flex-container form-group">
                         <label for="NumeroCelular"> Celular </label>
