@@ -235,7 +235,7 @@ class UserPage extends Component {
                     <Button bsStyle="info" pullRight fill onClick={this.actualizar}>
                       Actualizar Perfil
                     </Button>
-                    <Button bsStyle="danger" pullRight fill onClick={this.consultar}>
+                    <Button bsStyle="danger" style={{marginRight: "10px"}} pullRight fill onClick={this.consultar}>
                       Reestablecer
                     </Button>
                     <div className="clearfix" />

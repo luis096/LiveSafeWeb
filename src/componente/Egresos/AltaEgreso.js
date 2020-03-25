@@ -196,7 +196,7 @@ class AltaEgreso extends Component {
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
                             <div className="col-md-2 row-secction">
-                                <Button bsStyle="default" fill wd onClick={this.reestablecer}>
+                                <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={this.reestablecer}>
                                     Reestablecer
                                 </Button>
                             </div>
