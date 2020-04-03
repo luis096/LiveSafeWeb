@@ -4,6 +4,8 @@ import { Database, Firebase } from '../../config/config';
 import { validator } from '../validator';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import Datetime from 'react-datetime';
+import { errorHTML } from '../Error';
+
 
 class AltaAdministrador extends Component {
 
@@ -33,7 +35,17 @@ class AltaAdministrador extends Component {
         this.ChangeFechaNacimiento = this.ChangeFechaNacimiento.bind(this);
         this.crearUsuario = this.crearUsuario.bind(this);
         this.registrar = this.registrar.bind(this);
+
+
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorDocumento = {error: false, mensaje: ''};
+        this.errorCelular= {error:false, mensaje:''};
+        
+        this.errorMail= {error:false, mensaje:''}
+        
     }
+    
 
     async componentDidMount() {
         const {tipoD, countryList} = this.state;
@@ -75,23 +87,32 @@ class AltaAdministrador extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
+        this.errorNombre= validator.soloLetras(event.target.value);
+
     }
 
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
+        this.errorApellido= validator.soloLetras(event.target.value);
+
     }
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
+        this.errorCelular= validator.numero(event.target.value);
+
     }
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
+        this.errorDocumento= validator.numero(event.target.value);
+
     }
 
     ChangeMail(event) {
         this.setState({mail: event.target.value});
-        this.state.errorMail = {error: false, mensaje: ''};
+        this.errorMail= validator.mail(event.target.value);
+
     }
 
     ChangeSelect(value) {
@@ -140,16 +161,20 @@ class AltaAdministrador extends Component {
                         <div className="row">
                             <div className="col-md-4 row-secction">
                                 <label> Nombre </label>
-                                <input type="name" className="form-control" placeholder="Nombre"
+                                <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
+                                       placeholder="Nombre"
                                        value={this.state.nombre}
                                        onChange={this.ChangeNombre}
                                 />
+                                {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Apellido </label>
-                                <input className="form-control" placeholder="Apellido"
+                                <input className={ errorHTML.classNameError(this.errorApellido, 'form-control') }
+                                       placeholder="Apellido"
                                        value={this.state.apellido}
                                        onChange={this.ChangeApellido}/>
+                                {errorHTML.errorLabel(this.errorApellido)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Fecha de Nacimiento </label>
@@ -164,10 +189,11 @@ class AltaAdministrador extends Component {
                         <div className="row">
                             <div className="col-md-4 row-secction">
                                 <label> Numero de Documento </label>
-                                <input className="form-control"
+                                <input className={ errorHTML.classNameError(this.errorDocumento, 'form-control') }
                                        placeholder="Numero de Documento"
                                        value={this.state.documento}
                                        onChange={this.ChangeDocumento}/>
+                                {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Tipo de Documento </label>
@@ -181,21 +207,22 @@ class AltaAdministrador extends Component {
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Celular </label>
-                                <input className="form-control" placeholder="Celular"
+                                <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
+                                       placeholder="Celular"
                                        value={this.state.celular}
                                        onChange={this.ChangeCelular}
                                 />
+                                {errorHTML.errorLabel(this.errorCelular)}
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-md-6 row-secction">
                                 <label> Dirección de correo electrónico </label>
-                                <input type="email" className={this.state.errorMail.error? "form-control error":"form-control"}
+                                <input type="email" className={ errorHTML.classNameError(this.errorMail, 'form-control') }
                                        placeholder="ingrese el mail"
                                        onChange={this.ChangeMail}
                                        value={this.state.mail}/>
-                                <label className='small text-danger'
-                                       hidden={!this.state.errorMail.error}>{this.state.errorMail.mensaje}</label>
+                                {errorHTML.errorLabel(this.errorMail)}
                             </div>
                             <div className="col-md-6 row-secction">
                                 <label> Country </label>

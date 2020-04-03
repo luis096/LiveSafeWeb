@@ -43,6 +43,8 @@ class PrincipalAdministrador extends Component {
         this.total = 0;
         this.errorNombre = {error: false, mensaje: ''};
         this.errorApellido = {error: false, mensaje: ''};
+        this.errorNumero ={error:false,mensaje:''};
+        this.errorCelular ={error:false,mensaje:''};
     }
 
     async componentDidMount() {

@@ -4,6 +4,8 @@ import Select from 'react-select';
 import '../Propietario/Index.css';
 import { Link } from 'react-router-dom';
 import { Database, Firebase } from '../../config/config';
+import { errorHTML } from '../Error';
+import { validator } from '../validator';
 
 class AltaPropietario extends Component {
     constructor() {
@@ -42,6 +44,12 @@ class AltaPropietario extends Component {
         this.registrar = this.registrar.bind(this);
         this.reset = this.reset.bind(this);
 
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorDocumento = {error: false, mensaje: ''};
+        this.errorCelular= {error:false, mensaje:''};
+        this.errorTelefono= {error:false, mensaje:''};
+        this.errorMail= {error:false, mensaje:''}
     }
 
     async componentDidMount() {
@@ -78,18 +86,22 @@ class AltaPropietario extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
+        this.errorNombre = validator.soloLetras(event.target.value);
     }
 
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
+        this.errorApellido = validator.soloLetras(event.target.value);
     }
 
     ChangeNumero(event) {
         this.setState({numero: event.target.value});
+        this.errorNumero = validator.numero(event.target.value);
     }
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
+        this.errorCelular = validator.numero(event.target.value);
     }
 
     ChangeDescripcion(event) {
@@ -98,6 +110,7 @@ class AltaPropietario extends Component {
 
     ChangeTelefonoFijo(event) {
         this.setState({telefonoFijo: event.target.value});
+        this.errorTelefono = validator.numero(event.target.value);
     }
 
     ChangeSelect(event) {
@@ -110,10 +123,12 @@ class AltaPropietario extends Component {
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
+        this.errorDocumento = validator.numero(event.target.value);
     }
 
     ChangeMail(event) {
         this.setState({mail: event.target.value});
+        this.erroMail = validator.mail(event.target.value)
     }
 
     ChangePass(event) {
@@ -177,16 +192,19 @@ class AltaPropietario extends Component {
                         <legend> Registrar Propietario</legend>
                         <div className="col-md-6  flex-container form-group">
                             <label for="Nombre"> Nombre </label>
-                            <input type="name" className="form-control" placeholder="Name"
+                            <input  className={ errorHTML.classNameError(this.errorNombre, 'form-control') } 
+                                    placeholder="Nombre"
                                    value={this.state.nombre}
-                                   onChange={this.ChangeNombre}
-                            />
+                                   onChange={this.ChangeNombre}/>
+                             {errorHTML.errorLabel(this.errorNombre)}
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="Apellido"> Apellido </label>
-                            <input type="family-name" className="form-control" placeholder="Surname"
+                            <input type="family-name" className={ errorHTML.classNameError(this.errorApellido, 'form-control') }
+                                   placeholder="Apellido"
                                    value={this.state.apellido}
                                    onChange={this.ChangeApellido}/>
+                            {errorHTML.errorLabel(this.errorApellido)}       
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="TipoDocumento"> Tipo Documento </label>
@@ -203,9 +221,11 @@ class AltaPropietario extends Component {
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="NumeroDocumento"> Numero de Documento </label>
-                            <input type="document" className="form-control" placeholder="Document number"
+                            <input className={ errorHTML.classNameError(this.errorDocumento, 'form-control') }
+                                   placeholder="Numero del documento"
                                    value={this.state.documento}
                                    onChange={this.ChangeDocumento}/>
+                            {errorHTML.errorLabel(this.errorDocumento)}       
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="FechaNacimiento"> Fecha de Nacimiento </label>
@@ -234,31 +254,29 @@ class AltaPropietario extends Component {
                         </fieldset>
                         <div className="col-md-6  flex-container form-group">
                             <label for="NumeroCelular"> Celular </label>
-                            <input type="tel" className="form-control" placeholder="Mobile number"
+                            <input type="tel" className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
+                                   placeholder="Numero de celular"
                                    value={this.state.celular}
                                    onChange={this.ChangeCelular}/>
+                            {errorHTML.errorLabel(this.errorCelular)}        
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="NumeroTelefono"> Telefono Fijo </label>
-                            <input type="tel" className="form-control"
-                                   placeholder="Landline number"
+                            <input type="tel" className={ errorHTML.classNameError(this.errorTelefono, 'form-control') }
+                                   placeholder="Numero de telefono fijo"
                                    value={this.state.telefonoFijo}
                                    onChange={this.ChangeTelefonoFijo}/>
+                            {errorHTML.errorLabel(this.errorTelefono)}       
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="exampleInputEmail1"> Dirección de correo electrónico </label>
-                            <input type="name" className="form-control" id="exampleInputEmail1"
-                                   aria-describe by="emailHelp" placeholder="Enter email"
+                            <input type="name" className={ errorHTML.classNameError(this.errorMail, 'form-control') } id="exampleInputEmail1"
+                                   aria-describe by="emailHelp" placeholder="Mail"
                                    value={this.state.mail}
                                    onChange={this.ChangeMail}/>
+                            {errorHTML.errorLabel(this.errorMail)}        
                         </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="exampleInputPassword1"> Contraseña </label>
-                            <input type="password" className="form-control" id="exampleInputPassword1"
-                                   placeholder="Password"
-                                   value={this.state.pass}
-                                   onChange={this.ChangePass}/>
-                        </div>
+                        
                         <div className="col-md-6  flex-container form-group">
                             <label for="exampleTextarea"> Descripcion </ label>
                             <textarea className="form-control" id="exampleTextarea" rows="3"
