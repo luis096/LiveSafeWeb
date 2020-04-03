@@ -3,7 +3,8 @@ import Select from 'react-select';
 import '../Style/Alta.css';
 import { Link } from 'react-router-dom';
 import { Database, Firebase } from '../../config/config';
-
+import { errorHTML } from '../Error';
+import { validator } from '../validator';
 
 class AltaEncargado extends Component {
 
@@ -39,6 +40,11 @@ class AltaEncargado extends Component {
         this.crearUsuario = this.crearUsuario.bind(this);
         this.registrar = this.registrar.bind(this);
 
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorDocumento = {error: false, mensaje: ''};
+        this.errorCelular= {error:false, mensaje:''};
+        this.errorMail = {error:false , mensaje:''}
     }
 
     async componentDidMount() {
@@ -76,10 +82,14 @@ class AltaEncargado extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
+        this.errorNombre = validator.soloLetras(event.target.value);
+
     }
 
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
+        this.errorApellido = validator.soloLetras(event.target.value);
+
     }
 
     ChangeLegajo(event) {
@@ -88,10 +98,14 @@ class AltaEncargado extends Component {
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
+        this.errorCelular = validator.numero(event.target.value);
+
     }
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
+        this.errorDocumento = validator.numero(event.target.value);
+
     }
 
     ChangeDescripcion(event) {
@@ -108,6 +122,8 @@ class AltaEncargado extends Component {
 
     ChangeMail(event) {
         this.setState({mail: event.target.value});
+        this.errorMail = validator.mail(event.target.value);
+
     }
 
     ChangePass(event) {
@@ -150,18 +166,20 @@ class AltaEncargado extends Component {
                 <div className="row">
                     <legend> Registrar Alta</legend>
                     <div className="col-md-6  flex-container form-group">
-                        <label for="Nombre"> Nombre </label>
-                        <input type="name" className="form-control" placeholder="Name"
-                               value={this.state.nombre}
-                               onChange={this.ChangeNombre}
-                        />
+                            <label for="Nombre"> Nombre </label>
+                            <input type="name" className="form-control" placeholder="Name"
+                                   value={this.state.nombre}
+                                   onChange={this.ChangeNombre}
+                            />
+                            {errorHTML.errorLabel(this.errorNombre)}
                     </div>
                     <div className="col-md-6  flex-container form-group">
-                        <label for="Apellido"> Apellido </label>
-                        <input type="family-name" className="form-control" placeholder="Surname"
-                               value={this.state.apellido}
-                               onChange={this.ChangeApellido}/>
-                    </div>
+                            <label for="Apellido"> Apellido </label>
+                            <input type="family-name" className={ errorHTML.classNameError(this.errorApellido, 'form-control') }  placeholder="Surname"
+                                   value={this.state.apellido}
+                                   onChange={this.ChangeApellido}/>
+                            {errorHTML.errorLabel(this.errorApellido)}       
+                        </div>
                     <div className="col-md-6  flex-container form-group">
                         <label for="TipoDocumento"> Tipo Documento </label>
                         <Select
@@ -177,11 +195,12 @@ class AltaEncargado extends Component {
                         />
                     </div>
                     <div className="col-md-6  flex-container form-group">
-                        <label for="NumeroDocumento"> Numero de Documento </label>
-                        <input type="document" className="form-control"
-                               placeholder="Document number"
-                               value={this.state.documento}
-                               onChange={this.ChangeDocumento}/>
+                            <label for="NumeroDocumento"> Numero de Documento </label>
+                            <input type="document" className={ errorHTML.classNameError(this.errorDocumento, 'form-control') } 
+                                   placeholder="Document number"
+                                   value={this.state.documento}
+                                   onChange={this.ChangeDocumento}/>
+                            {errorHTML.errorLabel(this.errorDocumento)}
                     </div>
                     <div className="col-md-6  flex-container form-group">
                         <label for="FechaNacimiento"> Fecha de Nacimiento </label>
@@ -190,24 +209,24 @@ class AltaEncargado extends Component {
                                onChange={this.ChangeFechaNacimiento}
                         />
                     </div>
+                    
                     <div className="col-md-6  flex-container form-group">
-                        <label for="NumeroCelular"> Legajo </label>
-                        <input type="tel" className="form-control" placeholder="Mobile number"
-                               value={this.state.legajo}
-                               onChange={this.ChangeLegajo}/>
-                    </div>
-                    <div className="col-md-6  flex-container form-group">
-                        <label for="NumeroCelular"> Celular </label>
-                        <input type="tel" className="form-control" placeholder="Mobile number"
-                               value={this.state.celular}
-                               onChange={this.ChangeCelular}/>
+                            <label for="NumeroCelular"> Celular </label>
+                            <input type="tel" className={ errorHTML.classNameError(this.errorCelular, 'form-control') } 
+                                
+                                   placeholder="Mobile number"
+                                   value={this.state.celular}
+                                   onChange={this.ChangeCelular}/>
+                            {errorHTML.errorLabel(this.errorCelular)}
                     </div>
                     <div className="col-md-6  flex-container form-group">
                         <label for="exampleInputEmail1"> Dirección de correo electrónico </label>
-                        <input type="email" className="form-control" id="exampleInputEmail1"
+                        <input type="email" className={ errorHTML.classNameError(this.errorMail, 'form-control') } 
+                               id="exampleInputEmail1"
                                aria-describe by="emailHelp" placeholder="Enter email"
                                value={this.state.mail}
                                onChange={this.ChangeMail}/>
+                        {errorHTML.errorLabel(this.errorMail)}
                     </div>
                     <div className="col-md-6  flex-container form-group">
                         <label for="exampleInputPassword1"> Contraseña </label>

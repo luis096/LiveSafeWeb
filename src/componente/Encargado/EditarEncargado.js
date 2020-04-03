@@ -3,6 +3,8 @@ import Select from 'react-select';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import { Link } from 'react-router-dom';
+import { errorHTML } from '../Error';
+import { validator } from '../validator';
 
 
 class EditarEncargado extends Component {
@@ -40,6 +42,14 @@ class EditarEncargado extends Component {
         this.idTD = '';
         const url = this.props.location.pathname.split('/');
         this.idEncargado = url[url.length - 1];
+
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorDocumento = {error: false, mensaje: ''};
+        this.errorCelular= {error:false, mensaje:''};
+        
+        
+        
     }
 
     async componentDidMount() {
@@ -106,14 +116,20 @@ class EditarEncargado extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
+        this.errorNombre = validator.soloLetras(event.target.value);
+
     }
 
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
+        this.errorApellido = validator.soloLetras(event.target.value);
+
+
     }
 
     ChangeNumero(event) {
         this.setState({numero: event.target.value});
+
     }
 
     ChangeLegajo(event) {
@@ -122,10 +138,14 @@ class EditarEncargado extends Component {
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
+        this.errorDocumento = validator.numero(event.target.value);
+
     }
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
+        this.errorCelular = validator.numero(event.target.value);
+
     }
 
     ChangeDescripcion(event) {
@@ -164,12 +184,14 @@ class EditarEncargado extends Component {
                                    value={this.state.nombre}
                                    onChange={this.ChangeNombre}
                             />
+                            {errorHTML.errorLabel(this.errorNombre)}
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="Apellido"> Apellido </label>
-                            <input type="family-name" className="form-control" placeholder="Surname"
+                            <input type="family-name" className={ errorHTML.classNameError(this.errorApellido, 'form-control') }  placeholder="Surname"
                                    value={this.state.apellido}
                                    onChange={this.ChangeApellido}/>
+                            {errorHTML.errorLabel(this.errorApellido)}       
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="TipoDocumento"> Tipo de Documento </label>
@@ -187,9 +209,11 @@ class EditarEncargado extends Component {
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="NumeroDocumento"> Numero de Documento </label>
-                            <input type="document" className="form-control" placeholder="Document number"
+                            <input type="document" className={ errorHTML.classNameError(this.errorDocumento, 'form-control') } 
+                                   placeholder="Document number"
                                    value={this.state.documento}
                                    onChange={this.ChangeDocumento}/>
+                            {errorHTML.errorLabel(this.errorDocumento)}
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="FechaNacimiento"> Fecha de Nacimiento </label>
@@ -199,17 +223,15 @@ class EditarEncargado extends Component {
                                    onChange={this.ChangeFechaNacimiento}
                             />
                         </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="NumeroTelefono"> Legajo </label>
-                            <input type="tel" className="form-control" placeholder="Landline number"
-                                   value={this.state.legajo}
-                                   onChange={this.ChangeLegajo}/>
-                        </div>
+                        
                         <div className="col-md-6  flex-container form-group">
                             <label for="NumeroCelular"> Celular </label>
-                            <input type="tel" className="form-control" placeholder="Mobile number"
+                            <input type="tel" className={ errorHTML.classNameError(this.errorCelular, 'form-control') } 
+                                
+                                   placeholder="Mobile number"
                                    value={this.state.celular}
                                    onChange={this.ChangeCelular}/>
+                            {errorHTML.errorLabel(this.errorCelular)}
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="exampleTextarea"> Descripcion </ label>
