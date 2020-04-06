@@ -18,7 +18,6 @@ class Configuraciones extends Component {
     }
 
     reestablecer(){
-        debugger
          let newPassword = this.state.pass;
          firebase.auth().currentUser.updatePassword(newPassword).then(() =>{
          }, error=> {
@@ -34,14 +33,19 @@ class Configuraciones extends Component {
                     <div className="card-body">
                         <legend><h3 className="row"><i className="pe-7s-tools"/> Configuraciones</h3></legend>
                         <div className="row">
-                            <div className="col-md-6 row-secction">
-                                <h4><strong>Cambiar mi contraseña</strong></h4>
+                        <h4><strong style={{paddingLeft: "18px"}}>Cambiar mi contraseña</strong></h4>
+                            <div className="col-12 row-secction">  
+                            <div className="col-md-6">
                                 <input className='form-control'
                                        value={this.state.pass}
                                        onChange={this.ChangePass} placeholder="Nueva contraseña"/>
-                                <Button bsStyle="default" fill wd onClick={()=> {
+                            </div>
+                            <div className="col-md-6">
+                                <Button bsStyle="default"  fill wd onClick={()=> {
                                     this.reestablecer();
                                 }}>Reestablecer</Button>
+                            </div>
+                                
                             </div>
                         </div>
                     </div>
