@@ -43,6 +43,7 @@ class EditarEncargado extends Component {
         const url = this.props.location.pathname.split('/');
         this.idEncargado = url[url.length - 1];
 
+        this.errorTipoDocumento = {error: false, mensaje: ''};
         this.errorNombre = {error: false, mensaje: ''};
         this.errorApellido = {error: false, mensaje: ''};
         this.errorDocumento = {error: false, mensaje: ''};
@@ -116,14 +117,16 @@ class EditarEncargado extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
-        this.errorNombre = validator.soloLetras(event.target.value);
-
+        if (event.target.value == "")
+        {this.errorNombre= validator.requerido(event.target.value)}
+        else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
 
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
-        this.errorApellido = validator.soloLetras(event.target.value);
-
+        if (event.target.value == "")
+        {this.errorApellido = validator.requerido(event.target.value)}
+        else{this.errorApellido =validator.soloLetras(event.target.value)}
 
     }
 
@@ -138,13 +141,17 @@ class EditarEncargado extends Component {
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
-        this.errorDocumento = validator.numero(event.target.value);
+        if (event.target.value == "")
+        {this.errorDocumento = validator.requerido(event.target.value)}
+        else{this.errorDocumento =validator.numero(event.target.value)}
 
     }
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
-        this.errorCelular = validator.numero(event.target.value);
+        if (event.target.value == "")
+        {this.errorCelular = validator.requerido(event.target.value)}
+        else{this.errorCelular =validator.numero(event.target.value)}
 
     }
 
@@ -154,6 +161,8 @@ class EditarEncargado extends Component {
 
     ChangeSelect(value) {
         this.setState({tipoDocumento: value});
+        this.errorTipoDocumento = validator.requerido(value ? value.value : null);
+
     }
 
     ChangeFechaNacimiento(event) {
@@ -205,7 +214,16 @@ class EditarEncargado extends Component {
                                 isSearchable={true}
                                 options={this.state.tipoD}
                                 onChange={this.ChangeSelect.bind(this)}
+                                styles={this.errorTipoDocumento.error ? {
+                                    control: (base, state)=>({
+                                        ...base,
+                                        borderColor: 'red',
+                                        boxShadow: 'red'
+                                    })
+                                } : {}}
                             />
+                            <label className='small text-danger'
+                                   hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="NumeroDocumento"> Numero de Documento </label>

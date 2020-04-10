@@ -27,6 +27,12 @@ class EditarServicio extends Component {
         const url = this.props.location.pathname.split('/');
         this.idServicio = url[url.length - 1];
 
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorDocumento = {error: false, mensaje: ''};
+        this.errorCelular= {error:false, mensaje:''};
+        this.errorMail = {error:false , mensaje:''}
+
     }
 
     async componentDidMount() {

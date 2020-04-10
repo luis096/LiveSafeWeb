@@ -50,6 +50,8 @@ class AltaPropietario extends Component {
         this.errorCelular= {error:false, mensaje:''};
         this.errorTelefono= {error:false, mensaje:''};
         this.errorMail= {error:false, mensaje:''}
+        this.errorTipoDocumento = {error: false, mensaje: ''};
+
     }
 
     async componentDidMount() {
@@ -86,12 +88,17 @@ class AltaPropietario extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
-        this.errorNombre = validator.soloLetras(event.target.value);
+        if (event.target.value == "")
+        {this.errorNombre= validator.requerido(event.target.value)}
+        else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
 
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
-        this.errorApellido = validator.soloLetras(event.target.value);
+        if (event.target.value == "")
+        {this.errorApellido = validator.requerido(event.target.value)}
+        else{this.errorApellido =validator.soloLetras(event.target.value)}
+
     }
 
     ChangeNumero(event) {
@@ -101,7 +108,10 @@ class AltaPropietario extends Component {
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
-        this.errorCelular = validator.numero(event.target.value);
+        if (event.target.value == "")
+        {this.errorCelular = validator.requerido(event.target.value)}
+        else{this.errorCelular =validator.numero(event.target.value)}
+
     }
 
     ChangeDescripcion(event) {
@@ -110,11 +120,16 @@ class AltaPropietario extends Component {
 
     ChangeTelefonoFijo(event) {
         this.setState({telefonoFijo: event.target.value});
-        this.errorTelefono = validator.numero(event.target.value);
+        if (event.target.value == "")
+        {this.errorTelefono = validator.requerido(event.target.value)}
+        else{this.errorTelefono =validator.numero(event.target.value)}
+
     }
 
-    ChangeSelect(event) {
-        this.setState({tipoDocumento: event});
+    ChangeSelect(value) {
+        this.setState({tipoDocumento: value});
+        this.errorTipoDocumento = validator.requerido(value ? value.value : null);
+
     }
 
     ChangeFechaNacimiento(event) {
@@ -123,12 +138,18 @@ class AltaPropietario extends Component {
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
-        this.errorDocumento = validator.numero(event.target.value);
+        if (event.target.value == "")
+        {this.errorDocumento = validator.requerido(event.target.value)}
+        else{this.errorDocumento =validator.numero(event.target.value)}
+
     }
 
     ChangeMail(event) {
         this.setState({mail: event.target.value});
-        this.erroMail = validator.mail(event.target.value)
+        if (event.target.value == "")
+        {this.errorMail = validator.requerido(event.target.value)}
+        else{this.errorMail =validator.mail(event.target.value)}
+
     }
 
     ChangePass(event) {
@@ -217,7 +238,16 @@ class AltaPropietario extends Component {
                                 isSearchable={true}
                                 options={this.state.tipoD}
                                 onChange={this.ChangeSelect.bind(this)}
+                                styles={this.errorTipoDocumento.error ? {
+                                    control: (base, state)=>({
+                                        ...base,
+                                        borderColor: 'red',
+                                        boxShadow: 'red'
+                                    })
+                                } : {}}
                             />
+                            <label className='small text-danger'
+                                   hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="NumeroDocumento"> Numero de Documento </label>

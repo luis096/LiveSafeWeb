@@ -45,6 +45,7 @@ class AltaEncargado extends Component {
         this.errorDocumento = {error: false, mensaje: ''};
         this.errorCelular= {error:false, mensaje:''};
         this.errorMail = {error:false , mensaje:''}
+        this.errorTipoDocumento = {error: false, mensaje: ''};
     }
 
     async componentDidMount() {
@@ -82,13 +83,16 @@ class AltaEncargado extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
-        this.errorNombre = validator.soloLetras(event.target.value);
-
+        if (event.target.value == "")
+        {this.errorNombre= validator.requerido(event.target.value)}
+        else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
 
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
-        this.errorApellido = validator.soloLetras(event.target.value);
+        if (event.target.value == "")
+        {this.errorApellido = validator.requerido(event.target.value)}
+        else{this.errorApellido =validator.soloLetras(event.target.value)}
 
     }
 
@@ -98,13 +102,18 @@ class AltaEncargado extends Component {
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
-        this.errorCelular = validator.numero(event.target.value);
+        
+        if (event.target.value == "")
+        {this.errorCelular = validator.requerido(event.target.value)}
+        else{this.errorCelular =validator.numero(event.target.value)}
 
     }
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
-        this.errorDocumento = validator.numero(event.target.value);
+        if (event.target.value == "")
+        {this.errorDocumento = validator.requerido(event.target.value)}
+        else{this.errorDocumento =validator.numero(event.target.value)}
 
     }
 
@@ -114,6 +123,7 @@ class AltaEncargado extends Component {
 
     ChangeSelect(value) {
         this.setState({tipoDocumento: value});
+        this.errorTipoDocumento = validator.requerido(value ? value.value : null);
     }
 
     ChangeFechaNacimiento(event) {
@@ -122,7 +132,9 @@ class AltaEncargado extends Component {
 
     ChangeMail(event) {
         this.setState({mail: event.target.value});
-        this.errorMail = validator.mail(event.target.value);
+        if (event.target.value == "")
+        {this.errorMail = validator.requerido(event.target.value)}
+        else{this.errorMail =validator.mail(event.target.value)}
 
     }
 
@@ -167,7 +179,7 @@ class AltaEncargado extends Component {
                     <legend> Registrar Alta</legend>
                     <div className="col-md-6  flex-container form-group">
                             <label for="Nombre"> Nombre </label>
-                            <input type="name" className="form-control" placeholder="Name"
+                            <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') } placeholder="Nombre"
                                    value={this.state.nombre}
                                    onChange={this.ChangeNombre}
                             />
@@ -175,7 +187,7 @@ class AltaEncargado extends Component {
                     </div>
                     <div className="col-md-6  flex-container form-group">
                             <label for="Apellido"> Apellido </label>
-                            <input type="family-name" className={ errorHTML.classNameError(this.errorApellido, 'form-control') }  placeholder="Surname"
+                            <input type="family-name" className={ errorHTML.classNameError(this.errorApellido, 'form-control') }  placeholder="Apellido"
                                    value={this.state.apellido}
                                    onChange={this.ChangeApellido}/>
                             {errorHTML.errorLabel(this.errorApellido)}       
@@ -192,11 +204,19 @@ class AltaEncargado extends Component {
                             isSearchable={true}
                             options={this.state.tipoD}
                             onChange={this.ChangeSelect.bind(this)}
+                            styles={this.errorTipoDocumento.error ? {
+                                control: (base, state)=>({
+                                    ...base,
+                                    borderColor: 'red',
+                                    boxShadow: 'red'
+                                })
+                            } : {}}
                         />
                     </div>
                     <div className="col-md-6  flex-container form-group">
                             <label for="NumeroDocumento"> Numero de Documento </label>
-                            <input type="document" className={ errorHTML.classNameError(this.errorDocumento, 'form-control') } 
+                            <input type="document" className={ errorHTML.classNameError(this.errorDocumento, 'form-control') }
+                                
                                    placeholder="Document number"
                                    value={this.state.documento}
                                    onChange={this.ChangeDocumento}/>
@@ -228,13 +248,7 @@ class AltaEncargado extends Component {
                                onChange={this.ChangeMail}/>
                         {errorHTML.errorLabel(this.errorMail)}
                     </div>
-                    <div className="col-md-6  flex-container form-group">
-                        <label for="exampleInputPassword1"> Contraseña </label>
-                        <input type="password" className="form-control" id="exampleInputPassword1"
-                               placeholder="Password"
-                               value={this.state.pass}
-                               onChange={this.ChangePass}/>
-                    </div>
+                    
                     <div className="col-md-6  flex-container form-group">
                         <label for="exampleTextarea"> Descripcion </ label>
                         <textarea className="form-control" id="exampleTextarea" rows="3"

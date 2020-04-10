@@ -58,31 +58,46 @@ class EditarCountry extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
-        this.errorNombre= validator.soloLetras(event.target.value);
+        if (event.target.value == "")
+        {this.errorNombre= validator.requerido(event.target.value)}
+        else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
+    
 
     ChangeCalle(event) {
         this.setState({calle: event.target.value});
-        this.errorCalle = validator.soloLetras(event.target.value);
+        if (event.target.value == "")
+        {this.errorCalle= validator.requerido(event.target.value)}
+        else{this.errorCalle =validator.soloLetras(event.target.value)}
     }
+    
 
     ChangeNumero(event) {
         this.setState({numero: event.target.value});
-        this.errorNumero = validator.numero(event.target.value);
+        if (event.target.value == "")
+        {this.errorNumero= validator.requerido(event.target.value)}
+        else{this.errorNumero =validator.numero(event.target.value)}
     }
+    
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
-        this.errorCelular = validator.numero(event.target.value);
+        if (event.target.value == "")
+        {this.errorCelular= validator.requerido(event.target.value)}
+        else{this.errorCelular =validator.numero(event.target.value)}
     }
 
     ChangeTitular(event) {
         this.setState({titular: event.target.value});
-        this.errorTitular = validator.soloLetras(event.target.value);
+        if (event.target.value == "")
+        {this.errorTitular= validator.requerido(event.target.value)}
+        else{this.errorTitular =validator.soloLetras(event.target.value)}
     }
 
     ChangeDescripcion(event) {
         this.setState({descripcion: event.target.value});
+        this.errorDescripcion = validator.soloLetras(event.target.value);
+    
     }
 
     registrar() {

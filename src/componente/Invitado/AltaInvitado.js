@@ -44,7 +44,9 @@ class AltaInvitado extends Component {
         this.registrar = this.registrar.bind(this);
         this.buscarPropietario = this.buscarPropietario.bind(this);
         this.registrarIngreso = this.registrarIngreso.bind(this);
+        this.errorTipoDocumentoInvitado = {error: false, mensaje: ''};
         this.errorTipoDocumento = {error: false, mensaje: ''};
+
     }
 
     async componentDidMount() {
@@ -87,11 +89,13 @@ class AltaInvitado extends Component {
 
     ChangeSelect(value) {
         this.setState({tipoDocumento: value});
+        this.errorTipoDocumento = validator.requerido(value ? value.value : null);
+
     }
 
     ChangeSelectInvitado(value) {
         this.setState({tipoDocumentoInvitado: value});
-        this.errorTipoDocumento = validator.requerido(value ? value.value : null);
+        this.errorTipoDocumentoInvitado = validator.requerido(value ? value.value : null);
     }
 
     ChangeDocumentoInvitado(event) {
@@ -183,7 +187,16 @@ class AltaInvitado extends Component {
                                     isSearchable={true}
                                     options={this.state.tipoD}
                                     onChange={this.ChangeSelect.bind(this)}
+                                    styles={this.errorTipoDocumento.error ? {
+                                        control: (base, state)=>({
+                                            ...base,
+                                            borderColor: 'red',
+                                            boxShadow: 'red'
+                                        })
+                                    } : {}}
                                 />
+                                <label className='small text-danger'
+                                       hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label>Número de Documento</label>
@@ -266,7 +279,7 @@ class AltaInvitado extends Component {
                                     isSearchable={true}
                                     options={this.state.tipoD}
                                     onChange={this.ChangeSelectInvitado.bind(this)}
-                                    styles={this.errorTipoDocumento.error ? {
+                                    styles={this.errorTipoDocumentoInvitado.error ? {
                                         control: (base, state)=>({
                                             ...base,
                                             borderColor: 'red',
@@ -275,7 +288,7 @@ class AltaInvitado extends Component {
                                     } : {}}
                                 />
                                 <label className='small text-danger'
-                                       hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
+                                       hidden={!this.errorTipoDocumentoInvitado.error}>{this.errorTipoDocumentoInvitado.mensaje}</label>
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Numero de Documento Invitado </label>

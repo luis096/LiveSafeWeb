@@ -13,6 +13,7 @@ import { paginador } from '../Paginador';
 import Datetime from "react-datetime";
 
 
+
 class AltaIngreso extends Component {
 
     constructor() {
@@ -63,6 +64,10 @@ class AltaIngreso extends Component {
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
+        if (event.target.value == "")
+        {this.errorDocumento= validator.requerido(event.target.value)}
+        else{this.errorDocumento =validator.numero(event.target.value)}
+    
     }
 
     ChangeNombre(event) {
@@ -377,7 +382,8 @@ class AltaIngreso extends Component {
                                 </div>
                                 <div className="col-md-3 row-secction">
                                     <label>Nombre</label>
-                                    <input className="form-control" placeholder="Nombre"
+                                    <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
+                                           placeholder="Nombre"
                                            value={this.state.nombre}
                                            onChange={this.ChangeNombre}
                                            disabled={!this.state.autenticar}
@@ -385,7 +391,8 @@ class AltaIngreso extends Component {
                                 </div>
                                 <div className="col-md-3 row-secction">
                                     <label>Apellido</label>
-                                    <input className="form-control" placeholder="Apellido"
+                                    <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
+                                           placeholder="Apellido"
                                            value={this.state.apellido}
                                            onChange={this.ChangeApellido}
                                            disabled={!this.state.autenticar}

@@ -41,8 +41,11 @@ class AltaAdministrador extends Component {
         this.errorApellido = {error: false, mensaje: ''};
         this.errorDocumento = {error: false, mensaje: ''};
         this.errorCelular= {error:false, mensaje:''};
-        
+        this.errorTipoDocumento = {error: false, mensaje: ''};
         this.errorMail= {error:false, mensaje:''}
+        this.errorCountry= {error:false, mensaje:''}
+
+        
         
     }
     
@@ -87,40 +90,48 @@ class AltaAdministrador extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
-        this.errorNombre= validator.soloLetras(event.target.value);
-
+        if (event.target.value == "")
+        {this.errorNombre= validator.requerido(event.target.value)}
+        else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
-
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
-        this.errorApellido= validator.soloLetras(event.target.value);
-
+        if (event.target.value == "")
+        {this.errorApellido= validator.requerido(event.target.value)}
+        else{this.errorApellido =validator.soloLetras(event.target.value)}
     }
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
-        this.errorCelular= validator.numero(event.target.value);
-
+        if (event.target.value == "")
+        {this.errorCelular= validator.requerido(event.target.value)}
+        else{this.errorCelular =validator.numero(event.target.value)}
     }
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
-        this.errorDocumento= validator.numero(event.target.value);
-
+        if (event.target.value == "")
+        {this.errorDocumento= validator.requerido(event.target.value)}
+        else{this.errorDocumento =validator.numero(event.target.value)}
     }
 
     ChangeMail(event) {
         this.setState({mail: event.target.value});
-        this.errorMail= validator.mail(event.target.value);
-
+        if (event.target.value == "")
+        {this.errorMail= validator.requerido(event.target.value)}
+        else{this.errorMail =validator.mail(event.target.value)}
     }
 
     ChangeSelect(value) {
         this.setState({tipoDocumento: value});
+        this.errorTipoDocumento = validator.requerido(value ? value.value : null);
+
     }
 
     ChangeSelectCountry(value) {
         this.setState({idCountry: value});
+        this.errorCountry = validator.requerido(value ? value.value : null);
+
     }
 
     ChangeFechaNacimiento(event) {
@@ -203,7 +214,16 @@ class AltaAdministrador extends Component {
                                     options={this.state.tipoD}
                                     value = {this.state.tipoDocumento }
                                     onChange={this.ChangeSelect.bind(this)}
+                                    styles={this.errorTipoDocumento.error ? {
+                                        control: (base, state)=>({
+                                            ...base,
+                                            borderColor: 'red',
+                                            boxShadow: 'red'
+                                        })
+                                    } : {}}
                                 />
+                                <label className='small text-danger'
+                                       hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Celular </label>
@@ -231,7 +251,16 @@ class AltaAdministrador extends Component {
                                     isSearchable={true}
                                     options={this.state.countryList}
                                     onChange={this.ChangeSelectCountry.bind(this)}
+                                    styles={this.errorCountry.error ? {
+                                        control: (base, state)=>({
+                                            ...base,
+                                            borderColor: 'red',
+                                            boxShadow: 'red'
+                                        })
+                                    } : {}}
                                 />
+                                <label className='small text-danger'
+                                       hidden={!this.errorCountry.error}>{this.errorCountry.mensaje}</label>
                             </div>
                         </div>
                         </div>
