@@ -31,7 +31,7 @@ class AltaReserva extends Component {
         this.consultar = this.consultar.bind(this);
         this.ChangeSelect = this.ChangeSelect.bind(this);
         this.hideAlert = this.hideAlert.bind(this);
-
+        this.errorServicio= {error: false, mensaje: ''};
     }
 
 
@@ -94,8 +94,9 @@ class AltaReserva extends Component {
         this.setState({consulta: true});
     }
 
-    ChangeSelect(event) {
-        this.setState({servicioSeleccionado: event, events: [], consulta: false});
+    ChangeSelect(value) {
+        this.setState({servicioSeleccionado: value, value: [], consulta: false});
+        this.errorTipoDocumento = validator.requerido(value ? value.value : null);
     }
 
     selectedEvent(event) {
@@ -264,7 +265,16 @@ class AltaReserva extends Component {
                                     isSearchable={true}
                                     options={this.state.reservaLista}
                                     onChange={this.ChangeSelect.bind(this)}
+                                    styles={this.errorTipoDocumento.error ? {
+                                        control: (base, state)=>({
+                                            ...base,
+                                            borderColor: 'red',
+                                            boxShadow: 'red'
+                                        })
+                                    } : {}}
                                 />
+                                <label className='small text-danger'
+                                       hidden={!this.errorServicio.error}>{this.errorServicio.mensaje}</label>
                             </div>
                             <div className="col-md-2 row-secction" style={{paddingTop: '25px'}}>
                                 <Button bsStyle="primary" fill wd onClick={this.consultar}>

@@ -50,7 +50,12 @@ class AltaIngreso extends Component {
         this.registrar = this.registrar.bind(this);
         this.buscar = this.buscar.bind(this);
         this.buscarPersona = this.buscarPersona.bind(this);
+        this.errorTipoDocumento = {error: false, mensaje: ''};
         this.errorDocumento = {error: false, mensaje: ''};
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorObservacion = {error: false, mensaje: ''};
+
     }
 
     async componentDidMount() {
@@ -60,6 +65,8 @@ class AltaIngreso extends Component {
 
     ChangeSelect(value) {
         this.setState({tipoDocumento: value});
+        this.errorTipoDocumento = validator.requerido(value ? value.value : null);
+
     }
 
     ChangeDocumento(event) {
@@ -72,11 +79,20 @@ class AltaIngreso extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
+        if (event.target.value == "")
+        {this.errorNombre= validator.requerido(event.target.value)}
+        else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
+    
 
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
+        if (event.target.value == "")
+        {this.errorApellido = validator.requerido(event.target.value)}
+        else{this.errorApellido =validator.soloLetras(event.target.value)}
+
     }
+    
 
     ChangeFechaNacimiento(event) {
         this.setState({fechaNacimiento: new Date(event)});
@@ -333,7 +349,16 @@ class AltaIngreso extends Component {
                                     isSearchable={true}
                                     options={this.state.tipoD}
                                     onChange={this.ChangeSelect.bind(this)}
+                                    styles={this.errorTipoDocumento.error ? {
+                                        control: (base, state)=>({
+                                            ...base,
+                                            borderColor: 'red',
+                                            boxShadow: 'red'
+                                        })
+                                    } : {}}
                                 />
+                                <label className='small text-danger'
+                                       hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label>Número de Documento</label>
@@ -382,21 +407,23 @@ class AltaIngreso extends Component {
                                 </div>
                                 <div className="col-md-3 row-secction">
                                     <label>Nombre</label>
-                                    <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
+                                    <input className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
                                            placeholder="Nombre"
                                            value={this.state.nombre}
                                            onChange={this.ChangeNombre}
                                            disabled={!this.state.autenticar}
                                     />
+                                    {errorHTML.errorLabel(this.errorNombre)}
                                 </div>
                                 <div className="col-md-3 row-secction">
                                     <label>Apellido</label>
-                                    <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
+                                    <input className={ errorHTML.classNameError(this.errorApellido, 'form-control') }
                                            placeholder="Apellido"
                                            value={this.state.apellido}
                                            onChange={this.ChangeApellido}
                                            disabled={!this.state.autenticar}
                                     />
+                                    {errorHTML.errorLabel(this.errorApellido)}
                                 </div>
                                 <div className="col-md-3 row-secction">
                                     <label>Fecha de Nacimiento</label>
