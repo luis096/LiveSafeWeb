@@ -220,12 +220,7 @@ class PrincipalInvitados extends Component {
         this.setState({reservas, showModal: true});
     }
 
-    agregarNuevoInvitado() {
-        this.state.invitadoReserva[0].FechaDesde = this.state.reservaSelceccionada.fechaDesde;
-        this.state.invitadoReserva[0].FechaHasta = this.state.reservaSelceccionada.fechaHasta;
-
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Invitados').doc(this.state.invitadoReserva[1]).set(this.state.invitadoReserva[0]);
+    async agregarNuevoInvitado() {
 
         let invitado = {
             Nombre: this.state.invitadoReserva[0].Nombre,
@@ -237,10 +232,19 @@ class PrincipalInvitados extends Component {
             IdInvitado: this.state.invitadoReserva[1]
         };
 
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').doc(localStorage.getItem('idPersona'))
             .collection('Reservas').doc(this.state.reservaSelceccionada.value).collection('Invitados')
             .add(invitado);
+
+        await await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+             .collection('Invitados').doc(this.state.invitadoReserva[1]).collection('InvitacionesEventos').add({
+                IdReserva: Database.doc('Country/' + localStorage.getItem('idCountry') +
+                    '/Propietarios/' + localStorage.getItem('idPersona') +
+                    '/Reservas/' + this.state.reservaSelceccionada.value),
+                FechaDesde: this.state.reservaSelceccionada.fechaDesde,
+                FechaHasta: this.state.reservaSelceccionada.fechaHasta
+            })
 
         this.setState({showModal: false});
     }
@@ -413,7 +417,7 @@ class PrincipalInvitados extends Component {
                                                 <td>{inv[0].Grupo}</td>
                                                 <td>{inv[0].Estado ? 'Activo' : 'Inactivo'}</td>
                                                 <td><Button bsStyle="info" fill wd
-                                                            disabled={!inv[0].Nombre} onClick={()=> {
+                                                            disabled={false} onClick={()=> {
                                                     this.setState({invitadoReserva: inv});
                                                     this.modalAgregarInvitado();
                                                 }}>Invitar</Button></td>

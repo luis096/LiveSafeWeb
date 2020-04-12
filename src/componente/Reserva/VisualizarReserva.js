@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Modal, Alert, Grid, Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import { validator } from '../validator';
+import {operacion} from "../Operaciones";
 
 
 class VisualizarReserva extends Component {
@@ -92,23 +93,50 @@ class VisualizarReserva extends Component {
     }
 
     async agregarInvitado(inv, idInvitado) {
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Invitados').add({
-            Estado: true,
-            Nombre: '',
-            Apellido: '',
-            FechaNacimiento: null,
-            TipoDocumento: Database.doc('TipoDocumento/' + inv.TipoDocumento.id),
-            Documento: inv.Documento,
-            Grupo: this.state.reserva.Nombre,
-            FechaAlta: new Date(),
-            FechaDesde: this.state.desde,
-            FechaHasta: this.state.hasta,
-            IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + localStorage.getItem('idPersona'))
-        }).then(doc=> {
-            inv.IdInvitado = doc.id;
-            this.conexion.collection('Invitados').doc(idInvitado).set(inv);
+        let db = Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Invitados');
+        let nuevoInvitado = false;
+        let invitadoDB = '';
+
+        await db.where('Documento', '==', inv.Documento).where('TipoDocumento', '==', inv.TipoDocumento)
+            .get().then((doc)=> {
+            nuevoInvitado = !doc.docs.length;
+            doc.forEach((inv) => {
+                invitadoDB = inv.id;
+            })
         });
+
+        if (nuevoInvitado) {
+            await db.add({
+                Estado: true,
+                Nombre: '',
+                Apellido: '',
+                FechaNacimiento: null,
+                TipoDocumento: Database.doc('TipoDocumento/' + inv.TipoDocumento.id),
+                Documento: inv.Documento,
+                Grupo: this.state.reserva.Nombre,
+                FechaAlta: new Date(),
+                FechaDesde: new Date(),
+                FechaHasta: new Date(),
+                IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + localStorage.getItem('idPersona'))
+            }).then(async doc=> {
+                inv.IdInvitado = doc.id;
+                await this.conexion.collection('Invitados').doc(idInvitado).set(inv);
+                await this.agregarFechaIngreso(db, inv.IdInvitado);
+            });
+        } else {
+            await this.conexion.collection('Invitados').doc(idInvitado).set(inv);
+            await this.agregarFechaIngreso(db, invitadoDB);
+        }
+    }
+
+    async agregarFechaIngreso(db, idInvitado){
+       await  db.doc(idInvitado).collection('InvitacionesEventos').add({
+            IdReserva: Database.doc('Country/' + localStorage.getItem('idCountry') +
+                '/Propietarios/' + localStorage.getItem('idPersona') + '/Reservas/' + this.idReserva),
+            FechaDesde: this.state.desde,
+            FechaHasta: this.state.hasta
+        })
     }
 
     modalAgregarInvitado() {
@@ -145,6 +173,29 @@ class VisualizarReserva extends Component {
         });
         this.setState({showModal: false});
     }
+
+    async cancelarInvitacion(inv) {
+        if (!inv) { return;}
+        inv[0].Estado = false;
+        let referenciaReserva = Database.doc('Country/' + localStorage.getItem('idCountry') +
+            '/Propietarios/' + localStorage.getItem('idPersona') + '/Reservas/' + this.idReserva);
+        let idEliminar = '';
+        await this.conexion.collection('Invitados').doc(inv[1]).set(inv[0]);
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Invitados').doc(inv[0].IdInvitado)
+            .collection('InvitacionesEventos')
+            .where('IdReserva', '==', referenciaReserva).get().then(querySnapshot=> {
+                querySnapshot.forEach(doc=> {
+                    console.log(doc.id)
+                    idEliminar = doc.id;
+                });
+            });
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Invitados').doc(inv[0].IdInvitado)
+            .collection('InvitacionesEventos').doc(idEliminar).delete();
+        this.actualizar(inv[1], false);
+    }
+
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
@@ -237,13 +288,8 @@ class VisualizarReserva extends Component {
                                                     <td>{inv[0].TipoDocumentoLabel}</td>
                                                     <td>{inv[0].Documento}</td>
                                                     <td>{'Confirmado'}</td>
-                                                    <td><Button bsStyle="warning" fill wd disabled={this.permiteAgregar()} onClick={()=> {
-                                                        inv[0].Estado = false;
-                                                        this.conexion.collection('Invitados').doc(inv[1]).set(inv[0]);
-                                                        Database.collection('Country').doc(localStorage.getItem('idCountry'))
-                                                            .collection('Invitados').doc(inv[0].IdInvitado).delete();
-                                                        this.actualizar(inv[1], false);
-                                                    }}>
+                                                    <td><Button bsStyle="warning" fill wd disabled={this.permiteAgregar()} onClick={() =>
+                                                        {this.cancelarInvitacion(inv)}}>
                                                         cancelar
                                                     </Button></td>
                                                 </tr>

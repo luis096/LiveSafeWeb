@@ -16,7 +16,8 @@ export const operacion = {
     obtenerReferenciaDocumento,
     obtenerMiReferencia,
     obtenerReferenciaConId,
-    obtenerDisponibleString
+    obtenerDisponibleString,
+    esDiaDisponible,
 };
 
 async function obtenerTiposDocumento() {
@@ -70,4 +71,10 @@ function obtenerDisponibleString(value){
         }
     });
     return resultado;
+}
+
+function esDiaDisponible(dias, dia){
+    let elementos = Object.assign([], dias);
+    elementos.unshift(dias[6]);
+    return !!elementos[dia];
 }
