@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import Button from 'components/CustomButton/CustomButton.jsx';
-
+import SweetAlert from 'react-bootstrap-sweetalert';
+import { operacion } from '../Operaciones';
 
 class EditarCountry extends Component {
     constructor(props) {
@@ -70,6 +71,11 @@ class EditarCountry extends Component {
     }
 
     registrar() {
+        if (this.state.nombre == "" || this.state.calle == "" || this.state.numero =="" || this.state.titular == "" ||
+        this.state.celular == "" ) {
+           operacion.sinCompletar("Debe completar todos los campos requeridos")
+           return
+       }
         Database.collection('Country').doc(this.idBarrio).update({
             Nombre: this.state.nombre,
             Calle: this.state.calle,

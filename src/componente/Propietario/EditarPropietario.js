@@ -3,6 +3,8 @@ import Select from 'react-select';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import { Link } from 'react-router-dom';
+import SweetAlert from 'react-bootstrap-sweetalert';
+import { operacion } from '../Operaciones';
 
 class EditarPropietario extends Component {
 
@@ -150,7 +152,11 @@ class EditarPropietario extends Component {
     }
 
     registrar() {
-        //Agregar validaciones para no registrar cualquier gilada
+        if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
+            this.state.fechaNacimiento == "" || this.state.celular == "" || this.state.mail == "") {
+                operacion.sinCompletar("Debe completar todos los campos requeridos")
+                return
+            }
         if (true) {
             this.editPropietario();
         }

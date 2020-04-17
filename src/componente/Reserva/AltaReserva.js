@@ -9,6 +9,7 @@ import 'moment/locale/es';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Card from 'components/Card/Card.jsx';
 import { validator } from '../validator';
+import { operacion } from '../Operaciones';
 
 moment.locale('es');
 const localizer = momentLocalizer(moment);

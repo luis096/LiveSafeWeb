@@ -11,6 +11,7 @@ import { operacion } from '../Operaciones';
 import Datetime from "react-datetime";
 
 
+
 class AltaEgreso extends Component {
 
     constructor() {
@@ -72,6 +73,10 @@ class AltaEgreso extends Component {
     }
 
     async buscar() {
+        if( this.state.documento =="" || this.state.tipoDocumento ==""){
+            operacion.sinCompletar("Debe completar todos los campos requeridos")
+            return
+        }
         const { ingreso } = this.state;
         let refTipoDocumento = await operacion.obtenerReferenciaDocumento(this.state.tipoDocumento);
 
