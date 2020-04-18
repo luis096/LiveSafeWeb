@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 import firebase from 'firebase';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { Redirect } from 'react-router-dom';
+import Firebase from 'firebase';
 
 class Configuraciones extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            pass: ''
+            pass: '',
+            redirect: false
         };
         this.ChangePass = this.ChangePass.bind(this);
     }
@@ -21,11 +24,29 @@ class Configuraciones extends Component {
          let newPassword = this.state.pass;
          debugger
          firebase.auth().currentUser.updatePassword(newPassword).then(() =>{
-             this.hideAlert()
+             this.setRedirect()
          }, error=> {
             console.log(error.message);
         },)
         }
+
+    setRedirect = async ()=> {
+        await Firebase.auth().signOut();
+        localStorage.clear();
+        this.setState({
+            redirect: true
+        });
+        
+    };
+
+    renderRedirect = ()=> {
+        if (this.state.redirect) {
+            this.setState({
+                redirect: false
+            });
+            return <Redirect to='/'/>;
+        }
+    };
 
     hideAlert() {
         this.setState({
@@ -71,6 +92,7 @@ class Configuraciones extends Component {
                                        onChange={this.ChangePass} placeholder="Nueva contraseña"/>
                             </div>
                             <div className="col-md-6">
+                            {this.renderRedirect()}
                                 <Button bsStyle="default"  fill wd onClick={()=> {
                                     this.confirmar();
                                 }}>Reestablecer</Button>

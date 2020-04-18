@@ -93,41 +93,16 @@ class HeaderLinks extends Component {
         return (
             <div>
                 <Nav pullRight>
-                    {/*<NavItem eventKey={3} href="#">*/}
-                    {/*<i className="fa fa-line-chart" />*/}
-                    {/*<p>Stats</p>*/}
-                    {/*</NavItem>*/}
-                    {/*<NavDropdown*/}
-                    {/*eventKey={2}*/}
-                    {/*title={*/}
-                    {/*<div>*/}
-                    {/*<i className="fa fa-gavel" />*/}
-                    {/*<p className="hidden-md hidden-lg">*/}
-                    {/*Actions*/}
-                    {/*<b className="caret" />*/}
-                    {/*</p>*/}
-                    {/*</div>*/}
-                    {/*}*/}
-                    {/*noCaret*/}
-                    {/*id="basic-nav-dropdown-1"*/}
-                    {/*>*/}
-                    {/*<MenuItem eventKey={2.1}>Create New Post</MenuItem>*/}
-                    {/*<MenuItem eventKey={2.2}>Manage Something</MenuItem>*/}
-                    {/*<MenuItem eventKey={2.3}>Do Nothing</MenuItem>*/}
-                    {/*<MenuItem eventKey={2.4}>Submit to live</MenuItem>*/}
-                    {/*<MenuItem divider />*/}
-                    {/*<MenuItem eventKey={2.5}>Another action</MenuItem>*/}
-                    {/*</NavDropdown>*/}
                     <NavDropdown
                     eventKey={3}
                     title={
                     <div>
-                    <i className="fa fa-bell-o" />
-                    <span className="notification">4</span>
-                    <p className="hidden-md hidden-lg">
-                    Notificaciones
-                    <b className="caret" />
-                    </p>
+                        <i className="fa fa-bell-o" />
+                        <span className="notification">4</span>
+                        <p className="hidden-md hidden-lg">
+                        Notificaciones
+                        <b className="caret" />
+                        </p>
                     </div>
                     }
                     noCaret
