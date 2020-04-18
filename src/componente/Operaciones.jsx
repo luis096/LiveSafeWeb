@@ -17,6 +17,7 @@ export const operacion = {
     obtenerMiReferencia,
     obtenerReferenciaConId,
     obtenerDisponibleString
+    
 };
 
 async function obtenerTiposDocumento() {
@@ -32,6 +33,7 @@ async function obtenerTiposDocumento() {
 
     return resultado;
 }
+
 
 
 function obtenerDocumentoLabel(id, value) {

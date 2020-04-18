@@ -4,6 +4,8 @@ import { Database, Firebase } from '../../config/config';
 import { validator } from '../validator';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import Datetime from 'react-datetime';
+import SweetAlert from 'react-bootstrap-sweetalert';
+import { operacion } from '../Operaciones';
 
 class AltaAdministrador extends Component {
 
@@ -108,6 +110,11 @@ class AltaAdministrador extends Component {
 
 
     async registrar() {
+        if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
+            this.state.fechaNacimiento == "" || this.state.celular == "" || this.state.mail == "") {
+                operacion.sinCompletar("Debe completar todos los campos requeridos")
+                return
+            }
         let mailValido = await validator.validarMail(this.state.mail)
         if (mailValido) {
             this.addAdministrador();

@@ -3,7 +3,8 @@ import Select from 'react-select';
 import '../Style/Alta.css';
 import { Link } from 'react-router-dom';
 import { Database, Firebase } from '../../config/config';
-
+import SweetAlert from 'react-bootstrap-sweetalert';
+import { operacion } from '../Operaciones';
 
 class AltaEncargado extends Component {
 
@@ -116,7 +117,11 @@ class AltaEncargado extends Component {
 
 
     registrar() {
-        //Agregar validaciones para no registrar cualquier gilada
+        if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
+            this.state.fechaNacimiento == "" || this.state.celular == "" || this.state.mail == "") {
+                operacion.sinCompletar("Debe completar todos los campos requeridos")
+                return
+            }
         if (true) {
             this.addEncargado();
         }

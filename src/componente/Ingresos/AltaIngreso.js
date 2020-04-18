@@ -78,6 +78,10 @@ class AltaIngreso extends Component {
     }
 
     async buscar() {
+        if( this.state.documento =="" || this.state.tipoDocumento ==""){
+            operacion.sinCompletar("Debe completar todos los campos requeridos")
+            return
+        }
         await this.buscarPersona();
         if (!this.state.invitadoTemp.length) {
             this.state.existeInvitado ? this.errorIngreso('La persona no esta invitada o vencio su plazo de invitacion al barrio') :
