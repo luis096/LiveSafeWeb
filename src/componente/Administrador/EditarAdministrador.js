@@ -95,12 +95,14 @@ class EditarAdministrador extends Component {
     }
 
     ChangeNombre(event) {
+        this.setState({nombre:event.target.value})
         if (event.target.value == "")
         {this.errorNombre= validator.requerido(event.target.value)}
         else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
 
     ChangeApellido(event) {
+        this.setState({apellido:event.target.value})
         if (event.target.value == "")
         {this.errorApellido= validator.requerido(event.target.value)}
         else{this.errorApellido =validator.soloLetras(event.target.value)}
@@ -109,11 +111,12 @@ class EditarAdministrador extends Component {
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
         if (event.target.value == "")
-        {this.errorTitular= validator.requerido(event.target.value)}
-        else{this.errorTitular =validator.soloLetras(event.target.value)}
+        {this.errorCelular= validator.requerido(event.target.value)}
+        else{this.errorCelular =validator.numero(event.target.value)}
     }
 
     ChangeDocumento(event) {
+        this.setState({documento: event.target.value});
         if (event.target.value == "")
         {this.errorDocumento= validator.requerido(event.target.value)}
         else{this.errorDocumento =validator.numero(event.target.value)}

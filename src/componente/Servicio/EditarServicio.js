@@ -4,6 +4,7 @@ import Button from 'components/CustomButton/CustomButton.jsx';
 import Datetime from 'react-datetime';
 import Switch from 'react-bootstrap-switch';
 import { validator } from '../validator';
+import { errorHTML } from '../Error';
 
 class EditarServicio extends Component {
 
@@ -28,10 +29,7 @@ class EditarServicio extends Component {
         this.idServicio = url[url.length - 1];
 
         this.errorNombre = {error: false, mensaje: ''};
-        this.errorApellido = {error: false, mensaje: ''};
-        this.errorDocumento = {error: false, mensaje: ''};
-        this.errorCelular= {error:false, mensaje:''};
-        this.errorMail = {error:false , mensaje:''}
+        
 
     }
 
@@ -67,6 +65,9 @@ class EditarServicio extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
+        if (event.target.value == "")
+        {this.errorNombre= validator.requerido(event.target.value)}
+        else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
 
     ChangeDesde(event) {
@@ -120,10 +121,11 @@ class EditarServicio extends Component {
                         <div className="row">
                             <div className="row-secction col-md-6">
                                 <label> Nombre del Servicio </label>
-                                <input className="form-control"
+                                <input className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
                                        placeholder="Nombre del Servicio"
                                        value={this.state.nombre}
                                        onChange={this.ChangeNombre}/>
+                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="row-secction col-md-3">
                                 <label>Disponibilidad del servicio</label>

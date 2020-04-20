@@ -273,7 +273,7 @@ class AltaEgreso extends Component {
                                 </div>
                                 <div className="col-md-3 row-secction">
                                     <label>Nombre</label>
-                                    <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
+                                    <input className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                            placeholder="Nombre"
                                            value={this.state.nombre}
                                            onChange={this.ChangeNombre}
@@ -283,7 +283,7 @@ class AltaEgreso extends Component {
                                 </div>
                                 <div className="col-md-3 row-secction">
                                     <label>Apellido</label>
-                                    <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
+                                    <input className={errorHTML.classNameError(this.errorApellido, 'form-control')}
                                            placeholder="Apellido"
                                            value={this.state.apellido}
                                            onChange={this.ChangeApellido}
@@ -304,7 +304,7 @@ class AltaEgreso extends Component {
                             <div className="row" hidden={this.state.ingreso.length}>
                                 <div className="col-md-6 row-secction">
                                     <label>Observacón</label>
-                                    <textarea className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
+                                    <textarea className={errorHTML.classNameError(this.errorObservacion, 'form-control')}
                                      rows="3"
                                     value={this.state.observacion}
                                     onChange={this.ChangeObservacion}
