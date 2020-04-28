@@ -4,6 +4,7 @@ import { Database } from '../../config/config';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
 import Datetime from "react-datetime";
+import { errorHTML } from '../Error';
 
 
 class AltaInvitado extends Component {
@@ -44,7 +45,15 @@ class AltaInvitado extends Component {
         this.registrar = this.registrar.bind(this);
         this.buscarPropietario = this.buscarPropietario.bind(this);
         this.registrarIngreso = this.registrarIngreso.bind(this);
+        this.errorTipoDocumentoInvitado = {error: false, mensaje: ''};
         this.errorTipoDocumento = {error: false, mensaje: ''};
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorGrupo = {error: false, mensaje: ''};
+        this.errorDocumento = {error: false, mensaje: ''};
+        this.errorDocumentoInvitado= {error: false, mensaje: ''};
+        
+
     }
 
     async componentDidMount() {
@@ -79,24 +88,39 @@ class AltaInvitado extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
+        if (event.target.value == "")
+        {this.errorNombre= validator.requerido(event.target.value)}
+        else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
+    
 
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
+        if (event.target.value == "")
+        {this.errorApellido = validator.requerido(event.target.value)}
+        else{this.errorApellido =validator.soloLetras(event.target.value)}
+
     }
 
     ChangeSelect(value) {
         this.setState({tipoDocumento: value});
+        this.errorTipoDocumento = validator.requerido(value ? value.value : null);
+
     }
 
     ChangeSelectInvitado(value) {
         this.setState({tipoDocumentoInvitado: value});
-        this.errorTipoDocumento = validator.requerido(value ? value.value : null);
+        this.errorTipoDocumentoInvitado = validator.requerido(value ? value.value : null);
     }
 
     ChangeDocumentoInvitado(event) {
         this.setState({documentoInvitado: event.target.value});
+        if (event.target.value == "")
+        {this.errorDocumentoInvitado = validator.requerido(event.target.value)}
+        else{this.errorDocumentoInvitado =validator.numero(event.target.value)}
+
     }
+
 
     ChangeFechaNacimiento(event) {
         this.setState({fechaNacimiento: event.target.value});
@@ -104,10 +128,17 @@ class AltaInvitado extends Component {
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
+        if (event.target.value == "")
+        {this.errorDocumento = validator.requerido(event.target.value)}
+        else{this.errorDocumento =validator.numero(event.target.value)}
+
     }
+
+    
 
     ChangeGrupo(event) {
         this.setState({grupo: event.target.value});
+        {this.errorGrupo = validator.requerido(event.target.value)}
     }
 
     addInvitado() {
@@ -183,14 +214,25 @@ class AltaInvitado extends Component {
                                     isSearchable={true}
                                     options={this.state.tipoD}
                                     onChange={this.ChangeSelect.bind(this)}
+                                    styles={this.errorTipoDocumento.error ? {
+                                        control: (base, state)=>({
+                                            ...base,
+                                            borderColor: 'red',
+                                            boxShadow: 'red'
+                                        })
+                                    } : {}}
                                 />
+                                <label className='small text-danger'
+                                       hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label>Número de Documento</label>
-                                <input className="form-control" placeholder="Número de Documento"
+                                <input className={ errorHTML.classNameError(this.errorDocumento, 'form-control') }
+                                 placeholder="Número de Documento"
                                        value={this.state.documento}
                                        onChange={this.ChangeDocumento}
                                 />
+                                {errorHTML.errorLabel(this.errorDocumento)} 
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label>Propietario encontrado</label>
@@ -208,10 +250,11 @@ class AltaInvitado extends Component {
                         <div className="row">
                             <div className="col-md-6 row-secction">
                                 <label> Grupo </label>
-                                <input type="name" className="form-control" placeholder="Name"
+                                <input type="name" className={ errorHTML.classNameError(this.errorGrupo, 'form-control') } placeholder="Name"
                                        value={this.state.grupo}
                                        onChange={this.ChangeGrupo}
                                 />
+                                {errorHTML.errorLabel(this.errorGrupo)} 
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label>Fecha Desde</label>
@@ -240,18 +283,20 @@ class AltaInvitado extends Component {
                         <div className="row" hidden={this.esPropietario}>
                             <div className="col-md-6 row-secction">
                                 <label> Nombre </label>
-                                <input type="name" className="form-control" placeholder="Nombre"
+                                <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') } placeholder="Nombre"
                                        value={this.state.nombre}
                                        onChange={this.ChangeNombre}
 
                                 />
+                                {errorHTML.errorLabel(this.errorNombre)}  
                             </div>
                             <div className="col-md-6 row-secction">
                                 <label> Apellido </label>
-                                <input type="family-name" className="form-control" placeholder="Apellido"
+                                <input type="family-name" className={ errorHTML.classNameError(this.errorApellido, 'form-control') } placeholder="Apellido"
                                        value={this.state.apellido}
                                        onChange={this.ChangeApellido}
                                 />
+                                {errorHTML.errorLabel(this.errorApellido)}  
                             </div>
                         </div>
 
@@ -266,7 +311,7 @@ class AltaInvitado extends Component {
                                     isSearchable={true}
                                     options={this.state.tipoD}
                                     onChange={this.ChangeSelectInvitado.bind(this)}
-                                    styles={this.errorTipoDocumento.error ? {
+                                    styles={this.errorTipoDocumentoInvitado.error ? {
                                         control: (base, state)=>({
                                             ...base,
                                             borderColor: 'red',
@@ -275,15 +320,16 @@ class AltaInvitado extends Component {
                                     } : {}}
                                 />
                                 <label className='small text-danger'
-                                       hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
+                                       hidden={!this.errorTipoDocumentoInvitado.error}>{this.errorTipoDocumentoInvitado.mensaje}</label>
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Numero de Documento Invitado </label>
-                                <input type="document" className="form-control" placeholder="Numero de documento"
+                                <input type="document" className={ errorHTML.classNameError(this.errorDocumentoInvitado, 'form-control') } placeholder="Numero de documento"
                                        value={this.state.documentoInvitado}
                                        onChange={this.ChangeDocumentoInvitado}
 
                                 />
+                                {errorHTML.errorLabel(this.errorDocumentoInvitado)}  
                             </div>
                             <div className="col-md-4 row-secction" hidden={this.esPropietario}>
                                 <label>Fecha de Nacimiento</label>

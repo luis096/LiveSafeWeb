@@ -4,6 +4,10 @@ import { Database } from '../../config/config';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { operacion } from '../Operaciones';
+import { errorHTML } from '../Error';
+import { validator } from '../validator';
+
+
 
 class EditarCountry extends Component {
     constructor(props) {
@@ -27,6 +31,14 @@ class EditarCountry extends Component {
         this.registrar = this.registrar.bind(this);
         const url = this.props.location.pathname.split('/');
         this.idBarrio = url[url.length - 1];
+
+
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorTitular = {error: false, mensaje: ''};
+        this.errorCalle = {error: false, mensaje: ''};
+        this.errorCelular= {error:false, mensaje:''};
+        this.errorNumero= {error:false, mensaje:''};
+        this.errorDescripcion= {error:false, mensaje:''}
     }
 
 
@@ -48,26 +60,46 @@ class EditarCountry extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
+        if (event.target.value == "")
+        {this.errorNombre= validator.requerido(event.target.value)}
+        else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
+
 
     ChangeCalle(event) {
         this.setState({calle: event.target.value});
+        if (event.target.value == "")
+        {this.errorCalle= validator.requerido(event.target.value)}
+        else{this.errorCalle =validator.soloLetras(event.target.value)}
     }
+
 
     ChangeNumero(event) {
         this.setState({numero: event.target.value});
+        if (event.target.value == "")
+        {this.errorNumero= validator.requerido(event.target.value)}
+        else{this.errorNumero =validator.numero(event.target.value)}
     }
+
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
+        if (event.target.value == "")
+        {this.errorCelular= validator.requerido(event.target.value)}
+        else{this.errorCelular =validator.numero(event.target.value)}
     }
 
     ChangeTitular(event) {
         this.setState({titular: event.target.value});
+        if (event.target.value == "")
+        {this.errorTitular= validator.requerido(event.target.value)}
+        else{this.errorTitular =validator.soloLetras(event.target.value)}
     }
 
     ChangeDescripcion(event) {
         this.setState({descripcion: event.target.value});
+        this.errorDescripcion = validator.soloLetras(event.target.value);
+
     }
 
     registrar() {
@@ -95,52 +127,76 @@ class EditarCountry extends Component {
                 <div className="row card">
                     <div className="card-body">
                         <div className="row">
-                            <div className="col-md-6 row-secction">
+                        <div className="col-md-6 row-secction">
                                 <label> Nombre del barrio </label>
-                                <input className="form-control" placeholder="Nombre"
+                                <input className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
+                                       placeholder="Nombre"
                                        value={this.state.nombre}
                                        onChange={this.ChangeNombre}
                                 />
+                                {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-6 row-secction">
                                 <label> Titular </label>
-                                <input className="form-control" placeholder="Titular"
+                                <input className={ errorHTML.classNameError(this.errorTitular, 'form-control') }
+                                       placeholder="Titular"
                                        value={this.state.titular}
                                        onChange={this.ChangeTitular}
                                 />
+                                {errorHTML.errorLabel(this.errorTitular)}
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-md-4 row-secction">
                                 <label> Calle </label>
-                                <input className="form-control" placeholder="Calle"
+                                <input className={ errorHTML.classNameError(this.errorCalle, 'form-control') }
+                                       placeholder="Calle"
                                        value={this.state.calle}
                                        onChange={this.ChangeCalle}/>
+                                 {errorHTML.errorLabel(this.errorCalle)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Numero </label>
-                                <input className="form-control" placeholder="Numero"
+                                <input className={ errorHTML.classNameError(this.errorNumero, 'form-control') }
+                                       placeholder="Numero"
                                        value={this.state.numero}
                                        onChange={this.ChangeNumero}/>
+                                {errorHTML.errorLabel(this.errorNumero)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Celular </label>
-                                <input className="form-control" placeholder="Celular"
+                                <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
+                                       placeholder="Celular"
                                        value={this.state.celular}
                                        onChange={this.ChangeCelular}/>
+                                 {errorHTML.errorLabel(this.errorCelular)}
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-md-6 row-secction">
                                 <label> Descripcion </label>
-                                <textarea className="form-control" rows="3"
+                                <textarea className={ errorHTML.classNameError(this.errorDescripcion, 'form-control') }
+                                          rows="3"
                                           placeholder="Description"
                                           value={this.state.descripcion}
                                           onChange={this.ChangeDescripcion}/>
+                              {errorHTML.errorLabel(this.errorDescripcion)}
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div>
+                    {/*<progress value={this.state.upLoadValue} max='100'>*/}
+                        {/*{this.state.upLoadValue}%*/}
+                    {/*</progress>*/}
+
+                    {/*<input type="file" onChange={this.handleFiles}/>*/}
+
+                    {/*<img width="320" src={this.state.picture}/>*/}
+
+                </div>
+
                 <div className="text-center">
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
                         Registrar

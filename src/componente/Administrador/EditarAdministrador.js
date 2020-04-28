@@ -5,6 +5,7 @@ import { validator } from '../validator';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import Datetime from 'react-datetime';
 import { operacion } from '../Operaciones';
+import { errorHTML } from '../Error';
 import SweetAlert from 'react-bootstrap-sweetalert';
 
 
@@ -34,6 +35,14 @@ class EditarAdministrador extends Component {
 
         const url = this.props.location.pathname.split('/');
         this.idAdministrador = url[url.length - 1];
+
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorDocumento = {error: false, mensaje: ''};
+        this.errorCelular= {error:false, mensaje:''};
+        this.errorTipoDocumento= {error:false, mensaje:''};
+        this.errorMail= {error:false, mensaje:''}
+
     }
 
     async componentDidMount() {
@@ -88,23 +97,37 @@ class EditarAdministrador extends Component {
     }
 
     ChangeNombre(event) {
-        this.setState({nombre: event.target.value});
+        this.setState({nombre:event.target.value})
+        if (event.target.value == "")
+        {this.errorNombre= validator.requerido(event.target.value)}
+        else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
 
     ChangeApellido(event) {
-        this.setState({apellido: event.target.value});
+        this.setState({apellido:event.target.value})
+        if (event.target.value == "")
+        {this.errorApellido= validator.requerido(event.target.value)}
+        else{this.errorApellido =validator.soloLetras(event.target.value)}
     }
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
+        if (event.target.value == "")
+        {this.errorCelular= validator.requerido(event.target.value)}
+        else{this.errorCelular =validator.numero(event.target.value)}
     }
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
+        if (event.target.value == "")
+        {this.errorDocumento= validator.requerido(event.target.value)}
+        else{this.errorDocumento =validator.numero(event.target.value)}
     }
 
     ChangeSelect(value) {
         this.setState({tipoDocumento: value});
+        this.errorTipoDocumento = validator.requerido(value ? value.value : null);
+
     }
 
     ChangeFechaNacimiento(event) {
@@ -129,18 +152,22 @@ class EditarAdministrador extends Component {
                 <div className="row card">
                     <div className="card-body">
                         <div className="row">
-                            <div className="col-md-4 row-secction">
+                        <div className="col-md-4 row-secction">
                                 <label> Nombre </label>
-                                <input type="name" className="form-control" placeholder="Nombre"
+                                <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
+                                       placeholder="Nombre"
                                        value={this.state.nombre}
                                        onChange={this.ChangeNombre}
                                 />
+                                {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Apellido </label>
-                                <input className="form-control" placeholder="Apellido"
+                                <input className={ errorHTML.classNameError(this.errorApellido, 'form-control') }
+                                       placeholder="Apellido"
                                        value={this.state.apellido}
                                        onChange={this.ChangeApellido}/>
+                                {errorHTML.errorLabel(this.errorApellido)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Fecha de Nacimiento </label>
@@ -153,14 +180,7 @@ class EditarAdministrador extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-md-4 row-secction">
-                                <label> Numero de Documento </label>
-                                <input className="form-control"
-                                       placeholder="Numero de Documento"
-                                       value={this.state.documento}
-                                       onChange={this.ChangeDocumento}/>
-                            </div>
-                            <div className="col-md-4 row-secction">
+                        <div className="col-md-4 row-secction">
                                 <label> Tipo de Documento </label>
                                 <Select
                                     isClearable={true}
@@ -168,15 +188,35 @@ class EditarAdministrador extends Component {
                                     options={this.state.tipoD}
                                     value = {this.state.tipoDocumento }
                                     onChange={this.ChangeSelect.bind(this)}
+                                    styles={this.errorTipoDocumento.error ? {
+                                        control: (base, state)=>({
+                                            ...base,
+                                            borderColor: 'red',
+                                            boxShadow: 'red'
+                                        })
+                                    } : {}}
                                 />
+                                <label className='small text-danger'
+                                       hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
+                            </div>
+                        <div className="col-md-4 row-secction">
+                                <label> Numero de Documento </label>
+                                <input className={ errorHTML.classNameError(this.errorDocumento, 'form-control') }
+                                       placeholder="Numero de Documento"
+                                       value={this.state.documento}
+                                       onChange={this.ChangeDocumento}/>
+                                {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Celular </label>
-                                <input className="form-control" placeholder="Celular"
+                                <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
+                                       placeholder="Celular"
                                        value={this.state.celular}
                                        onChange={this.ChangeCelular}
                                 />
+                                {errorHTML.errorLabel(this.errorCelular)}
                             </div>
+
                         </div>
                     </div>
                 </div>

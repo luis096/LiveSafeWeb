@@ -40,7 +40,18 @@ class AltaEgreso extends Component {
         this.ChangeFechaNacimiento = this.ChangeFechaNacimiento.bind(this);
         this.registrar = this.registrar.bind(this);
         this.buscar = this.buscar.bind(this);
+
+        this.errorTipoDocumento = {error: false, mensaje: ''};
         this.errorDocumento = {error: false, mensaje: ''};
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorApellido = {error: false, mensaje: ''};
+        this.errorObservacion = {error: false, mensaje: ''};
+        
+
+
+
+
+      
     }
 
     async componentDidMount() {
@@ -50,22 +61,35 @@ class AltaEgreso extends Component {
 
     ChangeSelect(value) {
         this.setState({tipoDocumento: value});
+        this.errorTipoDocumento = validator.requerido(value ? value.value : null);
+
     }
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
-    }
+        if (event.target.value == "")
+        {this.errorDocumento = validator.requerido(event.target.value)}
+        else{this.errorDocumento =validator.numero(event.target.value)}
 
+    }
     ChangeObservacion(event) {
         this.setState({observacion: event.target.value});
+        this.errorObservacion = validator.requerido(event.target.value)
     }
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
+        if (event.target.value == "")
+        {this.errorNombre= validator.requerido(event.target.value)}
+        else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
 
     ChangeApellido(event) {
         this.setState({apellido: event.target.value});
+        if (event.target.value == "")
+        {this.errorApellido = validator.requerido(event.target.value)}
+        else{this.errorApellido =validator.soloLetras(event.target.value)}
+
     }
 
     ChangeFechaNacimiento(event) {
@@ -189,7 +213,16 @@ class AltaEgreso extends Component {
                                     isSearchable={true}
                                     options={this.state.tipoD}
                                     onChange={this.ChangeSelect.bind(this)}
+                                    styles={this.errorTipoDocumento.error ? {
+                                        control: (base, state)=>({
+                                            ...base,
+                                            borderColor: 'red',
+                                            boxShadow: 'red'
+                                        })
+                                    } : {}}
                                 />
+                                <label className='small text-danger'
+                                       hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label>Número de Documento</label>
@@ -245,19 +278,23 @@ class AltaEgreso extends Component {
                                 </div>
                                 <div className="col-md-3 row-secction">
                                     <label>Nombre</label>
-                                    <input className="form-control" placeholder="Nombre"
+                                    <input className={errorHTML.classNameError(this.errorNombre, 'form-control')}
+                                           placeholder="Nombre"
                                            value={this.state.nombre}
                                            onChange={this.ChangeNombre}
                                            disabled={this.state.existePersonaSinIngreso}
                                     />
+                                    {errorHTML.errorLabel(this.errorNombre)}
                                 </div>
                                 <div className="col-md-3 row-secction">
                                     <label>Apellido</label>
-                                    <input className="form-control" placeholder="Apellido"
+                                    <input className={errorHTML.classNameError(this.errorApellido, 'form-control')}
+                                           placeholder="Apellido"
                                            value={this.state.apellido}
                                            onChange={this.ChangeApellido}
                                            disabled={this.state.existePersonaSinIngreso}
                                     />
+                                    {errorHTML.errorLabel(this.errorApellido)}
                                 </div>
                                 <div className="col-md-3 row-secction">
                                     <label>Fecha de Nacimiento</label>
@@ -272,10 +309,12 @@ class AltaEgreso extends Component {
                             <div className="row" hidden={this.state.ingreso.length}>
                                 <div className="col-md-6 row-secction">
                                     <label>Observacón</label>
-                                    <textarea className="form-control" rows="3"
+                                    <textarea className={errorHTML.classNameError(this.errorObservacion, 'form-control')}
+                                     rows="3"
                                     value={this.state.observacion}
                                     onChange={this.ChangeObservacion}
                                     />
+                                    {errorHTML.errorLabel(this.errorObservacion)}
                                 </div>
                             </div>
                         </div>

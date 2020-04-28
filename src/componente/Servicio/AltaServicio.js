@@ -3,7 +3,8 @@ import { Database } from '../../config/config';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import Datetime from 'react-datetime';
 import Switch from 'react-bootstrap-switch';
-
+import { errorHTML } from '../Error';
+import { validator } from '../validator';
 
 class AltaServicio extends Component {
 
@@ -24,6 +25,12 @@ class AltaServicio extends Component {
         this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
         this.registrar = this.registrar.bind(this);
         this.reestaurar = this.reestaurar.bind(this);
+
+
+        this.errorNombre = {error: false, mensaje: ''};
+        this.errorHoraDesde = {error: false, mensaje: ''};
+        this.errorHoraHasta = {error: false, mensaje: ''};
+        
     }
 
     addServicio() {
@@ -39,14 +46,19 @@ class AltaServicio extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
+        if (event.target.value == "")
+        {this.errorNombre= validator.requerido(event.target.value)}
+        else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
 
     ChangeDesde(event) {
         this.setState({horaDesde: event});
+        this.ErrorHoraDesde = validator.requerido(event.target.value)
     }
 
     ChangeHasta(event) {
         this.setState({horaHasta: event});
+        this.ErrorHoraHasta = validator.requerido(event.target.value)
     }
 
     ChangeDescripcion(event) {
@@ -104,11 +116,12 @@ class AltaServicio extends Component {
                     <div className="card-body">
                         <div className="row">
                             <div className="row-secction col-md-6">
-                                <label> Nombre del Servicio </label>
-                                <input className="form-control"
-                                       placeholder="Nombre del Servicio"
-                                       value={this.state.nombre}
-                                       onChange={this.ChangeNombre}/>
+                                    <label for="Nombre"> Nombre </label>
+                                    <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') } placeholder="Nombre"
+                                        value={this.state.nombre}
+                                        onChange={this.ChangeNombre}
+                                    />
+                                    {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="row-secction col-md-3">
                                 <label>Disponibilidad del servicio</label>
@@ -212,6 +225,7 @@ class AltaServicio extends Component {
                                     value={this.state.horaDesde}
                                     onChange={this.ChangeDesde}
                                 />
+                                {errorHTML.errorLabel(this.errorHoraDesde)}
 
                             </div>
                             <div className="row-secction col-md-2">
@@ -222,6 +236,7 @@ class AltaServicio extends Component {
                                     value={this.state.horaHasta}
                                     onChange={this.ChangeHasta}
                                 />
+                                {errorHTML.errorLabel(this.errorHoraHasta)}
                             </div>
                         </div>
                         <div className="row">

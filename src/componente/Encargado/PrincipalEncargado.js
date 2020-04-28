@@ -56,6 +56,7 @@ class PrincipalEncargado extends Component {
         this.errorNombre = {error: false, mensaje: ''};
         this.errorApellido = {error: false, mensaje: ''};
         this.errorDocumento = {error: false, mensaje: ''};
+        
     }
 
     async componentDidMount() {
