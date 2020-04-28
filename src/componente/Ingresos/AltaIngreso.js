@@ -89,8 +89,6 @@ class AltaIngreso extends Component {
         const {invitadoTemp} = this.state;
         let {personaEncontrada, nombre, apellido, fechaNacimiento} = this.state;
         let refTipoDocumento = await operacion.obtenerReferenciaDocumento(this.state.tipoDocumento);
-        let invitadoID = '';
-        let invitadoObj = {};
 
         //Busco entre los propietarios...
         await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Propietarios')
@@ -116,28 +114,24 @@ class AltaIngreso extends Component {
                                 if (!doc.data().Nombre) {
                                     this.setState({autenticar: true});
                                 }
-                            } else {
-                                invitadoID = doc.id;
-                                invitadoObj = doc.data();
                             }
                         }
                     });
                 });
         }
 
-        if (this.state.existeInvitado && !!invitadoID) {
-            console.log('Buscando en los eentos invitado')
-            await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Invitados')
-                .doc(invitadoID).collection('InvitacionesEventos').orderBy('FechaHasta', 'desc')
-                .where('FechaHasta', '>=', new Date())
+        // Si el invitado existe pero no tiene invitacion valida, busco entre las invitaciones
+        // a eventos, si al menos una es valida, se le permite ingresar al country.
+        if (!invitadoTemp.length && this.state.existeInvitado){
+            await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+                .collection('InvitacionesEventos').orderBy('FechaHasta', 'desc')
+                .where('Documento', '==', this.state.documento).where('TipoDocumento', '==', refTipoDocumento)
                 .get().then(querySnapshot=> {
                     querySnapshot.forEach(doc=> {
                         if (doc.exists) {
-                            console.log('Validando fecha.. ')
                             if (validator.validarInvitado(doc.data().FechaDesde, doc.data().FechaHasta)) {
-                                console.log('quedo!.. ', doc.data());
-                                invitadoTemp.push([invitadoObj, invitadoID]);
-                                if (!invitadoObj.Nombre) {
+                                invitadoTemp.push([doc.data(), doc.id]);
+                                if (!doc.data().Nombre) {
                                     this.setState({autenticar: true});
                                 }
                             }

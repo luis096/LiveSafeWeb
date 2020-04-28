@@ -102,7 +102,7 @@ class VisualizarReserva extends Component {
             .get().then((doc)=> {
             nuevoInvitado = !doc.docs.length;
             doc.forEach((inv) => {
-                invitadoDB = inv.id;
+                invitadoDB = inv.data();
             })
         });
 
@@ -122,20 +122,22 @@ class VisualizarReserva extends Component {
             }).then(async doc=> {
                 inv.IdInvitado = doc.id;
                 await this.conexion.collection('Invitados').doc(idInvitado).set(inv);
-                await this.agregarFechaIngreso(db, inv.IdInvitado);
+                await this.agregarFechaIngreso(inv);
             });
         } else {
             await this.conexion.collection('Invitados').doc(idInvitado).set(inv);
-            await this.agregarFechaIngreso(db, invitadoDB);
+            await this.agregarFechaIngreso(invitadoDB);
         }
     }
 
-    async agregarFechaIngreso(db, idInvitado){
-       await  db.doc(idInvitado).collection('InvitacionesEventos').add({
+    async agregarFechaIngreso(invitado){
+       await  db.doc(invitado).collection('InvitacionesEventos').add({
             IdReserva: Database.doc('Country/' + localStorage.getItem('idCountry') +
                 '/Propietarios/' + localStorage.getItem('idPersona') + '/Reservas/' + this.idReserva),
             FechaDesde: this.state.desde,
-            FechaHasta: this.state.hasta
+            FechaHasta: this.state.hasta,
+            TipoDocumento: Database.doc('TipoDocumento/' + inv.TipoDocumento.id),
+            Documento: inv.Documento,
         })
     }
 
@@ -182,16 +184,14 @@ class VisualizarReserva extends Component {
         let idEliminar = '';
         await this.conexion.collection('Invitados').doc(inv[1]).set(inv[0]);
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Invitados').doc(inv[0].IdInvitado)
-            .collection('InvitacionesEventos')
-            .where('IdReserva', '==', referenciaReserva).get().then(querySnapshot=> {
+            .collection('InvitacionesEventos').where('IdReserva', '==', referenciaReserva)
+            .where('Documento', '==', inv.Documento).where('TipoDocumento', '==', inv.TipoDocumento)
+            .get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
-                    console.log(doc.id)
                     idEliminar = doc.id;
                 });
             });
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Invitados').doc(inv[0].IdInvitado)
             .collection('InvitacionesEventos').doc(idEliminar).delete();
         this.actualizar(inv[1], false);
     }

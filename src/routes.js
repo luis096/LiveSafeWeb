@@ -42,6 +42,8 @@ import EditarServicio from 'componente/Servicio/EditarServicio.js'
 import PrincipalEncargado from 'componente/Encargado/PrincipalEncargado'
 import AltaEncargado from 'componente/Encargado/AltaEncargado'
 import EditarEncargado from 'componente/Encargado/EditarEncargado'
+import Graficos from "./componente/Reportes/Graficos"
+
 
 //Encargado
 import PrincipalIngreso from 'componente/Ingresos/PrincipalIngreso.js'
@@ -63,7 +65,6 @@ import VisualizarReserva from './componente/Reserva/VisualizarReserva.js'
 import MiPerfil from 'componente/Perfil/MiPerfil'
 import MiCountry from 'componente/Perfil/MiCountry'
 import Config from 'componente/Perfil/Configuraciones'
-
 
 var routes = [
     {
@@ -234,11 +235,12 @@ var routes = [
     },
     {
         path: '/charts',
-        layout: '/example',
+        layout: '/asd',
         name: 'Charts',
         icon: 'pe-7s-graph1',
         component: Charts
     },
+
     {
         path: '/calendar',
         layout: '/example',
@@ -443,6 +445,13 @@ var routes = [
                 component: EditarServicio
             }
         ]
+    },
+    {
+        path: '/charts',
+        layout: '/admin',
+        name: 'Reportes',
+        icon: 'pe-7s-graph1',
+        component: Graficos
     },
     {
         collapse: true,

@@ -237,14 +237,16 @@ class PrincipalInvitados extends Component {
             .collection('Reservas').doc(this.state.reservaSelceccionada.value).collection('Invitados')
             .add(invitado);
 
-        await await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-             .collection('Invitados').doc(this.state.invitadoReserva[1]).collection('InvitacionesEventos').add({
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+             .collection('InvitacionesEventos').add({
                 IdReserva: Database.doc('Country/' + localStorage.getItem('idCountry') +
                     '/Propietarios/' + localStorage.getItem('idPersona') +
                     '/Reservas/' + this.state.reservaSelceccionada.value),
                 FechaDesde: this.state.reservaSelceccionada.fechaDesde,
-                FechaHasta: this.state.reservaSelceccionada.fechaHasta
-            })
+                FechaHasta: this.state.reservaSelceccionada.fechaHasta,
+                Documento: invitado.Documento,
+                TipoDocumento: invitado.TipoDocumento
+            });
 
         this.setState({showModal: false});
     }
