@@ -131,13 +131,14 @@ class VisualizarReserva extends Component {
     }
 
     async agregarFechaIngreso(invitado){
-       await  db.doc(invitado).collection('InvitacionesEventos').add({
+       await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .doc(invitado).collection('InvitacionesEventos').add({
             IdReserva: Database.doc('Country/' + localStorage.getItem('idCountry') +
                 '/Propietarios/' + localStorage.getItem('idPersona') + '/Reservas/' + this.idReserva),
             FechaDesde: this.state.desde,
             FechaHasta: this.state.hasta,
-            TipoDocumento: Database.doc('TipoDocumento/' + inv.TipoDocumento.id),
-            Documento: inv.Documento,
+            TipoDocumento: Database.doc('TipoDocumento/' + invitado.TipoDocumento.id),
+            Documento: invitado.Documento,
         })
     }
 
