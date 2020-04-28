@@ -292,6 +292,7 @@ class AltaReserva extends Component {
                         <Row>
                             <Col md={12}>
                                 <h3>Servicio: {this.state.servicioSeleccionado ? this.state.servicioSeleccionado.label : 'Sin servicio seleccionado'}</h3>
+                                <Disponibilidad dias={this.state.dias}></Disponibilidad>
                                 <Card
                                     calendar
                                     content={
