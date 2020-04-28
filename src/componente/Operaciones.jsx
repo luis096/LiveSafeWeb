@@ -35,6 +35,7 @@ async function obtenerTiposDocumento() {
 }
 
 
+
 function obtenerDocumentoLabel(id, value) {
     let resultado = '';
     value.map(doc=> {

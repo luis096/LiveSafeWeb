@@ -94,7 +94,6 @@ class AltaReserva extends Component {
             );
         this.navigate(new Date());
         this.setState({consulta: true});
-        console.log(this.state.dias)
     }
 
     ChangeSelect(event) {
@@ -106,9 +105,6 @@ class AltaReserva extends Component {
     }
 
     addNewEventAlert(slotInfo) {
-        if (!operacion.esDiaDisponible(this.state.dias, slotInfo.start.getDay())) {
-            return;
-        }
         if (slotInfo.start === slotInfo.end) {
             return;
         }
@@ -286,7 +282,6 @@ class AltaReserva extends Component {
                         <Row>
                             <Col md={12}>
                                 <h3>Servicio: {this.state.servicioSeleccionado ? this.state.servicioSeleccionado.label : 'Sin servicio seleccionado'}</h3>
-                                <Disponibilidad dias={this.state.dias}></Disponibilidad>
                                 <Card
                                     calendar
                                     content={

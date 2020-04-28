@@ -4,6 +4,8 @@ import Select from 'react-select';
 import '../Propietario/Index.css';
 import { Link } from 'react-router-dom';
 import { Database, Firebase } from '../../config/config';
+import SweetAlert from 'react-bootstrap-sweetalert';
+import { operacion } from '../Operaciones';
 
 class AltaPropietario extends Component {
     constructor() {
@@ -125,7 +127,11 @@ class AltaPropietario extends Component {
     }
 
     async registrar() {
-        //Agregar validaciones para no registrar cualquier gilada
+        if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
+            this.state.fechaNacimiento == "" || this.state.celular == "" || this.state.mail == "") {
+                operacion.sinCompletar("Debe completar todos los campos requeridos")
+                return
+            }
         if (true) {
             await this.addPropietario();
             await this.reset();

@@ -5,6 +5,8 @@ import { validator } from '../validator';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import Datetime from 'react-datetime';
 import { operacion } from '../Operaciones';
+import SweetAlert from 'react-bootstrap-sweetalert';
+
 
 
 class EditarAdministrador extends Component {
@@ -111,6 +113,11 @@ class EditarAdministrador extends Component {
 
 
     registrar() {
+        if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
+        this.state.fechaNacimiento== "" || this.state.celular == "" || this.state.mail == "") {
+            operacion.sinCompletar("Debe completar todos los campos requeridos")
+            return
+        }
         this.editAdministrador();
     }
 

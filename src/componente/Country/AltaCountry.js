@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Database, Firebase } from '../../config/config';
 import Button from 'components/CustomButton/CustomButton.jsx';
-
+import SweetAlert from 'react-bootstrap-sweetalert';
+import { operacion } from '../Operaciones';
 
 class AltaCountry extends Component {
 
@@ -73,6 +74,11 @@ class AltaCountry extends Component {
     }
 
     registrar() {
+        if (this.state.nombre == "" || this.state.calle == "" || this.state.numero =="" || this.state.titular == "" ||
+         this.state.celular == "" ) {
+            operacion.sinCompletar("Debe completar todos los campos requeridos")
+            return
+        }
         Database.collection('Country').add({
             Nombre: this.state.nombre,
             Calle: this.state.calle,
