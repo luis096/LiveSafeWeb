@@ -14,7 +14,6 @@ class EditarEncargado extends Component {
             apellido: '',
             tipoDocumento: '',
             documento: '',
-            legajo: '',
             celular: '',
             descripcion: '',
             fechaNacimiento: '',
@@ -33,7 +32,6 @@ class EditarEncargado extends Component {
         this.ChangeDocumento = this.ChangeDocumento.bind(this);
         this.ChangeCelular = this.ChangeCelular.bind(this);
         this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
-        this.ChangeLegajo = this.ChangeLegajo.bind(this);
         this.ChangeFechaNacimiento = this.ChangeFechaNacimiento.bind(this);
         this.registrar = this.registrar.bind(this);
 
@@ -76,7 +74,6 @@ class EditarEncargado extends Component {
         this.setState({
             nombre: estrella.Nombre,
             apellido: estrella.Apellido,
-            legajo: estrella.Legajo,
             documento: estrella.Documento,
             fechaNacimiento: estrella.FechaNacimiento,
             fechaAlta: estrella.FechaAlta,
@@ -92,7 +89,6 @@ class EditarEncargado extends Component {
             .collection('Encargados').doc(this.idEncargado).set({
             Nombre: this.state.nombre,
             Apellido: this.state.apellido,
-            Legajo: this.state.legajo,
             Celular: this.state.celular,
             Descripcion: this.state.descripcion,
             TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
@@ -114,10 +110,6 @@ class EditarEncargado extends Component {
 
     ChangeNumero(event) {
         this.setState({numero: event.target.value});
-    }
-
-    ChangeLegajo(event) {
-        this.setState({legajo: event.target.value});
     }
 
     ChangeDocumento(event) {
@@ -198,12 +190,6 @@ class EditarEncargado extends Component {
                                    value={this.state.fechaNacimiento}
                                    onChange={this.ChangeFechaNacimiento}
                             />
-                        </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="NumeroTelefono"> Legajo </label>
-                            <input type="tel" className="form-control" placeholder="Landline number"
-                                   value={this.state.legajo}
-                                   onChange={this.ChangeLegajo}/>
                         </div>
                         <div className="col-md-6  flex-container form-group">
                             <label for="NumeroCelular"> Celular </label>

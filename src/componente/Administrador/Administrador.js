@@ -13,7 +13,6 @@ class Administrador extends Component {
         this.idAdministrador = props.idAdministrador;
         this.nombre = props.nombre;
         this.apellido = props.apellido;
-        this.legajo = props.legajo;
         this.documento = props.documento;
         this.celular = props.celular;
         this.idCountry = props.idCountry;
@@ -48,7 +47,6 @@ class Administrador extends Component {
             <tr>
                 <th scope="row">{this.nombre}, {this.apellido}</th>
                 <td>{this.documento}</td>
-                <td> {this.legajo}</td>
                 <td>{this.celular}</td>
 
                 <td><NavLink

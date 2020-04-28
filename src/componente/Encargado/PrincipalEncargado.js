@@ -317,7 +317,6 @@ class PrincipalEncargado extends Component {
                                 <th scope="col">Nombre y Apellido</th>
                                 <th scope="col">Tipo Documento</th>
                                 <th scope="col">Documento</th>
-                                <th scope="col">Legajo</th>
                                 <th scope="col">Celular</th>
                                 <th scope="col">Fecha de Alta</th>
                                 <th scope="col">Editar</th>
@@ -335,7 +334,6 @@ class PrincipalEncargado extends Component {
                                                 <td>{enc[0].Nombre}, {enc[0].Apellido}</td>
                                                 <td>{tipoDocumento}</td>
                                                 <td>{enc[0].Documento}</td>
-                                                <td>{enc[0].Legajo}</td>
                                                 <td>{enc[0].Celular}</td>
                                                 <td>{hora.toLocaleString()}</td>
                                                 <td><Link to={editar}><Button bsStyle="warning" fill wd>
