@@ -5,6 +5,7 @@ import Datetime from 'react-datetime';
 import Switch from 'react-bootstrap-switch';
 import { validator } from '../validator';
 import { errorHTML } from '../Error';
+import Select from "react-select";
 
 class EditarServicio extends Component {
 
@@ -17,13 +18,19 @@ class EditarServicio extends Component {
             descripcion: '',
             horaDesde: new Date(2020, 0, 1, 8, 0),
             horaHasta: new Date(2020, 0, 1, 18, 0),
-            dias: [false, false, false, false, false, false, false]
+            dias: [false, false, false, false, false, false, false],
+            turnosMax: null,
+            turnoSelect:[],
+            turnosMaxSelect:[],
+            duracionTurno: null,
         };
         this.editServicio = this.editServicio.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeDesde = this.ChangeDesde.bind(this);
         this.ChangeHasta = this.ChangeHasta.bind(this);
         this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
+        this.ChangeSelectTurnosMax = this.ChangeSelectTurnosMax.bind(this);
+        this.ChangeSelectTurno = this.ChangeSelectTurno.bind(this);
         this.registrar = this.registrar.bind(this);
         const url = this.props.location.pathname.split('/');
         this.idServicio = url[url.length - 1];
@@ -34,6 +41,14 @@ class EditarServicio extends Component {
     }
 
     async componentDidMount() {
+        await Database.collection('Turnos').get().then(querySnapshot=> {
+            querySnapshot.forEach(doc=> {
+                this.state.turnoSelect.push(
+                    {value: doc.data().Duracion, label: doc.data().DuracionString}
+                );
+            });
+        });
+        let max = 0;
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.idServicio).get().then(doc=> {
                 if (doc.exists) {
@@ -44,10 +59,28 @@ class EditarServicio extends Component {
                         descripcion: doc.data().Descripcion,
                         dias: doc.data().Disponibilidad,
                         horaDesde: validator.obtenerFecha(doc.data().HoraDesde),
-                        horaHasta: validator.obtenerFecha(doc.data().HoraHasta)
+                        horaHasta: validator.obtenerFecha(doc.data().HoraHasta),
+                        duracionTurno: this.state.turnoSelect.find(x => x.value == (doc.data().DuracionTurno/60))
                     });
+                    max = doc.data().TurnosMax;
                 }
-            })
+            });
+        await this.actualizarHorasMax();
+        await this.setState({turnosMax: this.state.turnosMaxSelect.find(x => x.value == max)});
+    }
+
+    async actualizarHorasMax() {
+        let cantidadHs = new Date(this.state.horaHasta).getHours() - new Date(this.state.horaDesde).getHours();
+        let cantidadMin = new Date(this.state.horaHasta).getMinutes() - new Date(this.state.horaDesde).getMinutes();
+
+        if (cantidadHs < 1 || !this.state.duracionTurno) return;
+
+        let max = (cantidadHs / this.state.duracionTurno.value);
+        if (cantidadMin >= (this.state.duracionTurno.value * 60)) { max++ }
+        await this.setState({turnosMaxSelect: []});
+        for(var i = 1; i <= max; i++) {
+            this.state.turnosMaxSelect.push({value: i, label:i.toString()});
+        }
     }
 
     editServicio() {
@@ -58,7 +91,9 @@ class EditarServicio extends Component {
             Disponibilidad: this.state.dias,
             HoraDesde: this.redondear(new Date(this.state.horaDesde)),
             HoraHasta: this.redondear(new Date(this.state.horaHasta)),
-            Descripcion: this.state.descripcion
+            Descripcion: this.state.descripcion,
+            TurnosMax: this.state.turnosMax.value,
+            DuracionTurno: (this.state.duracionTurno.value * 60)
         });
 
     }
@@ -70,12 +105,16 @@ class EditarServicio extends Component {
         else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
 
-    ChangeDesde(event) {
-        this.setState({horaDesde: event});
+    async ChangeDesde(event) {
+        await this.setState({horaDesde: event});
+        await this.setState({duracionTurno: null, turnosMax: null});
+        await this.actualizarHorasMax();
     }
 
-    ChangeHasta(event) {
-        this.setState({horaHasta: event});
+    async ChangeHasta(event) {
+        await this.setState({horaHasta: event});
+        await this.setState({duracionTurno: null, turnosMax: null});
+        await this.actualizarHorasMax();
     }
 
     ChangeDescripcion(event) {
@@ -86,6 +125,16 @@ class EditarServicio extends Component {
         let {estado} = this.state;
         estado = !estado;
         this.setState({estado});
+    }
+
+    ChangeSelectTurnosMax(value) {
+        this.setState({turnosMax: value});
+    }
+
+    async ChangeSelectTurno(value) {
+        await this.setState({duracionTurno: value});
+        await this.setState({turnosMax: null});
+        await this.actualizarHorasMax();
     }
 
     registrar() {
@@ -238,6 +287,24 @@ class EditarServicio extends Component {
                                     inputProps={{placeholder: 'Hora hasta'}}
                                     value={this.state.horaHasta}
                                     onChange={this.ChangeHasta}
+                                />
+                            </div>
+                            <div className="row-secction col-md-2">
+                                <label>Duración de turno</label>
+                                <Select
+                                    isClearable={true}
+                                    value={this.state.duracionTurno}
+                                    options={this.state.turnoSelect}
+                                    onChange={this.ChangeSelectTurno.bind(this)}
+                                />
+                            </div>
+                            <div className="row-secction col-md-2">
+                                <label>Turnos Maximos de Reserva</label>
+                                <Select
+                                    isClearable={true}
+                                    value={this.state.turnosMax}
+                                    options={this.state.turnosMaxSelect}
+                                    onChange={this.ChangeSelectTurnosMax.bind(this)}
                                 />
                             </div>
                         </div>

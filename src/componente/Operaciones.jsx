@@ -5,9 +5,11 @@ import { Database } from '../config/config';
 const PERFILES = ['/Root/', '/Administradores/', '/Encargados/', '/Propietarios/'];
 const DIAS = ['Lun', 'Mar','Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
 const EstadosServicioSelect = [{value: true, label:'Disponible'}, {value: false, label:'No Disponible'}];
+const MinutosReserva = [{value: 0, label:'0'}, {value: 30, label:'30'}];
 
 export const constantes = {
     EstadosServicioSelect,
+    MinutosReserva
 };
 
 export const operacion = {

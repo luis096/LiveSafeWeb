@@ -448,7 +448,7 @@ var routes = [
     },
     {
         path: '/charts',
-        layout: '/admin',
+        layout: '/lala',
         name: 'Reportes',
         icon: 'pe-7s-graph1',
         component: Graficos

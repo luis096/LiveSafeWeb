@@ -24,10 +24,12 @@ class AltaReserva extends Component {
             servicioSeleccionado: {},
             events: [],
             consulta: false,
+            turnosMax: 0,
             alert: null,
             min: new Date(2019, 0, 1, 8, 0),
             max: new Date(2019, 0, 1, 18, 0),
-            dias: []
+            dias: [],
+            duracionTurno: 30
         };
         this.addReserva = this.addReserva.bind(this);
         this.consultar = this.consultar.bind(this);
@@ -88,7 +90,9 @@ class AltaReserva extends Component {
                     this.setState({
                         min: validator.obtenerFecha(doc.data().HoraDesde),
                         max: validator.obtenerFecha(doc.data().HoraHasta),
-                        dias: doc.data().Disponibilidad
+                        dias: doc.data().Disponibilidad,
+                        turnosMax: doc.data().TurnosMax,
+                        duracionTurno: doc.data().DuracionTurno,
                     });
                 }
             );
@@ -105,8 +109,13 @@ class AltaReserva extends Component {
         console.log('algo');
     }
 
+    isDayValid(start) {
+        return start === 0? this.state.dias[6]: this.state.dias[start - 1];
+    }
+
     addNewEventAlert(slotInfo) {
-        if (slotInfo.start === slotInfo.end) {
+        if (slotInfo.start.getHours() == slotInfo.end.getHours() &&
+            slotInfo.start.getMinutes() == slotInfo.end.getMinutes()) {
             return;
         }
         if (slotInfo.start < new Date()) {
@@ -126,6 +135,22 @@ class AltaReserva extends Component {
             return;
         }
 
+        if (!this.isDayValid(slotInfo.start.getDay())) {
+            this.setState({
+                alert: (
+                    <SweetAlert
+                        style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                        title="No se puede realizar la reserva"
+                        onConfirm={()=>this.hideAlert()}
+                        onCancel={()=>this.hideAlert()}
+                        confirmBtnBsStyle="info"
+                    >
+                        La reserva no esta disponible este día de la semana.
+                    </SweetAlert>
+                )
+            });
+            return;
+        }
         this.state.events.map((evento)=> {
             if (evento.start.getDay() == slotInfo.start.getDay()) {
                 if ((evento.start <= slotInfo.start && evento.end > slotInfo.start) ||
@@ -148,7 +173,7 @@ class AltaReserva extends Component {
             }
         });
         if (this.state.alert) return;
-        if (slotInfo.slots.length > 9) {
+        if (slotInfo.slots.length > (this.state.turnosMax + 1)) {
             this.setState({
                 alert: (
                     <SweetAlert
@@ -158,7 +183,7 @@ class AltaReserva extends Component {
                         onCancel={()=>this.hideAlert()}
                         confirmBtnBsStyle="info"
                     >
-                        La reserva no debe durar mas de 4hs.
+                        La reserva no debe durar mas de {this.state.turnosMax} turnos.
                     </SweetAlert>
                 )
             });
@@ -291,14 +316,19 @@ class AltaReserva extends Component {
                     <Grid fluid>
                         <Row>
                             <Col md={12}>
-                                <h3>Servicio: {this.state.servicioSeleccionado ? this.state.servicioSeleccionado.label : 'Sin servicio seleccionado'}</h3>
+                                <h3>Servicio: {this.state.servicioSeleccionado ?
+                                    this.state.servicioSeleccionado.label : 'Sin servicio seleccionado'}</h3>
+                                <span><strong>
+                                    Duración de turno: {(this.state.duracionTurno / 60) >= 1 ? (this.state.duracionTurno / 60) + 'Hs.':
+                                    (this.state.duracionTurno) + 'min.'}
+                                </strong></span>
                                 <Disponibilidad dias={this.state.dias}></Disponibilidad>
                                 <Card
                                     calendar
                                     content={
                                         <Calendar
                                             selectable
-                                            step={30}
+                                            step={this.state.duracionTurno}
                                             min={this.state.min}
                                             max={this.state.max}
                                             localizer={localizer}

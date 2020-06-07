@@ -5,6 +5,8 @@ import Datetime from 'react-datetime';
 import Switch from 'react-bootstrap-switch';
 import { errorHTML } from '../Error';
 import { validator } from '../validator';
+import Select from "react-select";
+import {constantes} from "../Operaciones";
 
 class AltaServicio extends Component {
 
@@ -16,13 +18,19 @@ class AltaServicio extends Component {
             descripcion: '',
             horaDesde: new Date(2020, 0, 1, 8, 0),
             horaHasta: new Date(2020, 0, 1, 18, 0),
-            dias: [false, false, false, false, false, false, false]
+            dias: [false, false, false, false, false, false, false],
+            turnosMax: null,
+            turnoSelect:[],
+            turnosMaxSelect:[],
+            duracionTurno: null,
         };
         this.addServicio = this.addServicio.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeDesde = this.ChangeDesde.bind(this);
         this.ChangeHasta = this.ChangeHasta.bind(this);
         this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
+        this.ChangeSelectTurnosMax = this.ChangeSelectTurnosMax.bind(this);
+        this.ChangeSelectTurno = this.ChangeSelectTurno.bind(this);
         this.registrar = this.registrar.bind(this);
         this.reestaurar = this.reestaurar.bind(this);
 
@@ -30,7 +38,32 @@ class AltaServicio extends Component {
         this.errorNombre = {error: false, mensaje: ''};
         this.errorHoraDesde = {error: false, mensaje: ''};
         this.errorHoraHasta = {error: false, mensaje: ''};
-        
+
+    }
+
+    async componentDidMount() {
+       this.actualizarHorasMax()
+        await Database.collection('Turnos').get().then(querySnapshot=> {
+            querySnapshot.forEach(doc=> {
+                this.state.turnoSelect.push(
+                    {value: doc.data().Duracion, label: doc.data().DuracionString}
+                );
+            });
+        });
+    }
+
+    async actualizarHorasMax() {
+        let cantidadHs = new Date(this.state.horaHasta).getHours() - new Date(this.state.horaDesde).getHours();
+        let cantidadMin = new Date(this.state.horaHasta).getMinutes() - new Date(this.state.horaDesde).getMinutes();
+
+        if (cantidadHs < 1 || !this.state.duracionTurno) return;
+
+        let max = (cantidadHs / this.state.duracionTurno.value);
+        if (cantidadMin >= (this.state.duracionTurno.value * 60)) { max++ }
+        await this.setState({turnosMaxSelect: []});
+         for(var i = 1; i <= max; i++) {
+            this.state.turnosMaxSelect.push({value: i, label:i.toString()});
+        }
     }
 
     addServicio() {
@@ -40,7 +73,9 @@ class AltaServicio extends Component {
             Disponibilidad: this.state.dias,
             HoraDesde: this.redondear(new Date(this.state.horaDesde)),
             HoraHasta: this.redondear(new Date(this.state.horaHasta)),
-            Descripcion: this.state.descripcion
+            Descripcion: this.state.descripcion,
+            TurnosMax: this.state.turnosMax.value,
+            DuracionTurno: (this.state.duracionTurno.value * 60)
         });
     }
 
@@ -51,14 +86,16 @@ class AltaServicio extends Component {
         else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
 
-    ChangeDesde(event) {
-        this.setState({horaDesde: event});
-        this.ErrorHoraDesde = validator.requerido(event.target.value)
+    async ChangeDesde(event) {
+        await this.setState({horaDesde: event});
+        await this.setState({duracionTurno: null, turnosMax: null});
+        await this.actualizarHorasMax();
     }
 
-    ChangeHasta(event) {
-        this.setState({horaHasta: event});
-        this.ErrorHoraHasta = validator.requerido(event.target.value)
+    async ChangeHasta(event) {
+        await this.setState({horaHasta: event});
+        await this.setState({duracionTurno: null, turnosMax: null});
+        await this.actualizarHorasMax();
     }
 
     ChangeDescripcion(event) {
@@ -71,11 +108,19 @@ class AltaServicio extends Component {
         this.setState({estado});
     }
 
-    registrar() {
+    ChangeSelectTurnosMax(value) {
+        this.setState({turnosMax: value});
+    }
 
+    async ChangeSelectTurno(value) {
+        await this.setState({duracionTurno: value});
+        await this.setState({turnosMax: null});
+        await this.actualizarHorasMax();
+    }
+
+    registrar() {
         this.addServicio();
         this.reestaurar();
-
     }
 
     redondear(date) {
@@ -104,7 +149,9 @@ class AltaServicio extends Component {
             descripcion: '',
             horaDesde: new Date(2020, 0, 1, 8, 0),
             horaHasta: new Date(2020, 0, 1, 18, 0),
-            dias: [false, false, false, false, false, false, false]
+            dias: [false, false, false, false, false, false, false],
+            horasMax: null,
+            minMax: null
         });
     }
 
@@ -237,6 +284,24 @@ class AltaServicio extends Component {
                                     onChange={this.ChangeHasta}
                                 />
                                 {errorHTML.errorLabel(this.errorHoraHasta)}
+                            </div>
+                            <div className="row-secction col-md-2">
+                                <label>Duración de turno</label>
+                                <Select
+                                    isClearable={true}
+                                    value={this.state.duracionTurno}
+                                    options={this.state.turnoSelect}
+                                    onChange={this.ChangeSelectTurno.bind(this)}
+                                />
+                            </div>
+                            <div className="row-secction col-md-2">
+                                <label>Turnos Maximos de Reserva</label>
+                                <Select
+                                    isClearable={true}
+                                    value={this.state.turnosMax}
+                                    options={this.state.turnosMaxSelect}
+                                    onChange={this.ChangeSelectTurnosMax.bind(this)}
+                                />
                             </div>
                         </div>
                         <div className="row">
