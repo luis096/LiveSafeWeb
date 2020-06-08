@@ -23,7 +23,6 @@ class MiCountry extends Component {
         Storage.ref(barrio.Imagen).getDownloadURL().then((url)=>{
             document.getElementById('imgBarrio').src = url;
         });
-
         this.setState({barrio, imagen});
     }
 

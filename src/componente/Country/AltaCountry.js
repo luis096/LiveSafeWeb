@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Database, Firebase } from '../../config/config';
+import { Database, Firebase, Storage} from '../../config/config';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { operacion } from '../Operaciones';
@@ -40,11 +40,15 @@ class AltaCountry extends Component {
         this.errorDescripcion= {error:false, mensaje:''}
     }
 
+    componentDidMount() {
+        document.getElementById('imgBarrio').src = '';
+    }
+
     handleFiles(event) {
         const file = event.target.files[0];
-        const storageRef = Firebase.storage().ref(`/Img/${file.name}`);
+        const storageRef = Storage.ref(`/Img/${file.name}`);
         const task = storageRef.put(file);
-        task.on('state_changed', snapshot=> {
+        task.on('state_changed', (snapshot) => {
             let porcentaje = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             this.setState({
                 upLoadValue: porcentaje
@@ -54,9 +58,18 @@ class AltaCountry extends Component {
         }, ()=> {
             this.setState({
                 upLoadValue: 100,
-                picture: task.snapshot.downloadURL
+            });
+            Storage.ref(`/Img/${file.name}`).getDownloadURL().then((url)=>{
+                document.getElementById('imgBarrio').src = url;
             });
         });
+
+        // // Delete the file
+        // desertRef.delete().then(function() {
+        //     // File deleted successfully
+        // }).catch(function(error) {
+        //     // Uh-oh, an error occurred!
+        // });
     }
 
     ChangeNombre(event) {
@@ -104,11 +117,11 @@ class AltaCountry extends Component {
     }
 
     registrar() {
-        if (this.state.nombre == "" || this.state.calle == "" || this.state.numero =="" || this.state.titular == "" ||
-         this.state.celular == "" ) {
-            operacion.sinCompletar("Debe completar todos los campos requeridos")
-            return
-        }
+        // if (this.state.nombre == "" || this.state.calle == "" || this.state.numero =="" || this.state.titular == "" ||
+        //  this.state.celular == "" ) {
+        //     operacion.sinCompletar("Debe completar todos los campos requeridos")
+        //     return
+        // }
         Database.collection('Country').add({
             Nombre: this.state.nombre,
             Calle: this.state.calle,
@@ -188,13 +201,13 @@ class AltaCountry extends Component {
                 </div>
 
                 <div>
-                    {/*<progress value={this.state.upLoadValue} max='100'>*/}
-                        {/*{this.state.upLoadValue}%*/}
-                    {/*</progress>*/}
+                    <progress value={this.state.upLoadValue} max='100'>
+                        {this.state.upLoadValue}%
+                    </progress>
 
-                    {/*<input type="file" onChange={this.handleFiles}/>*/}
+                    <input type="file" onChange={this.handleFiles}/>
 
-                    {/*<img width="320" src={this.state.picture}/>*/}
+                    <img width="320" id="imgBarrio"/>
 
                 </div>
 
