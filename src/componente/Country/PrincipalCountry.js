@@ -126,8 +126,8 @@ class PrincipalCountry extends Component {
             total = total.where('Nombre', '==', this.state.nombre);
         }
         if (this.state.titular) {
-            con = con.where('Titular', '==', this.state.nombre);
-            total = total.where('Titular', '==', this.state.nombre);
+            con = con.where('Titular', '==', this.state.titular);
+            total = total.where('Titular', '==', this.state.titular);
         }
 
         if (nueva) {

@@ -17,6 +17,7 @@ import { Redirect } from 'react-router-dom';
 import Spinner from 'react-spinner-material';
 import AuthNavbar from 'components/Navbars/AuthNavbar.jsx';
 import bgImage from '../../assets/img/fondoLogin.jpg';
+import objectToGetParams from "react-share/lib/utils/objectToGetParams";
 
 class LoginPage extends Component {
     constructor(props) {
@@ -34,7 +35,8 @@ class LoginPage extends Component {
             usuarioNuevo: null,
             nuevaPass: '',
             nuevaPassTwo: '',
-            login: false
+            login: false,
+            loading: false
         };
         this.crearUsuarioNuevo = this.crearUsuarioNuevo.bind(this);
         this.ChangeEmail = this.ChangeEmail.bind(this);
@@ -82,13 +84,15 @@ class LoginPage extends Component {
 
     consultarUsuarioTemporal() {
         Database.collection('UsuariosTemp').doc(this.state.email).get().then(doc=> {
-            if (doc.exists) {
+            if (doc.exists && doc.data().Password === this.state.password) {
                 this.setState({usuarioNuevo: doc.data()});
             }
         });
+        this.setState({loading: false});
     }
 
     async onButtonPress() {
+        this.setState({loading: true});
         await this.obtenerValoresUsuario();
 
         if (!this.state.tipoUsuario) {
@@ -98,17 +102,31 @@ class LoginPage extends Component {
                 .then(()=> {
                     this.setState({result: true});
                     this.setState({resultado: 'Fallo de autentificacion'});
+                    this.setState({loading: false});
                 });
         }
     }
 
     async crearUsuarioNuevo() {
+        this.setState({loading: true});
         const {email, nuevaPass, usuarioNuevo} = this.state;
-        await Firebase.auth().createUserWithEmailAndPassword(email, nuevaPass).then(
-            Database.collection('Usuarios').doc(email).set(usuarioNuevo));
+
+        let usuarioSinPass = {
+            IdCountry: usuarioNuevo.IdCountry,
+            IdPersona: usuarioNuevo.IdPersona,
+            NombreUsuario: usuarioNuevo.NombreUsuario,
+            TipoUsuario: usuarioNuevo.TipoUsuario
+        };
+
+        await Firebase.auth().createUserWithEmailAndPassword(email, nuevaPass).then( () =>{
+            Database.collection('Usuarios').doc(email).set(usuarioSinPass);
+            Database.collection('UsuariosTemp').doc(this.state.email).delete();
+            this.setState({password: nuevaPass});
+        });
         await this.obtenerValoresUsuario();
-        Database.collection('UsuariosTemp').doc(this.state.email).delete();
-        this.setState({user: true});
+        this.setState({result: true});
+        this.setState({resultado: 'Fallo de autentificacion'});
+        this.setState({loading: false});
     }
 
     redirect() {
@@ -139,13 +157,14 @@ class LoginPage extends Component {
                                                         <FormGroup>
                                                             <ControlLabel>Email</ControlLabel>
                                                             <FormControl placeholder="Ingrese mail" type="email"
-                                                                         value={this.state.email}
+                                                                         value={this.state.email} disabled={this.state.loading}
                                                                          onChange={this.ChangeEmail}/>
                                                         </FormGroup>
                                                         <FormGroup hidden={this.state.usuarioNuevo}>
                                                             <ControlLabel>Contraseña</ControlLabel>
                                                             <FormControl placeholder="Contraseña"
                                                                          type="password"
+                                                                         disabled={this.state.loading}
                                                                          value={this.state.password}
                                                                          onChange={this.ChangePass}/>
                                                         </FormGroup>
@@ -153,6 +172,7 @@ class LoginPage extends Component {
                                                             <ControlLabel>Nueva Contraseña</ControlLabel>
                                                             <FormControl placeholder="Contraseña"
                                                                          type="password"
+                                                                         disabled={this.state.loading}
                                                                          value={this.state.nuevaPass}
                                                                          onChange={this.ChangeNuevaPass}
                                                                          autoComplete="off"/>
@@ -162,6 +182,7 @@ class LoginPage extends Component {
                                                                 Contraseña</ControlLabel>
                                                             <FormControl placeholder="Contraseña"
                                                                          type="password"
+                                                                         disabled={this.state.loading}
                                                                          value={this.state.nuevaPassTwo}
                                                                          onChange={this.ChangeNuevaPassTwo}
                                                                          autoComplete="off"/>
@@ -169,13 +190,18 @@ class LoginPage extends Component {
                                                     </div>
                                                 }
                                                 legend={
-                                                    <Button bsStyle="info" fill wd
-                                                            onClick={this.state.usuarioNuevo ?
-                                                                this.crearUsuarioNuevo :
-                                                                this.onButtonPress
-                                                            }>
-                                                        Iniciar Sesion
-                                                    </Button>
+                                                    <div>
+                                                        <Spinner size={50} spinnerColor={'#1300f5'} visible={this.state.loading} />
+                                                       <div hidden={this.state.loading}>
+                                                           <Button bsStyle="info" fill wd
+                                                                   onClick={this.state.usuarioNuevo ?
+                                                                       this.crearUsuarioNuevo :
+                                                                       this.onButtonPress
+                                                                   }>
+                                                               {!!this.state.usuarioNuevo?"Crear usuario":"Iniciar Sesion"}
+                                                           </Button>
+                                                       </div>
+                                                    </div>
                                                 }
                                                 ftTextCenter
                                             />

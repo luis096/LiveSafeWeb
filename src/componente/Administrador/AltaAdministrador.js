@@ -142,14 +142,14 @@ class AltaAdministrador extends Component {
 
 
     async registrar() {
-        if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
-            this.state.fechaNacimiento == "" || this.state.celular == "" || this.state.mail == "") {
-                operacion.sinCompletar("Debe completar todos los campos requeridos")
-                return
-            }
-        let mailValido = await validator.validarMail(this.state.mail)
+        // if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
+        //     this.state.fechaNacimiento == "" || this.state.celular == "" || this.state.mail == "") {
+        //         operacion.sinCompletar("Debe completar todos los campos requeridos")
+        //         return
+        //     }
+        let mailValido = await validator.validarMail(this.state.mail);
         if (mailValido) {
-            this.addAdministrador();
+            await this.addAdministrador();
         } else {
             this.setState({errorMail: {error: true, mensaje: 'El mail ingresado ya esta en uso. Intente nuevamente'}})
         }
@@ -159,12 +159,13 @@ class AltaAdministrador extends Component {
         const {mail} = this.state;
         const pass = this.state.documento;
 
-            await Database.collection('UsuariosTemp').doc(mail).set({
-                NombreUsuario: mail,
-                TipoUsuario: Database.doc('/TiposUsuario/Administrador'),
-                IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
-                IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Administradores/' + this.state.idAdminCreado)
-            });
+        await Database.collection('UsuariosTemp').doc(mail).set({
+            NombreUsuario: mail,
+            TipoUsuario: Database.doc('/TiposUsuario/Administrador'),
+            IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
+            IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Administradores/' + this.state.idAdminCreado),
+            Password: pass
+        });
 
     }
 
