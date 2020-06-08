@@ -7,6 +7,7 @@ import {
     ControlLabel,
     FormControl
 } from 'react-bootstrap';
+import './index.scss';
 import Card from 'components/Card/Card.jsx';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import Checkbox from 'components/CustomCheckbox/CustomCheckbox.jsx';
@@ -191,14 +192,18 @@ class LoginPage extends Component {
                                                 }
                                                 legend={
                                                     <div>
-                                                        <Spinner size={50} spinnerColor={'#1300f5'} visible={this.state.loading} />
-                                                       <div hidden={this.state.loading}>
-                                                           <Button bsStyle="info" fill wd
+                                                        
+                                                       <div >
+                                                           <Button bsStyle="info"  fill className="button"
                                                                    onClick={this.state.usuarioNuevo ?
                                                                        this.crearUsuarioNuevo :
                                                                        this.onButtonPress
                                                                    }>
-                                                               {!!this.state.usuarioNuevo?"Crear usuario":"Iniciar Sesion"}
+                                                                { this.state.loading ? (
+                                                                    <Spinner className="spinner" size={30} spinnerColor={'white'} visible={this.state.loading} />
+                                                                ) :
+                                                                (!!this.state.usuarioNuevo?"Crear usuario":"Iniciar Sesion")
+                                                                }
                                                            </Button>
                                                        </div>
                                                     </div>
