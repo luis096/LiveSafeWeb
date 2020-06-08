@@ -179,16 +179,14 @@ class AltaPropietario extends Component {
         const {mail} = this.state;
         const pass = this.state.documento;
 
-        if (true) {
-            await Database.collection('UsuariosTemp').doc(mail).set({
-                    NombreUsuario: mail,
-                    TipoUsuario: Database.doc('/TiposUsuario/Propietario'),
-                    IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
-                    IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + this.state.idPropietarioCreado),
-                    Password: pass
-                })
-           
-        }
+        await Database.collection('UsuariosTemp').doc(mail).set({
+                NombreUsuario: mail,
+                TipoUsuario: Database.doc('/TiposUsuario/Propietario'),
+                IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
+                IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + this.state.idPropietarioCreado),
+                Password: pass
+            })
+
     }
 
 

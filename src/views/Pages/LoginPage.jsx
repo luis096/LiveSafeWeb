@@ -125,9 +125,9 @@ class LoginPage extends Component {
             this.setState({password: nuevaPass});
         });
         await this.obtenerValoresUsuario();
-        this.setState({result: true});
         this.setState({resultado: 'Fallo de autentificacion'});
         this.setState({loading: false});
+        this.setState({result: true});
     }
 
     redirect() {
