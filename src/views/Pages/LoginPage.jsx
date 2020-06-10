@@ -9,8 +9,6 @@ import {
 } from 'react-bootstrap';
 import './index.scss';
 import Card from 'components/Card/Card.jsx';
-import Button from 'components/CustomButton/CustomButton.jsx';
-import Checkbox from 'components/CustomCheckbox/CustomCheckbox.jsx';
 import logo from '../../logoLiveSafe.png';
 import { Database, Firebase } from '../../config/config';
 import firebase from 'firebase';
@@ -18,7 +16,6 @@ import { Redirect } from 'react-router-dom';
 import Spinner from 'react-spinner-material';
 import AuthNavbar from 'components/Navbars/AuthNavbar.jsx';
 import bgImage from '../../assets/img/fondoLogin.jpg';
-import objectToGetParams from "react-share/lib/utils/objectToGetParams";
 
 class LoginPage extends Component {
     constructor(props) {
@@ -194,17 +191,17 @@ class LoginPage extends Component {
                                                     <div>
                                                         
                                                        <div >
-                                                           <Button bsStyle="info"  fill className="button"
+                                                           <button bsStyle="info"  fill wd className="button"
                                                                    onClick={this.state.usuarioNuevo ?
                                                                        this.crearUsuarioNuevo :
                                                                        this.onButtonPress
                                                                    }>
                                                                 { this.state.loading ? (
-                                                                    <Spinner className="spinner" size={30} spinnerColor={'white'} visible={this.state.loading} />
+                                                                    <Spinner className="spinner" size={30} spinnerColor={'white'} spinnerWidth={3}/>
                                                                 ) :
                                                                 (!!this.state.usuarioNuevo?"Crear usuario":"Iniciar Sesion")
                                                                 }
-                                                           </Button>
+                                                           </button>
                                                        </div>
                                                     </div>
                                                 }
