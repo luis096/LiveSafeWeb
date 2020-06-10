@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 //import '../Style/Alta.css';
 import '../Propietario/Index.css';
-import { Link } from 'react-router-dom';
-import { Database, Firebase } from '../../config/config';
+import { Database } from '../../config/config';
 import { errorHTML } from '../Error';
+import Switch from 'react-bootstrap-switch';
 import Datetime from 'react-datetime';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
-import SweetAlert from 'react-bootstrap-sweetalert';
-import { operacion } from '../Operaciones';
 
 class AltaPropietario extends Component {
     constructor() {
@@ -20,14 +18,12 @@ class AltaPropietario extends Component {
             apellido: '',
             tipoDocumento: '',
             documento: '',
-            titular: 'Si',
+            titular: true,
             telefonoFijo: '',
             celular: '',
-            descripcion: '',
             fechaNacimiento: new Date(),
             idCountry: '',
-            mail: '@countryapp.com',
-            pass: '',
+            mail: '',
             tipoD: [],// Para cargar el combo
             resultado: ''
         };
@@ -72,10 +68,9 @@ class AltaPropietario extends Component {
             .collection('Propietarios').add({
                 Nombre: this.state.nombre,
                 Apellido: this.state.apellido,
-                Titular: this.state.titular === 'Si' ? true : false,
+                Titular: this.state.titular,
                 Celular: this.state.celular,
                 TelefonoFijo: this.state.telefonoFijo,
-                Descripcion: this.state.descripcion,
                 TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.value),
                 Documento: this.state.documento,
                 FechaNacimiento: new Date(this.state.fechaNacimiento),
@@ -143,7 +138,11 @@ class AltaPropietario extends Component {
 
 
     ChangeRadio(event) {
-        this.setState({titular: event.currentTarget.value});
+        let {titular} = this.state;
+        titular = !titular;
+        this.setState({titular});
+
+        //this.setState({titular: event.currentTarget.value});
     }
 
     async registrar() {
@@ -164,13 +163,10 @@ class AltaPropietario extends Component {
             apellido: '',
             tipoDocumento: '',
             documento: '',
-            titular: 'Si',
-            telefonoFijo: '',
+            titular: true,
             celular: '',
-            descripcion: '',
             fechaNacimiento: '',
             mail: '',
-            pass: '',
             resultado: '',
         })
     }
@@ -277,21 +273,12 @@ class AltaPropietario extends Component {
                             <fieldset className="col-md-6 row-secction">
                                 <label> Titular</label>
                                 <div className="form-check">
-                                <label className="form-check-label">
-                                    <input type="radio" className="form-check-input"
-                                           value='Si' checked={this.state.titular === 'Si'}
-                                           onChange={this.ChangeRadio}/>
-                                    Si
-                                </label>
-                            </div>
-                            <div className="form-check">
-                                <label className="form-check-label">
-                                    <input type="radio" className="form-check-input" value='No'
-                                           onChange={this.ChangeRadio} checked={this.state.titular === 'No'}/>
-                                    No
-                                </label>
-                            </div>
-                                
+                                <Switch onText="Si" offText="No"
+                                            value={this.state.titular}
+                                            onChange={()=> {
+                                                this.ChangeRadio();
+                                            }}/>
+                                            </div>
                             </fieldset>
                         </div>
                         </div>

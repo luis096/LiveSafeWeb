@@ -276,9 +276,9 @@ class AltaReserva extends Component {
 
     render() {
         return (
-            <div className="col-12">
+            <div className="col-12" >
                 <legend><h3 className="row">Nueva Reserva</h3></legend>
-                <div className="row card col-md-6">
+                <div className="row card col-md-6" style={{display: 'flex'}}>
                     <div className="card-body">
                         <div className="row">
                             <div className="col-md-10 row-secction">

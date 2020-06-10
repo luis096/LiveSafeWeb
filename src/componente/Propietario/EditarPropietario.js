@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
-import { Link } from 'react-router-dom';
 import { errorHTML } from '../Error';
 import { validator } from '../validator';
-import SweetAlert from 'react-bootstrap-sweetalert';
+import Switch from 'react-bootstrap-switch';
+import Datetime from 'react-datetime';
+import Button from 'components/CustomButton/CustomButton.jsx';
 import { operacion } from '../Operaciones';
 
 class EditarPropietario extends Component {
@@ -19,9 +20,7 @@ class EditarPropietario extends Component {
             tipoDocumento: '',
             documento: '',
             titular: '',
-            telefonoFijo: '',
             celular: '',
-            descripcion: '',
             fechaNacimiento: '',
             usuario: '',
             idTipoPersona: '',
@@ -37,11 +36,8 @@ class EditarPropietario extends Component {
         this.ChangeNumero = this.ChangeNumero.bind(this);
         this.ChangeDocumento = this.ChangeDocumento.bind(this);
         this.ChangeCelular = this.ChangeCelular.bind(this);
-
-        this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
         this.ChangeFechaNacimiento = this.ChangeFechaNacimiento.bind(this);
         this.ChangeRadio = this.ChangeRadio.bind(this);
-        this.ChangeTelefonoFijo = this.ChangeTelefonoFijo.bind(this);
         this.registrar = this.registrar.bind(this);
 
         this.idTD = '';
@@ -53,7 +49,6 @@ class EditarPropietario extends Component {
         this.errorApellido = {error: false, mensaje: ''};
         this.errorDocumento = {error: false, mensaje: ''};
         this.errorCelular= {error:false, mensaje:''};
-        this.errorTelefono= {error:false, mensaje:''};
         this.errorMail= {error:false, mensaje:''}
         this.errorTipoDocumento = {error: false, mensaje: ''};
 
@@ -85,17 +80,15 @@ class EditarPropietario extends Component {
         await Database.collection('TipoDocumento').doc(estrella.TipoDocumento.id).get()
             .then(doc=> {
                 if (doc.exists) {
-
-                    this.state.tipoDocumento = {value: doc.id, name: doc.data().Nombre};
-
+                    this.state.tipoDocumento = {value: doc.id, label: doc.data().Nombre};
                 }
             });
         this.setState({
             nombre: estrella.Nombre,
             apellido: estrella.Apellido,
-            titular: estrella.Titular ? 'Si' : 'No',
+            titular: estrella.Titular,
             documento: estrella.Documento,
-            fechaNacimiento: estrella.FechaNacimiento,
+            fechaNacimiento: validator.obtenerFecha(estrella.FechaNacimiento),
             fechaAlta: estrella.FechaAlta,
             telefonoFijo: estrella.TelefonoFijo,
             celular: estrella.Celular,
@@ -110,13 +103,11 @@ class EditarPropietario extends Component {
             .collection('Propietarios').doc(this.idPropietario).set({
             Nombre: this.state.nombre,
             Apellido: this.state.apellido,
-            Titular: this.state.titular === 'Si' ? true : false,
+            Titular: this.state.titular,
             Celular: this.state.celular,
-            TelefonoFijo: this.state.telefonoFijo,
-            Descripcion: this.state.descripcion,
-            TipoDocumento: this.state.tipoDocumento,
-            Documento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
-            FechaNacimiento: this.state.fechaNacimiento,
+            TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
+            Documento: this.state.documento,
+            FechaNacimiento: new Date(this.state.fechaNacimiento),
             FechaAlta: this.state.fechaAlta,
             Usuario: this.state.usuario
         });
@@ -144,13 +135,6 @@ class EditarPropietario extends Component {
 
     }
 
-    ChangeTelefonoFijo(event) {
-        this.setState({telefonoFijo: event.target.value});
-        if (event.target.value == "")
-        {this.errorTelefono = validator.requerido(event.target.value)}
-        else{this.errorTelefono =validator.numero(event.target.value)}
-
-    }
 
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
@@ -168,9 +152,6 @@ class EditarPropietario extends Component {
 
     }
 
-    ChangeDescripcion(event) {
-        this.setState({descripcion: event.target.value});
-    }
 
     ChangeSelect(value) {
         this.setState({tipoDocumento: value});
@@ -179,7 +160,7 @@ class EditarPropietario extends Component {
     }
 
     ChangeFechaNacimiento(event) {
-        this.setState({fechaNacimiento: event.target.value});
+        this.setState({fechaNacimiento: event});
     }
 
     ChangeRadio(event) {
@@ -199,111 +180,95 @@ class EditarPropietario extends Component {
 
     render() {
         return (
-            <div className="col-12 ">
-                <div>
-                    <div className="row">
-                        <legend> Editar Propietario</legend>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="Nombre"> Nombre </label>
-                            <input  className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
-                                    placeholder="Nombre"
-                                   value={this.state.nombre}
-                                   onChange={this.ChangeNombre}/>
-                             {errorHTML.errorLabel(this.errorNombre)}
-                        </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="Apellido"> Apellido </label>
-                            <input type="family-name" className={ errorHTML.classNameError(this.errorApellido, 'form-control') }
-                                   placeholder="Apellido"
-                                   value={this.state.apellido}
-                                   onChange={this.ChangeApellido}/>
-                            {errorHTML.errorLabel(this.errorApellido)}
-                        </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="TipoDocumento"> Tipo de Documento </label>
-                            <Select
-                                className="select-documento"
-                                value={this.state.tipoDocumento}
-                                classNamePrefix="Select"
-                                isDisabled={false}
-                                isLoading={false}
-                                isClearable={true}
-                                isSearchable={true}
-                                options={this.state.tipoD}
-                                onChange={this.ChangeSelect.bind(this)}
-                                styles={this.errorTipoDocumento.error ? {
-                                    control: (base, state)=>({
-                                        ...base,
-                                        borderColor: 'red',
-                                        boxShadow: 'red'
-                                    })
-                                } : {}}
-                            />
-                            <label className='small text-danger'
-                                   hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
-                        </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="NumeroDocumento"> Numero de Documento </label>
-                            <input className={ errorHTML.classNameError(this.errorDocumento, 'form-control') }
-                                   placeholder="Numero del documento"
-                                   value={this.state.documento}
-                                   onChange={this.ChangeDocumento}/>
-                            {errorHTML.errorLabel(this.errorDocumento)}
-                        </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="FechaNacimiento"> Fecha de Nacimiento </label>
-                            <input type="date" className="form-control" name="FechaNacimiento"
-                                   step="1" min="1920-01-01"
-                                   value={this.state.fechaNacimiento}
-                                   onChange={this.ChangeFechaNacimiento}
-                            />
-                        </div>
-                        <fieldset className="col-md-6  flex-container form-group">
-                            <legend> Titular</legend>
-                            <div className="form-check">
-                                <label className="form-check-label">
-                                    <input type="radio" className="form-check-input"
-                                           value='Si' checked={this.state.titular === 'Si'}
-                                           onChange={this.ChangeRadio}/>
-                                    Si
-                                </label>
+            <div className="col-12">
+                <legend><h3 className="row">Nuevo Propietario</h3></legend>
+                {this.state.alert}
+                <div className="row card">
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-4 row-secction">
+                                <label> Nombre </label>
+                                <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
+                                       placeholder="Nombre"
+                                       value={this.state.nombre}
+                                       onChange={this.ChangeNombre}
+                                />
+                                {errorHTML.errorLabel(this.errorNombre)}
                             </div>
-                            <div className="form-check">
-                                <label className="form-check-label">
-                                    <input type="radio" className="form-check-input" value='No'
-                                           onChange={this.ChangeRadio} checked={this.state.titular === 'No'}/>
-                                    No
-                                </label>
+                            <div className="col-md-4 row-secction">
+                                <label> Apellido </label>
+                                <input className={ errorHTML.classNameError(this.errorApellido, 'form-control') }
+                                       placeholder="Apellido"
+                                       value={this.state.apellido}
+                                       onChange={this.ChangeApellido}/>
+                                {errorHTML.errorLabel(this.errorApellido)}
                             </div>
-                        </fieldset>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="NumeroCelular"> Celular </label>
-                            <input type="tel" className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
-                                   placeholder="Numero de celular"
-                                   value={this.state.celular}
-                                   onChange={this.ChangeCelular}/>
-                            {errorHTML.errorLabel(this.errorCelular)}
+                            <div className="col-md-4 row-secction">
+                                <label> Fecha de Nacimiento </label>
+                                <Datetime
+                                    inputProps={{placeholder: 'Fecha de Nacimiento'}}
+                                    timeFormat={false}
+                                    value={this.state.fechaNacimiento}
+                                    onChange={this.ChangeFechaNacimiento}
+                                />
+                            </div>
                         </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="NumeroTelefono"> Telefono Fijo </label>
-                            <input type="tel" className={ errorHTML.classNameError(this.errorTelefono, 'form-control') }
-                                   placeholder="Numero de telefono fijo"
-                                   value={this.state.telefonoFijo}
-                                   onChange={this.ChangeTelefonoFijo}/>
-                            {errorHTML.errorLabel(this.errorTelefono)}
+                        <div className="row">
+                            <div className="col-md-4 row-secction">
+                                <label> Numero de Documento </label>
+                                <input className={ errorHTML.classNameError(this.errorDocumento, 'form-control') }
+                                       placeholder="Numero de Documento"
+                                       value={this.state.documento}
+                                       onChange={this.ChangeDocumento}/>
+                                {errorHTML.errorLabel(this.errorDocumento)}
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Tipo de Documento </label>
+                                <Select
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    options={this.state.tipoD}
+                                    value = {this.state.tipoDocumento }
+                                    onChange={this.ChangeSelect.bind(this)}
+                                    styles={this.errorTipoDocumento.error ? {
+                                        control: (base, state)=>({
+                                            ...base,
+                                            borderColor: 'red',
+                                            boxShadow: 'red'
+                                        })
+                                    } : {}}
+                                />
+                                <label className='small text-danger'
+                                       hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Celular </label>
+                                <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
+                                       placeholder="Celular"
+                                       value={this.state.celular}
+                                       onChange={this.ChangeCelular}
+                                />
+                                {errorHTML.errorLabel(this.errorCelular)}
+                            </div>
                         </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="exampleTextarea"> Descripcion </ label>
-                            <textarea className="form-control" id="exampleTextarea" rows="3"
-                                      value={this.state.descripcion}
-                                      onChange={this.ChangeDescripcion}> </textarea>
+                        <div className="row">
+                            <fieldset className="col-md-6 row-secction">
+                                <label> Titular</label>
+                                <div className="form-check">
+                                <Switch onText="Si" offText="No"
+                                            value={this.state.titular}
+                                            onChange={()=> {
+                                                this.ChangeRadio();
+                                            }}/>
+                                            </div>
+                            </fieldset>
                         </div>
-                    </div>
-                    <div className="form-group izquierda">
-                        <Link to="/" type="button" className="btn btn-primary"
-                        >Volver</Link>
-                        <button className="btn btn-primary" onClick={this.registrar}>Registrar</button>
-                    </div>
+                        </div>
+                </div>
+                <div className="text-center">
+                    <Button bsStyle="primary" fill wd onClick={this.registrar}>
+                        Guardar Cambio
+                    </Button>
                 </div>
             </div>
         );
