@@ -18,9 +18,9 @@ class AltaCountry extends Component {
             titular: '',
             celular: '',
             descripcion: '',
-            resultado: 0,
-            picture: '',
-            upLoadValue: 0
+            imagenCountry: '',
+            upLoadValue: 0,
+            imgStorgeRef: ''
 
         };
         this.ChangeNombre = this.ChangeNombre.bind(this);
@@ -31,6 +31,7 @@ class AltaCountry extends Component {
         this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
         this.handleFiles = this.handleFiles.bind(this);
         this.registrar = this.registrar.bind(this);
+        this.eliminarImg = this.eliminarImg.bind(this);
 
         this.errorNombre = {error: false, mensaje: ''};
         this.errorTitular = {error: false, mensaje: ''};
@@ -46,8 +47,11 @@ class AltaCountry extends Component {
 
     handleFiles(event) {
         const file = event.target.files[0];
-        const storageRef = Storage.ref(`/Img/${file.name}`);
+        const name = `/Img/${file.name}`;
+        const storageRef = Storage.ref(name);
         const task = storageRef.put(file);
+
+        this.setState({imgStorgeRef: storageRef, imagenCountry: name});
         task.on('state_changed', (snapshot) => {
             let porcentaje = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             this.setState({
@@ -59,17 +63,10 @@ class AltaCountry extends Component {
             this.setState({
                 upLoadValue: 100,
             });
-            Storage.ref(`/Img/${file.name}`).getDownloadURL().then((url)=>{
+            Storage.ref(name).getDownloadURL().then((url)=>{
                 document.getElementById('imgBarrio').src = url;
             });
-        });
-
-        // // Delete the file
-        // desertRef.delete().then(function() {
-        //     // File deleted successfully
-        // }).catch(function(error) {
-        //     // Uh-oh, an error occurred!
-        // });
+        })
     }
 
     ChangeNombre(event) {
@@ -116,6 +113,15 @@ class AltaCountry extends Component {
 
     }
 
+    eliminarImg(){
+        this.state.imgStorgeRef.delete().then(() => {
+            document.getElementById('imgBarrio').src = '';
+            this.setState({imgStorgeRef: '', upLoadValue: 0, name: ''})
+        }).catch((error) => {
+            console.log('Error:', error)
+        });
+    }
+
     registrar() {
         // if (this.state.nombre == "" || this.state.calle == "" || this.state.numero =="" || this.state.titular == "" ||
         //  this.state.celular == "" ) {
@@ -129,7 +135,8 @@ class AltaCountry extends Component {
             Titular: this.state.titular,
             Celular: this.state.celular,
             Descripcion: this.state.descripcion,
-            FechaAlta: new Date()
+            FechaAlta: new Date(),
+            Imagen: this.state.imagenCountry
         });
     }
 
@@ -187,7 +194,7 @@ class AltaCountry extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-md-6 row-secction">
+                            <div className="col-md-12 row-secction">
                                 <label> Descripcion </label>
                                 <textarea className={ errorHTML.classNameError(this.errorDescripcion, 'form-control') }
                                           rows="3"
@@ -197,18 +204,24 @@ class AltaCountry extends Component {
                               {errorHTML.errorLabel(this.errorDescripcion)}
                             </div>
                         </div>
+                        <div className="row">
+                            <div className="col-md-12 row-secction">
+                                <label> Imagen del barrio </label>
+                                <div hidden={!!this.state.upLoadValue}>
+                                    <div hidden={!this.state.upLoadValue}>
+                                        <progress value={this.state.upLoadValue} max='100'>
+                                            {this.state.upLoadValue}%
+                                        </progress>
+                                    </div>
+                                    <input type="file" onChange={this.handleFiles}/>
+                                </div>
+                                <img width="320" id="imgBarrio"/>
+                                <div hidden={this.state.upLoadValue != 100}>
+                                    <Button bsStyle="warning" fill onClick={this.eliminarImg}>X</Button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-                <div>
-                    <progress value={this.state.upLoadValue} max='100'>
-                        {this.state.upLoadValue}%
-                    </progress>
-
-                    <input type="file" onChange={this.handleFiles}/>
-
-                    <img width="320" id="imgBarrio"/>
-
                 </div>
 
                 <div className="text-center">

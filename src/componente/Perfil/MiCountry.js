@@ -20,10 +20,13 @@ class MiCountry extends Component {
             barrio = doc.data();
         });
 
-        Storage.ref(barrio.Imagen).getDownloadURL().then((url)=>{
-            document.getElementById('imgBarrio').src = url;
-        });
-        this.setState({barrio, imagen});
+        if (!!barrio.Imagen){
+            Storage.ref(barrio.Imagen).getDownloadURL().then((url)=>{
+                document.getElementById('imgBarrio').src = url;
+            });
+            this.setState({barrio, imagen});
+        }
+
     }
 
 
