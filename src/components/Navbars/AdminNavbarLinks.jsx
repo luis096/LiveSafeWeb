@@ -28,7 +28,9 @@ class HeaderLinks extends Component {
             redirectConf: false,
             notificaciones: [],
             nuevas: 0,
-            noEscuchar: false
+            noEscuchar: false,
+            redirectReserva: false,
+            idReserva: ''
         };
         this.notificationSystem = React.createRef();
         this.logout = this.logout.bind(this);
@@ -38,6 +40,8 @@ class HeaderLinks extends Component {
         this.addNotificationNew = this.addNotificationNew.bind(this);
         this.notificacionesVacias = this.notificacionesVacias.bind(this);
         this.verNotificaciones = this.verNotificaciones.bind(this);
+        this.verReserva = this.verReserva.bind(this);
+        this.confirmarReservaRedirect = this.confirmarReservaRedirect.bind(this);
     }
 
     async componentDidMount() {
@@ -51,15 +55,15 @@ class HeaderLinks extends Component {
                 let noti = [];
                 let cantidadNuevas = 0;
                 query.forEach(doc =>{
-                    noti.push(doc.data());
+                    let obj = doc.data();
+                    obj.IdReserva = !!doc.data().Referencia?doc.data().Referencia:'';
+                    noti.push(obj);
                     if(!doc.data().Visto) {
                         this.addNotificationNew(doc.data().Titulo, doc.data().Texto);
                         cantidadNuevas++;
                     }
-
                 });
                 this.setState({notificaciones: noti, nuevas: cantidadNuevas});
-
             });
 
     }
@@ -166,6 +170,7 @@ class HeaderLinks extends Component {
     }
 
     async verNotificaciones(){
+        if(!this.state.nuevas) return;
         await this.setState({nuevas: 0, noEscuchar: true});
         const miReferencia = operacion.obtenerMiReferencia(3);
         let ids = [];
@@ -183,6 +188,21 @@ class HeaderLinks extends Component {
              });
         });
         this.setState({noEscuchar: false})
+    }
+
+    verReserva(id) {
+        if (!id) return;
+        this.setState({
+            idReserva: id,
+            redirectReserva: true
+        });
+    }
+
+    confirmarReservaRedirect(){
+        if (this.state.redirectReserva) {
+            this.state.redirectReserva = false;
+            return <Redirect to={'visualizarReserva/' + this.state.idReserva}/>;
+        }
     }
 
     render() {
@@ -208,7 +228,7 @@ class HeaderLinks extends Component {
                             this.state.notificaciones.map((noti, key) =>{
                                 let hora = validator.obtenerFecha(noti.Fecha);
                                 return (
-                                    <MenuItem eventKey={key}>
+                                    <MenuItem eventKey={key} onClick={() => {this.verReserva(noti.IdReserva)}}>
                                         <div>
                                             <h5>{noti.Titulo}</h5>
                                             <span>{noti.Texto}</span>
@@ -218,6 +238,7 @@ class HeaderLinks extends Component {
                             })
                         }
                     </NavDropdown>
+                    {this.confirmarReservaRedirect()}
                     <NavDropdown
                         eventKey={4}
                         title={

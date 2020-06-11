@@ -20,8 +20,6 @@ class EditarInvitado extends Component {
             tipoDocumento: '',
             documento: '',
             invitado: [],
-            grupo: '',
-            tipoDocumento: '',
             tipoD: [],
             desde: '',
             hasta: '',
@@ -201,7 +199,8 @@ class EditarInvitado extends Component {
                             <div className="col-md-6 row-secction">
                                 <label> Nombre </label>
                                 <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') } placeholder="Nombre"
-                                       value={this.state.nombre}
+                                       value={this.state.invitado[0]?this.state.invitado[0].Nombre:'-'}
+                                       disabled={true}
                                        onChange={this.ChangeNombre}
 
                                 />
@@ -210,7 +209,8 @@ class EditarInvitado extends Component {
                             <div className="col-md-6 row-secction">
                                 <label> Apellido </label>
                                 <input type="family-name" className={ errorHTML.classNameError(this.errorApellido, 'form-control') } placeholder="Apellido"
-                                       value={this.state.apellido}
+                                       value={this.state.invitado[0]?this.state.invitado[0].Apellido:'-'}
+                                       disabled={true}
                                        onChange={this.ChangeApellido}
                                 />
                                 {errorHTML.errorLabel(this.errorApellido)}  
