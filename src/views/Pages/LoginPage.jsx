@@ -7,9 +7,8 @@ import {
     ControlLabel,
     FormControl
 } from 'react-bootstrap';
+import './index.scss';
 import Card from 'components/Card/Card.jsx';
-import Button from 'components/CustomButton/CustomButton.jsx';
-import Checkbox from 'components/CustomCheckbox/CustomCheckbox.jsx';
 import logo from '../../logoLiveSafe.png';
 import { Database, Firebase } from '../../config/config';
 import firebase from 'firebase';
@@ -17,7 +16,6 @@ import { Redirect } from 'react-router-dom';
 import Spinner from 'react-spinner-material';
 import AuthNavbar from 'components/Navbars/AuthNavbar.jsx';
 import bgImage from '../../assets/img/fondoLogin.jpg';
-import objectToGetParams from "react-share/lib/utils/objectToGetParams";
 
 class LoginPage extends Component {
     constructor(props) {
@@ -124,9 +122,9 @@ class LoginPage extends Component {
             this.setState({password: nuevaPass});
         });
         await this.obtenerValoresUsuario();
-        this.setState({result: true});
         this.setState({resultado: 'Fallo de autentificacion'});
         this.setState({loading: false});
+        this.setState({result: true});
     }
 
     redirect() {
@@ -191,15 +189,19 @@ class LoginPage extends Component {
                                                 }
                                                 legend={
                                                     <div>
-                                                        <Spinner size={50} spinnerColor={'#1300f5'} visible={this.state.loading} />
-                                                       <div hidden={this.state.loading}>
-                                                           <Button bsStyle="info" fill wd
+                                                        
+                                                       <div >
+                                                           <button bsStyle="info"  fill wd className="button"
                                                                    onClick={this.state.usuarioNuevo ?
                                                                        this.crearUsuarioNuevo :
                                                                        this.onButtonPress
                                                                    }>
-                                                               {!!this.state.usuarioNuevo?"Crear usuario":"Iniciar Sesion"}
-                                                           </Button>
+                                                                { this.state.loading ? (
+                                                                    <Spinner className="spinner" size={30} spinnerColor={'white'} spinnerWidth={3}/>
+                                                                ) :
+                                                                (!!this.state.usuarioNuevo?"Crear usuario":"Iniciar Sesion")
+                                                                }
+                                                           </button>
                                                        </div>
                                                     </div>
                                                 }

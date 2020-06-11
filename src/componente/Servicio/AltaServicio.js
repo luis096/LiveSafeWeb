@@ -6,7 +6,6 @@ import Switch from 'react-bootstrap-switch';
 import { errorHTML } from '../Error';
 import { validator } from '../validator';
 import Select from "react-select";
-import {constantes} from "../Operaciones";
 
 class AltaServicio extends Component {
 

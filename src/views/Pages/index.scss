@@ -1,0 +1,15 @@
+.button {
+    border-radius: 5px;
+    text-transform: uppercase;
+    border: #004983;
+    cursor: pointer;
+    padding: 10px 40px !important;
+    background-color: #004983;
+    color: #ffffff;
+     
+    :active{
+        border: #004983;
+    }
+    
+   
+}

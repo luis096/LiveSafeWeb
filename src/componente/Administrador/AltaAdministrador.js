@@ -22,7 +22,7 @@ class AltaAdministrador extends Component {
             celular: '',
             fechaNacimiento: new Date(),
             fechaAlta: '',
-            mail: '@countryapp.com',
+            mail: '',
             idCountry: '',
             tipoD: [],
             countryList: [],

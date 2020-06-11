@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 //import '../Style/Alta.css';
 import '../Propietario/Index.css';
-import { Link } from 'react-router-dom';
-import { Database, Firebase } from '../../config/config';
+import { Database } from '../../config/config';
 import { errorHTML } from '../Error';
+import Switch from 'react-bootstrap-switch';
+import Datetime from 'react-datetime';
+import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
-import SweetAlert from 'react-bootstrap-sweetalert';
-import { operacion } from '../Operaciones';
 
 class AltaPropietario extends Component {
     constructor() {
@@ -18,14 +18,12 @@ class AltaPropietario extends Component {
             apellido: '',
             tipoDocumento: '',
             documento: '',
-            titular: 'Si',
+            titular: true,
             telefonoFijo: '',
             celular: '',
-            descripcion: '',
-            fechaNacimiento: '',
+            fechaNacimiento: new Date(),
             idCountry: '',
             mail: '',
-            pass: '',
             tipoD: [],// Para cargar el combo
             resultado: ''
         };
@@ -35,12 +33,9 @@ class AltaPropietario extends Component {
         this.ChangeDocumento = this.ChangeDocumento.bind(this);
         this.ChangeNumero = this.ChangeNumero.bind(this);
         this.ChangeSelect = this.ChangeSelect.bind(this);
-        this.ChangeTelefonoFijo = this.ChangeTelefonoFijo.bind(this);
         this.ChangeCelular = this.ChangeCelular.bind(this);
-        this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
         this.ChangeFechaNacimiento = this.ChangeFechaNacimiento.bind(this);
         this.ChangeMail = this.ChangeMail.bind(this);
-        this.ChangePass = this.ChangePass.bind(this);
         this.crearUsuario = this.crearUsuario.bind(this);
         this.ChangeRadio = this.ChangeRadio.bind(this);
         this.registrar = this.registrar.bind(this);
@@ -73,13 +68,12 @@ class AltaPropietario extends Component {
             .collection('Propietarios').add({
                 Nombre: this.state.nombre,
                 Apellido: this.state.apellido,
-                Titular: this.state.titular === 'Si' ? true : false,
+                Titular: this.state.titular,
                 Celular: this.state.celular,
                 TelefonoFijo: this.state.telefonoFijo,
-                Descripcion: this.state.descripcion,
                 TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.value),
                 Documento: this.state.documento,
-                FechaNacimiento: this.state.fechaNacimiento,
+                FechaNacimiento: new Date(this.state.fechaNacimiento),
                 FechaAlta: new Date(),
                 Usuario: this.state.mail
             }).then(doc=> {
@@ -116,17 +110,6 @@ class AltaPropietario extends Component {
 
     }
 
-    ChangeDescripcion(event) {
-        this.setState({descripcion: event.target.value});
-    }
-
-    ChangeTelefonoFijo(event) {
-        this.setState({telefonoFijo: event.target.value});
-        if (event.target.value == "")
-        {this.errorTelefono = validator.requerido(event.target.value)}
-        else{this.errorTelefono =validator.numero(event.target.value)}
-
-    }
 
     ChangeSelect(value) {
         this.setState({tipoDocumento: value});
@@ -135,9 +118,8 @@ class AltaPropietario extends Component {
     }
 
     ChangeFechaNacimiento(event) {
-        this.setState({fechaNacimiento: event.target.value});
+        this.setState({fechaNacimiento: event});
     }
-
     ChangeDocumento(event) {
         this.setState({documento: event.target.value});
         if (event.target.value == "")
@@ -154,24 +136,25 @@ class AltaPropietario extends Component {
 
     }
 
-    ChangePass(event) {
-        this.setState({pass: event.target.value});
-    }
 
     ChangeRadio(event) {
-        this.setState({titular: event.currentTarget.value});
+        let {titular} = this.state;
+        titular = !titular;
+        this.setState({titular});
+
+        //this.setState({titular: event.currentTarget.value});
     }
 
     async registrar() {
-        if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
-            this.state.fechaNacimiento == "" || this.state.celular == "" || this.state.mail == "") {
-                operacion.sinCompletar("Debe completar todos los campos requeridos")
-                return
-            }
-        if (true) {
+
+        let mailValido = await validator.validarMail(this.state.mail);
+        if (mailValido) {
             await this.addPropietario();
             await this.reset();
+        } else {
+            this.setState({errorMail: {error: true, mensaje: 'El mail ingresado ya esta en uso. Intente nuevamente'}})
         }
+
     }
 
     reset(){
@@ -180,152 +163,128 @@ class AltaPropietario extends Component {
             apellido: '',
             tipoDocumento: '',
             documento: '',
-            titular: 'Si',
-            telefonoFijo: '',
+            titular: true,
             celular: '',
-            descripcion: '',
             fechaNacimiento: '',
             mail: '',
-            pass: '',
             resultado: '',
         })
     }
 
     async crearUsuario() {
         const {mail} = this.state;
-        const {pass} = this.state;
-        if (true) {
-            Firebase.auth().createUserWithEmailAndPassword(mail, pass).then(
-                await Database.collection('Usuarios').doc(mail).set({
-                    NombreUsuario: mail,
-                    TipoUsuario: Database.doc('/TiposUsuario/Propietario'),
-                    IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
-                    IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + this.state.idPropietarioCreado)
-                })
-            )
-                .catch(function (error) {
-                    console.log('error :', error);
-                    //La pass debe tener al menos 6 caracteres wachina
-                });
-        }
+        const pass = this.state.documento;
+
+        await Database.collection('UsuariosTemp').doc(mail).set({
+                NombreUsuario: mail,
+                TipoUsuario: Database.doc('/TiposUsuario/Propietario'),
+                IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
+                IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + this.state.idPropietarioCreado),
+                Password: pass
+            })
+
     }
 
 
     render() {
         return (
-            <div className="col-12 ">
-                <div>
-                    <div className="row">
-                        <legend> Registrar Propietario</legend>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="Nombre"> Nombre </label>
-                            <input  className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
-                                    placeholder="Nombre"
-                                   value={this.state.nombre}
-                                   onChange={this.ChangeNombre}/>
-                             {errorHTML.errorLabel(this.errorNombre)}
-                        </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="Apellido"> Apellido </label>
-                            <input type="family-name" className={ errorHTML.classNameError(this.errorApellido, 'form-control') }
-                                   placeholder="Apellido"
-                                   value={this.state.apellido}
-                                   onChange={this.ChangeApellido}/>
-                            {errorHTML.errorLabel(this.errorApellido)}
-                        </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="TipoDocumento"> Tipo Documento </label>
-                            <Select
-                                className="select-documento"
-                                classNamePrefix="select"
-                                isDisabled={false}
-                                isLoading={false}
-                                isClearable={true}
-                                isSearchable={true}
-                                options={this.state.tipoD}
-                                onChange={this.ChangeSelect.bind(this)}
-                                styles={this.errorTipoDocumento.error ? {
-                                    control: (base, state)=>({
-                                        ...base,
-                                        borderColor: 'red',
-                                        boxShadow: 'red'
-                                    })
-                                } : {}}
-                            />
-                            <label className='small text-danger'
-                                   hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
-                        </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="NumeroDocumento"> Numero de Documento </label>
-                            <input className={ errorHTML.classNameError(this.errorDocumento, 'form-control') }
-                                   placeholder="Numero del documento"
-                                   value={this.state.documento}
-                                   onChange={this.ChangeDocumento}/>
-                            {errorHTML.errorLabel(this.errorDocumento)}
-                        </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="FechaNacimiento"> Fecha de Nacimiento </label>
-                            <input type="date" className="form-control" name="FechaNacimiento"
-                                   step="1" min="1920-01-01"
-                                   onChange={this.ChangeFechaNacimiento}
-                            />
-                        </div>
-                        <fieldset className="col-md-6  flex-container form-group">
-                            <legend> Titular</legend>
-                            <div className="form-check">
-                                <label className="form-check-label">
-                                    <input type="radio" className="form-check-input"
-                                           value='Si' checked={this.state.titular === 'Si'}
-                                           onChange={this.ChangeRadio}/>
-                                    Si
-                                </label>
+            <div className="col-12">
+                <legend><h3 className="row">Nuevo Propietario</h3></legend>
+                {this.state.alert}
+                <div className="row card">
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-4 row-secction">
+                                <label> Nombre </label>
+                                <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
+                                       placeholder="Nombre"
+                                       value={this.state.nombre}
+                                       onChange={this.ChangeNombre}
+                                />
+                                {errorHTML.errorLabel(this.errorNombre)}
                             </div>
-                            <div className="form-check">
-                                <label className="form-check-label">
-                                    <input type="radio" className="form-check-input" value='No'
-                                           onChange={this.ChangeRadio} checked={this.state.titular === 'No'}/>
-                                    No
-                                </label>
+                            <div className="col-md-4 row-secction">
+                                <label> Apellido </label>
+                                <input className={ errorHTML.classNameError(this.errorApellido, 'form-control') }
+                                       placeholder="Apellido"
+                                       value={this.state.apellido}
+                                       onChange={this.ChangeApellido}/>
+                                {errorHTML.errorLabel(this.errorApellido)}
                             </div>
-                        </fieldset>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="NumeroCelular"> Celular </label>
-                            <input type="tel" className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
-                                   placeholder="Numero de celular"
-                                   value={this.state.celular}
-                                   onChange={this.ChangeCelular}/>
-                            {errorHTML.errorLabel(this.errorCelular)}
+                            <div className="col-md-4 row-secction">
+                                <label> Fecha de Nacimiento </label>
+                                <Datetime
+                                    inputProps={{placeholder: 'Fecha de Nacimiento'}}
+                                    timeFormat={false}
+                                    value={this.state.fechaNacimiento}
+                                    onChange={this.ChangeFechaNacimiento}
+                                />
+                            </div>
                         </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="NumeroTelefono"> Telefono Fijo </label>
-                            <input type="tel" className={ errorHTML.classNameError(this.errorTelefono, 'form-control') }
-                                   placeholder="Numero de telefono fijo"
-                                   value={this.state.telefonoFijo}
-                                   onChange={this.ChangeTelefonoFijo}/>
-                            {errorHTML.errorLabel(this.errorTelefono)}
+                        <div className="row">
+                            <div className="col-md-4 row-secction">
+                                <label> Numero de Documento </label>
+                                <input className={ errorHTML.classNameError(this.errorDocumento, 'form-control') }
+                                       placeholder="Numero de Documento"
+                                       value={this.state.documento}
+                                       onChange={this.ChangeDocumento}/>
+                                {errorHTML.errorLabel(this.errorDocumento)}
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Tipo de Documento </label>
+                                <Select
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    options={this.state.tipoD}
+                                    value = {this.state.tipoDocumento }
+                                    onChange={this.ChangeSelect.bind(this)}
+                                    styles={this.errorTipoDocumento.error ? {
+                                        control: (base, state)=>({
+                                            ...base,
+                                            borderColor: 'red',
+                                            boxShadow: 'red'
+                                        })
+                                    } : {}}
+                                />
+                                <label className='small text-danger'
+                                       hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Celular </label>
+                                <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
+                                       placeholder="Celular"
+                                       value={this.state.celular}
+                                       onChange={this.ChangeCelular}
+                                />
+                                {errorHTML.errorLabel(this.errorCelular)}
+                            </div>
                         </div>
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="exampleInputEmail1"> Dirección de correo electrónico </label>
-                            <input type="name" className={ errorHTML.classNameError(this.errorMail, 'form-control') } id="exampleInputEmail1"
-                                   aria-describe by="emailHelp" placeholder="Mail"
-                                   value={this.state.mail}
-                                   onChange={this.ChangeMail}/>
-                            {errorHTML.errorLabel(this.errorMail)}
+                        <div className="row">
+                            <div className="col-md-6 row-secction">
+                                <label> Dirección de correo electrónico </label>
+                                <input type="email" className={ errorHTML.classNameError(this.errorMail, 'form-control') }
+                                       placeholder="ingrese el mail"
+                                       onChange={this.ChangeMail}
+                                       value={this.state.mail}/>
+                                {errorHTML.errorLabel(this.errorMail)}
+                            </div>
+                            <fieldset className="col-md-6 row-secction">
+                                <label> Titular</label>
+                                <div className="form-check">
+                                <Switch onText="Si" offText="No"
+                                            value={this.state.titular}
+                                            onChange={()=> {
+                                                this.ChangeRadio();
+                                            }}/>
+                                            </div>
+                            </fieldset>
                         </div>
-
-                        <div className="col-md-6  flex-container form-group">
-                            <label for="exampleTextarea"> Descripcion </ label>
-                            <textarea className="form-control" id="exampleTextarea" rows="3"
-                                      value={this.state.descripcion}
-                                      onChange={this.ChangeDescripcion}> </textarea>
                         </div>
-
-                    </div>
-                    <div className="form-group izquierda">
-                        <button className="btn btn-primary boton" onClick={this.registrar}>Registrar</button>
-                        <Link to="/" type="button" className="btn btn-primary boton"
-                        >Volver</Link>
-                    </div>
+                </div>
+                <div className="text-center">
+                    <Button bsStyle="primary" fill wd onClick={this.registrar}>
+                        Registrar
+                    </Button>
                 </div>
             </div>
         );

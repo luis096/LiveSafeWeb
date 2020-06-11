@@ -222,7 +222,7 @@ class EditarAdministrador extends Component {
                 </div>
                 <div className="text-center">
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
-                        Registrar
+                    Guardar Cambio
                     </Button>
                 </div>
             </div>
