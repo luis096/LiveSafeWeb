@@ -150,7 +150,7 @@ var style = {
       WebkitFontSmoothing: "antialiased",
       fontFamily: '"Roboto","Helvetica Neue",Arial,sans-serif',
       fontWeight: "400",
-      color: "#FFFFFF"
+      color: "#000000"
     },
 
     tl: {
@@ -252,7 +252,7 @@ var style = {
 
     info: {
       borderTop: 0,
-      backgroundColor: "#63d8f1",
+      backgroundColor: "#004983",
       WebkitBoxShadow: 0,
       MozBoxShadow: 0,
       boxShadow: 0
