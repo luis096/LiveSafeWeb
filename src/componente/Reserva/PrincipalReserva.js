@@ -342,7 +342,7 @@ class PrincipalReserva extends Component {
                 </div>
 
                 <div className="izquierda">
-                    <Button bsStyle="default" fill wd onClick={()=> {
+                    <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={()=> {
                         this.reestablecer();
                     }}>
                         Reestablecer

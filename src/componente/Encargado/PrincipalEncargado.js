@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Database } from '../../config/config';
 import { Link } from 'react-router-dom';
-import { Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
@@ -287,7 +286,7 @@ class PrincipalEncargado extends Component {
                 </div>
 
                 <div className="izquierda">
-                    <Button bsStyle="default" fill wd onClick={()=> {
+                    <Button bsStyle="default"  style={{marginRight: "10px"}}   fill wd onClick={()=> {
                         this.reestablecer();
                     }}>
                         Reestablecer
