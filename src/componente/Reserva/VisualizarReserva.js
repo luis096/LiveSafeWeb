@@ -92,54 +92,17 @@ class VisualizarReserva extends Component {
         this.setState({invitadosPendientes, invitadosConfirmados});
     }
 
-    async agregarInvitado(inv, idInvitado) {
-        let db = Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Invitados');
-        let nuevoInvitado = false;
-        let invitadoDB = '';
-
-        await db.where('Documento', '==', inv.Documento).where('TipoDocumento', '==', inv.TipoDocumento)
-            .get().then((doc)=> {
-            nuevoInvitado = !doc.docs.length;
-            doc.forEach((inv) => {
-                invitadoDB = inv.data();
-            })
-        });
-
-        if (nuevoInvitado) {
-            await db.add({
-                Estado: true,
-                Nombre: '',
-                Apellido: '',
-                FechaNacimiento: null,
-                TipoDocumento: Database.doc('TipoDocumento/' + inv.TipoDocumento.id),
-                Documento: inv.Documento,
-                Grupo: this.state.reserva.Nombre,
-                FechaAlta: new Date(),
-                FechaDesde: new Date(),
-                FechaHasta: new Date(),
-                IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + localStorage.getItem('idPersona'))
-            }).then(async doc=> {
-                inv.IdInvitado = doc.id;
-                await this.conexion.collection('Invitados').doc(idInvitado).set(inv);
-                await this.agregarFechaIngreso(inv);
+    async agregarInvitado(invitado) {
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('InvitacionesEventos').add({
+                IdReserva: Database.doc('Country/' + localStorage.getItem('idCountry') +
+                    '/Propietarios/' + localStorage.getItem('idPersona') + '/Reservas/' + this.idReserva),
+                FechaDesde: this.state.desde,
+                FechaHasta: this.state.hasta,
+                TipoDocumento: invitado.TipoDocumento,
+                Documento: invitado.Documento,
             });
-        } else {
-            await this.conexion.collection('Invitados').doc(idInvitado).set(inv);
-            await this.agregarFechaIngreso(invitadoDB);
-        }
-    }
 
-    async agregarFechaIngreso(invitado){
-       await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .doc(invitado).collection('InvitacionesEventos').add({
-            IdReserva: Database.doc('Country/' + localStorage.getItem('idCountry') +
-                '/Propietarios/' + localStorage.getItem('idPersona') + '/Reservas/' + this.idReserva),
-            FechaDesde: this.state.desde,
-            FechaHasta: this.state.hasta,
-            TipoDocumento: Database.doc('TipoDocumento/' + invitado.TipoDocumento.id),
-            Documento: invitado.Documento,
-        })
     }
 
     modalAgregarInvitado() {
@@ -289,9 +252,9 @@ class VisualizarReserva extends Component {
                                                     <td>{inv[0].TipoDocumentoLabel}</td>
                                                     <td>{inv[0].Documento}</td>
                                                     <td>{'Confirmado'}</td>
-                                                    <td><Button bsStyle="warning" fill wd disabled={this.permiteAgregar()} onClick={() =>
+                                                    <td><Button bsStyle="warning" fill  disabled={this.permiteAgregar()} onClick={() =>
                                                         {this.cancelarInvitacion(inv)}}>
-                                                        cancelar
+                                                        X
                                                     </Button></td>
                                                 </tr>
                                             );
@@ -327,12 +290,12 @@ class VisualizarReserva extends Component {
                                                     <td>{inv[0].TipoDocumentoLabel}</td>
                                                     <td>{inv[0].Documento}</td>
                                                     <td>{'Pendiente'}</td>
-                                                    <td><Button bsStyle="success" fill wd disabled={this.permiteConfirmar()} onClick={()=> {
+                                                    <td><Button bsStyle="success" fill disabled={this.permiteConfirmar()} onClick={()=> {
                                                         inv[0].Estado = true;
-                                                        this.agregarInvitado(inv[0], inv[1]);
+                                                        this.agregarInvitado(inv[0]);
                                                         this.actualizar(inv[1], true);
                                                     }}>
-                                                        confirmar
+                                                        +
                                                     </Button></td>
                                                 </tr>
                                             );

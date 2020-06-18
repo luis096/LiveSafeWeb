@@ -147,7 +147,7 @@ class AltaIngreso extends Component {
 
         // Si el invitado existe pero no tiene invitacion valida, busco entre las invitaciones
         // a eventos, si al menos una es valida, se le permite ingresar al country.
-        if (!invitadoTemp.length && this.state.existeInvitado){
+        if (!invitadoTemp.length){
             await Database.collection('Country').doc(localStorage.getItem('idCountry'))
                 .collection('InvitacionesEventos').orderBy('FechaHasta', 'desc')
                 .where('Documento', '==', this.state.documento).where('TipoDocumento', '==', refTipoDocumento)
@@ -156,15 +156,12 @@ class AltaIngreso extends Component {
                         if (doc.exists) {
                             if (validator.validarInvitado(doc.data().FechaDesde, doc.data().FechaHasta)) {
                                 invitadoTemp.push([doc.data(), doc.id]);
-                                if (!doc.data().Nombre) {
-                                    this.setState({autenticar: true});
-                                }
                             }
                         }
                     });
                 });
         }
-
+console.log(invitadoTemp)
         if (invitadoTemp.length > 1) {
             let {propietarios} = this.state;
             let ids = [];
@@ -202,7 +199,7 @@ class AltaIngreso extends Component {
         }
     }
 
-    agregarIngreso(observacion) {
+    async agregarIngreso(observacion) {
         this.setState({alert: null});
         let datosPersonas = this.state.personaEncontrada[0];
 
@@ -211,8 +208,8 @@ class AltaIngreso extends Component {
         }
 
         let ingreso = {
-            Nombre: this.state.nombre,
-            Apellido: this.state.apellido,
+            Nombre: this.state.nombre || 'Invitado Evento',
+            Apellido: this.state.apellido || 'Invitado Evento',
             TipoDocumento: datosPersonas.TipoDocumento,
             Documento: datosPersonas.Documento,
             Hora: new Date(),
@@ -220,11 +217,22 @@ class AltaIngreso extends Component {
             Estado: true,
             Observacion: observacion,
             IdEncargado: operacion.obtenerMiReferencia(2),
-            IdPropietario: datosPersonas.IdPropietario
+            IdPropietario: datosPersonas.IdPropietario?datosPersonas.IdPropietario:''
         };
 
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Ingresos').add(ingreso).then(this.reestablecer);
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Ingresos').add(ingreso);
+
+        if (!!datosPersonas.IdPropietario) {
+            await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+                .collection('Notificaciones').add({
+                    Fecha: new Date(),
+                    IdPropietario: datosPersonas.IdPropietario,
+                    Titulo: 'Nuevo Ingreso',
+                    Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' ingreso al barrio.',
+                    Visto: false
+                }).then(this.reestablecer);
+        }
 
     }
 

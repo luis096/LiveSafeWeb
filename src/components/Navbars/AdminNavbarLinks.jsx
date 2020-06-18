@@ -86,6 +86,8 @@ class HeaderLinks extends Component {
 
     addNotificationNew(titulo, texto) {
         const notification = this.notificationSystem.current;
+        if (!notification) return;
+
         notification.addNotification({
             title: <span data-notify="icon" className="pe-7s-bell"/>,
             message: (
