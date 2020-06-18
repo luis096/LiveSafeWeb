@@ -161,7 +161,7 @@ class AltaIngreso extends Component {
                     });
                 });
         }
-console.log(invitadoTemp)
+
         if (invitadoTemp.length > 1) {
             let {propietarios} = this.state;
             let ids = [];
