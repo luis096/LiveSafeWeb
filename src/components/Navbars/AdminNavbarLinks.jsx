@@ -12,10 +12,12 @@ import {
     FormControl,
     InputGroup
 } from 'react-bootstrap';
-import {Database} from "../../config/config";
+import {Database, Storage} from "../../config/config";
 import {operacion} from "../../componente/Operaciones";
 import {validator} from "../../componente/validator";
 import { style } from "variables/Variables.jsx";
+
+const pdfA = require("jspdf");
 
 class HeaderLinks extends Component {
 
@@ -46,6 +48,7 @@ class HeaderLinks extends Component {
         this.confirmarReservaRedirect = this.confirmarReservaRedirect.bind(this);
         this.miBarioNav = this.miBarioNav.bind(this);
         this.notificacionNav = this.notificacionNav.bind(this);
+        this.descargarManual = this.descargarManual.bind(this);
     }
 
     async componentDidMount() {
@@ -71,7 +74,6 @@ class HeaderLinks extends Component {
                 });
                 this.setState({notificaciones: noti, nuevas: cantidadNuevas});
             });
-
     }
 
     addNotification = event => {
@@ -216,8 +218,8 @@ class HeaderLinks extends Component {
     miBarioNav() {
         if (this.state.esRoot) {
             return (<MenuItem eventKey={4.2} onClick={this.miBarrio}>
-                <i className="pe-7s-home"/> Mi Barrio
-            </MenuItem>)
+                        <i className="pe-7s-home"/> Mi Barrio
+                    </MenuItem>)
         }
     }
 
@@ -257,6 +259,18 @@ class HeaderLinks extends Component {
         }
     }
 
+    async descargarManual() {
+        let path = "";
+
+        await Database.collection("Manual").doc(localStorage.getItem('tipoUsuario')).get().then(doc => {
+           path = doc.data().Path;
+        });
+        if (!!path) return;
+        Storage.ref(path).getDownloadURL().then((url)=>{
+            window.open(url, '_blank');
+        });
+    }
+
     render() {
         return (
             <div>
@@ -288,6 +302,9 @@ class HeaderLinks extends Component {
                             <i className="pe-7s-tools"/> Configuraciones
                         </MenuItem>
                         {this.miConfiguracionRedirect()}
+                        <MenuItem eventKey={4.4} onClick={this.descargarManual}>
+                            <i className="pe-7s-help1"/> Ayuda
+                        </MenuItem>
                         <MenuItem divider/>
                         {this.renderRedirect()}
                         <MenuItem eventKey={4.5} onClick={this.setRedirect}>

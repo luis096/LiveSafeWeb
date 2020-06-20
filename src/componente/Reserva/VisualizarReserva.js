@@ -70,6 +70,13 @@ class VisualizarReserva extends Component {
             invitadosConfirmados: confirmados,
             invitadosPendientes: pendientes
         });
+        Database.collection('TipoDocumento').get().then(querySnapshot=> {
+            querySnapshot.forEach(doc=> {
+                this.state.tipoD.push(
+                    {value: doc.id, label: doc.data().Nombre}
+                );
+            });
+        });
     };
 
     actualizar(id, pendiente) {
@@ -92,7 +99,7 @@ class VisualizarReserva extends Component {
         this.setState({invitadosPendientes, invitadosConfirmados});
     }
 
-    async agregarInvitado(invitado) {
+    async agregarInvitado(invitado, id) {
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('InvitacionesEventos').add({
                 IdReserva: Database.doc('Country/' + localStorage.getItem('idCountry') +
@@ -102,21 +109,15 @@ class VisualizarReserva extends Component {
                 TipoDocumento: invitado.TipoDocumento,
                 Documento: invitado.Documento,
             });
-
+        await this.conexion.collection('Invitados').doc(id).update({Estado: true});
     }
 
     modalAgregarInvitado() {
-        Database.collection('TipoDocumento').get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
-                this.state.tipoD.push(
-                    {value: doc.id, label: doc.data().Nombre}
-                );
-            });
-        });
+
         this.setState({showModal: true});
     }
 
-    agregarNuevoInvitado() {
+    async agregarNuevoInvitado() {
         const {invitadosConfirmados} = this.state;
         var invitado = [{
             Nombre: this.state.nombre,
@@ -127,10 +128,10 @@ class VisualizarReserva extends Component {
             Estado: true,
             IdInvitado: ''
         }, ''];
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').doc(localStorage.getItem('idPersona'))
             .collection('Reservas').doc(this.idReserva).collection('Invitados')
-            .add({invitado}).then(doc=> {
+            .add(invitado[0]).then(doc=> {
             invitado[1] = doc.id;
             invitadosConfirmados.push(invitado);
             this.setState({invitadosConfirmados});
@@ -146,10 +147,11 @@ class VisualizarReserva extends Component {
         let referenciaReserva = Database.doc('Country/' + localStorage.getItem('idCountry') +
             '/Propietarios/' + localStorage.getItem('idPersona') + '/Reservas/' + this.idReserva);
         let idEliminar = '';
-        await this.conexion.collection('Invitados').doc(inv[1]).set(inv[0]);
+        await this.conexion.collection('Invitados').doc(inv[1]).update({Estado: false});
+
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('InvitacionesEventos').where('IdReserva', '==', referenciaReserva)
-            .where('Documento', '==', inv.Documento).where('TipoDocumento', '==', inv.TipoDocumento)
+            .where('Documento', '==', inv[0].Documento).where('TipoDocumento', '==', inv[0].TipoDocumento)
             .get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
                     idEliminar = doc.id;
@@ -292,7 +294,7 @@ class VisualizarReserva extends Component {
                                                     <td>{'Pendiente'}</td>
                                                     <td><Button bsStyle="success" fill disabled={this.permiteConfirmar()} onClick={()=> {
                                                         inv[0].Estado = true;
-                                                        this.agregarInvitado(inv[0]);
+                                                        this.agregarInvitado(inv[0], inv[1]);
                                                         this.actualizar(inv[1], true);
                                                     }}>
                                                         +
