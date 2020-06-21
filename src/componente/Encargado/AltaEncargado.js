@@ -155,15 +155,15 @@ class AltaEncargado extends Component {
     async crearUsuario() {
         const {mail} = this.state;
         const pass = this.state.documento;
-        if (true) {
-            await Database.collection('UsuariosTemp').doc(mail).set({
-                    NombreUsuario: mail,
-                    TipoUsuario: Database.doc('/TiposUsuario/Encargado'),
-                    IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
-                    IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Encargados/' + this.state.idEncargadoCreado),
-                    Password: pass
-                })
-        }
+
+        await Database.collection('UsuariosTemp').doc(mail).set({
+                NombreUsuario: mail,
+                TipoUsuario: Database.doc('/TiposUsuario/Encargado'),
+                IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
+                IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Encargados/' + this.state.idEncargadoCreado),
+                Password: pass
+            })
+
     }
 
 

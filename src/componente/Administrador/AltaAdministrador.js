@@ -74,7 +74,7 @@ class AltaAdministrador extends Component {
 
 
     async addAdministrador() {
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+        await Database.collection('Country').doc(this.state.idCountry.value)
             .collection('Administradores').add({
                 Nombre: this.state.nombre,
                 Apellido: this.state.apellido,
@@ -162,8 +162,8 @@ class AltaAdministrador extends Component {
         await Database.collection('UsuariosTemp').doc(mail).set({
             NombreUsuario: mail,
             TipoUsuario: Database.doc('/TiposUsuario/Administrador'),
-            IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
-            IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Administradores/' + this.state.idAdminCreado),
+            IdCountry: Database.doc('Country/' + this.state.idCountry.value),
+            IdPersona: Database.doc('Country/' + this.state.idCountry.value + '/Administradores/' + this.state.idAdminCreado),
             Password: pass
         });
 

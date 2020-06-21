@@ -83,6 +83,7 @@ class MiPerfil extends Component {
                 });
             }
         });
+        if (!id) return;
         await Database.collection('TipoDocumento').doc(id).get()
             .then(doc=> {
                 if (doc.exists) {

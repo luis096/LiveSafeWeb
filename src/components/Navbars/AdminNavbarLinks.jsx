@@ -265,7 +265,7 @@ class HeaderLinks extends Component {
         await Database.collection("Manual").doc(localStorage.getItem('tipoUsuario')).get().then(doc => {
            path = doc.data().Path;
         });
-        if (!!path) return;
+        if (!path) return;
         Storage.ref(path).getDownloadURL().then((url)=>{
             window.open(url, '_blank');
         });
