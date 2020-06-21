@@ -5,6 +5,8 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import { operacion } from '../Operaciones';
 import { errorHTML } from '../Error';
 import { validator } from '../validator';
+import NotificationSystem from "react-notification-system";
+import { style } from "../../variables/Variables";
 
 
 class AltaCountry extends Component {
@@ -23,6 +25,7 @@ class AltaCountry extends Component {
             imgStorgeRef: ''
 
         };
+        this.notificationSystem = React.createRef();
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeCalle = this.ChangeCalle.bind(this);
         this.ChangeNumero = this.ChangeNumero.bind(this);
@@ -58,13 +61,16 @@ class AltaCountry extends Component {
                 upLoadValue: porcentaje
             });
         }, error=> {
-            console.log(error.message);
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+
         }, ()=> {
             this.setState({
                 upLoadValue: 100,
             });
             Storage.ref(name).getDownloadURL().then((url)=>{
                 document.getElementById('imgBarrio').src = url;
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         })
     }
@@ -118,17 +124,17 @@ class AltaCountry extends Component {
             document.getElementById('imgBarrio').src = '';
             this.setState({imgStorgeRef: '', upLoadValue: 0, name: ''})
         }).catch((error) => {
-            console.log('Error:', error)
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
     }
 
-    registrar() {
+    async registrar() {
         // if (this.state.nombre == "" || this.state.calle == "" || this.state.numero =="" || this.state.titular == "" ||
         //  this.state.celular == "" ) {
         //     operacion.sinCompletar("Debe completar todos los campos requeridos")
         //     return
         // }
-        Database.collection('Country').add({
+        await Database.collection('Country').add({
             Nombre: this.state.nombre,
             Calle: this.state.calle,
             Numero: this.state.numero,
@@ -137,6 +143,8 @@ class AltaCountry extends Component {
             Descripcion: this.state.descripcion,
             FechaAlta: new Date(),
             Imagen: this.state.imagenCountry
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
     }
 
@@ -229,8 +237,10 @@ class AltaCountry extends Component {
                         Registrar
                     </Button>
                 </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                </div>
             </div>
-
         );
     }
 }

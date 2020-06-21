@@ -11,7 +11,8 @@ import { errorHTML } from '../Error';
 import { operacion } from '../Operaciones';
 import { paginador } from '../Paginador';
 import Datetime from "react-datetime";
-
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 
 class AltaIngreso extends Component {
@@ -35,6 +36,7 @@ class AltaIngreso extends Component {
             nuevoInvitado: false,
             errorDocumento: {error: false, mensaje: ''}
         };
+        this.notificationSystem = React.createRef();
         this.hideAlert = this.hideAlert.bind(this);
         this.solicitarObservacion = this.solicitarObservacion.bind(this);
         this.errorIngreso = this.errorIngreso.bind(this);
@@ -517,6 +519,9 @@ class AltaIngreso extends Component {
                             Registrar Ingreso
                         </Button>
                     </div>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

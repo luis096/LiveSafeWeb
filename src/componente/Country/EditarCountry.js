@@ -6,8 +6,8 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import { operacion } from '../Operaciones';
 import { errorHTML } from '../Error';
 import { validator } from '../validator';
-
-
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 class EditarCountry extends Component {
     constructor(props) {
@@ -26,6 +26,8 @@ class EditarCountry extends Component {
             imgStorgeRef: '',
             borrar: false
         };
+        this.notificationSystem = React.createRef();
+
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeCalle = this.ChangeCalle.bind(this);
         this.ChangeNumero = this.ChangeNumero.bind(this);
@@ -64,11 +66,15 @@ class EditarCountry extends Component {
                     imagenCountry: doc.data().Imagen
                 });
             }
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         if (!!this.state.imagenCountry) {
             this.setState({imgStorgeRef: Storage.ref(this.state.imagenCountry), upLoadValue: 100});
             Storage.ref(this.state.imagenCountry).getDownloadURL().then((url)=>{
                 document.getElementById('imgBarrio').src = url;
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         } else {
             this.setState({borrar: true});
@@ -132,13 +138,15 @@ class EditarCountry extends Component {
                 upLoadValue: porcentaje
             });
         }, error=> {
-            console.log(error.message);
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
         }, ()=> {
             this.setState({
                 upLoadValue: 100,
             });
             Storage.ref(name).getDownloadURL().then((url)=>{
                 document.getElementById('imgBarrio').src = url;
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         })
     }
@@ -158,13 +166,13 @@ class EditarCountry extends Component {
         }
     }
 
-    registrar() {
+    async registrar() {
        //  if (this.state.nombre == "" || this.state.calle == "" || this.state.numero =="" || this.state.titular == "" ||
        //  this.state.celular == "" ) {
        //     operacion.sinCompletar("Debe completar todos los campos requeridos")
        //     return
        // }
-        Database.collection('Country').doc(this.idBarrio).update({
+        await Database.collection('Country').doc(this.idBarrio).update({
             Nombre: this.state.nombre,
             Calle: this.state.calle,
             Numero: this.state.numero,
@@ -172,6 +180,8 @@ class EditarCountry extends Component {
             Celular: this.state.celular,
             Descripcion: this.state.descripcion,
             Imagen: this.state.imagenCountry
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
     }
 
@@ -263,6 +273,9 @@ class EditarCountry extends Component {
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
                         Registrar
                     </Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
 

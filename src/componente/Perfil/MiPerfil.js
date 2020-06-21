@@ -1,25 +1,10 @@
 import React, { Component } from 'react';
 import { Database } from 'config/config';
-import {
-    FormGroup,
-    ControlLabel,
-    FormControl,
-    Grid,
-    Row,
-    Col
-} from 'react-bootstrap';
-
-import Card from 'components/Card/Card.jsx';
-import FormInputs from 'components/FormInputs/FormInputs.jsx';
-import UserCard from 'components/Card/UserCard.jsx';
 import Button from 'components/CustomButton/CustomButton.jsx';
-
-import avatar from 'assets/img/default-avatar.png';
 import {errorHTML} from "../Error";
-import Datetime from "react-datetime";
-import Select from "react-select";
 import {validator} from "../validator";
-import {operacion} from "../Operaciones";
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 class MiPerfil extends Component {
 
@@ -37,6 +22,7 @@ class MiPerfil extends Component {
             fechaNacimiento: '',
             tipoDocumentoNombre: ''
         };
+        this.notificationSystem = React.createRef();
         this.actualizar = this.actualizar.bind(this);
         this.consultar = this.consultar.bind(this);
         this.ChangeCelular = this.ChangeCelular.bind(this);
@@ -169,6 +155,9 @@ class MiPerfil extends Component {
                     <Button bsStyle="primary" fill wd onClick={this.actualizar}>
                         Registrar
                     </Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

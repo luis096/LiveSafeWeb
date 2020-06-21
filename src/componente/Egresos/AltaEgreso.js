@@ -7,6 +7,8 @@ import { validator } from '../validator';
 import { errorHTML } from '../Error';
 import { operacion } from '../Operaciones';
 import Datetime from "react-datetime";
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 
 
@@ -28,6 +30,7 @@ class AltaEgreso extends Component {
             alert: null,
             errorDocumento: {error: false, mensaje: ''}
         };
+        this.notificationSystem = React.createRef();
         this.hideAlert = this.hideAlert.bind(this);
         this.reestablecer = this.reestablecer.bind(this);
         this.ChangeSelect = this.ChangeSelect.bind(this);
@@ -327,6 +330,9 @@ class AltaEgreso extends Component {
                     <Button bsStyle="info" fill wd onClick={this.registrar}>
                         Registrar Egreso
                     </Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

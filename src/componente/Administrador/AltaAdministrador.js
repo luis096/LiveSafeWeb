@@ -7,6 +7,9 @@ import Datetime from 'react-datetime';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { operacion } from '../Operaciones';
 import { errorHTML } from '../Error';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
+
 
 
 class AltaAdministrador extends Component {
@@ -28,6 +31,7 @@ class AltaAdministrador extends Component {
             countryList: [],
             errorMail: {error: false, mensaje: ''}
         };
+        this.notificationSystem = React.createRef();
         this.addAdministrador = this.addAdministrador.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
@@ -277,6 +281,9 @@ class AltaAdministrador extends Component {
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
                         Registrar
                     </Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

@@ -14,6 +14,9 @@ import { operacion } from '../Operaciones';
 import ReactExport from "react-data-export";
 import GeneradorExcel from '../Reportes/GeneradorExcel';
 import { columns } from '../Reportes/Columns';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
+
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -39,6 +42,7 @@ class PrincipalPropietario extends Component {
             errorDesde: {error: false, mensaje: ''},
             errorHasta: {error: false, mensaje: ''}
         };
+        this.notificationSystem = React.createRef();
         this.hideAlert = this.hideAlert.bind(this);
         this.descargar = this.descargar.bind(this);
         this.obtenerConsulta = this.obtenerConsulta.bind(this);
@@ -366,6 +370,9 @@ class PrincipalPropietario extends Component {
                     <div className="card-body">
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

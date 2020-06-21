@@ -9,6 +9,9 @@ import { validator } from '../validator';
 import Select from 'react-select';
 import Datetime from 'react-datetime';
 import { errorHTML } from '../Error';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
+
 
 class PrincipalReserva extends Component {
 
@@ -32,6 +35,7 @@ class PrincipalReserva extends Component {
             errorDesde: {error: false, mensaje: ''},
             errorHasta: {error: false, mensaje: ''},
         };
+        this.notificationSystem = React.createRef();
         this.hideAlert = this.hideAlert.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeDesde = this.ChangeDesde.bind(this);
@@ -421,6 +425,9 @@ class PrincipalReserva extends Component {
                     <div className="card-body">
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

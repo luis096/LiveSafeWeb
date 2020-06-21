@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import ModalEliminar from '../ModalEliminar';
+import { style } from "../../variables/Variables";
+
 // import moment from 'moment';
 
 class Egresos extends Component {

@@ -6,6 +6,9 @@ import { errorHTML } from '../Error';
 import Datetime from 'react-datetime';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
+
 
 class AltaEncargado extends Component {
 
@@ -25,6 +28,7 @@ class AltaEncargado extends Component {
             tipoD: [],// Para cargar el combo
             resultado: ''
         };
+        this.notificationSystem = React.createRef();
         this.addEncargado = this.addEncargado.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
@@ -258,6 +262,9 @@ class AltaEncargado extends Component {
                     Registrar
                 </Button>
             </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                </div>
         </div>
         );
 

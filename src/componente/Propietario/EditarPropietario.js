@@ -8,6 +8,9 @@ import Switch from 'react-bootstrap-switch';
 import Datetime from 'react-datetime';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { operacion } from '../Operaciones';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
+
 
 class EditarPropietario extends Component {
 
@@ -30,6 +33,7 @@ class EditarPropietario extends Component {
             temp: '',
             resultado: ''
         };
+        this.notificationSystem = React.createRef();
         this.editPropietario = this.editPropietario.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
@@ -269,6 +273,9 @@ class EditarPropietario extends Component {
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
                         Guardar Cambio
                     </Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

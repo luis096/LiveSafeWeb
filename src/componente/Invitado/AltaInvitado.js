@@ -5,6 +5,8 @@ import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
 import Datetime from "react-datetime";
 import { errorHTML } from '../Error';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 
 class AltaInvitado extends Component {
@@ -32,6 +34,7 @@ class AltaInvitado extends Component {
             errorDesde: {error: false, mensaje: ''},
             errorHasta: {error: false, mensaje: ''}
         };
+        this.notificationSystem = React.createRef();
         this.esPropietario = localStorage.getItem('tipoUsuario') === 'Propietario';
         this.addInvitado = this.addInvitado.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
@@ -344,6 +347,9 @@ class AltaInvitado extends Component {
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
                         Registrar
                     </Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

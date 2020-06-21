@@ -1,7 +1,6 @@
 import React from 'react';
 import { Database } from '../config/config';
 
-
 const PERFILES = ['/Root/', '/Administradores/', '/Encargados/', '/Propietarios/'];
 const DIAS = ['Lun', 'Mar','Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
 const EstadosServicioSelect = [{value: true, label:'Disponible'}, {value: false, label:'No Disponible'}];
@@ -20,6 +19,7 @@ export const operacion = {
     obtenerReferenciaConId,
     obtenerDisponibleString,
     esDiaDisponible,
+    error
 };
 
 async function obtenerTiposDocumento() {
@@ -80,4 +80,15 @@ function esDiaDisponible(dias, dia){
     let elementos = Object.assign([], dias);
     elementos.unshift(dias[6]);
     return !!elementos[dia];
+}
+
+function error(mensaje) {
+    let obj = {
+        title: <span data-notify="icon" className="pe-7s-bell"/>,
+        message: (<div>{mensaje}</div>),
+        level: "error",
+        position: "br",
+        autoDismiss: 15
+        };
+    return obj;
 }

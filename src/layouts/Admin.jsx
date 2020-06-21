@@ -26,7 +26,6 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      _notificationSystem: null,
       image: image,
       color: "black",
       hasImage: true,
@@ -35,6 +34,7 @@ class Dashboard extends Component {
       fixedClasses: "dropdown",
       usuario: ""
     };
+    this.notificationSystem = React.createRef();
     this.handleNotificationClick = this.handleNotificationClick.bind(this);
     this.handleImageClick = this.handleImageClick.bind(this);
     this.handleColorClick = this.handleColorClick.bind(this);
@@ -43,7 +43,8 @@ class Dashboard extends Component {
     this.handleMiniClick = this.handleMiniClick.bind(this);
     this.handleFixedClick = this.handleFixedClick.bind(this);
 
-    
+    this.addNotificationNew = this.addNotificationNew.bind(this);
+
     if(localStorage.getItem('tipoUsuario') === 'Root'){
       this.state.usuario = '/root'
     } else if(localStorage.getItem('tipoUsuario') === 'Administrador'){
@@ -55,7 +56,7 @@ class Dashboard extends Component {
     }
   }
   componentDidMount() {
-    this.setState({ _notificationSystem: this.refs.notificationSystem });
+
     if (navigator.platform.indexOf("Win") > -1) {
       ps = new PerfectScrollbar(this.refs.mainPanel);
     }
@@ -65,6 +66,24 @@ class Dashboard extends Component {
       ps.destroy();
     }
   }
+
+  addNotificationNew(titulo, texto, level) {
+    const notification = this.notificationSystem.current;
+    if (!notification) return;
+
+    notification.addNotification({
+      title: <span data-notify="icon" className="pe-7s-bell"/>,
+      message: (
+          <div>
+            {titulo}: {texto}
+          </div>
+      ),
+      level: level,
+      position: "br",
+      autoDismiss: 15
+    });
+  };
+
   componentDidUpdate(e) {
     if (navigator.platform.indexOf("Win") > -1) {
       setTimeout(() => {
@@ -208,6 +227,9 @@ class Dashboard extends Component {
             {/*handleFixedClick={this.handleFixedClick}*/}
             {/*fixedClasses={this.state.fixedClasses}*/}
           {/*/>*/}
+        </div>
+        <div>
+          <NotificationSystem ref={this.notificationSystem} style={style}/>
         </div>
       </div>
     );

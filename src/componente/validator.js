@@ -12,8 +12,9 @@ const CUIT_REGEXP = /^\d{2}-\d{8}-\d{1}$/;
 const NUMBER_ZERO = /^[0]+$/;
 const NOMBRE_ARCHIVOS = /^(?!((con|prn|aux)((\.[^\\/:*"$•?<>|]{1,3}$)|$))|[\s\.])[^\\/:*"$•?<>|]{1,254}$/;
 const LETRAS_REGEXP = /^[a-zA-Z ]*$/;
+
+
 const ESTADOS_RESERVAS = ['Pendiente', 'En Curso', 'Cancelado', 'Realizado'];
-const ESTADOS_RESERVAee = '.where("FechaDesde", ">", new Date())';
 
 
 // Se retorna TRUE si hay un error.. 

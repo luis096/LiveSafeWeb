@@ -7,6 +7,8 @@ import Datetime from 'react-datetime';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { errorHTML } from '../Error';
 import { validator } from '../validator';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 
 class EditarEncargado extends Component {
@@ -27,6 +29,7 @@ class EditarEncargado extends Component {
             temp: '', 
             resultado: ''
         };
+        this.notificationSystem = React.createRef();
         this.editEncargado = this.editEncargado.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
@@ -248,6 +251,9 @@ class EditarEncargado extends Component {
             Guardar Cambio
             </Button>
         </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                </div>
     </div>
         );
 

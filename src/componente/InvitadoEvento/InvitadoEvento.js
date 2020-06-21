@@ -4,6 +4,8 @@ import '../Style/Alta.css';
 import Select from 'react-select';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import {operacion} from "../Operaciones";
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 
 class InvitadoEvento extends Component {
@@ -19,6 +21,7 @@ class InvitadoEvento extends Component {
             barrios: [],
             reservaNombre: ''
         };
+        this.notificationSystem = React.createRef();
         const url = this.props.location.pathname.split('/');
         this.idCountry = url[url.length - 3];
         this.idPropietario = url[url.length - 2];
@@ -140,6 +143,9 @@ class InvitadoEvento extends Component {
                 <div className="form-group">
                     <Button bsStyle="primary" fill wd onClick={this.restaurar}>Limpiar</Button>
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>Agregar invitado</Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

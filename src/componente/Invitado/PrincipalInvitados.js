@@ -9,11 +9,13 @@ import { paginador } from '../Paginador';
 import { validator } from '../validator';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { errorHTML } from '../Error';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 class PrincipalInvitados extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             invitados: [],
             showModal: false,
@@ -34,6 +36,7 @@ class PrincipalInvitados extends Component {
             invitadoCancelar: {},
             estadoLista: [{value: true, label: 'Activo'}, {value: false, label: 'Inactivo'}]
         };
+        this.notificationSystem = React.createRef();
         this.modalAgregarInvitado = this.modalAgregarInvitado.bind(this);
         this.agregarNuevoInvitado = this.agregarNuevoInvitado.bind(this);
         this.obtenerDocumentoLabel = this.obtenerDocumentoLabel.bind(this);
@@ -497,6 +500,9 @@ class PrincipalInvitados extends Component {
                         </Button>
                     </Modal.Footer>
                 </Modal>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                </div>
             </div>
         );
     }

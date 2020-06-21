@@ -11,6 +11,9 @@ import Card from 'components/Card/Card.jsx';
 import { validator } from '../validator';
 import Disponibilidad from "./Disponibilidad";
 import {operacion} from "../Operaciones";
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
+
 
 moment.locale('es');
 const localizer = momentLocalizer(moment);
@@ -31,6 +34,7 @@ class AltaReserva extends Component {
             dias: [],
             duracionTurno: 30
         };
+        this.notificationSystem = React.createRef();
         this.addReserva = this.addReserva.bind(this);
         this.consultar = this.consultar.bind(this);
         this.ChangeSelect = this.ChangeSelect.bind(this);
@@ -347,6 +351,9 @@ class AltaReserva extends Component {
                             </Col>
                         </Row>
                     </Grid>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

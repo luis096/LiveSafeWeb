@@ -14,7 +14,9 @@ import { constantes, operacion } from '../Operaciones';
 import ReactExport from "react-data-export";
 import GeneradorExcel from '../Reportes/GeneradorExcel';
 import { columns } from '../Reportes/Columns';
-import Switch from 'react-bootstrap-switch';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
+
 
 
 const ExcelFile = ReactExport.ExcelFile;
@@ -38,6 +40,7 @@ class PrincipalServicio extends Component {
             ultimo: [],
             primero: [],
         };
+        this.notificationSystem = React.createRef();
         this.hideAlert = this.hideAlert.bind(this);
         this.descargar = this.descargar.bind(this);
         this.obtenerConsulta = this.obtenerConsulta.bind(this);
@@ -358,6 +361,9 @@ class PrincipalServicio extends Component {
                     <div className="card-body">
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

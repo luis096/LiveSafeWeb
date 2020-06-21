@@ -7,6 +7,8 @@ import { Modal, Alert, Grid, Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import { validator } from '../validator';
 import {operacion} from "../Operaciones";
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 
 class VisualizarReserva extends Component {
@@ -29,6 +31,7 @@ class VisualizarReserva extends Component {
             estado: {},
             tipoD: []
         };
+        this.notificationSystem = React.createRef();
         const url = this.props.location.pathname.split('/');
         this.idReserva = url[url.length - 1];
         this.modalAgregarInvitado = this.modalAgregarInvitado.bind(this);
@@ -376,6 +379,9 @@ class VisualizarReserva extends Component {
                         <h5>{'/invitado/' + localStorage.getItem('idCountry') + '/' +
                         localStorage.getItem('idPersona') + '/' + this.idReserva}</h5>
                     </div>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );
