@@ -7,6 +7,7 @@ import Datetime from "react-datetime";
 import { errorHTML } from '../Error';
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
+import {operacion} from "../Operaciones";
 
 
 class AltaInvitado extends Component {
@@ -55,7 +56,6 @@ class AltaInvitado extends Component {
         this.errorGrupo = {error: false, mensaje: ''};
         this.errorDocumento = {error: false, mensaje: ''};
         this.errorDocumentoInvitado= {error: false, mensaje: ''};
-        
 
     }
 
@@ -67,6 +67,8 @@ class AltaInvitado extends Component {
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         this.setState({tipoD});
         this.setState({idPropietario: localStorage.getItem('idPersona')});
@@ -124,7 +126,6 @@ class AltaInvitado extends Component {
 
     }
 
-
     ChangeFechaNacimiento(event) {
         this.setState({fechaNacimiento: event.target.value});
     }
@@ -137,15 +138,13 @@ class AltaInvitado extends Component {
 
     }
 
-    
-
     ChangeGrupo(event) {
         this.setState({grupo: event.target.value});
         {this.errorGrupo = validator.requerido(event.target.value)}
     }
 
-    addInvitado() {
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+    async addInvitado() {
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Invitados').add({
             Nombre: this.state.nombre,
             Apellido: this.state.apellido,
@@ -158,12 +157,14 @@ class AltaInvitado extends Component {
             FechaDesde: this.state.desde,
             FechaHasta: this.state.hasta,
             IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + this.state.idPropietario)
-        });
+        }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
     }
 
-    buscarPropietario() {
+    async buscarPropietario() {
         let refTipoDocumento = Database.doc('TipoDocumento/' + this.state.tipoDocumento.value);
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').where('Documento', '==', this.state.documento)
             .where('TipoDocumento', '==', refTipoDocumento).get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
@@ -171,11 +172,13 @@ class AltaInvitado extends Component {
                     this.setState({ mensaje: doc.data().Apellido + ', ' + doc.data().Nombre });
 
             });
-        });
+        }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
     }
 
-    registrarIngreso() {
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+    async registrarIngreso() {
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Ingresos').add({
             Nombre: this.state.nombre,
             Apellido: this.state.apellido,
@@ -185,7 +188,9 @@ class AltaInvitado extends Component {
             IdEncargado: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Encargados/' + localStorage.getItem('idPersona')),
             Estado: true,
             Egreso: false
-        });
+        }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
     }
 
     registrar() {

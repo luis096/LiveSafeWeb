@@ -183,6 +183,8 @@ class PrincipalPropietario extends Component {
                     datos.Titular = datos.Titular? 'Si':'No';
                     elementos.push(datos);
                 });
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
             return (<GeneradorExcel elementos={elementos} estructura={columnas} pagina={'Ingresos'}
                                     ocultar={()=>this.setState({descargar:false})}/>)

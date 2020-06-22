@@ -164,7 +164,9 @@ class AltaEgreso extends Component {
 
         if(!this.state.observacion){
             await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-                .collection('Ingresos').doc(ingreso[1]).update({Egreso: true});
+                .collection('Ingresos').doc(ingreso[1]).update({Egreso: true}).catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
+                });
             if (!!ingreso[0].IdPropietario) {
                 await Database.collection('Country').doc(localStorage.getItem('idCountry'))
                     .collection('Notificaciones').add({
@@ -173,12 +175,16 @@ class AltaEgreso extends Component {
                         Titulo: 'Nuevo Egreso',
                         Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' salio al barrio.',
                         Visto: false
+                    }).catch((error) => {
+                        this.notificationSystem.current.addNotification(operacion.error(error.message));
                     });
             }
         }
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Egresos').add(egreso).then(this.reestablecer);
+            .collection('Egresos').add(egreso).then(this.reestablecer).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
 
     }
 

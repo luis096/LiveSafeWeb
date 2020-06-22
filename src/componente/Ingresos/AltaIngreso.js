@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
 import { Link , Redirect} from 'react-router-dom';
-import Ingreso from './Ingreso';
 import Select from 'react-select';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { errorHTML } from '../Error';
 import { operacion } from '../Operaciones';
-import { paginador } from '../Paginador';
 import Datetime from "react-datetime";
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
@@ -101,10 +99,10 @@ class AltaIngreso extends Component {
     }
 
     async buscar() {
-        if( this.state.documento =="" || this.state.tipoDocumento ==""){
-            operacion.sinCompletar("Debe completar todos los campos requeridos")
-            return
-        }
+        // if( this.state.documento =="" || this.state.tipoDocumento ==""){
+        //     operacion.sinCompletar("Debe completar todos los campos requeridos")
+        //     return
+        // }
         await this.buscarPersona();
         if (!this.state.invitadoTemp.length) {
             this.state.existeInvitado ? this.errorIngreso('La persona no esta invitada o vencio su plazo de invitacion al barrio') :
@@ -126,6 +124,8 @@ class AltaIngreso extends Component {
                         invitadoTemp.push([doc.data(), doc.id]);
                     }
                 });
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
         //Si no se encontro la persona entre ellos, busco entre los invitados registrados en el barrio
@@ -144,6 +144,8 @@ class AltaIngreso extends Component {
                             }
                         }
                     });
+                }).catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
                 });
         }
 
@@ -161,6 +163,8 @@ class AltaIngreso extends Component {
                             }
                         }
                     });
+                }).catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
                 });
         }
 
@@ -177,6 +181,8 @@ class AltaIngreso extends Component {
                             propietarios.push([doc.data(), doc.id]);
                         }
                     });
+                }).catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
                 });
             this.setState({propietarios});
         }
@@ -223,7 +229,9 @@ class AltaIngreso extends Component {
         };
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Ingresos').add(ingreso);
+            .collection('Ingresos').add(ingreso).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
 
         if (!!datosPersonas.IdPropietario) {
             await Database.collection('Country').doc(localStorage.getItem('idCountry'))
@@ -233,7 +241,9 @@ class AltaIngreso extends Component {
                     Titulo: 'Nuevo Ingreso',
                     Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' ingreso al barrio.',
                     Visto: false
-                }).then(this.reestablecer);
+                }).then(this.reestablecer).catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
+                });
         }
 
     }
@@ -292,6 +302,8 @@ class AltaIngreso extends Component {
                         ingresoInvalido = true;
                     }
                 });
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
         return ingresoInvalido;
@@ -330,7 +342,7 @@ class AltaIngreso extends Component {
     async autenticarInvitado(){
         let { invitadoTemp } = this.state;
         let refTipoDocumento = await operacion.obtenerReferenciaDocumento(this.state.tipoDocumento);
-        invitadoTemp.forEach(async (inv)=> {
+        invitadoTemp.forEach(async (inv) => {
             await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Invitados')
                 .doc(inv[1]).set({
                     Nombre: this.state.nombre,
@@ -344,6 +356,8 @@ class AltaIngreso extends Component {
                     FechaDesde: inv[0].FechaDesde,
                     FechaHasta: inv[0].FechaHasta,
                     IdPropietario: inv[0].IdPropietario
+                }).catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
                 });
         });
 

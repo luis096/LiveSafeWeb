@@ -42,7 +42,6 @@ class AltaAdministrador extends Component {
         this.crearUsuario = this.crearUsuario.bind(this);
         this.registrar = this.registrar.bind(this);
 
-
         this.errorNombre = {error: false, mensaje: ''};
         this.errorApellido = {error: false, mensaje: ''};
         this.errorDocumento = {error: false, mensaje: ''};
@@ -50,8 +49,6 @@ class AltaAdministrador extends Component {
         this.errorTipoDocumento = {error: false, mensaje: ''};
         this.errorMail= {error:false, mensaje:''}
         this.errorCountry= {error:false, mensaje:''}
-
-
 
     }
 
@@ -64,14 +61,17 @@ class AltaAdministrador extends Component {
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         await Database.collection('Country').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
                 this.state.countryList.push(
                     {value: doc.id, label: doc.data().Nombre}
                 );
-
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         this.setState({tipoD, countryList});
     }
@@ -90,6 +90,8 @@ class AltaAdministrador extends Component {
                 Usuario: this.state.mail,
             }).then(doc=> {
                 this.setState({idAdminCreado: doc.id});
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         await this.crearUsuario();
     }
@@ -169,6 +171,8 @@ class AltaAdministrador extends Component {
             IdCountry: Database.doc('Country/' + this.state.idCountry.value),
             IdPersona: Database.doc('Country/' + this.state.idCountry.value + '/Administradores/' + this.state.idAdminCreado),
             Password: pass
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
 
     }

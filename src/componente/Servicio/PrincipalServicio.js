@@ -145,6 +145,8 @@ class PrincipalServicio extends Component {
                     datos.Disponibilidad = operacion.obtenerDisponibleString(datos.Disponibilidad);
                     elementos.push(datos);
                 });
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
             return (<GeneradorExcel elementos={elementos} estructura={columnas} pagina={'Servicios'}
                                     ocultar={()=>this.setState({descargar:false})}/>)

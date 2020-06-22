@@ -59,6 +59,8 @@ class EditarEncargado extends Component {
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Encargados').doc(this.idEncargado).get()
@@ -68,9 +70,8 @@ class EditarEncargado extends Component {
                 } else {
 
                 }
-            })
-            .catch(err=> {
-                //En caso de error, hacer esto...
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         this.setState({tipoD});
         this.setState({encargados});
@@ -80,6 +81,8 @@ class EditarEncargado extends Component {
                 if (doc.exists) {
                     this.state.tipoDocumento = {value: doc.id, label: doc.data().Nombre};
                 }
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         this.setState({
             nombre: estrella.Nombre,
@@ -94,8 +97,8 @@ class EditarEncargado extends Component {
     }
 
 
-    editEncargado() {
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+    async editEncargado() {
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Encargados').doc(this.idEncargado).set({
             Nombre: this.state.nombre,
             Apellido: this.state.apellido,
@@ -105,7 +108,9 @@ class EditarEncargado extends Component {
             FechaNacimiento:  new Date(this.state.fechaNacimiento),
             FechaAlta: this.state.fechaAlta,
             Usuario: this.state.usuario
-        });
+        }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
 
     }
 
@@ -161,15 +166,12 @@ class EditarEncargado extends Component {
     }
 
     registrar() {
-        if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
-            this.state.fechaNacimiento == "" || this.state.celular == "" ) {
-                operacion.sinCompletar("Debe completar todos los campos requeridos")
-                return
-            }
-        if (true) {
-            this.editEncargado();
-
-        }
+        // if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
+        //     this.state.fechaNacimiento == "" || this.state.celular == "" ) {
+        //         operacion.sinCompletar("Debe completar todos los campos requeridos")
+        //         return
+        //     }
+        this.editEncargado();
     }
 
     render() {

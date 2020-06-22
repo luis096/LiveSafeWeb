@@ -8,6 +8,7 @@ import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
+import {operacion} from "../Operaciones";
 
 
 class AltaEncargado extends Component {
@@ -55,6 +56,8 @@ class AltaEncargado extends Component {
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         this.setState({tipoD});
     }
@@ -73,6 +76,8 @@ class AltaEncargado extends Component {
                 Usuario: this.state.mail
             }).then(doc=> {
                 this.setState({idEncargadoCreado: doc.id});
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         await this.crearUsuario();
 
@@ -166,7 +171,9 @@ class AltaEncargado extends Component {
                 IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
                 IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Encargados/' + this.state.idEncargadoCreado),
                 Password: pass
-            })
+            }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
+        });
 
     }
 

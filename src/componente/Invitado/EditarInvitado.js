@@ -60,12 +60,16 @@ class EditarInvitado extends Component {
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Invitados').doc(this.idInvitado).get()
             .then(doc=> {
                 invitado.push(doc.data(), doc.id);
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
         this.setState({
@@ -156,7 +160,9 @@ class EditarInvitado extends Component {
             Grupo: this.state.grupo,
             FechaDesde: this.state.desde,
             FechaHasta: this.state.hasta,
-        });
+        }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
     }
 
     render() {

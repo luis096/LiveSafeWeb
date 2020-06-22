@@ -5,6 +5,7 @@ import {errorHTML} from "../Error";
 import {validator} from "../validator";
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
+import {operacion} from "../Operaciones";
 
 class MiPerfil extends Component {
 
@@ -68,6 +69,8 @@ class MiPerfil extends Component {
                     mail: doc.data().Usuario
                 });
             }
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         if (!id) return;
         await Database.collection('TipoDocumento').doc(id).get()
@@ -75,6 +78,8 @@ class MiPerfil extends Component {
                 if (doc.exists) {
                     this.setState({tipoDocumentoNombre: doc.data().Nombre});
                 }
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
     }
 

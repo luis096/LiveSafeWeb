@@ -8,6 +8,7 @@ import { errorHTML } from '../Error';
 import Select from "react-select";
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
+import {operacion} from "../Operaciones";
 
 
 class EditarServicio extends Component {
@@ -51,6 +52,8 @@ class EditarServicio extends Component {
                     {value: doc.data().Duracion, label: doc.data().DuracionString}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         let max = 0;
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
@@ -68,6 +71,8 @@ class EditarServicio extends Component {
                     });
                     max = doc.data().TurnosMax;
                 }
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         await this.actualizarHorasMax();
         await this.setState({turnosMax: this.state.turnosMaxSelect.find(x => x.value == max)});
@@ -87,8 +92,8 @@ class EditarServicio extends Component {
         }
     }
 
-    editServicio() {
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+    async editServicio() {
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.idServicio).update({
             Nombre: this.state.nombre,
             Estado: this.state.estado,
@@ -98,7 +103,9 @@ class EditarServicio extends Component {
             Descripcion: this.state.descripcion,
             TurnosMax: this.state.turnosMax.value,
             DuracionTurno: (this.state.duracionTurno.value * 60)
-        });
+        }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
 
     }
 

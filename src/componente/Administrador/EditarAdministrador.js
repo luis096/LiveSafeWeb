@@ -55,8 +55,9 @@ class EditarAdministrador extends Component {
                 countryList.push(
                     {value: doc.id, label: doc.data().Nombre}
                 );
-
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         await Database.collection('TipoDocumento').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
@@ -64,6 +65,8 @@ class EditarAdministrador extends Component {
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
@@ -80,14 +83,16 @@ class EditarAdministrador extends Component {
                         celular: doc.data().Celular
                     })
                 }
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
         this.setState({tipoD, countryList});
     }
 
 
-    editAdministrador() {
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+    async editAdministrador() {
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Administradores').update({
                 Nombre: this.state.nombre,
                 Apellido: this.state.apellido,
@@ -95,7 +100,9 @@ class EditarAdministrador extends Component {
                 Celular: this.state.celular,
                 TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.value),
                 FechaNacimiento: new Date(this.state.fechaNacimiento)
-            })
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
 
     }
 
@@ -139,11 +146,11 @@ class EditarAdministrador extends Component {
 
 
     registrar() {
-        if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
-        this.state.fechaNacimiento== "" || this.state.celular == "" || this.state.mail == "") {
-            operacion.sinCompletar("Debe completar todos los campos requeridos")
-            return
-        }
+        // if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
+        // this.state.fechaNacimiento== "" || this.state.celular == "" || this.state.mail == "") {
+        //     operacion.sinCompletar("Debe completar todos los campos requeridos")
+        //     return
+        // }
         this.editAdministrador();
     }
 

@@ -69,6 +69,8 @@ class PrincialIngreso extends Component {
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         this.setState({tipoD});
     }
@@ -193,6 +195,8 @@ class PrincialIngreso extends Component {
                     datos.Tipo = datos.IdPropietario? 'Invitado':'Propietario';
                     elementos.push(datos);
                 });
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
             return (<GeneradorExcel elementos={elementos} estructura={columnas} pagina={'Ingresos'}
                                 ocultar={()=>this.setState({descargar:false})}/>)

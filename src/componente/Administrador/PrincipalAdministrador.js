@@ -56,6 +56,8 @@ class PrincipalAdministrador extends Component {
             querySnapshot.forEach(doc=> {
                 barriosSelect.push({value: doc.id, label: doc.data().Nombre})
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         await Database.collection('TipoDocumento').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
@@ -63,13 +65,14 @@ class PrincipalAdministrador extends Component {
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         this.setState({ tipoD, barriosSelect, barrio: barriosSelect[0]});
     }
 
     ChangeBarrio(value) {
         this.setState({barrio: value});
-        console.log(value)
     }
 
     ChangeNombre(event) {
@@ -167,6 +170,8 @@ class PrincipalAdministrador extends Component {
         if (nueva) {
             await total.get().then((doc)=> {
                 this.total = doc.docs.length;
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         }
 
@@ -183,6 +188,8 @@ class PrincipalAdministrador extends Component {
                     [doc.data(), doc.id]
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
 
         if ((pagina > this.state.numPagina || this.state.numPagina < 0) && !this.state.ultimo[pagina]) {

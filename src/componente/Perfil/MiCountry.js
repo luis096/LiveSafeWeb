@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Database, Storage } from 'config/config';
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
+import {operacion} from "../Operaciones";
 
 
 class MiCountry extends Component {
@@ -20,11 +21,15 @@ class MiCountry extends Component {
         let { barrio, imagen } = this.state;
         await Database.collection('Country').doc(localStorage.getItem('idCountry')).get().then((doc)=>{
             barrio = doc.data();
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
 
         if (!!barrio.Imagen){
             Storage.ref(barrio.Imagen).getDownloadURL().then((url)=>{
                 document.getElementById('imgBarrio').src = url;
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
             this.setState({barrio, imagen});
         }

@@ -184,6 +184,8 @@ class PrincipalEncargado extends Component {
                     datos.TipoDocumento = operacion.obtenerDocumentoLabel(datos.TipoDocumento.id, this.state.tipoD);
                     elementos.push(datos);
                 });
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
             return (<GeneradorExcel elementos={elementos} estructura={columnas} pagina={'Encargados'}
                                     ocultar={()=>this.setState({descargar:false})}/>)

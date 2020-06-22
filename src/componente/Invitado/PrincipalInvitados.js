@@ -11,6 +11,7 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import { errorHTML } from '../Error';
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
+import {operacion} from "../Operaciones";
 
 class PrincipalInvitados extends Component {
 
@@ -63,6 +64,8 @@ class PrincipalInvitados extends Component {
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         this.setState({tipoD});
     }
@@ -156,6 +159,8 @@ class PrincipalInvitados extends Component {
         if (nueva) {
             await total.get().then((doc)=> {
                 this.total = doc.docs.length;
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         }
 
@@ -172,6 +177,8 @@ class PrincipalInvitados extends Component {
                     [doc.data(), doc.id]
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         if ((pagina > this.state.numPagina || this.state.numPagina < 0) && !this.state.ultimo[pagina]) {
             this.state.ultimo.push(ultimo);
@@ -199,13 +206,13 @@ class PrincipalInvitados extends Component {
         this.errorDocumento = {error: false, mensaje: ''};
     }
 
-    modalAgregarInvitado() {
+    async modalAgregarInvitado() {
         const {reservas} = this.state;
         if (reservas.length) {
             this.setState({showModal: true});
             return;
         }
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').doc(localStorage.getItem('idPersona'))
             .collection('Reservas').orderBy('FechaDesde', 'desc').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
@@ -219,7 +226,9 @@ class PrincipalInvitados extends Component {
                 }
 
             });
-        });
+        }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
         this.setState({reservas, showModal: true});
     }
 
@@ -238,7 +247,9 @@ class PrincipalInvitados extends Component {
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').doc(localStorage.getItem('idPersona'))
             .collection('Reservas').doc(this.state.reservaSelceccionada.value).collection('Invitados')
-            .add(invitado);
+            .add(invitado).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
              .collection('InvitacionesEventos').add({
@@ -249,6 +260,8 @@ class PrincipalInvitados extends Component {
                 FechaHasta: this.state.reservaSelceccionada.fechaHasta,
                 Documento: invitado.Documento,
                 TipoDocumento: invitado.TipoDocumento
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
         this.setState({showModal: false});
@@ -291,9 +304,12 @@ class PrincipalInvitados extends Component {
         });
     }
 
-    successDelete() {
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Invitados').doc(this.state.invitadoCancelar[1]).set(this.state.invitadoCancelar[0]);
+    async successDelete() {
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Invitados').doc(this.state.invitadoCancelar[1])
+            .set(this.state.invitadoCancelar[0]).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
         this.setState({
             alert: (
                 <SweetAlert

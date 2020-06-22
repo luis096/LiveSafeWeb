@@ -8,6 +8,7 @@ import { validator } from '../validator';
 import Select from "react-select";
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
+import {operacion} from "../Operaciones";
 
 
 class AltaServicio extends Component {
@@ -52,6 +53,8 @@ class AltaServicio extends Component {
                     {value: doc.data().Duracion, label: doc.data().DuracionString}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
     }
 
@@ -69,8 +72,8 @@ class AltaServicio extends Component {
         }
     }
 
-    addServicio() {
-        Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Servicios').add({
+    async addServicio() {
+        await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Servicios').add({
             Nombre: this.state.nombre,
             Estado: this.state.estado,
             Disponibilidad: this.state.dias,
@@ -79,6 +82,8 @@ class AltaServicio extends Component {
             Descripcion: this.state.descripcion,
             TurnosMax: this.state.turnosMax.value,
             DuracionTurno: (this.state.duracionTurno.value * 60)
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
     }
 

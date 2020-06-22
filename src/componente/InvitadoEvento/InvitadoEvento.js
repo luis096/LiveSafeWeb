@@ -37,18 +37,28 @@ class InvitadoEvento extends Component {
 
     async componentDidMount() {
         const {tipoD} = this.state;
-        await Database.collection('TipoDocumento').get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
-                this.state.tipoD.push(
-                    {value: doc.id, label: doc.data().Nombre}
-                );
+        try {
+            await Database.collection('TipoDocumento').get().then(querySnapshot=> {
+                querySnapshot.forEach(doc=> {
+                    this.state.tipoD.push(
+                        {value: doc.id, label: doc.data().Nombre}
+                    );
+                });
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        });
-        await Database.collection('Country').doc(this.idCountry)
+            await Database.collection('Country').doc(this.idCountry)
             .collection('Propietarios').doc(this.idPropietario)
             .collection('Reservas').doc(this.idReserva).get().then(doc=> {
                 this.setState({reservaNombre: doc.data().Nombre})
-        });
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
+        } catch (e) {
+            this.notificationSystem.current.addNotification(operacion.error(e.message));
+        }
+
+
         this.setState({tipoD});
     }
 
@@ -78,27 +88,35 @@ class InvitadoEvento extends Component {
     }
 
     async registrar() {
-        await Database.collection('Country').doc(this.idCountry)
-            .collection('Propietarios').doc(this.idPropietario)
-            .collection('Reservas').doc(this.idReserva).collection('Invitados').add({
-            Nombre: this.state.nombre,
-            Apellido: this.state.apellido,
-            Documento: this.state.documento,
-            TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
-            TipoDocumentoLabel: this.state.tipoDocumento.label,
-            Estado: false,
-            IdInvitado: ''
-        });
-        await Database.collection('Country').doc(this.idCountry)
-            .collection('Notificaciones').add({
-                Fecha: new Date(),
-                IdPropietario: Database.doc('Country/' + this.idCountry + '/Propietarios/'
-                    + this.idPropietario),
-                Titulo: 'Nueva Solicitud',
-                Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' le envio una solicitud ' +
-                    'para asistir al evento ' + this.state.reservaNombre + '.',
-                Visto: false
-            }).then(this.restaurar());
+        try {
+            await Database.collection('Country').doc(this.idCountry)
+                .collection('Propietarios').doc(this.idPropietario)
+                .collection('Reservas').doc(this.idReserva).collection('Invitados').add({
+                    Nombre: this.state.nombre,
+                    Apellido: this.state.apellido,
+                    Documento: this.state.documento,
+                    TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
+                    TipoDocumentoLabel: this.state.tipoDocumento.label,
+                    Estado: false,
+                    IdInvitado: ''
+                }).catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
+                });
+            await Database.collection('Country').doc(this.idCountry)
+                .collection('Notificaciones').add({
+                    Fecha: new Date(),
+                    IdPropietario: Database.doc('Country/' + this.idCountry + '/Propietarios/'
+                        + this.idPropietario),
+                    Titulo: 'Nueva Solicitud',
+                    Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' le envio una solicitud ' +
+                        'para asistir al evento ' + this.state.reservaNombre + '.',
+                    Visto: false
+                }).then(this.restaurar()).catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
+                });
+        } catch (e) {
+            this.notificationSystem.current.addNotification(operacion.error(e.message));
+        }
     }
 
     render() {

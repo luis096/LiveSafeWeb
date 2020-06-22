@@ -53,22 +53,27 @@ class EditarCountry extends Component {
 
     async componentDidMount() {
         document.getElementById('imgBarrio').src = '';
-        await Database.collection('Country').doc(this.idBarrio).get().then(doc=> {
-            if (doc.exists) {
-                this.setState({
-                    nombre: doc.data().Nombre,
-                    calle: doc.data().Calle,
-                    numero: doc.data().Numero,
-                    titular: doc.data().Titular,
-                    celular: doc.data().Celular,
-                    fechaAlta: doc.data().FechaAlta,
-                    descripcion: doc.data().Descripcion,
-                    imagenCountry: doc.data().Imagen
-                });
-            }
-        }).catch((error) => {
-            this.notificationSystem.current.addNotification(operacion.error(error.message));
-        });
+        try {
+            await Database.collection('Country').doc(this.idBarrio).get().then(doc=> {
+                if (doc.exists) {
+                    this.setState({
+                        nombre: doc.data().Nombre,
+                        calle: doc.data().Calle,
+                        numero: doc.data().Numero,
+                        titular: doc.data().Titular,
+                        celular: doc.data().Celular,
+                        fechaAlta: doc.data().FechaAlta,
+                        descripcion: doc.data().Descripcion,
+                        imagenCountry: doc.data().Imagen
+                    });
+                }
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
+        } catch (e) {
+            this.notificationSystem.current.addNotification(operacion.error(e.message));
+        }
+
         if (!!this.state.imagenCountry) {
             this.setState({imgStorgeRef: Storage.ref(this.state.imagenCountry), upLoadValue: 100});
             Storage.ref(this.state.imagenCountry).getDownloadURL().then((url)=>{

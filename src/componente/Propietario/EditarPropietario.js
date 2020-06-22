@@ -66,6 +66,8 @@ class EditarPropietario extends Component {
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').doc(this.idPropietario).get()
@@ -73,9 +75,8 @@ class EditarPropietario extends Component {
                 if (doc.exists) {
                     this.state.propietario.push(doc.data());
                 }
-            })
-            .catch(err=> {
-                //En caso de error, hacer esto...
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         this.setState({tipoD});
         this.setState({propietario});
@@ -86,6 +87,8 @@ class EditarPropietario extends Component {
                 if (doc.exists) {
                     this.state.tipoDocumento = {value: doc.id, label: doc.data().Nombre};
                 }
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         this.setState({
             nombre: estrella.Nombre,
@@ -102,8 +105,8 @@ class EditarPropietario extends Component {
     }
 
 
-    editPropietario() {
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+    async editPropietario() {
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').doc(this.idPropietario).set({
             Nombre: this.state.nombre,
             Apellido: this.state.apellido,
@@ -114,7 +117,9 @@ class EditarPropietario extends Component {
             FechaNacimiento: new Date(this.state.fechaNacimiento),
             FechaAlta: this.state.fechaAlta,
             Usuario: this.state.usuario
-        });
+        }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
 
     }
 
@@ -172,14 +177,13 @@ class EditarPropietario extends Component {
     }
 
     registrar() {
-        if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
-            this.state.fechaNacimiento == "" || this.state.celular == "" || this.state.mail == "") {
-                operacion.sinCompletar("Debe completar todos los campos requeridos")
-                return
-            }
-        if (true) {
-            this.editPropietario();
-        }
+        // if (this.state.nombre == "" || this.state.apellido == "" || this.state.documento =="" || this.state.tipoDocumento == "" ||
+        //     this.state.fechaNacimiento == "" || this.state.celular == "" || this.state.mail == "") {
+        //         operacion.sinCompletar("Debe completar todos los campos requeridos")
+        //         return
+        //     }
+        this.editPropietario();
+
     }
 
     render() {

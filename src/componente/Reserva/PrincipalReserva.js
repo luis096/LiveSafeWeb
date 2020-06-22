@@ -11,6 +11,7 @@ import Datetime from 'react-datetime';
 import { errorHTML } from '../Error';
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
+import {operacion} from "../Operaciones";
 
 
 class PrincipalReserva extends Component {
@@ -84,6 +85,8 @@ class PrincipalReserva extends Component {
                         {value: doc.id, label: doc.data().Nombre}
                     );
                 });
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         this.setState({serviciosLista});
     }
@@ -162,6 +165,8 @@ class PrincipalReserva extends Component {
         if (nueva) {
             await total.get().then((doc)=> {
                 this.total = doc.docs.length;
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         }
 
@@ -178,6 +183,8 @@ class PrincipalReserva extends Component {
                     [doc.data(), doc.id]
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
 
         if ((pagina > this.state.numPagina || this.state.numPagina < 0) && !this.state.ultimo[pagina]) {
@@ -231,13 +238,19 @@ class PrincipalReserva extends Component {
         });
     }
 
-    successDelete() {
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+    async successDelete() {
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.state.reservaCancelar[0].IdServicio.id)
-            .collection('Reservas').doc(this.state.reservaCancelar[0].IdReservaServicio.id).set(this.state.reservaCancelar[0]);
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Reservas').doc(this.state.reservaCancelar[0].IdReservaServicio.id)
+            .set(this.state.reservaCancelar[0]).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').doc(localStorage.getItem('idPersona'))
-            .collection('Reservas').doc(this.state.reservaCancelar[1]).set(this.state.reservaCancelar[0]);
+            .collection('Reservas').doc(this.state.reservaCancelar[1])
+            .set(this.state.reservaCancelar[0]).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
         this.setState({
             alert: (
                 <SweetAlert

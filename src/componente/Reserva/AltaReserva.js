@@ -52,6 +52,8 @@ class AltaReserva extends Component {
                         {value: doc.id, label: doc.data().Nombre}
                     );
                 });
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         this.setState({reservaLista});
     }
@@ -63,12 +65,16 @@ class AltaReserva extends Component {
             .collection('Servicios').doc(this.state.servicioSeleccionado.value)
             .collection('Reservas').add(datos).then(doc=> {
                 id = doc.id;
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         datos.IdReservaServicio = Database.doc('Country/' + localStorage.getItem('idCountry') +
             '/Servicios/' + this.state.servicioSeleccionado.value + '/Reservas/' + id);
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').doc(localStorage.getItem('idPersona'))
-            .collection('Reservas').add(datos);
+            .collection('Reservas').add(datos).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
     }
 
     async consultar() {
@@ -99,7 +105,9 @@ class AltaReserva extends Component {
                         duracionTurno: doc.data().DuracionTurno,
                     });
                 }
-            );
+            ).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
         this.navigate(new Date());
         this.setState({consulta: true});
     }
@@ -274,6 +282,8 @@ class AltaReserva extends Component {
                         });
                     }
                 });
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         this.setState({events: newEvents});
     }

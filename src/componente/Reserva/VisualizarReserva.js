@@ -68,17 +68,21 @@ class VisualizarReserva extends Component {
                     }
                 }
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         this.setState({
             invitadosConfirmados: confirmados,
             invitadosPendientes: pendientes
         });
-        Database.collection('TipoDocumento').get().then(querySnapshot=> {
+        await Database.collection('TipoDocumento').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
                 this.state.tipoD.push(
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
     };
 
@@ -111,12 +115,15 @@ class VisualizarReserva extends Component {
                 FechaHasta: this.state.hasta,
                 TipoDocumento: invitado.TipoDocumento,
                 Documento: invitado.Documento,
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        await this.conexion.collection('Invitados').doc(id).update({Estado: true});
+        await this.conexion.collection('Invitados').doc(id).update({Estado: true}).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
+        });
     }
 
     modalAgregarInvitado() {
-
         this.setState({showModal: true});
     }
 
@@ -139,8 +146,9 @@ class VisualizarReserva extends Component {
             invitadosConfirmados.push(invitado);
             this.setState({invitadosConfirmados});
             this.agregarInvitado(invitado[0], doc.id);
-
-        });
+        }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
         this.setState({showModal: false});
     }
 
@@ -150,7 +158,9 @@ class VisualizarReserva extends Component {
         let referenciaReserva = Database.doc('Country/' + localStorage.getItem('idCountry') +
             '/Propietarios/' + localStorage.getItem('idPersona') + '/Reservas/' + this.idReserva);
         let idEliminar = '';
-        await this.conexion.collection('Invitados').doc(inv[1]).update({Estado: false});
+        await this.conexion.collection('Invitados').doc(inv[1]).update({Estado: false}).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
+        });
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('InvitacionesEventos').where('IdReserva', '==', referenciaReserva)
@@ -159,9 +169,13 @@ class VisualizarReserva extends Component {
                 querySnapshot.forEach(doc=> {
                     idEliminar = doc.id;
                 });
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('InvitacionesEventos').doc(idEliminar).delete();
+            .collection('InvitacionesEventos').doc(idEliminar).delete().catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
         this.actualizar(inv[1], false);
     }
 

@@ -6,6 +6,7 @@ import { Redirect } from 'react-router-dom';
 import Firebase from 'firebase';
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
+import {operacion} from "../Operaciones";
 
 
 class Configuraciones extends Component {
@@ -24,18 +25,19 @@ class Configuraciones extends Component {
         this.setState({pass: event.target.value});
     }
 
-    reestablecer(){
+    async reestablecer(){
          let newPassword = this.state.pass;
-         debugger
-         firebase.auth().currentUser.updatePassword(newPassword).then(() =>{
+         await firebase.auth().currentUser.updatePassword(newPassword).then(() =>{
              this.setRedirect()
          }, error=> {
-            console.log(error.message);
+                 this.notificationSystem.current.addNotification(operacion.error(error.message));
         },)
         }
 
     setRedirect = async ()=> {
-        await Firebase.auth().signOut();
+        await Firebase.auth().signOut().catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
+        });
         localStorage.clear();
         this.setState({
             redirect: true

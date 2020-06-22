@@ -11,6 +11,7 @@ import Datetime from 'react-datetime';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
 import NotificationSystem from "react-notification-system";
+import {operacion} from "../Operaciones";
 
 class AltaPropietario extends Component {
     constructor() {
@@ -63,6 +64,8 @@ class AltaPropietario extends Component {
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
         this.setState({tipoD});
     }
@@ -82,6 +85,8 @@ class AltaPropietario extends Component {
                 Usuario: this.state.mail
             }).then(doc=> {
                 this.setState({idPropietarioCreado: doc.id});
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         await this.crearUsuario();
     }
@@ -145,8 +150,6 @@ class AltaPropietario extends Component {
         let {titular} = this.state;
         titular = !titular;
         this.setState({titular});
-
-        //this.setState({titular: event.currentTarget.value});
     }
 
     async registrar() {
@@ -185,7 +188,9 @@ class AltaPropietario extends Component {
                 IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
                 IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + this.state.idPropietarioCreado),
                 Password: pass
-            })
+            }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
+        });
 
     }
 

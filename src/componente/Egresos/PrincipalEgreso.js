@@ -70,6 +70,8 @@ class PrincialEgreso extends Component {
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
 
         this.setState({tipoD});
@@ -154,6 +156,8 @@ class PrincialEgreso extends Component {
         if (nueva) {
             await total.get().then((doc)=> {
                 this.total = doc.docs.length;
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         }
 
@@ -170,6 +174,8 @@ class PrincialEgreso extends Component {
                     [doc.data(), doc.id]
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
 
         if ((pagina > this.state.numPagina || this.state.numPagina < 0) && !this.state.ultimo[pagina]) {
@@ -188,7 +194,7 @@ class PrincialEgreso extends Component {
         let elementos = [];
 
         if (this.state.descargar){
-            let con = this.obtenerConsulta(false)
+            let con = this.obtenerConsulta(false);
             let datos = {};
             con.get().then(querySnapshot=> {
                 querySnapshot.forEach(doc=> {
@@ -198,6 +204,8 @@ class PrincialEgreso extends Component {
                     datos.Tipo = datos.IdPropietario? 'Invitado':'Propietario';
                     elementos.push(datos);
                 });
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
             return (<GeneradorExcel elementos={elementos} estructura={columnas} pagina={'Ingresos'}
                                     ocultar={()=>this.setState({descargar:false})}/>)
