@@ -9,7 +9,12 @@
      
     :active{
         border: #004983;
-    }
-    
-   
+    }   
+}
+
+.login-page {
+    > .content {
+    padding-top: 0;
+}
+
 }

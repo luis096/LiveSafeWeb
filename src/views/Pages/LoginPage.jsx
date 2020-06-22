@@ -15,7 +15,7 @@ import firebase from 'firebase';
 import { Redirect } from 'react-router-dom';
 import Spinner from 'react-spinner-material';
 import AuthNavbar from 'components/Navbars/AuthNavbar.jsx';
-import bgImage from '../../assets/img/fondoLogin.jpg';
+import bgImage from '../../assets/img/fondo.jpg';
 
 class LoginPage extends Component {
     constructor(props) {
@@ -107,7 +107,7 @@ class LoginPage extends Component {
 
     async crearUsuarioNuevo() {
         this.setState({loading: true});
-        const {email, nuevaPass, usuarioNuevo} = this.state;
+        const {email, nuevaPass, usuarioNuevo, nuevaPassTwo} = this.state;
 
         let usuarioSinPass = {
             IdCountry: usuarioNuevo.IdCountry,
@@ -116,7 +116,8 @@ class LoginPage extends Component {
             TipoUsuario: usuarioNuevo.TipoUsuario
         };
 
-        await Firebase.auth().createUserWithEmailAndPassword(email, nuevaPass).then( () =>{
+        if (nuevaPass === nuevaPassTwo){
+            await Firebase.auth().createUserWithEmailAndPassword(email, nuevaPass).then( () =>{
             Database.collection('Usuarios').doc(email).set(usuarioSinPass);
             Database.collection('UsuariosTemp').doc(this.state.email).delete();
             this.setState({password: nuevaPass});
@@ -125,6 +126,9 @@ class LoginPage extends Component {
         this.setState({resultado: 'Fallo de autentificacion'});
         this.setState({loading: false});
         this.setState({result: true});
+        }
+
+        
     }
 
     redirect() {
