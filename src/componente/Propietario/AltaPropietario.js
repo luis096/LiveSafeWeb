@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 //import '../Style/Alta.css';
+import { style } from "../../variables/Variables";
+
 import '../Propietario/Index.css';
 import { Database } from '../../config/config';
 import { errorHTML } from '../Error';
@@ -8,6 +10,7 @@ import Switch from 'react-bootstrap-switch';
 import Datetime from 'react-datetime';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
+import NotificationSystem from "react-notification-system";
 
 class AltaPropietario extends Component {
     constructor() {
@@ -27,6 +30,7 @@ class AltaPropietario extends Component {
             tipoD: [],// Para cargar el combo
             resultado: ''
         };
+        this.notificationSystem = React.createRef();
         this.addPropietario = this.addPropietario.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
@@ -285,6 +289,9 @@ class AltaPropietario extends Component {
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
                         Registrar
                     </Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

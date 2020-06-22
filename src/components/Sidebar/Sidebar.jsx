@@ -175,24 +175,24 @@ class Sidebar extends Component {
           </a>
         </div>
         <div className="sidebar-wrapper" ref="sidebarWrapper">
-          <div className="user">
-            <div className="photo">
-              <img src={avatar} alt="Avatar"/>
-            </div>
-            <div className="info">
-              <a
-                href="/"
-                onClick={e => {
-                  e.preventDefault();
-                  this.setState({ openAvatar: !this.state.openAvatar });
-                }}
-              >
-                <span>
-                  {localStorage.getItem("userName") || 'ANON'}
-                </span>
-              </a>
-            </div>
-          </div>
+          {/*<div className="user">*/}
+          {/*  <div className="photo">*/}
+          {/*    <img src={avatar} alt="Avatar"/>*/}
+          {/*  </div>*/}
+          {/*  <div className="info">*/}
+          {/*    <a*/}
+          {/*      href="/"*/}
+          {/*      onClick={e => {*/}
+          {/*        e.preventDefault();*/}
+          {/*        this.setState({ openAvatar: !this.state.openAvatar });*/}
+          {/*      }}*/}
+          {/*    >*/}
+          {/*      <span>*/}
+          {/*        {localStorage.getItem("userName") || 'ANON'}*/}
+          {/*      </span>*/}
+          {/*    </a>*/}
+          {/*  </div>*/}
+          {/*</div>*/}
           <ul className="nav">
 
             {this.state.width <= 992 ? <AdminNavbarLinks /> : null}

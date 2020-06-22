@@ -4,6 +4,9 @@ import Button from 'components/CustomButton/CustomButton.jsx';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { Redirect } from 'react-router-dom';
 import Firebase from 'firebase';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
+
 
 class Configuraciones extends Component {
 
@@ -13,6 +16,7 @@ class Configuraciones extends Component {
             pass: '',
             redirect: false
         };
+        this.notificationSystem = React.createRef();
         this.ChangePass = this.ChangePass.bind(this);
     }
 
@@ -101,6 +105,9 @@ class Configuraciones extends Component {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

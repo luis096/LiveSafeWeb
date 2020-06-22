@@ -1,20 +1,10 @@
 import React, { Component } from 'react';
 import { Database } from 'config/config';
-import {
-    FormGroup,
-    ControlLabel,
-    FormControl,
-    Grid,
-    Row,
-    Col
-} from 'react-bootstrap';
-
-import Card from 'components/Card/Card.jsx';
-import FormInputs from 'components/FormInputs/FormInputs.jsx';
-import UserCard from 'components/Card/UserCard.jsx';
 import Button from 'components/CustomButton/CustomButton.jsx';
-
-import avatar from 'assets/img/default-avatar.png';
+import {errorHTML} from "../Error";
+import {validator} from "../validator";
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 class MiPerfil extends Component {
 
@@ -26,20 +16,18 @@ class MiPerfil extends Component {
             nombre: '',
             apellido: '',
             tipoDocumento: '',
-            nroDocumento: '',
+            documento: '',
             telefono: '',
             celular: '',
             fechaNacimiento: '',
             tipoDocumentoNombre: ''
         };
+        this.notificationSystem = React.createRef();
         this.actualizar = this.actualizar.bind(this);
         this.consultar = this.consultar.bind(this);
-        this.ChangeNombre = this.ChangeNombre.bind(this);
-        this.ChangeApellido = this.ChangeApellido.bind(this);
-        this.ChangeUserName = this.ChangeUserName.bind(this);
-        this.ChangeTelefono = this.ChangeTelefono.bind(this);
         this.ChangeCelular = this.ChangeCelular.bind(this);
         this.datos = {};
+        this.errorCelular= {error:false, mensaje:''};
     }
 
     async componentDidMount() {
@@ -74,14 +62,14 @@ class MiPerfil extends Component {
                     apellido: doc.data().Apellido,
                     celular: doc.data().Celular,
                     telefono: doc.data().Telefono,
-                    nroDocumento: doc.data().Documento,
+                    documento: doc.data().Documento,
                     tipoDocumento: doc.data().TipoDocumento,
                     fechaNacimiento: doc.data().FechaNacimiento,
-                    mail: doc.data().Usuario,
-                    userName: doc.data().UserName
+                    mail: doc.data().Usuario
                 });
             }
         });
+        if (!id) return;
         await Database.collection('TipoDocumento').doc(id).get()
             .then(doc=> {
                 if (doc.exists) {
@@ -91,161 +79,86 @@ class MiPerfil extends Component {
     }
 
     actualizar() {
-        this.datos.set({
-            Nombre: this.state.nombre,
-            Apellido: this.state.apellido,
+        this.datos.update({
             Celular: this.state.celular,
-            Telefono: this.state.telefono,
-            Documento: this.state.nroDocumento,
-            TipoDocumento: this.state.tipoDocumento,
-            FechaNacimiento: new Date(),
-            Usuario: this.state.mail,
-            UserName: this.state.userName
         });
-    }
-
-    ChangeNombre(event) {
-        this.setState({nombre: event.target.value});
-    }
-
-    ChangeApellido(event) {
-        this.setState({apellido: event.target.value});
-    }
-
-    ChangeUserName(event) {
-        this.setState({userName: event.target.value});
-    }
-
-    ChangeTelefono(event) {
-        this.setState({telefono: event.target.value});
     }
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
+        this.errorCelular = validator.numero(event.target.value);
     }
 
     render() {
         return (
-            <div className="main-content">
-                <Grid fluid>
-                    <Row>
-                        <Col md={4}>
-                            <UserCard
-                                bgImage="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400"
-                                avatar={avatar}
-                                name={this.state.nombre + ' ' + this.state.apellido}
-                                userName={this.state.userName}
-                            />
-                        </Col>
-                        <Col md={8}>
-                            <Card
-                                title="Mi Perfil"
-                                content={
-                                    <form>
-                                        <FormInputs
-                                            ncols={['col-md-6', 'col-md-6']}
-                                            proprieties={[
-                                                {
-                                                    label: 'Nombre de Usuario',
-                                                    type: 'text',
-                                                    bsClass: 'form-control',
-                                                    placeholder: 'Username',
-                                                    value: this.state.userName,
-                                                    onChange: this.ChangeUserName
-                                                },
-                                                {
-                                                    label: 'Direccion de Email',
-                                                    type: 'email',
-                                                    bsClass: 'form-control',
-                                                    placeholder: 'Email',
-                                                    value: this.state.mail,
-                                                    disabled: true
-                                                }
-                                            ]}
-                                        />
-                                        <FormInputs
-                                            ncols={['col-md-6', 'col-md-6']}
-                                            proprieties={[
-                                                {
-                                                    label: 'Nombre',
-                                                    type: 'text',
-                                                    bsClass: 'form-control',
-                                                    value: this.state.nombre,
-                                                    onChange: this.ChangeNombre
-                                                },
-                                                {
-                                                    label: 'Apellido',
-                                                    type: 'text',
-                                                    bsClass: 'form-control',
-                                                    value: this.state.apellido,
-                                                    onChange: this.ChangeApellido
-                                                }
-                                            ]}
-                                        />
-                                        <FormInputs
-                                            ncols={['col-md-6', 'col-md-6']}
-                                            proprieties={[
-                                                {
-                                                    label: 'Tipo Documento',
-                                                    type: 'text',
-                                                    bsClass: 'form-control',
-                                                    value: this.state.tipoDocumentoNombre,
-                                                    disabled: true
-                                                },
-                                                {
-                                                    label: 'Número de Documento',
-                                                    type: 'text',
-                                                    bsClass: 'form-control',
-                                                    value: this.state.nroDocumento,
-                                                    disabled: true
-                                                }
-                                            ]}
-                                        />
-                                        <FormInputs
-                                            ncols={['col-md-6', 'col-md-6']}
-                                            proprieties={[
-                                                {
-                                                    label: 'Teléfono',
-                                                    type: 'text',
-                                                    bsClass: 'form-control',
-                                                    placeholder: 'telefono',
-                                                    value: this.state.telefono,
-                                                    onChange: this.ChangeTelefono
-                                                },
-                                                {
-                                                    label: 'Celular',
-                                                    type: 'text',
-                                                    bsClass: 'form-control',
-                                                    placeholder: 'Celular',
-                                                    value: this.state.celular,
-                                                    onChange: this.ChangeCelular
-                                                }
-                                            ]}
-                                        />
-                                        <FormInputs
-                                            ncols={['col-md-12']}
-                                            proprieties={[
-                                                {
-                                                    label: 'Fecha de Nacimiento',
-                                                    type: 'date',
-                                                    bsClass: 'form-control',
-                                                    value: this.state.fechaNacimiento
-                                                }
-                                            ]}
-                                        />
-                                        <Button bsStyle="info" pullRight fill onClick={this.actualizar}>
-                                            Actualizar Perfil
-                                        </Button>
-                                        <Button bsStyle="danger" pullRight fill onClick={this.consultar}>
-                                            Reestablecer
-                                        </Button>
-                                        <div className="clearfix"/>
-                                    </form>
-                                }
-                            />
-                        </Col>
-                    </Row>
-                </Grid>
+            <div className="col-12">
+                <legend><h3 className="row">Mi Perfil</h3></legend>
+                <div className="row card">
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-4 row-secction">
+                                <label> Nombre </label>
+                                <input type="name"
+                                       className="form-control" readOnly
+                                       placeholder="Nombre"
+                                       value={this.state.nombre}
+                                />
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Apellido </label>
+                                <input className="form-control" readOnly
+                                       placeholder="Apellido"
+                                       value={this.state.apellido}/>
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Fecha de Nacimiento </label>
+                                <input className="form-control" readOnly
+                                       placeholder="Fecha de Nacimiento"
+                                       value={validator.obtenerFecha(this.state.fechaNacimiento).toLocaleDateString()}/>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-4 row-secction">
+                                <label> Numero de Documento </label>
+                                <input className="form-control" readOnly
+                                       placeholder="Numero de Documento"
+                                       value={this.state.documento}/>
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Tipo de Documento </label>
+                                <input className="form-control" readOnly
+                                    placeholder="Numero de Documento"
+                                    value={this.state.tipoDocumentoNombre}/>
+
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Celular </label>
+                                <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
+                                       placeholder="Celular"
+                                       value={this.state.celular}
+                                       onChange={this.ChangeCelular}
+                                />
+                                {errorHTML.errorLabel(this.errorCelular)}
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6 row-secction">
+                                <label> Dirección de correo electrónico </label>
+                                <input type="email" className="form-control" readOnly
+                                       placeholder="ingrese el mail"
+                                       value={this.state.mail}/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="text-center">
+                    <Button bsStyle="primary" fill wd onClick={this.actualizar}>
+                        Registrar
+                    </Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                </div>
             </div>
         );
     }

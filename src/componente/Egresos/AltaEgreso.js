@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import '../Style/Alta.css';
 import { Database } from '../../config/config';
-import {Redirect} from 'react-router-dom';
 import Select from 'react-select';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
-import SweetAlert from 'react-bootstrap-sweetalert';
 import { errorHTML } from '../Error';
 import { operacion } from '../Operaciones';
 import Datetime from "react-datetime";
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 
 
@@ -30,6 +30,7 @@ class AltaEgreso extends Component {
             alert: null,
             errorDocumento: {error: false, mensaje: ''}
         };
+        this.notificationSystem = React.createRef();
         this.hideAlert = this.hideAlert.bind(this);
         this.reestablecer = this.reestablecer.bind(this);
         this.ChangeSelect = this.ChangeSelect.bind(this);
@@ -46,11 +47,6 @@ class AltaEgreso extends Component {
         this.errorNombre = {error: false, mensaje: ''};
         this.errorApellido = {error: false, mensaje: ''};
         this.errorObservacion = {error: false, mensaje: ''};
-        
-
-
-
-
       
     }
 
@@ -97,10 +93,10 @@ class AltaEgreso extends Component {
     }
 
     async buscar() {
-        if( this.state.documento =="" || this.state.tipoDocumento ==""){
-            operacion.sinCompletar("Debe completar todos los campos requeridos")
-            return
-        }
+        // if( this.state.documento =="" || this.state.tipoDocumento ==""){
+        //     operacion.sinCompletar("Debe completar todos los campos requeridos")
+        //     return
+        // }
         const { ingreso } = this.state;
         let refTipoDocumento = await operacion.obtenerReferenciaDocumento(this.state.tipoDocumento);
 
@@ -167,11 +163,21 @@ class AltaEgreso extends Component {
         };
 
         if(!this.state.observacion){
-            Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            await Database.collection('Country').doc(localStorage.getItem('idCountry'))
                 .collection('Ingresos').doc(ingreso[1]).update({Egreso: true});
+            if (!!ingreso[0].IdPropietario) {
+                await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+                    .collection('Notificaciones').add({
+                        Fecha: new Date(),
+                        IdPropietario: ingreso[0].IdPropietario,
+                        Titulo: 'Nuevo Egreso',
+                        Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' salio al barrio.',
+                        Visto: false
+                    });
+            }
         }
 
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Egresos').add(egreso).then(this.reestablecer);
 
     }
@@ -234,7 +240,7 @@ class AltaEgreso extends Component {
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
                             <div className="col-md-2 row-secction">
-                                <Button bsStyle="default" fill wd onClick={this.reestablecer}>
+                                <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={this.reestablecer}>
                                     Reestablecer
                                 </Button>
                             </div>
@@ -324,6 +330,9 @@ class AltaEgreso extends Component {
                     <Button bsStyle="info" fill wd onClick={this.registrar}>
                         Registrar Egreso
                     </Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

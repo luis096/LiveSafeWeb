@@ -10,6 +10,9 @@ import { Pagination } from 'react-bootstrap';
 import { paginador } from '../Paginador';
 import { validator } from '../validator';
 import { errorHTML } from '../Error';
+import { style } from "../../variables/Variables"
+import NotificationSystem from "react-notification-system";
+import {operacion} from "../Operaciones";
 
 
 class PrincipalCountry extends Component {
@@ -29,6 +32,8 @@ class PrincipalCountry extends Component {
             errorDesde: {error: false, mensaje: ''},
             errorHasta: {error: false, mensaje: ''}
         };
+        this.notificationSystem = React.createRef();
+
         this.hideAlert = this.hideAlert.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeTitular = this.ChangeTitular.bind(this);
@@ -133,6 +138,8 @@ class PrincipalCountry extends Component {
         if (nueva) {
             await total.get().then((doc)=> {
                 this.total = doc.docs.length;
+            }).catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         }
 
@@ -149,6 +156,8 @@ class PrincipalCountry extends Component {
                     [doc.data(), doc.id]
                 );
             });
+        }).catch((error) => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
 
         if ((pagina > this.state.numPagina || this.state.numPagina < 0) && !this.state.ultimo[pagina]) {
@@ -238,7 +247,7 @@ class PrincipalCountry extends Component {
                 </div>
 
                 <div className="izquierda">
-                    <Button bsStyle="default" fill wd onClick={()=> {
+                    <Button bsStyle="default"  style={{marginRight: "10px"}}  fill wd onClick={()=> {
                         this.reestablecer();
                     }}>
                         Reestablecer
@@ -307,6 +316,9 @@ class PrincipalCountry extends Component {
                     <div className="card-body">
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

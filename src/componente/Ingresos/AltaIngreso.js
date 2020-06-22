@@ -11,7 +11,8 @@ import { errorHTML } from '../Error';
 import { operacion } from '../Operaciones';
 import { paginador } from '../Paginador';
 import Datetime from "react-datetime";
-
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 
 class AltaIngreso extends Component {
@@ -35,6 +36,7 @@ class AltaIngreso extends Component {
             nuevoInvitado: false,
             errorDocumento: {error: false, mensaje: ''}
         };
+        this.notificationSystem = React.createRef();
         this.hideAlert = this.hideAlert.bind(this);
         this.solicitarObservacion = this.solicitarObservacion.bind(this);
         this.errorIngreso = this.errorIngreso.bind(this);
@@ -147,7 +149,7 @@ class AltaIngreso extends Component {
 
         // Si el invitado existe pero no tiene invitacion valida, busco entre las invitaciones
         // a eventos, si al menos una es valida, se le permite ingresar al country.
-        if (!invitadoTemp.length && this.state.existeInvitado){
+        if (!invitadoTemp.length){
             await Database.collection('Country').doc(localStorage.getItem('idCountry'))
                 .collection('InvitacionesEventos').orderBy('FechaHasta', 'desc')
                 .where('Documento', '==', this.state.documento).where('TipoDocumento', '==', refTipoDocumento)
@@ -156,9 +158,6 @@ class AltaIngreso extends Component {
                         if (doc.exists) {
                             if (validator.validarInvitado(doc.data().FechaDesde, doc.data().FechaHasta)) {
                                 invitadoTemp.push([doc.data(), doc.id]);
-                                if (!doc.data().Nombre) {
-                                    this.setState({autenticar: true});
-                                }
                             }
                         }
                     });
@@ -202,7 +201,7 @@ class AltaIngreso extends Component {
         }
     }
 
-    agregarIngreso(observacion) {
+    async agregarIngreso(observacion) {
         this.setState({alert: null});
         let datosPersonas = this.state.personaEncontrada[0];
 
@@ -211,8 +210,8 @@ class AltaIngreso extends Component {
         }
 
         let ingreso = {
-            Nombre: this.state.nombre,
-            Apellido: this.state.apellido,
+            Nombre: this.state.nombre || 'Invitado Evento',
+            Apellido: this.state.apellido || 'Invitado Evento',
             TipoDocumento: datosPersonas.TipoDocumento,
             Documento: datosPersonas.Documento,
             Hora: new Date(),
@@ -220,11 +219,22 @@ class AltaIngreso extends Component {
             Estado: true,
             Observacion: observacion,
             IdEncargado: operacion.obtenerMiReferencia(2),
-            IdPropietario: datosPersonas.IdPropietario
+            IdPropietario: datosPersonas.IdPropietario?datosPersonas.IdPropietario:''
         };
 
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Ingresos').add(ingreso).then(this.reestablecer);
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Ingresos').add(ingreso);
+
+        if (!!datosPersonas.IdPropietario) {
+            await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+                .collection('Notificaciones').add({
+                    Fecha: new Date(),
+                    IdPropietario: datosPersonas.IdPropietario,
+                    Titulo: 'Nuevo Ingreso',
+                    Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' ingreso al barrio.',
+                    Visto: false
+                }).then(this.reestablecer);
+        }
 
     }
 
@@ -394,7 +404,7 @@ class AltaIngreso extends Component {
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
                             <div className="col-md-2 row-secction">
-                                <Button bsStyle="default" fill wd onClick={this.reestablecer}>
+                                <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={this.reestablecer}>
                                     Reestablecer
                                 </Button>
                             </div>
@@ -509,6 +519,9 @@ class AltaIngreso extends Component {
                             Registrar Ingreso
                         </Button>
                     </div>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

@@ -12,10 +12,12 @@ import {
     FormControl,
     InputGroup
 } from 'react-bootstrap';
-import {Database} from "../../config/config";
+import {Database, Storage} from "../../config/config";
 import {operacion} from "../../componente/Operaciones";
 import {validator} from "../../componente/validator";
 import { style } from "variables/Variables.jsx";
+
+const pdfA = require("jspdf");
 
 class HeaderLinks extends Component {
 
@@ -30,7 +32,9 @@ class HeaderLinks extends Component {
             nuevas: 0,
             noEscuchar: false,
             redirectReserva: false,
-            idReserva: ''
+            idReserva: '',
+            esPropietario: false,
+            esRoot: false,
         };
         this.notificationSystem = React.createRef();
         this.logout = this.logout.bind(this);
@@ -42,11 +46,16 @@ class HeaderLinks extends Component {
         this.verNotificaciones = this.verNotificaciones.bind(this);
         this.verReserva = this.verReserva.bind(this);
         this.confirmarReservaRedirect = this.confirmarReservaRedirect.bind(this);
+        this.miBarioNav = this.miBarioNav.bind(this);
+        this.notificacionNav = this.notificacionNav.bind(this);
+        this.descargarManual = this.descargarManual.bind(this);
     }
 
     async componentDidMount() {
         const miReferencia = operacion.obtenerMiReferencia(3);
+        if (localStorage.getItem('tipoUsuario') !== 'Root') this.setState({esRoot: true});
         if (localStorage.getItem('tipoUsuario') !== 'Propietario') return;
+        this.setState({esPropietario: true});
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Notificaciones').orderBy('Fecha', 'desc').limit(10)
             .where('IdPropietario', '==', miReferencia)
@@ -65,7 +74,6 @@ class HeaderLinks extends Component {
                 });
                 this.setState({notificaciones: noti, nuevas: cantidadNuevas});
             });
-
     }
 
     addNotification = event => {
@@ -86,6 +94,8 @@ class HeaderLinks extends Component {
 
     addNotificationNew(titulo, texto) {
         const notification = this.notificationSystem.current;
+        if (!notification) return;
+
         notification.addNotification({
             title: <span data-notify="icon" className="pe-7s-bell"/>,
             message: (
@@ -205,25 +215,32 @@ class HeaderLinks extends Component {
         }
     }
 
-    render() {
-        return (
-            <div>
-                <Nav pullRight>
-                    <NavDropdown
+    miBarioNav() {
+        if (this.state.esRoot) {
+            return (<MenuItem eventKey={4.2} onClick={this.miBarrio}>
+                        <i className="pe-7s-home"/> Mi Barrio
+                    </MenuItem>)
+        }
+    }
+
+    notificacionNav() {
+        if (this.state.esPropietario) {
+            return (
+                <NavDropdown
                     eventKey={3}
                     title={
-                    <div>
-                        <i className="fa fa-bell-o" onClick={this.verNotificaciones}/>
-                        <span className="notification" hidden={!this.state.nuevas}>
+                        <div>
+                            <i className="fa fa-bell-o" onClick={this.verNotificaciones}/>
+                            <span className="notification" hidden={!this.state.nuevas}>
                             {this.state.nuevas}</span>
-                        <p className="hidden-md hidden-lg">
-                        Notificaciones
-                        <b className="caret" />
-                        </p>
-                    </div>
+                            <p className="hidden-md hidden-lg">
+                                Notificaciones
+                                <b className="caret" />
+                            </p>
+                        </div>
                     } noCaret id="basic-nav-dropdown-2">
-                        {
-                            !this.state.notificaciones.length?
+                    {
+                        !this.state.notificaciones.length?
                             this.notificacionesVacias() :
                             this.state.notificaciones.map((noti, key) =>{
                                 let hora = validator.obtenerFecha(noti.Fecha);
@@ -236,8 +253,29 @@ class HeaderLinks extends Component {
                                         <span>{hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}</span>
                                     </MenuItem>)
                             })
-                        }
-                    </NavDropdown>
+                    }
+                </NavDropdown>
+            )
+        }
+    }
+
+    async descargarManual() {
+        let path = "";
+
+        await Database.collection("Manual").doc(localStorage.getItem('tipoUsuario')).get().then(doc => {
+           path = doc.data().Path;
+        });
+        if (!path) return;
+        Storage.ref(path).getDownloadURL().then((url)=>{
+            window.open(url, '_blank');
+        });
+    }
+
+    render() {
+        return (
+            <div>
+                <Nav pullRight>
+                    {this.notificacionNav()}
                     {this.confirmarReservaRedirect()}
                     <NavDropdown
                         eventKey={4}
@@ -258,14 +296,15 @@ class HeaderLinks extends Component {
                             <i className="pe-7s-id"/> Mi Perfil
                         </MenuItem>
                         {this.miPerfilRedirect()}
-                        <MenuItem eventKey={4.2} onClick={this.miBarrio}>
-                            <i className="pe-7s-home"/> Mi Barrio
-                        </MenuItem>
+                        {this.miBarioNav()}
                         {this.miBarrioRedirect()}
                         <MenuItem eventKey={4.3} onClick={this.configuracion}>
                             <i className="pe-7s-tools"/> Configuraciones
                         </MenuItem>
                         {this.miConfiguracionRedirect()}
+                        <MenuItem eventKey={4.4} onClick={this.descargarManual}>
+                            <i className="pe-7s-help1"/> Ayuda
+                        </MenuItem>
                         <MenuItem divider/>
                         {this.renderRedirect()}
                         <MenuItem eventKey={4.5} onClick={this.setRedirect}>
@@ -276,7 +315,6 @@ class HeaderLinks extends Component {
                     </NavDropdown>
                 </Nav>
                 <div>
-                    <button onClick={this.addNotification}>Add notification</button>
                     <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>

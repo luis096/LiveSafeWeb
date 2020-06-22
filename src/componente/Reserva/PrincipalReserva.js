@@ -9,6 +9,9 @@ import { validator } from '../validator';
 import Select from 'react-select';
 import Datetime from 'react-datetime';
 import { errorHTML } from '../Error';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
+
 
 class PrincipalReserva extends Component {
 
@@ -32,6 +35,7 @@ class PrincipalReserva extends Component {
             errorDesde: {error: false, mensaje: ''},
             errorHasta: {error: false, mensaje: ''},
         };
+        this.notificationSystem = React.createRef();
         this.hideAlert = this.hideAlert.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeDesde = this.ChangeDesde.bind(this);
@@ -150,10 +154,10 @@ class PrincipalReserva extends Component {
             con = con.where('Nombre', '==', this.state.nombre);
             total = total.where('Nombre', '==', this.state.nombre);
         }
-        if (this.state.estado && this.state.estado.value) {
-            con = con.where('Estado', '==', this.state.estado.value);
-            total = total.where('Estado', '==', this.state.estado.value);
-        }
+        // if (this.state.estado && this.state.estado.value) {
+        //     con = con.where('Estado', '==', this.state.estado.value);
+        //     total = total.where('Estado', '==', this.state.estado.value);
+        // }
 
         if (nueva) {
             await total.get().then((doc)=> {
@@ -282,14 +286,14 @@ class PrincipalReserva extends Component {
                     <div className="card-body">
                         <h5 className="row">Filtros de busqueda</h5>
                         <div className='row'>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label>Nombre</label>
                                 <input className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
                                        value={this.state.nombre}
                                        onChange={this.ChangeNombre} placeholder="Nombre"/>
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label>Servicio</label>
                                 <Select
                                     classNamePrefix="select"
@@ -302,22 +306,20 @@ class PrincipalReserva extends Component {
                                     onChange={this.ChangeServicio.bind(this)}
                                 />
                             </div>
-                            <div className="col-md-4 row-secction">
-                                <label>Estado</label>
-                                <Select
-                                    isDisabled={false}
-                                    isLoading={false}
-                                    isClearable={true}
-                                    isSearchable={true}
-                                    value={this.state.estado}
-                                    options={[{value: 1, label: 'Pendiente'}, {value: 0, label: 'En curso'},
-                                        {value: 2, label: 'Realizado'}, {value: 3, label: 'Cancelado'}]}
-                                    onChange={this.ChangeSelectEstado.bind(this)}
-                                />
-                            </div>
-                        </div>
-                        <div className='row'>
-                            <div className="col-md-4 row-secction">
+                            {/*<div className="col-md-4 row-secction">*/}
+                            {/*    <label>Estado</label>*/}
+                            {/*    <Select*/}
+                            {/*        isDisabled={false}*/}
+                            {/*        isLoading={false}*/}
+                            {/*        isClearable={true}*/}
+                            {/*        isSearchable={true}*/}
+                            {/*        value={this.state.estado}*/}
+                            {/*        options={[{value: 1, label: 'Pendiente'}, {value: 0, label: 'En curso'},*/}
+                            {/*            {value: 2, label: 'Realizado'}, {value: 3, label: 'Cancelado'}]}*/}
+                            {/*        onChange={this.ChangeSelectEstado.bind(this)}*/}
+                            {/*    />*/}
+                            {/*</div>*/}
+                            <div className="col-md-3 row-secction">
                                 <label>Fecha Desde</label>
                                 <Datetime
                                     className={errorHTML.classNameErrorDate(this.state.errorDesde, '') }
@@ -327,7 +329,7 @@ class PrincipalReserva extends Component {
                                 />
                                 {errorHTML.errorLabel(this.state.errorDesde)}
                             </div>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label>Fecha Hasta</label>
                                 <Datetime
                                     className={errorHTML.classNameErrorDate(this.state.errorHasta, '')}
@@ -342,7 +344,7 @@ class PrincipalReserva extends Component {
                 </div>
 
                 <div className="izquierda">
-                    <Button bsStyle="default" fill wd onClick={()=> {
+                    <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={()=> {
                         this.reestablecer();
                     }}>
                         Reestablecer
@@ -423,6 +425,9 @@ class PrincipalReserva extends Component {
                     <div className="card-body">
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

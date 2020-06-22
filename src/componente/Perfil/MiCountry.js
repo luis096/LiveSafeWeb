@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Database, Storage } from 'config/config';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 
 class MiCountry extends Component {
@@ -10,7 +12,7 @@ class MiCountry extends Component {
             barrio: '',
             imagen: ''
         };
-
+        this.notificationSystem = React.createRef();
     }
 
     async componentDidMount() {
@@ -59,6 +61,9 @@ class MiCountry extends Component {
                             <img id="imgBarrio" height="420" width="420"/>
                         </div>
                     </div>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

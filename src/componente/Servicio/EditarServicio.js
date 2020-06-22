@@ -6,6 +6,9 @@ import Switch from 'react-bootstrap-switch';
 import { validator } from '../validator';
 import { errorHTML } from '../Error';
 import Select from "react-select";
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
+
 
 class EditarServicio extends Component {
 
@@ -24,6 +27,7 @@ class EditarServicio extends Component {
             turnosMaxSelect:[],
             duracionTurno: null,
         };
+        this.notificationSystem = React.createRef();
         this.editServicio = this.editServicio.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeDesde = this.ChangeDesde.bind(this);
@@ -320,6 +324,9 @@ class EditarServicio extends Component {
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
                         Registrar
                     </Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

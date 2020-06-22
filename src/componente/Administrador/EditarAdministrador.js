@@ -7,6 +7,8 @@ import Datetime from 'react-datetime';
 import { operacion } from '../Operaciones';
 import { errorHTML } from '../Error';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 
 
@@ -25,6 +27,7 @@ class EditarAdministrador extends Component {
             countryList: [],
             tipoD: [],
         };
+        this.notificationSystem = React.createRef();
         this.editAdministrador = this.editAdministrador.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
@@ -224,6 +227,9 @@ class EditarAdministrador extends Component {
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
                     Guardar Cambio
                     </Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

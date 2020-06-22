@@ -236,7 +236,7 @@ var style = {
 
     error: {
       borderTop: 0,
-      backgroundColor: "#fc727a",
+      backgroundColor: "#fc3434",
       WebkitBoxShadow: 0,
       MozBoxShadow: 0,
       boxShadow: 0

@@ -8,7 +8,6 @@ class Disponibilidad extends Component {
         this.state = {
             dias: props.dias,
         };
-        console.log(this.state.dias)
     }
 
     render() {

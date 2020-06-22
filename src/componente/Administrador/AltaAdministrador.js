@@ -7,6 +7,9 @@ import Datetime from 'react-datetime';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { operacion } from '../Operaciones';
 import { errorHTML } from '../Error';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
+
 
 
 class AltaAdministrador extends Component {
@@ -28,6 +31,7 @@ class AltaAdministrador extends Component {
             countryList: [],
             errorMail: {error: false, mensaje: ''}
         };
+        this.notificationSystem = React.createRef();
         this.addAdministrador = this.addAdministrador.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
@@ -74,7 +78,7 @@ class AltaAdministrador extends Component {
 
 
     async addAdministrador() {
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+        await Database.collection('Country').doc(this.state.idCountry.value)
             .collection('Administradores').add({
                 Nombre: this.state.nombre,
                 Apellido: this.state.apellido,
@@ -162,8 +166,8 @@ class AltaAdministrador extends Component {
         await Database.collection('UsuariosTemp').doc(mail).set({
             NombreUsuario: mail,
             TipoUsuario: Database.doc('/TiposUsuario/Administrador'),
-            IdCountry: Database.doc('Country/' + localStorage.getItem('idCountry')),
-            IdPersona: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Administradores/' + this.state.idAdminCreado),
+            IdCountry: Database.doc('Country/' + this.state.idCountry.value),
+            IdPersona: Database.doc('Country/' + this.state.idCountry.value + '/Administradores/' + this.state.idAdminCreado),
             Password: pass
         });
 
@@ -277,6 +281,9 @@ class AltaAdministrador extends Component {
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
                         Registrar
                     </Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

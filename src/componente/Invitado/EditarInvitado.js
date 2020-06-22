@@ -7,6 +7,8 @@ import { validator } from '../validator';
 import Datetime from "react-datetime";
 import { operacion } from '../Operaciones';
 import { errorHTML } from '../Error';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 
 class EditarInvitado extends Component {
@@ -26,7 +28,7 @@ class EditarInvitado extends Component {
             errorDesde: {error: false, mensaje: ''},
             errorHasta: {error: false, mensaje: ''}
         };
-        
+        this.notificationSystem = React.createRef();
         
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
@@ -248,6 +250,9 @@ class EditarInvitado extends Component {
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
                         Registrar
                     </Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

@@ -10,6 +10,9 @@ import Button from 'components/CustomButton/CustomButton.jsx';
 import Select from 'react-select';
 import Datetime from 'react-datetime';
 import { operacion } from '../Operaciones';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
+
 
 
 class PrincipalAdministrador extends Component {
@@ -32,7 +35,7 @@ class PrincipalAdministrador extends Component {
             errorDesde: {error: false, mensaje: ''},
             errorHasta: {error: false, mensaje: ''},
         };
-
+        this.notificationSystem = React.createRef();
         this.hideAlert = this.hideAlert.bind(this);
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeApellido = this.ChangeApellido.bind(this);
@@ -278,7 +281,7 @@ class PrincipalAdministrador extends Component {
                 </div>
 
                 <div className="izquierda">
-                    <Button bsStyle="default" fill wd onClick={()=> {
+                    <Button bsStyle="default"  style={{marginRight: "10px"}} fill wd onClick={()=> {
                         this.reestablecer();
                     }}>
                         Reestablecer
@@ -352,6 +355,9 @@ class PrincipalAdministrador extends Component {
                     <div className="card-body">
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );

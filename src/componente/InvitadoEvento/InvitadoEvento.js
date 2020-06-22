@@ -3,6 +3,9 @@ import { Database } from '../../config/config';
 import '../Style/Alta.css';
 import Select from 'react-select';
 import Button from 'components/CustomButton/CustomButton.jsx';
+import {operacion} from "../Operaciones";
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
 
 
 class InvitadoEvento extends Component {
@@ -16,7 +19,9 @@ class InvitadoEvento extends Component {
             tipoDocumento: '',
             tipoD: [],
             barrios: [],
+            reservaNombre: ''
         };
+        this.notificationSystem = React.createRef();
         const url = this.props.location.pathname.split('/');
         this.idCountry = url[url.length - 3];
         this.idPropietario = url[url.length - 2];
@@ -38,6 +43,11 @@ class InvitadoEvento extends Component {
                     {value: doc.id, label: doc.data().Nombre}
                 );
             });
+        });
+        await Database.collection('Country').doc(this.idCountry)
+            .collection('Propietarios').doc(this.idPropietario)
+            .collection('Reservas').doc(this.idReserva).get().then(doc=> {
+                this.setState({reservaNombre: doc.data().Nombre})
         });
         this.setState({tipoD});
     }
@@ -67,8 +77,8 @@ class InvitadoEvento extends Component {
         });
     }
 
-    registrar() {
-        Database.collection('Country').doc(this.idCountry)
+    async registrar() {
+        await Database.collection('Country').doc(this.idCountry)
             .collection('Propietarios').doc(this.idPropietario)
             .collection('Reservas').doc(this.idReserva).collection('Invitados').add({
             Nombre: this.state.nombre,
@@ -79,13 +89,22 @@ class InvitadoEvento extends Component {
             Estado: false,
             IdInvitado: ''
         });
-        this.restaurar();
+        await Database.collection('Country').doc(this.idCountry)
+            .collection('Notificaciones').add({
+                Fecha: new Date(),
+                IdPropietario: Database.doc('Country/' + this.idCountry + '/Propietarios/'
+                    + this.idPropietario),
+                Titulo: 'Nueva Solicitud',
+                Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' le envio una solicitud ' +
+                    'para asistir al evento ' + this.state.reservaNombre + '.',
+                Visto: false
+            }).then(this.restaurar());
     }
 
     render() {
         return (
             <div className="content">
-                <legend><h3>Agregar invitado a un evento</h3></legend>
+                <legend><h3>{this.state.reservaNombre}</h3></legend>
                 <div className="card">
                     <div className="card-body">
                         <div className="col-md-6">
@@ -124,6 +143,9 @@ class InvitadoEvento extends Component {
                 <div className="form-group">
                     <Button bsStyle="primary" fill wd onClick={this.restaurar}>Limpiar</Button>
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>Agregar invitado</Button>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
             </div>
         );
