@@ -27,6 +27,7 @@ class LoginPage extends Component {
             password: '',
             user: null,
             result: false,
+            passIncorrect: false,
             tipo: false,
             tipoUsuario: '',
             resultado: '',
@@ -108,7 +109,6 @@ class LoginPage extends Component {
     async crearUsuarioNuevo() {
         this.setState({loading: true});
         const {email, nuevaPass, usuarioNuevo, nuevaPassTwo} = this.state;
-
         let usuarioSinPass = {
             IdCountry: usuarioNuevo.IdCountry,
             IdPersona: usuarioNuevo.IdPersona,
@@ -126,6 +126,12 @@ class LoginPage extends Component {
         this.setState({resultado: 'Fallo de autentificacion'});
         this.setState({loading: false});
         this.setState({result: true});
+        }
+        else {
+            this.setState({resultado: 'Fallo de autentificacion'});
+            this.setState({loading: false});
+            this.setState({result: false});
+            this.setState({passIncorrect: true});
         }
 
         
@@ -193,7 +199,7 @@ class LoginPage extends Component {
                                                 }
                                                 legend={
                                                     <div>
-                                                        
+                                                        {this.state.passIncorrect && <ControlLabel className="passIncorrect"> Las contraseñas son incorrectas</ControlLabel>}
                                                        <div >
                                                            <button bsStyle="info"  fill wd className="button"
                                                                    onClick={this.state.usuarioNuevo ?

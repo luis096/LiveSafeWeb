@@ -239,13 +239,13 @@ class AltaEgreso extends Component {
                                        onChange={this.ChangeDocumento}/>
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
-                            <div className="col-md-2 row-secction">
+                            <div className="col-md-2 row-secction" style={{ marginTop:"25px"}}>
                                 <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={this.reestablecer}>
                                     Reestablecer
                                 </Button>
                             </div>
-                            <div className="col-md-2 row-secction">
-                                <Button bsStyle="primary" fill wd onClick={this.buscar}>
+                            <div className="col-md-2 row-secction" style={{ marginTop:"25px"}}>
+                                <Button bsStyle="primary"   fill wd onClick={this.buscar}> 
                                     Buscar
                                 </Button>
                             </div>
@@ -326,7 +326,7 @@ class AltaEgreso extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="text-center" hidden={!this.state.busqueda}>
+                <div className="text-center" style={{ marginBottom:"10px"}}  hidden={!this.state.busqueda}>
                     <Button bsStyle="info" fill wd onClick={this.registrar}>
                         Registrar Egreso
                     </Button>

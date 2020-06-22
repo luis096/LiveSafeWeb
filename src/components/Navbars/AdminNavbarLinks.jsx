@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Firebase from 'firebase';
 import { Redirect } from 'react-router-dom';
 import NotificationSystem from "react-notification-system";
+import './index.scss';
 import {
     Navbar,
     Nav,
@@ -245,8 +246,8 @@ class HeaderLinks extends Component {
                             this.state.notificaciones.map((noti, key) =>{
                                 let hora = validator.obtenerFecha(noti.Fecha);
                                 return (
-                                    <MenuItem eventKey={key} onClick={() => {this.verReserva(noti.IdReserva)}}>
-                                        <div>
+                                    <MenuItem className="notifications" eventKey={key} onClick={() => {this.verReserva(noti.IdReserva)}}>
+                                        <div >
                                             <h5>{noti.Titulo}</h5>
                                             <span>{noti.Texto}</span>
                                         </div>

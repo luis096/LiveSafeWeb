@@ -403,12 +403,12 @@ class AltaIngreso extends Component {
                                        onChange={this.ChangeDocumento}/>
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
-                            <div className="col-md-2 row-secction">
+                            <div className="col-md-2 row-secction" style={{ marginTop:"25px"}}>
                                 <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={this.reestablecer}>
                                     Reestablecer
                                 </Button>
                             </div>
-                            <div className="col-md-2 row-secction">
+                            <div className="col-md-2 row-secction" style={{ marginTop:"25px"}}>
                                 <Button bsStyle="primary" fill wd onClick={this.buscar}>
                                     Buscar
                                 </Button>
@@ -514,7 +514,7 @@ class AltaIngreso extends Component {
                     </div>
                 </div>
                 <div className="text-center" hidden={!this.state.invitadoTemp.length}>
-                    <div hidden={this.state.autenticar}>
+                    <div hidden={this.state.autenticar} style={{ marginBottom:"10px"}} >
                         <Button bsStyle="info" fill wd onClick={this.registrar}>
                             Registrar Ingreso
                         </Button>
