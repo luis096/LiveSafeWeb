@@ -107,10 +107,11 @@ class InvitadoEvento extends Component {
                     Fecha: new Date(),
                     IdPropietario: Database.doc('Country/' + this.idCountry + '/Propietarios/'
                         + this.idPropietario),
-                    Titulo: 'Nueva Solicitud',
+                    Tipo: 'Nueva Solicitud',
                     Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' le envio una solicitud ' +
                         'para asistir al evento ' + this.state.reservaNombre + '.',
-                    Visto: false
+                    Visto: false,
+                    IdReserva: this.state.idReserva
                 }).then(this.restaurar()).catch((error) => {
                     this.notificationSystem.current.addNotification(operacion.error(error.message));
                 });

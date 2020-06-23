@@ -238,7 +238,7 @@ class AltaIngreso extends Component {
                 .collection('Notificaciones').add({
                     Fecha: new Date(),
                     IdPropietario: datosPersonas.IdPropietario,
-                    Titulo: 'Nuevo Ingreso',
+                    Tipo: 'Nuevo Ingreso',
                     Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' ingreso al barrio.',
                     Visto: false
                 }).then(this.reestablecer).catch((error) => {

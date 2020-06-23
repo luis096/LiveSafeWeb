@@ -238,7 +238,11 @@ class VisualizarReserva extends Component {
                     </div>
                 </div>
                 <legend/>
-                <h3 className="row">Invitados de la reserva</h3>
+                <h3 className="row">Invitados de la reserva (
+                    <a style={{fontSize: "17px"}} href={'https://livesafeweb.web.app/#/invitado/' + localStorage.getItem('idCountry') + '/' +
+                    localStorage.getItem('idPersona') + '/' + this.idReserva}>
+                        Link de invitacion
+                    </a>)</h3>
                 <div className="izquierda">
                     <Button bsStyle="primary" fill wd onClick={this.modalAgregarInvitado}
                             disabled={this.permiteAgregar()}>
@@ -386,13 +390,6 @@ class VisualizarReserva extends Component {
                         </Modal.Footer>
                     </Modal>
 
-                </div>
-                <div className="row">
-                    <div className="col-md-12 row-secction">
-                        <h4>Enlace de invitación</h4>
-                        <h5>{'/invitado/' + localStorage.getItem('idCountry') + '/' +
-                        localStorage.getItem('idPersona') + '/' + this.idReserva}</h5>
-                    </div>
                 </div>
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style}/>

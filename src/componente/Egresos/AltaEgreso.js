@@ -172,7 +172,7 @@ class AltaEgreso extends Component {
                     .collection('Notificaciones').add({
                         Fecha: new Date(),
                         IdPropietario: ingreso[0].IdPropietario,
-                        Titulo: 'Nuevo Egreso',
+                        Tipo: 'Nuevo Egreso',
                         Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' salio al barrio.',
                         Visto: false
                     }).catch((error) => {

@@ -69,7 +69,7 @@ class HeaderLinks extends Component {
                     obj.IdReserva = !!doc.data().Referencia?doc.data().Referencia:'';
                     noti.push(obj);
                     if(!doc.data().Visto) {
-                        this.addNotificationNew(doc.data().Titulo, doc.data().Texto);
+                        this.addNotificationNew(doc.data().Tipo, doc.data().Texto);
                         cantidadNuevas++;
                     }
                 });
@@ -248,7 +248,7 @@ class HeaderLinks extends Component {
                                 return (
                                     <MenuItem className="notifications" eventKey={key} onClick={() => {this.verReserva(noti.IdReserva)}}>
                                         <div >
-                                            <h5>{noti.Titulo}</h5>
+                                            <h5>{noti.Tipo}</h5>
                                             <span>{noti.Texto}</span>
                                         </div>
                                         <span>{hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}</span>
