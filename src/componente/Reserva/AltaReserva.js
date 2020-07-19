@@ -13,7 +13,7 @@ import Disponibilidad from "./Disponibilidad";
 import {operacion} from "../Operaciones";
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
-
+import { Collapse, CardBody } from 'reactstrap';
 
 moment.locale('es');
 const localizer = momentLocalizer(moment);
@@ -32,7 +32,9 @@ class AltaReserva extends Component {
             min: new Date(2019, 0, 1, 8, 0),
             max: new Date(2019, 0, 1, 18, 0),
             dias: [],
-            duracionTurno: 30
+            duracionTurno: 30,
+            lunes: false,
+            disponibilidad: []
         };
         this.notificationSystem = React.createRef();
         this.addReserva = this.addReserva.bind(this);
@@ -98,9 +100,9 @@ class AltaReserva extends Component {
             .collection('Servicios').doc(this.state.servicioSeleccionado.value).get().then(
                 doc=> {
                     this.setState({
-                        min: validator.obtenerFecha(doc.data().HoraDesde),
-                        max: validator.obtenerFecha(doc.data().HoraHasta),
-                        dias: doc.data().Disponibilidad,
+                        // min: validator.obtenerFecha(doc.data().HoraDesde),
+                        // max: validator.obtenerFecha(doc.data().HoraHasta),
+                        disponibilidad: doc.data().Disponibilidad,
                         turnosMax: doc.data().TurnosMax,
                         duracionTurno: doc.data().DuracionTurno,
                     });
@@ -121,8 +123,38 @@ class AltaReserva extends Component {
         console.log('algo');
     }
 
-    isDayValid(start) {
-        return start === 0? this.state.dias[6]: this.state.dias[start - 1];
+    isDayValid(newEvent) {
+        let dayNewEvent = newEvent.start.getDay();
+        if (dayNewEvent == 0) dayNewEvent = 6;
+
+        if (!this.state.disponibilidad[dayNewEvent - 1].horarios.length) return false;
+
+        let horarios = this.state.disponibilidad[dayNewEvent - 1].horarios;
+
+        let valid = false;
+
+        horarios.forEach(x => {
+            let desde = false;
+            let hasta = false;
+            let desdeDb = validator.obtenerFecha(x.desde);
+            let hastaDb = validator.obtenerFecha(x.hasta);
+
+            if (desdeDb.getHours() <= newEvent.start.getHours()){
+                if (desdeDb.getHours() == newEvent.start.getHours() &&
+                    desdeDb.getMinutes() <= newEvent.start.getMinutes()) desde = true;
+                if (desdeDb.getHours() < newEvent.start.getHours()) desde = true;
+            }
+
+            if (hastaDb.getHours() >= newEvent.end.getHours()){
+                if (hastaDb.getHours() == newEvent.end.getHours() &&
+                    hastaDb.getMinutes() >= newEvent.end.getMinutes()) hasta = true;
+                if (hastaDb.getHours() >= newEvent.end.getHours()) hasta = true;
+            }
+
+            if (!valid && desde && hasta) valid = true;
+        });
+
+        return valid;
     }
 
     addNewEventAlert(slotInfo) {
@@ -147,7 +179,7 @@ class AltaReserva extends Component {
             return;
         }
 
-        if (!this.isDayValid(slotInfo.start.getDay())) {
+        if (!this.isDayValid(slotInfo)) {
             this.setState({
                 alert: (
                     <SweetAlert
@@ -157,7 +189,7 @@ class AltaReserva extends Component {
                         onCancel={()=>this.hideAlert()}
                         confirmBtnBsStyle="info"
                     >
-                        La reserva no esta disponible este día de la semana.
+                        El horario seleccionado no es valido
                     </SweetAlert>
                 )
             });
@@ -201,6 +233,8 @@ class AltaReserva extends Component {
             });
             return;
         }
+
+        // Solicito nombre para la reserva
         this.setState({
             alert: (
                 <SweetAlert
@@ -327,24 +361,29 @@ class AltaReserva extends Component {
                 </div>
                 {this.state.alert}
                 <div hidden={!(this.state.consulta)}>
+                    <div className="row col-md-12">
+                        <div className="row-secction col-md-8">
+                            <span>
+                            <h3>Servicio: {this.state.servicioSeleccionado ?
+                                this.state.servicioSeleccionado.label : 'Sin servicio seleccionado'}</h3>
+
+                            (duración de turno: {(this.state.duracionTurno / 60) >= 1 ? (this.state.duracionTurno / 60) + 'Hs.':
+                                (this.state.duracionTurno) + 'min.'})
+                            </span>
+                        </div>
+                    </div>
                     <Grid fluid>
                         <Row>
                             <Col md={12}>
-                                <h3>Servicio: {this.state.servicioSeleccionado ?
-                                    this.state.servicioSeleccionado.label : 'Sin servicio seleccionado'}</h3>
-                                <span><strong>
-                                    Duración de turno: {(this.state.duracionTurno / 60) >= 1 ? (this.state.duracionTurno / 60) + 'Hs.':
-                                    (this.state.duracionTurno) + 'min.'}
-                                </strong></span>
-                                <Disponibilidad dias={this.state.dias}></Disponibilidad>
+                                <Disponibilidad disponibilidad={this.state.disponibilidad}></Disponibilidad>
                                 <Card
                                     calendar
                                     content={
                                         <Calendar
                                             selectable
                                             step={this.state.duracionTurno}
-                                            min={this.state.min}
-                                            max={this.state.max}
+                                            // min={this.state.min}
+                                            // max={this.state.max}
                                             localizer={localizer}
                                             events={this.state.events}
                                             defaultView="week"
