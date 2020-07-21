@@ -100,8 +100,8 @@ class AltaReserva extends Component {
             .collection('Servicios').doc(this.state.servicioSeleccionado.value).get().then(
                 doc=> {
                     this.setState({
-                        // min: validator.obtenerFecha(doc.data().HoraDesde),
-                        // max: validator.obtenerFecha(doc.data().HoraHasta),
+                        min: validator.obtenerFecha(doc.data().HoraInicio),
+                        max: validator.obtenerFecha(doc.data().HoraFin),
                         disponibilidad: doc.data().Disponibilidad,
                         turnosMax: doc.data().TurnosMax,
                         duracionTurno: doc.data().DuracionTurno,
@@ -382,8 +382,8 @@ class AltaReserva extends Component {
                                         <Calendar
                                             selectable
                                             step={this.state.duracionTurno}
-                                            // min={this.state.min}
-                                            // max={this.state.max}
+                                            min={this.state.min}
+                                            max={this.state.max}
                                             localizer={localizer}
                                             events={this.state.events}
                                             defaultView="week"

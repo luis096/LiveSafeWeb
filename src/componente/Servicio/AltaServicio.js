@@ -114,19 +114,25 @@ class AltaServicio extends Component {
             return 0;
         })
 
+        let hasta = 0;
+        let desde = 24;
+
         this.state.events.forEach(event => {
             let dia = event.start.getDay();
             let id = horarios[dia - 1].horarios.length + 1;
             if (dia == 0) dia = 7;
             horarios[dia - 1].horarios.push({desde: event.start, hasta: event.end, id: id})
+
+            if (event.start.getHours() < desde) desde = event.start.getHours()
+            if (event.end.getHours() > hasta) hasta = event.end.getHours()
         })
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Servicios').add({
             Nombre: this.state.nombre,
             Estado: this.state.estado,
             Disponibilidad: horarios,
-            // HoraInicio: this.redondear(new Date(this.state.horaDesde)),
-            // HoraFin: this.redondear(new Date(this.state.horaHasta)),
+            HoraInicio: new Date(2020, 0, 1, desde, 0),
+            HoraFin: new Date(2020, 0, 1, hasta, 0),
             // Descripcion: this.state.descripcion,
             TurnosMax: this.state.turnosMax.value,
             DuracionTurno: (this.state.duracionTurno.value * 60)
