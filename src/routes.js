@@ -42,7 +42,7 @@ import EditarServicio from 'componente/Servicio/EditarServicio.js'
 import PrincipalEncargado from 'componente/Encargado/PrincipalEncargado'
 import AltaEncargado from 'componente/Encargado/AltaEncargado'
 import EditarEncargado from 'componente/Encargado/EditarEncargado'
-import Graficos from "./componente/Reportes/Graficos"
+import Graficos from "./componente/Reports"
 
 
 //Encargado
@@ -447,12 +447,23 @@ var routes = [
         ]
     },
     {
-        path: '/charts',
-        layout: '/lala',
+        collapse: true,
+        layoutCollapse: '/admin',
+        path: '/admin',
         name: 'Reportes',
-        icon: 'pe-7s-graph1',
-        component: Graficos
+        state: 'openReportes',
+        icon: 'pe-7s-display1',
+        views: [
+            {
+                path: '/report',
+                layout: '/admin',
+                name: 'Reportes',
+                mini: 'R',
+                component: Graficos
+            },
+        ]
     },
+   
     {
         collapse: true,
         layoutCollapse: '/propietario',
