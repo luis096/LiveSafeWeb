@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
 import {Pie, Line} from "react-chartjs-2";
-import Button from 'components/CustomButton/CustomButton.jsx';
 import {Database} from "../../config/config";
-import {operacion} from "../Operaciones";
 import {validator} from "../validator";
+import {Pagination} from "react-bootstrap";
+import Button from 'components/CustomButton/CustomButton.jsx';
+import { Collapse } from 'reactstrap';
+import Card from 'components/Card/Card.jsx';
+import "./Graficos.css"
 
 class Graficos extends Component {
 
@@ -15,31 +18,14 @@ class Graficos extends Component {
             pagina: true,
             dataLineIngresos: {},
             dataServicios: {},
-            reservas: []
+            reservas: [],
+            numPagina: 1,
+            servicio: null,
+            collapsed: false
         };
 
         this.consultar = this.consultar.bind(this);
         this.consultarServicios = this.consultarServicios.bind(this);
-
-        this.data = {
-            labels: [
-                'Red',
-                'Blue',
-                'Yellow'
-            ],
-
-            datasets: [{
-                data: [300, 50, 100],
-                backgroundColor: [
-                    '#FF6384',
-                    '#36A2EB',
-                    '#FFCE56'
-                ],
-
-            }]
-        };
-
-        this.consultar("Ingresos");
         this.consultarServicios();
     }
 
@@ -55,14 +41,16 @@ class Graficos extends Component {
     async consultarServicios() {
         let servicios = [];
         let reservas = [];
-        let ids = [];
         let dataService = [];
+        let color = [];
+        let porcentajes = [];
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Servicios')
             .get().then(querySnapshot=> {
                 querySnapshot.forEach(doc => {
                     servicios.push(doc.data().Nombre);
                     dataService.push(0);
+                    color.push(this.getRandomColor());
                 });
             });
 
@@ -78,21 +66,20 @@ class Graficos extends Component {
             dataService[index] = dataService[index] + 1;
         });
 
+        let total = 0;
+        dataService.forEach(x => { total += x});
+        dataService.forEach((x, i) => { porcentajes[i] = ((x * 100) / total) });
+
         this.setState({dataService: {
                 labels: servicios,
-
                 datasets: [{
                     data: dataService,
-                    backgroundColor: [
-                        '#FF6384',
-                        '#36A2EB',
-                        '#fff20B',
-                        '#00ff0B',
-                        '#0fffff',
-                        '#FFCE56'
-                    ],
-
+                    backgroundColor: color
                 }]
+            }, servicio: {
+                labels: servicios,
+                porcentajes: porcentajes,
+                color: color
             }
         })
 
@@ -104,39 +91,12 @@ class Graficos extends Component {
             ingresos.push(0);
         }
         await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection(tipo)
-            .where('Hora', '>', new Date(2020, 1)).get().then(querySnapshot=> {
+            .where('Hora', '>', new Date(2020, 0)).get().then(querySnapshot=> {
                 querySnapshot.forEach(doc => {
                     let mes = validator.obtenerFecha(doc.data().Hora).getMonth();
-                    ingresos[mes - 1] = ingresos[mes - 1] + 1;
+                    ingresos[mes] = ingresos[mes] + 1;
                 });
             });
-        this.state.dataLineIngresos = {
-            labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto',
-                'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-            datasets: [
-                {
-                    label: 'Ingresos',
-                    fill: true,
-                    lineTension: 0.2,
-                    backgroundColor: 'rgba(75,192,192,0.4)',
-                    borderColor: 'rgba(75,192,192,1)',
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: 'rgba(75,192,192,1)',
-                    pointBackgroundColor: '#fff',
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                    pointHoverBorderColor: 'rgba(220,220,220,1)',
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                    data: []
-                }
-            ]
-        };
 
         this.setState({dataLineIngresos:
                 {
@@ -144,20 +104,20 @@ class Graficos extends Component {
                         'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
                     datasets: [
                         {
-                            label: 'Ingresos',
+                            label: tipo,
                             fill: true,
                             lineTension: 0.2,
-                            backgroundColor: 'rgba(75,192,192,0.4)',
-                            borderColor: 'rgba(75,192,192,1)',
+                            backgroundColor: (tipo === "Ingresos")?'rgba(75,192,192,0.4)':'rgba(192,1,6,0.4)',
+                            borderColor: (tipo === "Ingresos")?'rgba(75,192,192,1)':'rgb(192,103,96)',
                             borderCapStyle: 'butt',
                             borderDash: [],
                             borderDashOffset: 0.0,
                             borderJoinStyle: 'miter',
-                            pointBorderColor: 'rgba(75,192,192,1)',
+                            pointBorderColor: (tipo === "Ingresos")?'rgba(75,192,192,1)':'rgb(192,103,96)',
                             pointBackgroundColor: '#fff',
                             pointBorderWidth: 1,
                             pointHoverRadius: 5,
-                            pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                            pointHoverBackgroundColor: (tipo === "Ingresos")?'rgba(75,192,192,1)':'rgb(192,103,96)',
                             pointHoverBorderColor: 'rgba(220,220,220,1)',
                             pointHoverBorderWidth: 2,
                             pointRadius: 1,
@@ -173,25 +133,43 @@ class Graficos extends Component {
     render() {
         return (
             <div className="col-12">
-                {/*<legend><h3 className="row">Reportes</h3></legend>*/}
-                <div className="row card" hidden={!this.state.pagina}>
+                <div className="row card" hidden={1 !== this.state.numPagina}>
                     <div className="card-body">
                         <div className='row'>
-                            <div className="pie">
-                                <h2>Reservas por servicio</h2>
-                                <Pie data={this.state.dataService}></Pie>
+                            <div className="col-12">
+                                <h3>Reservas por servicio</h3>
+                                <Button bsStyle="warning" fill wd onClick={() => { this.setState({collapsed: !this.state.collapsed})}}>
+                                    Ver porcentajes
+                                </Button>
+                                <div className="conteiner-porcentajes">
+                                    <Collapse isOpen={this.state.collapsed}>
+                                        <Card title={"Porcentajes:"} content={
+                                            <div className="row">
+                                                {
+                                                    this.state.servicio && this.state.servicio.labels.map((value, i) => {
+                                                    return ( <div className="row-secction col-md-3 porcentajes">
+                                                            <div className="colorReference"
+                                                                 style={{background : this.state.servicio.color[i]}}>
+                                                            </div>
+                                                            <span className="servicioText">{value + ": " +
+                                                            this.state.servicio.porcentajes[i].toFixed(2)
+                                                            + "%"}</span>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        }>
+                                        </Card>
+                                    </Collapse>
+                                </div>
                             </div>
+                            <Pie data={this.state.dataService}
+                                 width={100} height={40}
+                                 options={{ maintainAspectRatio: false }}/>
                         </div>
                     </div>
-                    <div className="izquierda">
-                        <Button bsStyle="success" fill
-                                hidden={!this.state.pagina}
-                                onClick={() => this.setState({pagina: false})}>
-                            {"Siguiente"}
-                        </Button>
-                    </div>
                 </div>
-                <div className="row card" hidden={this.state.pagina}>
+                <div className="row card" hidden={2 !== this.state.numPagina}>
                     <div className='row'>
                         <div className="row-secction col-md-6">
                             <h3>Cantidad de ingresos por mes</h3>
@@ -206,18 +184,41 @@ class Graficos extends Component {
                     </div>
                     <div className="card-body">
                         <div className='row'>
-                            <Line data={this.state.dataLineIngresos}></Line>
+                            <Line data={this.state.dataLineIngresos} width={100} height={40}/>
                         </div>
                     </div>
-                    <Button bsStyle="success" fill
-                            hidden={this.state.pagina}
-                            onClick={() => this.setState({pagina: true})}>
-                        {"Anterior"}
-                    </Button>
                 </div>
+
+                <div className="row card" hidden={3 !== this.state.numPagina}>
+                    <div className='row'>
+                        <div className="row-secction col-md-6">
+                            <h3>Cantidad de egresos por mes</h3>
+                        </div>
+                    </div>
+                    <div className="card-body">
+                        <div className='row'>
+                            <Line data={this.state.dataLineIngresos} width={100} height={40}/>
+                        </div>
+                    </div>
+                </div>
+                <div className="text-center">
+                    <Pagination className="pagination-no-border">
+                        <Pagination.Item active={(1 === this.state.numPagina)}
+                                         onClick={()=> {this.consultarServicios(); this.setState({ numPagina: 1})}}>1
+                        </Pagination.Item>
+                        <Pagination.Item active={(2 === this.state.numPagina)}
+                                         onClick={()=> {this.consultar("Ingresos"); this.setState({ numPagina: 2})}}>2
+                        </Pagination.Item>
+                        <Pagination.Item active={(3 === this.state.numPagina)}
+                                         onClick={()=> {this.consultar("Egresos"); this.setState({ numPagina: 3})}}>3
+                        </Pagination.Item>
+                    </Pagination>
+                </div>
+
             </div>
         );
     }
+
 }
 
 export default Graficos;

@@ -1,0 +1,18 @@
+
+.colorReference {
+    width: 35px;
+    height: 15px;
+}
+
+.servicioText {
+    padding-left: 5px;
+}
+
+.porcentajes {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.conteiner-porcentajes {
+    margin-top: 20px;
+}
