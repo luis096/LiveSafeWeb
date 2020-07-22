@@ -42,7 +42,7 @@ import EditarServicio from 'componente/Servicio/EditarServicio.js'
 import PrincipalEncargado from 'componente/Encargado/PrincipalEncargado'
 import AltaEncargado from 'componente/Encargado/AltaEncargado'
 import EditarEncargado from 'componente/Encargado/EditarEncargado'
-import Graficos from "./componente/Reports"
+import Graficos from "./componente/Reportes/Graficos"
 
 
 //Encargado
