@@ -21,7 +21,8 @@ class Graficos extends Component {
             reservas: [],
             numPagina: 1,
             servicio: null,
-            collapsed: false
+            collapsed: false,
+            sinDatos: false
         };
 
         this.consultar = this.consultar.bind(this);
@@ -61,6 +62,7 @@ class Graficos extends Component {
             });
         });
 
+        if (!reservas.length) return;
         reservas.forEach( value => {
             let index = servicios.indexOf(value.Servicio.toString());
             dataService[index] = dataService[index] + 1;
@@ -138,9 +140,14 @@ class Graficos extends Component {
                         <div className='row'>
                             <div className="col-12">
                                 <h3>Reservas por servicio</h3>
-                                <Button bsStyle="warning" fill wd onClick={() => { this.setState({collapsed: !this.state.collapsed})}}>
+                                <Button bsStyle="warning" fill wd
+                                        disabled={!this.state.dataService}
+                                        onClick={() => { this.setState({collapsed: !this.state.collapsed})}}>
                                     Ver porcentajes
                                 </Button>
+                                <div hidden={this.state.dataService}>
+                                    <h5>No existen reservas realizadas en los servicios del barrio.</h5>
+                                </div>
                                 <div className="conteiner-porcentajes">
                                     <Collapse isOpen={this.state.collapsed}>
                                         <Card title={"Porcentajes:"} content={
@@ -163,9 +170,12 @@ class Graficos extends Component {
                                     </Collapse>
                                 </div>
                             </div>
-                            <Pie data={this.state.dataService}
-                                 width={100} height={40}
-                                 options={{ maintainAspectRatio: false }}/>
+                            <div hidden={!this.state.dataService}>
+                                <Pie data={this.state.dataService}
+                                     width={100} height={40}
+                                     options={{ maintainAspectRatio: false }}/>
+                            </div>
+
                         </div>
                     </div>
                 </div>

@@ -111,7 +111,7 @@ class InvitadoEvento extends Component {
                     Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' le envio una solicitud ' +
                         'para asistir al evento ' + this.state.reservaNombre + '.',
                     Visto: false,
-                    IdReserva: this.state.idReserva
+                    IdReserva: this.idReserva
                 }).then(this.restaurar()).catch((error) => {
                     this.notificationSystem.current.addNotification(operacion.error(error.message));
                 });

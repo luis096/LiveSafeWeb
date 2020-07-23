@@ -6,6 +6,7 @@ import {validator} from "../validator";
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
 import {operacion} from "../Operaciones";
+import Configuraciones from "./Configuraciones";
 
 class MiPerfil extends Component {
 
@@ -136,7 +137,7 @@ class MiPerfil extends Component {
                                     value={this.state.tipoDocumentoNombre}/>
 
                             </div>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label> Celular </label>
                                 <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
                                        placeholder="Celular"
@@ -144,6 +145,12 @@ class MiPerfil extends Component {
                                        onChange={this.ChangeCelular}
                                 />
                                 {errorHTML.errorLabel(this.errorCelular)}
+                            </div>
+                            <div className="col-md-1 row-secction">
+                                <br/>
+                                <Button bsStyle="primary" fill onClick={this.actualizar}>
+                                    Guardar
+                                </Button>
                             </div>
                         </div>
                         <div className="row">
@@ -156,11 +163,7 @@ class MiPerfil extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="text-center">
-                    <Button bsStyle="primary" fill wd onClick={this.actualizar}>
-                        Registrar
-                    </Button>
-                </div>
+                <Configuraciones></Configuraciones>
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>

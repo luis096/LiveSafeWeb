@@ -347,7 +347,7 @@ class AltaServicio extends Component {
                                 <Button bsStyle="warning" fill
                                         disabled={!this.state.duracionTurno}
                                         onClick={() => this.setState({verCalendar: true})}>
-                                    Ver
+                                    Agregar horarios
                                 </Button>
                             </div>
                         </div>

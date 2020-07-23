@@ -85,3 +85,11 @@
 .izquierda {
   text-align: end;
 }
+
+.navSelected {
+    background-color: #c2c2c2;
+}
+
+.textNav {
+    color: black;
+}

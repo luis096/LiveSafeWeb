@@ -299,10 +299,10 @@ class HeaderLinks extends Component {
                         {this.miPerfilRedirect()}
                         {this.miBarioNav()}
                         {this.miBarrioRedirect()}
-                        <MenuItem eventKey={4.3} onClick={this.configuracion}>
-                            <i className="pe-7s-tools"/> Configuraciones
-                        </MenuItem>
-                        {this.miConfiguracionRedirect()}
+                        {/*<MenuItem eventKey={4.3} onClick={this.configuracion}>*/}
+                        {/*    <i className="pe-7s-tools"/> Configuraciones*/}
+                        {/*</MenuItem>*/}
+                        {/*{this.miConfiguracionRedirect()}*/}
                         <MenuItem eventKey={4.4} onClick={this.descargarManual}>
                             <i className="pe-7s-help1"/> Ayuda
                         </MenuItem>

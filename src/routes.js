@@ -463,7 +463,6 @@ var routes = [
             },
         ]
     },
-   
     {
         collapse: true,
         layoutCollapse: '/propietario',

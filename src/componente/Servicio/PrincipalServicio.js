@@ -316,25 +316,26 @@ class PrincipalServicio extends Component {
                             <tr>
                                 <th scope="col">Indice</th>
                                 <th scope="col">Nombre</th>
-                                <th scope="col">Disponibilidad</th>
+                                <th scope="col">Duracion de turno</th>
                                 <th scope="col">Estado</th>
-                                <th scope="col">Editar</th>
+                                <th scope="col">Visualizar</th>
                             </tr>
                             </thead>
                             <tbody>
                             {
                                 this.state.servicios.map((ser, ind)=> {
                                         let estado = ser[0].Estado?'Disponible':'No disponible';
-                                        let disponibilidad = operacion.obtenerDisponibleString(ser[0].Disponibilidad);
+                                        // let disponibilidad = operacion.obtenerDisponibleString(ser[0].Disponibilidad);
                                         let editar = '/admin/editarServicio/' + ser[1];
                                         return (
                                             <tr className="table-light">
                                                 <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
                                                 <td>{ser[0].Nombre}</td>
-                                                <td>{disponibilidad}</td>
+                                                <td>{(ser[0].DuracionTurno / 60) >= 1 ? (ser[0].DuracionTurno / 60) + 'Hs.':
+                                                    (ser[0].DuracionTurno) + 'min.'}</td>
                                                 <td>{estado}</td>
-                                                <td><Link to={editar}><Button bsStyle="warning" fill wd>
-                                                    Editar
+                                                <td><Link to={editar}><Button bsStyle="warning" fill>
+                                                    Visualizar
                                                 </Button></Link></td>
                                             </tr>
                                         );
