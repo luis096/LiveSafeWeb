@@ -317,6 +317,7 @@ class PrincipalServicio extends Component {
                                 <th scope="col">Indice</th>
                                 <th scope="col">Nombre</th>
                                 <th scope="col">Duracion de turno</th>
+                                <th scope="col">Turnos maximos</th>
                                 <th scope="col">Estado</th>
                                 <th scope="col">Visualizar</th>
                             </tr>
@@ -331,8 +332,9 @@ class PrincipalServicio extends Component {
                                             <tr className="table-light">
                                                 <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
                                                 <td>{ser[0].Nombre}</td>
-                                                <td>{(ser[0].DuracionTurno / 60) >= 1 ? (ser[0].DuracionTurno / 60) + 'Hs.':
-                                                    (ser[0].DuracionTurno) + 'min.'}</td>
+                                                <td>{(ser[0].DuracionTurno / 60) >= 1 ? (ser[0].DuracionTurno / 60) + ' Hs.':
+                                                    (ser[0].DuracionTurno) + ' Min.'}</td>
+                                                <td>{ser[0].TurnosMax}</td>
                                                 <td>{estado}</td>
                                                 <td><Link to={editar}><Button bsStyle="warning" fill>
                                                     Visualizar

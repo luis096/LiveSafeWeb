@@ -185,7 +185,8 @@ class EditarServicio extends Component {
                             <div className="row-secction col-md-3">
                                 <label>Duración de turno</label>
                                 <input className='form-control' readOnly
-                                       value={this.state.duracionTurno}
+                                       value={(this.state.duracionTurno / 60) >= 1 ? (this.state.duracionTurno / 60) + ' Hs.':
+                                           (this.state.duracionTurno) + ' Min.'}
                                 />
                             </div>
                             <div className="row-secction col-md-3">

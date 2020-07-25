@@ -32,6 +32,7 @@ class AltaIngreso extends Component {
             tipoD: [],
             alert: null,
             nuevoInvitado: false,
+            esInvitadoEvento: false,
             errorDocumento: {error: false, mensaje: ''}
         };
         this.notificationSystem = React.createRef();
@@ -160,6 +161,7 @@ class AltaIngreso extends Component {
                         if (doc.exists) {
                             if (validator.validarInvitado(doc.data().FechaDesde, doc.data().FechaHasta)) {
                                 invitadoTemp.push([doc.data(), doc.id]);
+                                this.setState({esInvitadoEvento: true})
                             }
                         }
                     });
@@ -374,7 +376,8 @@ class AltaIngreso extends Component {
             existeInvitado: false,
             tipoDocumento: '',
             documento: '',
-            descripcion: ''
+            descripcion: '',
+            esInvitadoEvento: false
         });
     }
 
@@ -443,7 +446,7 @@ class AltaIngreso extends Component {
                     <div className="row card" hidden={!this.state.invitadoTemp.length}>
                         <div className="card-body">
                             <h5 className="row">Resultado de la busqueda</h5>
-                            <div className="row">
+                            <div className="row" hidden={this.state.esInvitadoEvento}>
                                 <div className="col-md-3 row-secction">
                                     <label>Tipo de Ingreso</label>
                                     <input className="form-control"
@@ -482,6 +485,9 @@ class AltaIngreso extends Component {
                                         inputProps={{placeholder: 'Fecha de Nacimiento', disabled: !this.state.autenticar }}
                                     />
                                 </div>
+                            </div>
+                            <div className="row" hidden={!this.state.esInvitadoEvento}>
+                               <label>La persona se encuentra invitada a un evento dentro del barrio.</label>
                             </div>
                         </div>
                     </div>
