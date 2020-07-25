@@ -84,13 +84,6 @@ class AltaServicio extends Component {
     }
 
     async actualizarHorasMax() {
-        // let cantidadHs = new Date(this.state.horaHasta).getHours() - new Date(this.state.horaDesde).getHours();
-        // let cantidadMin = new Date(this.state.horaHasta).getMinutes() - new Date(this.state.horaDesde).getMinutes();
-        //
-        // if (cantidadHs < 1 || !this.state.duracionTurno) return;
-        //
-        // let max = (cantidadHs / this.state.duracionTurno.value);
-        // if (cantidadMin >= (this.state.duracionTurno.value * 60)) { max++ }
         await this.setState({turnosMaxSelect: []});
          for(var i = 1; i <= 24; i++) {
             this.state.turnosMaxSelect.push({value: i, label:i.toString()});
@@ -119,8 +112,8 @@ class AltaServicio extends Component {
 
         this.state.events.forEach(event => {
             let dia = event.start.getDay();
-            let id = horarios[dia - 1].horarios.length + 1;
             if (dia == 0) dia = 7;
+            let id = horarios[dia - 1].horarios.length + 1;
             horarios[dia - 1].horarios.push({desde: event.start, hasta: event.end, id: id})
 
             if (event.start.getHours() < desde) desde = event.start.getHours()

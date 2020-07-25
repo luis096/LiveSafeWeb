@@ -9,6 +9,14 @@ import Select from "react-select";
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
 import {operacion} from "../Operaciones";
+import {Col, Grid, Row} from "react-bootstrap";
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import Card from 'components/Card/Card.jsx';
+import moment from 'moment';
+import 'moment/locale/es';
+
+moment.locale('es');
+const localizer = momentLocalizer(moment);
 
 
 class EditarServicio extends Component {
@@ -17,12 +25,15 @@ class EditarServicio extends Component {
         super(props);
         this.state = {
             servicio: [],
+            events: [],
             nombre: '',
             estado: true,
             descripcion: '',
             horaDesde: new Date(2020, 0, 1, 8, 0),
             horaHasta: new Date(2020, 0, 1, 18, 0),
-            dias: [false, false, false, false, false, false, false],
+            min: new Date(2019, 0, 1, 0, 0),
+            max: new Date(2019, 0, 1, 23, 0),
+            dias: null,
             turnosMax: null,
             turnoSelect:[],
             turnosMaxSelect:[],
@@ -30,19 +41,11 @@ class EditarServicio extends Component {
         };
         this.notificationSystem = React.createRef();
         this.editServicio = this.editServicio.bind(this);
-        this.ChangeNombre = this.ChangeNombre.bind(this);
-        this.ChangeDesde = this.ChangeDesde.bind(this);
-        this.ChangeHasta = this.ChangeHasta.bind(this);
-        this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
-        this.ChangeSelectTurnosMax = this.ChangeSelectTurnosMax.bind(this);
-        this.ChangeSelectTurno = this.ChangeSelectTurno.bind(this);
         this.registrar = this.registrar.bind(this);
         const url = this.props.location.pathname.split('/');
         this.idServicio = url[url.length - 1];
 
         this.errorNombre = {error: false, mensaje: ''};
-        
-
     }
 
     async componentDidMount() {
@@ -55,81 +58,90 @@ class EditarServicio extends Component {
         }).catch((error) => {
             this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
-        let max = 0;
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.idServicio).get().then(doc=> {
                 if (doc.exists) {
                     this.setState({
                         nombre: doc.data().Nombre,
                         estado: doc.data().Estado,
-                        idCountry: doc.data().IdCountry,
-                        descripcion: doc.data().Descripcion,
                         dias: doc.data().Disponibilidad,
-                        horaDesde: validator.obtenerFecha(doc.data().HoraDesde),
-                        horaHasta: validator.obtenerFecha(doc.data().HoraHasta),
-                        duracionTurno: this.state.turnoSelect.find(x => x.value == (doc.data().DuracionTurno/60))
+                        horaDesde: validator.obtenerFecha(doc.data().HoraInicio),
+                        horaHasta: validator.obtenerFecha(doc.data().HoraFin),
+                        duracionTurno: doc.data().DuracionTurno,
+                        turnosMax: doc.data().TurnosMax
                     });
-                    max = doc.data().TurnosMax;
                 }
-            }).catch((error) => {
-                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
+
+        let newEvents = [];
+
+        let diaNumber = new Date().getDay();
+        let fecha = new Date().getDate();
+        let mes = new Date().getMonth();
+        let anio = new Date().getFullYear();
+
+        this.state.dias.forEach(dia => {
+           let horario = dia.horarios;
+           horario.forEach(value => {
+
+               let diaOficial = 0;
+               let start = validator.obtenerFecha(value.desde);
+               let end = validator.obtenerFecha(value.hasta);
+               start.getDay()===0?diaOficial = 7:diaOficial = start.getDay();
+               let nuevoHorario = {
+                   title: "Reserva",
+                   color: "red",
+                   start: new Date(anio, mes, (fecha + (diaOficial - diaNumber)), start.getHours(), start.getMinutes()),
+                   end: new Date(anio, mes, (fecha + (diaOficial - diaNumber)), end.getHours(), end.getMinutes()),
+               };
+               newEvents.push(nuevoHorario);
+           });
+        });
+
+        this.setState({ events: newEvents});
+
+        let hasta = 0;
+        let desde = 24;
+
+        let horarios = this.state.dias;
+
+        this.state.events.forEach(event => {
+            let dia = event.start.getDay();
+            if (dia == 0) dia = 7;
+            let id = horarios[dia - 1].horarios.length + 1;
+            horarios[dia - 1].horarios.push({desde: event.start, hasta: event.end, id: id});
+
+            if (event.start.getHours() < desde) desde = event.start.getHours();
+            if (event.end.getHours() > hasta) hasta = event.end.getHours();
+        });
+
+        this.setState({
+            min: new Date(2020, 0, 1, desde, 0),
+            max: new Date(2020, 0, 1, hasta, 0),
+        });
+
         await this.actualizarHorasMax();
-        await this.setState({turnosMax: this.state.turnosMaxSelect.find(x => x.value == max)});
     }
 
     async actualizarHorasMax() {
-        let cantidadHs = new Date(this.state.horaHasta).getHours() - new Date(this.state.horaDesde).getHours();
-        let cantidadMin = new Date(this.state.horaHasta).getMinutes() - new Date(this.state.horaDesde).getMinutes();
-
-        if (cantidadHs < 1 || !this.state.duracionTurno) return;
-
-        let max = (cantidadHs / this.state.duracionTurno.value);
-        if (cantidadMin >= (this.state.duracionTurno.value * 60)) { max++ }
         await this.setState({turnosMaxSelect: []});
-        for(var i = 1; i <= max; i++) {
+        for(var i = 1; i <= 24; i++) {
             this.state.turnosMaxSelect.push({value: i, label:i.toString()});
+            if (i === this.state.turnosMax) {
+                this.setState({turnosMax: {value: i, label:i.toString()}})
+            }
         }
     }
 
     async editServicio() {
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.idServicio).update({
-            Nombre: this.state.nombre,
             Estado: this.state.estado,
-            Disponibilidad: this.state.dias,
-            HoraDesde: this.redondear(new Date(this.state.horaDesde)),
-            HoraHasta: this.redondear(new Date(this.state.horaHasta)),
-            Descripcion: this.state.descripcion,
-            TurnosMax: this.state.turnosMax.value,
-            DuracionTurno: (this.state.duracionTurno.value * 60)
+            TurnosMax: this.state.turnosMax.value
         }).catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
-    }
-
-    ChangeNombre(event) {
-        this.setState({nombre: event.target.value});
-        if (event.target.value == "")
-        {this.errorNombre= validator.requerido(event.target.value)}
-        else{this.errorNombre =validator.soloLetras(event.target.value)}
-    }
-
-    async ChangeDesde(event) {
-        await this.setState({horaDesde: event});
-        await this.setState({duracionTurno: null, turnosMax: null});
-        await this.actualizarHorasMax();
-    }
-
-    async ChangeHasta(event) {
-        await this.setState({horaHasta: event});
-        await this.setState({duracionTurno: null, turnosMax: null});
-        await this.actualizarHorasMax();
-    }
-
-    ChangeDescripcion(event) {
-        this.setState({descripcion: event.target.value});
     }
 
     ChangeEstado() {
@@ -142,33 +154,8 @@ class EditarServicio extends Component {
         this.setState({turnosMax: value});
     }
 
-    async ChangeSelectTurno(value) {
-        await this.setState({duracionTurno: value});
-        await this.setState({turnosMax: null});
-        await this.actualizarHorasMax();
-    }
-
     registrar() {
         this.editServicio();
-    }
-
-    redondear(date) {
-        let minutos = date.getMinutes();
-        let hora = date.getHours();
-        if (minutos != 0 || minutos != 30) {
-            if (minutos > 30) {
-                date.setHours((hora + 1), 0);
-            } else {
-                date.setMinutes(0);
-            }
-        }
-        return date;
-    }
-
-    ChangeDia(num) {
-        let {dias} = this.state;
-        dias[num] = !dias[num];
-        this.setState(dias);
     }
 
     render() {
@@ -179,15 +166,13 @@ class EditarServicio extends Component {
                 <div className="row card">
                     <div className="card-body">
                         <div className="row">
-                            <div className="row-secction col-md-6">
-                                <label> Nombre del Servicio </label>
-                                <input className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
-                                       placeholder="Nombre del Servicio"
-                                       value={this.state.nombre}
-                                       onChange={this.ChangeNombre}/>
-                                 {errorHTML.errorLabel(this.errorNombre)}
-                            </div>
                             <div className="row-secction col-md-3">
+                                <label> Nombre </label>
+                                <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') } placeholder="Nombre"
+                                       value={this.state.nombre} readOnly
+                                />
+                            </div>
+                            <div className="row-secction col-md-2">
                                 <label>Disponibilidad del servicio</label>
                                 <div>
                                     <Switch onText="Si" offText="No"
@@ -197,119 +182,13 @@ class EditarServicio extends Component {
                                             }}/>
                                 </div>
                             </div>
-                        </div>
-                        <div className="row">
-                            <label>Días disponibles del servicio:</label>
-                            <div className="row">
-                                <div className="row-secction col-md-1">
-                                    <p className="category">Lunes</p>
-                                    <Switch
-                                        onText="✔"
-                                        offText="✘"
-                                        value={this.state.dias[0]}
-                                        onChange={()=> {
-                                            this.ChangeDia(0);
-                                        }}
-                                    />
-                                </div>
-                                <div className="row-secction col-md-1">
-                                    <p className="category">Martes</p>
-                                    <Switch
-                                        onText="✔"
-                                        offText="✘"
-                                        value={this.state.dias[1]}
-                                        onChange={()=> {
-                                            this.ChangeDia(1);
-                                        }}
-                                    />
-                                </div>
-                                <div className="row-secction col-md-1">
-                                    <p className="category">Miercoles</p>
-                                    <Switch
-                                        onText="✔"
-                                        offText="✘"
-                                        value={this.state.dias[2]}
-                                        onChange={()=> {
-                                            this.ChangeDia(2);
-                                        }}
-                                    />
-                                </div>
-                                <div className="row-secction col-md-1">
-                                    <p className="category">Jueves</p>
-                                    <Switch
-                                        onText="✔"
-                                        offText="✘"
-                                        value={this.state.dias[3]}
-                                        onChange={()=> {
-                                            this.ChangeDia(3);
-                                        }}
-                                    />
-                                </div>
-                                <div className="row-secction col-md-1">
-                                    <p className="category">Viernes</p>
-                                    <Switch
-                                        onText="✔"
-                                        offText="✘"
-                                        value={this.state.dias[4]}
-                                        onChange={()=> {
-                                            this.ChangeDia(4);
-                                        }}
-                                    />
-                                </div>
-                                <div className="row-secction col-md-1">
-                                    <p className="category">Sabado</p>
-                                    <Switch
-                                        onText="✔"
-                                        offText="✘"
-                                        value={this.state.dias[5]}
-                                        onChange={()=> {
-                                            this.ChangeDia(5);
-                                        }}
-                                    />
-                                </div>
-                                <div className="row-secction col-md-1">
-                                    <p className="category">Domingo</p>
-                                    <Switch
-                                        onText="✔"
-                                        offText="✘"
-                                        value={this.state.dias[6]}
-                                        onChange={()=> {
-                                            this.ChangeDia(6);
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="row-secction col-md-2">
-                                <label>Hora Desde</label>
-                                <Datetime
-                                    dateFormat={false}
-                                    inputProps={{placeholder: 'Hora desde'}}
-                                    value={this.state.horaDesde}
-                                    onChange={this.ChangeDesde}
-                                />
-
-                            </div>
-                            <div className="row-secction col-md-2">
-                                <label>Hora Hasta</label>
-                                <Datetime
-                                    dateFormat={false}
-                                    inputProps={{placeholder: 'Hora hasta'}}
-                                    value={this.state.horaHasta}
-                                    onChange={this.ChangeHasta}
-                                />
-                            </div>
-                            <div className="row-secction col-md-2">
+                            <div className="row-secction col-md-3">
                                 <label>Duración de turno</label>
-                                <Select
-                                    isClearable={true}
-                                    value={this.state.duracionTurno}
-                                    options={this.state.turnoSelect}
-                                    onChange={this.ChangeSelectTurno.bind(this)}
+                                <input className='form-control' readOnly
+                                       value={this.state.duracionTurno}
                                 />
                             </div>
-                            <div className="row-secction col-md-2">
+                            <div className="row-secction col-md-3">
                                 <label>Turnos Maximos de Reserva</label>
                                 <Select
                                     isClearable={true}
@@ -319,12 +198,27 @@ class EditarServicio extends Component {
                                 />
                             </div>
                         </div>
-                        <div className="row">
-                            <label> Descripcion </ label>
-                            <textarea className="form-control" rows="3" placeholder="Descripcion del servicio"
-                                      value={this.state.descripcion}
-                                      onChange={this.ChangeDescripcion}> </textarea>
-                        </div>
+                    </div>
+                    <div>
+                        <Grid fluid>
+                            <Row>
+                                <Col md={12}>
+                                    <Calendar
+                                        selectable
+                                        step={this.state.duracionTurno?this.state.duracionTurno:60}
+                                        min={this.state.min}
+                                        max={this.state.max}
+                                        localizer={localizer}
+                                        events={this.state.events}
+                                        defaultDate={new Date()}
+                                        defaultView="week"
+                                        views={['week']}
+                                        popup={true}
+                                        toolbar={false}
+                                    />
+                                </Col>
+                            </Row>
+                        </Grid>
                     </div>
                 </div>
                 <div className="text-center">
@@ -335,6 +229,7 @@ class EditarServicio extends Component {
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
+                {this.state.alert}
             </div>
         );
     }

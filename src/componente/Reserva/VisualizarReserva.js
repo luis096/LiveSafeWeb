@@ -94,7 +94,6 @@ class VisualizarReserva extends Component {
         if (this.state.activeTab !== tab) this.setState({activeTab: tab});
     }
 
-
     actualizar(id, pendiente) {
         const {invitadosPendientes, invitadosConfirmados} = this.state;
         if (pendiente) {
@@ -326,7 +325,7 @@ class VisualizarReserva extends Component {
                 </div>
                 <div className="card row">
                     <Nav tabs>
-                        <NavItem className={this.state.activeTab === '1'?"navSelected":""}>
+                        <NavItem className={this.state.activeTab !== '1'?"navSelected":""}>
                             <NavLink
                                 onClick={() => {
                                     this.toggle('1');
@@ -336,7 +335,7 @@ class VisualizarReserva extends Component {
                                 Confirmados ({this.state.invitadosConfirmados.length})
                             </NavLink>
                         </NavItem>
-                        <NavItem className={this.state.activeTab === '2'?"navSelected":""}>
+                        <NavItem className={this.state.activeTab !== '2'?"navSelected":""}>
                             <NavLink
                                 onClick={() => {
                                     this.toggle('2');

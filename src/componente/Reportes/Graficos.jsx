@@ -83,8 +83,7 @@ class Graficos extends Component {
                 porcentajes: porcentajes,
                 color: color
             }
-        })
-
+        });
     }
 
     async consultar(tipo) {
@@ -170,11 +169,9 @@ class Graficos extends Component {
                                     </Collapse>
                                 </div>
                             </div>
-                            <div hidden={!this.state.dataService}>
-                                <Pie data={this.state.dataService}
-                                     width={100} height={40}
-                                     options={{ maintainAspectRatio: false }}/>
-                            </div>
+                            <Pie data={this.state.dataService}
+                                 width={100} height={40}
+                                 options={{ maintainAspectRatio: false }}/>
 
                         </div>
                     </div>

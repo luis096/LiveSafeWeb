@@ -418,7 +418,7 @@ class PrincipalInvitados extends Component {
                                 <th scope="col">Tipo Documento</th>
                                 <th scope="col">Documento</th>
                                 <th scope="col">Apellido y Nombre</th>
-                                <th scope="col">Grupo</th>
+                                {/*<th scope="col">Grupo</th>*/}
                                 <th scope="col">Estado</th>
                                 <th scope="col">Invitar a Evento</th>
                                 <th scope="col">Editar</th>
@@ -435,9 +435,9 @@ class PrincipalInvitados extends Component {
                                                 <td>{this.obtenerDocumentoLabel(inv[0].TipoDocumento.id)}</td>
                                                 <td>{inv[0].Documento}</td>
                                                 <td>{inv[0].Nombre}, {inv[0].Apellido}</td>
-                                                <td>{inv[0].Grupo}</td>
+                                                {/*<td>{inv[0].Grupo}</td>*/}
                                                 <td>{inv[0].Estado ? 'Activo' : 'Inactivo'}</td>
-                                                <td><Button bsStyle="info" fill wd
+                                                <td><Button bsStyle="info" fill
                                                             disabled={false} onClick={()=> {
                                                     this.setState({invitadoReserva: inv});
                                                     this.modalAgregarInvitado();
@@ -447,9 +447,9 @@ class PrincipalInvitados extends Component {
                                                     className="nav-link"
                                                     activeClassName="active"
                                                 >
-                                                    <Button bsStyle="warning" fill wd>Editar</Button>
+                                                    <Button bsStyle="warning" fill>Editar</Button>
                                                 </NavLink></td>
-                                                <td><Button bsStyle="danger" fill wd onClick={()=> {
+                                                <td><Button bsStyle="danger" fill onClick={()=> {
                                                     this.cancelar(inv);
                                                 }}>Eliminar</Button></td>
                                             </tr>

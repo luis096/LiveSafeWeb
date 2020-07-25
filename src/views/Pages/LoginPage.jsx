@@ -97,7 +97,7 @@ class LoginPage extends Component {
         if (!this.state.tipoUsuario) {
             await this.consultarUsuarioTemporal();
         } else {
-            console.log("Se loguea")
+            console.log("Se loguea  ");
             await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
                 .then(()=> {
                     this.setState({result: true});
