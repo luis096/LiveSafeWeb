@@ -85,7 +85,7 @@ function esDiaDisponible(dias, dia){
 
 function error(mensaje) {
     let obj = {
-        title: <span data-notify="icon" className="pe-7s-bell"/>,
+        title: <span data-notify="icon" className="pe-7s-close-circle"/>,
         message: (<div>{mensaje}</div>),
         level: "error",
         position: "br",

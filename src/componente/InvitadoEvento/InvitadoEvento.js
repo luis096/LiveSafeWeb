@@ -1,11 +1,13 @@
-import React, { Component } from 'react';
-import { Database } from '../../config/config';
+import React, {Component} from 'react';
+import {Database} from '../../config/config';
 import '../Style/Alta.css';
 import Select from 'react-select';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import {operacion} from "../Operaciones";
-import { style } from "../../variables/Variables";
+import {style} from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
+import {validator} from "../validator";
+import Spinner from 'react-spinner-material';
 
 
 class InvitadoEvento extends Component {
@@ -19,7 +21,9 @@ class InvitadoEvento extends Component {
             tipoDocumento: '',
             tipoD: [],
             barrios: [],
-            reservaNombre: ''
+            reservaNombre: '',
+            vigente: true,
+            loading: true,
         };
         this.notificationSystem = React.createRef();
         const url = this.props.location.pathname.split('/');
@@ -38,8 +42,8 @@ class InvitadoEvento extends Component {
     async componentDidMount() {
         const {tipoD} = this.state;
         try {
-            await Database.collection('TipoDocumento').get().then(querySnapshot=> {
-                querySnapshot.forEach(doc=> {
+            await Database.collection('TipoDocumento').get().then(querySnapshot => {
+                querySnapshot.forEach(doc => {
                     this.state.tipoD.push(
                         {value: doc.id, label: doc.data().Nombre}
                     );
@@ -48,12 +52,17 @@ class InvitadoEvento extends Component {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
             await Database.collection('Country').doc(this.idCountry)
-            .collection('Propietarios').doc(this.idPropietario)
-            .collection('Reservas').doc(this.idReserva).get().then(doc=> {
-                this.setState({reservaNombre: doc.data().Nombre})
-            }).catch((error) => {
-                this.notificationSystem.current.addNotification(operacion.error(error.message));
-            });
+                .collection('Propietarios').doc(this.idPropietario)
+                .collection('Reservas').doc(this.idReserva).get().then(doc => {
+                    this.setState({reservaNombre: doc.data().Nombre});
+                    if (doc.data().Cancelado || validator.obtenerFecha(doc.data().FechaHasta) < new Date()) {
+                        this.setState({vigente: false});
+                    }
+                    this.setState({loading: false});
+                    console.log(doc.data())
+                }).catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
+                });
         } catch (e) {
             this.notificationSystem.current.addNotification(operacion.error(e.message));
         }
@@ -88,7 +97,28 @@ class InvitadoEvento extends Component {
     }
 
     async registrar() {
+        let tipoDocumentoRef = operacion.obtenerReferenciaDocumento(this.state.tipoDocumento);
+        let existeInvitado = false;
+        let error = false;
         try {
+            await Database.collection('Country').doc(this.idCountry)
+                .collection('Propietarios').doc(this.idPropietario)
+                .collection('Reservas').doc(this.idReserva).collection("Invitados")
+                .where('TipoDocumento', '==', tipoDocumentoRef).where('Documento', '==', this.state.documento)
+                .get().then(querySnapshot=> {
+                    querySnapshot.forEach(doc=> {
+                        existeInvitado = doc.exists;
+                    });
+                }).catch((error) => {
+                    error = true;
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
+                });
+
+            if (existeInvitado) {
+                this.notificationSystem.current.addNotification(operacion.error("Ya se encuentra registrado al eveneto."));
+                return;
+            }
+
             await Database.collection('Country').doc(this.idCountry)
                 .collection('Propietarios').doc(this.idPropietario)
                 .collection('Reservas').doc(this.idReserva).collection('Invitados').add({
@@ -100,8 +130,10 @@ class InvitadoEvento extends Component {
                     Estado: false,
                     IdInvitado: ''
                 }).catch((error) => {
+                    error = true;
                     this.notificationSystem.current.addNotification(operacion.error(error.message));
                 });
+            if (error) return;
             await Database.collection('Country').doc(this.idCountry)
                 .collection('Notificaciones').add({
                     Fecha: new Date(),
@@ -113,8 +145,11 @@ class InvitadoEvento extends Component {
                     Visto: false,
                     IdReserva: this.idReserva
                 }).then(this.restaurar()).catch((error) => {
+                    error = true;
                     this.notificationSystem.current.addNotification(operacion.error(error.message));
                 });
+            if (error) return;
+            this.notificationSystem.current.addNotification(operacion.registroConExito("Se registro con exito."))
         } catch (e) {
             this.notificationSystem.current.addNotification(operacion.error(e.message));
         }
@@ -122,47 +157,56 @@ class InvitadoEvento extends Component {
 
     render() {
         return (
-            <div className="content">
-                <legend><h3>{this.state.reservaNombre}</h3></legend>
-                <div className="card">
-                    <div className="card-body">
-                        <div className="col-md-6">
-                            <label> Nombre </label>
-                            <input type="name" className="form-control" placeholder="Name"
-                                   value={this.state.nombre}
-                                   onChange={this.ChangeNombre}/>
-                        </div>
-                        <div className="col-md-6">
-                            <label> Apellido </label>
-                            <input type="family-name" className="form-control" placeholder="Surname"
-                                   value={this.state.apellido}
-                                   onChange={this.ChangeApellido}/>
-                        </div>
-                        <div className="col-md-6">
-                            <label> Tipo Documento </label>
-                            <Select
-                                className="select-documento"
-                                classNamePrefix="select"
-                                isDisabled={false}
-                                isLoading={false}
-                                isClearable={true}
-                                isSearchable={true}
-                                options={this.state.tipoD}
-                                onChange={this.ChangeSelect.bind(this)}
-                            />
-                        </div>
-                        <div className="col-md-6">
-                            <label> Numero de Documento </label>
-                            <input type="document" className="form-control" placeholder="Document number"
-                                   value={this.state.documento}
-                                   onChange={this.ChangeDocumento}/>
+            <div className="col-12">
+                <div hidden={!this.state.vigente || this.state.loading}>
+                    <legend><h3 className="row">Evento: {this.state.reservaNombre}</h3></legend>
+                    <div className="row card">
+                        <div className="card-body">
+                            <div className="row col-md-12">
+                                <div className="row-secction col-md-5">
+                                    <label> Nombre </label>
+                                    <input type="name" className="form-control" placeholder="Nombre"
+                                           value={this.state.nombre}
+                                           onChange={this.ChangeNombre}/>
+                                </div>
+                                <div className="row-secction col-md-5">
+                                    <label> Apellido </label>
+                                    <input type="family-name" className="form-control" placeholder="Apellido"
+                                           value={this.state.apellido}
+                                           onChange={this.ChangeApellido}/>
+                                </div>
+                            </div>
+                            <div className="row col-md-12">
+                                <div className="row-secction col-md-5">
+                                    <label> Tipo Documento </label>
+                                    <Select
+                                        className="select-documento"
+                                        classNamePrefix="select"
+                                        isDisabled={false}
+                                        isLoading={false}
+                                        isClearable={true}
+                                        isSearchable={true}
+                                        options={this.state.tipoD}
+                                        onChange={this.ChangeSelect.bind(this)}
+                                    />
+                                </div>
+                                <div className="row-secction col-md-5">
+                                    <label> Número de Documento </label>
+                                    <input type="document" className="form-control" placeholder="Número de Documento"
+                                           value={this.state.documento}
+                                           onChange={this.ChangeDocumento}/>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <div className="form-group">
+                        <Button bsStyle="success" fill wd onClick={this.registrar}>Agregar invitación</Button>
+                    </div>
                 </div>
-                <div className="form-group">
-                    <Button bsStyle="primary" fill wd onClick={this.restaurar}>Limpiar</Button>
-                    <Button bsStyle="primary" fill wd onClick={this.registrar}>Agregar invitado</Button>
+                <div hidden={this.state.vigente || this.state.loading}>
+                    <h3 className="row">El link ya no está vigente</h3>
                 </div>
+                <Spinner className="spinner" size={300} spinnerColor={'white'} spinnerWidth={3} visible={this.state.loading}/>
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
