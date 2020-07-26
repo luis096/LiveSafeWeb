@@ -11,6 +11,7 @@ import {style} from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
 import {TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
 import classnames from 'classnames';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 
 class VisualizarReserva extends Component {
@@ -248,17 +249,30 @@ class VisualizarReserva extends Component {
                     </div>
                 </div>
                 <legend/>
-                <h3 className="row">Invitados de la reserva (
-                    <a style={{fontSize: "17px"}}
-                       href={'https://livesafeweb.web.app/#/invitado/' + localStorage.getItem('idCountry') + '/' +
-                       localStorage.getItem('idPersona') + '/' + this.idReserva}>
-                        Link de invitacion
-                    </a>)</h3>
-                <div className="izquierda">
-                    <Button bsStyle="primary" fill wd onClick={this.modalAgregarInvitado}
-                            disabled={this.permiteAgregar()}>
-                        Agregar invitado
-                    </Button>
+                <h3 className="row">Invitados de la reserva</h3>
+                <div className="row col-md-12">
+                    <div className="row-secction col-md-6">
+                        <label>Link de invitación</label>
+                        <input type="text" className="form-control" readOnly
+                               value={'https://livesafeweb.web.app/#/invitado/' + localStorage.getItem('idCountry') + '/' +
+                               localStorage.getItem('idPersona') + '/' + this.idReserva}/>
+                    </div>
+                    <div className="row-secction col-md-3">
+                        <br/>
+                        <CopyToClipboard
+                            text={'https://livesafeweb.web.app/#/invitado/' + localStorage.getItem('idCountry') + '/' +
+                            localStorage.getItem('idPersona') + '/' + this.idReserva}
+                            onCopy={() => this.notificationSystem.current.addNotification(
+                                operacion.registroConExito("Copiado en portapapeles"))}>
+                            <Button bsStyle="success" fill>Copiar</Button>
+                        </CopyToClipboard>
+                    </div>
+                    <div className="izquierda row-secction col-md-2">
+                        <Button bsStyle="primary" fill wd onClick={this.modalAgregarInvitado}
+                                disabled={this.permiteAgregar()}>
+                            Agregar invitado
+                        </Button>
+                    </div>
                 </div>
                 <div className="row">
                     <Modal
@@ -325,7 +339,7 @@ class VisualizarReserva extends Component {
                 </div>
                 <div className="card row">
                     <Nav tabs>
-                        <NavItem className={this.state.activeTab !== '1'?"navSelected":""}>
+                        <NavItem className={this.state.activeTab !== '1' ? "navSelected" : ""}>
                             <NavLink
                                 onClick={() => {
                                     this.toggle('1');
@@ -335,7 +349,7 @@ class VisualizarReserva extends Component {
                                 Confirmados ({this.state.invitadosConfirmados.length})
                             </NavLink>
                         </NavItem>
-                        <NavItem className={this.state.activeTab !== '2'?"navSelected":""}>
+                        <NavItem className={this.state.activeTab !== '2' ? "navSelected" : ""}>
                             <NavLink
                                 onClick={() => {
                                     this.toggle('2');

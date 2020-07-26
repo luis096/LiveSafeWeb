@@ -19,7 +19,8 @@ export const operacion = {
     obtenerReferenciaConId,
     obtenerDisponibleString,
     esDiaDisponible,
-    error
+    error,
+    registroConExito
 };
 
 async function obtenerTiposDocumento() {
@@ -90,5 +91,17 @@ function error(mensaje) {
         position: "br",
         autoDismiss: 15
         };
+    return obj;
+}
+
+
+function registroConExito(mensaje) {
+    let obj = {
+        title: <span style={{color: "black"}} data-notify="icon" className="pe-7s-check"/>,
+        message: (<div style={{color: "black"}}>{mensaje}</div>),
+        level: "success",
+        position: "br",
+        autoDismiss: 2
+    };
     return obj;
 }
