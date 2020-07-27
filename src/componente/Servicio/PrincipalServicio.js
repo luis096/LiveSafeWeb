@@ -176,7 +176,7 @@ class PrincipalServicio extends Component {
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
-                        <h5 className="row">Filtros de busqueda</h5>
+                        <h5 className="row">Filtros de búsqueda </h5>
                         <div className='row'>
                             <div className="col-md-3 row-secction">
                                 <label>Nombre</label>
@@ -205,7 +205,7 @@ class PrincipalServicio extends Component {
                     <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={()=> {
                         this.reestablecer();
                     }}>
-                        Reestablecer
+                        Restablecer
                     </Button>
                     <Button bsStyle="primary" fill wd onClick={()=> {
                         this.consultar(0, true);
@@ -216,10 +216,10 @@ class PrincipalServicio extends Component {
                 {this.descargar()}
                 <div className="card row" hidden={!this.state.servicios.length}>
                     <div className="row">
-                        <div className="col-md-6 row-secction">
+                        <div className="col-md-6 title row-secction">
                             <h4 style={{margin: '0px'}}>Servicios ({this.total})</h4>
                         </div>
-                        <div className="col-md-6 row-secction izquierda">
+                        <div className="col-md-6 row-secction btnDescarga">
                             <Button bsStyle="success" fill onClick={()=> {
                                 this.setState({descargar: true});
                             }}>Descargar</Button>
@@ -229,12 +229,12 @@ class PrincipalServicio extends Component {
                         <table className="table table-hover">
                             <thead>
                             <tr>
-                                <th scope="col">Indice</th>
-                                <th scope="col">Nombre</th>
-                                <th scope="col">Duracion de turno</th>
-                                <th scope="col">Turnos maximos</th>
-                                <th scope="col">Estado</th>
-                                <th scope="col">Visualizar</th>
+                                <th  style={{textAlign:'center'}} scope="col">Indice</th>
+                                <th  style={{textAlign:'center'}} scope="col">Nombre</th>
+                                <th  style={{textAlign:'center'}} scope="col">Duracion de turno</th>
+                                <th  style={{textAlign:'center'}} scope="col">Turnos maximos</th>
+                                <th style={{textAlign:'center'}}  scope="col">Estado</th>
+                                <th  style={{textAlign:'center'}} scope="col">Visualizar</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -245,13 +245,13 @@ class PrincipalServicio extends Component {
                                         let editar = '/admin/editarServicio/' + ser[1];
                                         return (
                                             <tr className="table-light">
-                                                <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                                <td>{ser[0].Nombre}</td>
-                                                <td>{(ser[0].DuracionTurno / 60) >= 1 ? (ser[0].DuracionTurno / 60) + ' Hs.':
+                                                <th  style={{textAlign:'center'}} scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
+                                                <td style={{textAlign:'center'}} >{ser[0].Nombre}</td>
+                                                <td style={{textAlign:'center'}} >{(ser[0].DuracionTurno / 60) >= 1 ? (ser[0].DuracionTurno / 60) + ' Hs.':
                                                     (ser[0].DuracionTurno) + ' Min.'}</td>
-                                                <td>{ser[0].TurnosMax}</td>
-                                                <td>{estado}</td>
-                                                <td><Link to={editar}><Button bsStyle="warning" fill>
+                                                <td style={{textAlign:'center'}} >{ser[0].TurnosMax}</td>
+                                                <td style={{textAlign:'center'}} >{estado}</td>
+                                                <td style={{textAlign:'center'}} ><Link to={editar}><Button bsStyle="warning" fill>
                                                     Visualizar
                                                 </Button></Link></td>
                                             </tr>

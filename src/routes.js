@@ -297,21 +297,21 @@ var routes = [
             {
                 path: '/country',
                 layout: '/root',
-                name: 'Barrios',
+                name: 'Country',
                 mini: 'B',
                 component: PrincipalCountry
             },
             {
                 path: '/altaCountry',
                 layout: '/root',
-                name: 'Nuevo Barrio',
+                name: 'Nuevo Country',
                 mini: 'NB',
                 component: AltaCountry
             },
             {
                 path: '/editarCountry',
                 layout: '/root',
-                name: 'Editar Barrio',
+                name: 'Editar Country',
                 mini: 'EC',
                 noVisualizar: true,
                 component: EditarCountry
@@ -603,7 +603,7 @@ var routes = [
     {
         path: '/miCountry',
         layout: '/propietario',
-        name: 'Mi Barrio',
+        name: 'Mi Country',
         icon: 'pe-7s-graph',
         noVisualizar: true,
         component: MiCountry
@@ -627,7 +627,7 @@ var routes = [
     {
         path: '/miCountry',
         layout: '/encargado',
-        name: 'Mi Barrio',
+        name: 'Mi Country',
         icon: 'pe-7s-graph',
         noVisualizar: true,
         component: MiCountry
@@ -651,7 +651,7 @@ var routes = [
     {
         path: '/miCountry',
         layout: '/admin',
-        name: 'Mi Barrio',
+        name: 'Mi Country',
         icon: 'pe-7s-graph',
         noVisualizar: true,
         component: MiCountry

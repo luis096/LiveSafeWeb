@@ -125,15 +125,15 @@ class MiPerfil extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-4 row-secction">
-                                <label> Numero de Documento </label>
+                                <label> Número de Documento </label>
                                 <input className="form-control" readOnly
-                                       placeholder="Numero de Documento"
+                                       placeholder="Número de Documento"
                                        value={this.state.documento}/>
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Tipo de Documento </label>
                                 <input className="form-control" readOnly
-                                    placeholder="Numero de Documento"
+                                    placeholder="Número de Documento"
                                     value={this.state.tipoDocumentoNombre}/>
 
                             </div>

@@ -270,7 +270,7 @@ class PrincialEgreso extends Component {
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
-                        <h5 className="row">Filtros de busqueda</h5>
+                        <h5 className="row">Filtros de búsqueda </h5>
                         <div className='row'>
                             <div className="col-md-4 row-secction">
                                 <label>Nombre</label>
@@ -288,7 +288,7 @@ class PrincialEgreso extends Component {
                                 {errorHTML.errorLabel(this.errorApellido)}
                             </div>
                             <div className="col-md-4 row-secction">
-                                <label>Numero Documento</label>
+                                <label>Número de Documento</label>
                                 <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
                                        value={this.state.documento}
                                        onChange={this.ChangeDocumento} placeholder="Nro Documento"
@@ -327,7 +327,7 @@ class PrincialEgreso extends Component {
                     <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={()=> {
                         this.reestablecer();
                     }}>
-                        Reestablecer
+                        Restablecer
                     </Button>
                     <Button bsStyle="primary" fill wd onClick={()=> {
                         this.consultar(0, true);
@@ -338,10 +338,10 @@ class PrincialEgreso extends Component {
                 {this.descargar()}
                 <div className="card row" hidden={!this.state.egresos.length}>
                     <div className="row">
-                        <div className="col-md-6 row-secction">
+                        <div className="col-md-6 title row-secction">
                             <h4 style={{margin: '0px'}}>Egresos ({this.total})</h4>
                         </div>
-                        <div className="col-md-6 row-secction izquierda">
+                        <div className="col-md-6 row-secction btnDescarga">
                             <Button bsStyle="success" fill onClick={()=> {
                                 this.setState({descargar: true});
                             }}>Descargar</Button>
@@ -351,13 +351,13 @@ class PrincialEgreso extends Component {
                         <table className="table table-hover">
                             <thead>
                             <tr>
-                                <th scope="col">Indice</th>
-                                <th scope="col">Nombre y Apellido</th>
-                                <th scope="col">Tipo Documento</th>
-                                <th scope="col">Documento</th>
-                                <th scope="col">Fecha y Hora</th>
-                                <th scope="col">Observacion</th>
-                                <th scope="col">Cancelar</th>
+                                <th  style={{textAlign:'center'}} scope="col">Indice</th>
+                                <th  style={{textAlign:'center'}} scope="col">Nombre y Apellido</th>
+                                <th style={{textAlign:'center'}}  scope="col">Tipo Documento</th>
+                                <th  style={{textAlign:'center'}} scope="col">Documento</th>
+                                <th  style={{textAlign:'center'}} scope="col">Fecha y Hora</th>
+                                <th  style={{textAlign:'center'}} scope="col">Observacion</th>
+                                <th  style={{textAlign:'center'}} scope="col">Cancelar</th>
                             </tr>
                             </thead>
 
@@ -369,13 +369,13 @@ class PrincialEgreso extends Component {
 
                                         return (
                                             <tr className="table-light">
-                                                <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                                <td scope="row">{egr[0].Nombre}, {egr[0].Apellido}</td>
-                                                <td>{operacion.obtenerDocumentoLabel(egr[0].TipoDocumento.id, this.state.tipoD)}</td>
-                                                <td>{egr[0].Documento}</td>
-                                                <td>{hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}</td>
-                                                <td>{egr[0].Observacion ? 'Si' : 'No'}</td>
-                                                <td><Button bsStyle="warning" fill wd onClick={()=> {
+                                                <th style={{textAlign:'center'}}  scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
+                                                <td  style={{textAlign:'center'}} scope="row">{egr[0].Nombre}, {egr[0].Apellido}</td>
+                                                <td style={{textAlign:'center'}} >{operacion.obtenerDocumentoLabel(egr[0].TipoDocumento.id, this.state.tipoD)}</td>
+                                                <td style={{textAlign:'center'}} >{egr[0].Documento}</td>
+                                                <td style={{textAlign:'center'}} >{hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}</td>
+                                                <td style={{textAlign:'center'}} >{egr[0].Observacion ? 'Si' : 'No'}</td>
+                                                <td style={{textAlign:'center'}} ><Button bsStyle="warning" fill wd onClick={()=> {
                                                     console.log('cancelar');
                                                 }}>
                                                     Cancelar

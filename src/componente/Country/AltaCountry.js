@@ -185,7 +185,7 @@ class AltaCountry extends Component {
                                  {errorHTML.errorLabel(this.errorCalle)}
                             </div>
                             <div className="col-md-4 row-secction">
-                                <label> Numero </label>
+                                <label> Número </label>
                                 <input className={ errorHTML.classNameError(this.errorNumero, 'form-control') }
                                        placeholder="Numero"
                                        value={this.state.numero}
@@ -203,7 +203,7 @@ class AltaCountry extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-12 row-secction">
-                                <label> Descripcion </label>
+                                <label> Descripción </label>
                                 <textarea className={ errorHTML.classNameError(this.errorDescripcion, 'form-control') }
                                           rows="3"
                                           placeholder="Description"

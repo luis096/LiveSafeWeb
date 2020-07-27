@@ -19,11 +19,19 @@
     padding: 0px 60px;
 }
 
+.btnDescarga {
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
 .btn.btn-primary.boton{
     margin: 7px;
 }
 
-
+.title{
+    padding: 0;
+}
 
 .borde-button{
         margin: 0 13px 0 0;

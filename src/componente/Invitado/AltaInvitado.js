@@ -244,7 +244,7 @@ class AltaInvitado extends Component {
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label>Propietario encontrado</label>
-                                <input className="form-control" placeholder="Realize la busqueda"
+                                <input className="form-control" placeholder="Realize la búsqueda "
                                        value={this.state.mensaje}
                                        disabled={true}
                                 />
@@ -331,8 +331,8 @@ class AltaInvitado extends Component {
                                        hidden={!this.errorTipoDocumentoInvitado.error}>{this.errorTipoDocumentoInvitado.mensaje}</label>
                             </div>
                             <div className="col-md-4 row-secction">
-                                <label> Numero de Documento Invitado </label>
-                                <input type="document" className={ errorHTML.classNameError(this.errorDocumentoInvitado, 'form-control') } placeholder="Numero de documento"
+                                <label> Número de Documento Invitado </label>
+                                <input type="document" className={ errorHTML.classNameError(this.errorDocumentoInvitado, 'form-control') } placeholder="Número de documento"
                                        value={this.state.documentoInvitado}
                                        onChange={this.ChangeDocumentoInvitado}
 

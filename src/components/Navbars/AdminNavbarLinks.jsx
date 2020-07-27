@@ -219,7 +219,7 @@ class HeaderLinks extends Component {
     miBarioNav() {
         if (this.state.esRoot) {
             return (<MenuItem eventKey={4.2} onClick={this.miBarrio}>
-                        <i className="pe-7s-home"/> Mi Barrio
+                        <i className="pe-7s-home"/> Mi Country
                     </MenuItem>)
         }
     }
@@ -310,7 +310,7 @@ class HeaderLinks extends Component {
                         {this.renderRedirect()}
                         <MenuItem eventKey={4.5} onClick={this.setRedirect}>
                             <div className="text-danger">
-                                <i className="pe-7s-back-2"/> Cerrar Sesion
+                                <i className="pe-7s-back-2"/> Cerrar Sesión
                             </div>
                         </MenuItem>
                     </NavDropdown>

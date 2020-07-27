@@ -312,7 +312,7 @@ class VisualizarReserva extends Component {
                                     />
                                 </div>
                                 <div className="row-secction">
-                                    <label> Numero de Documento </label>
+                                    <label> Número de Documento </label>
                                     <input type="document" className="form-control" placeholder="Document number"
                                            value={this.state.documento}
                                            onChange={this.ChangeDocumento}/>

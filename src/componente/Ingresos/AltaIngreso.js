@@ -414,7 +414,7 @@ class AltaIngreso extends Component {
                             <div className="col-md-4 row-secction">
                                 <label>Número de Documento</label>
                                 <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
-                                       placeholder="Numero de Documento"
+                                       placeholder="Número de Documento"
                                        disabled={this.state.invitadoTemp.length}
                                        value={this.state.documento}
                                        onChange={this.ChangeDocumento}/>
@@ -422,7 +422,7 @@ class AltaIngreso extends Component {
                             </div>
                             <div className="col-md-2 row-secction" style={{ marginTop:"25px"}}>
                                 <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={this.reestablecer}>
-                                    Reestablecer
+                                    Restablecer
                                 </Button>
                             </div>
                             <div className="col-md-2 row-secction" style={{ marginTop:"25px"}}>
@@ -445,7 +445,7 @@ class AltaIngreso extends Component {
                 <div className="col-md-12">
                     <div className="row card" hidden={!this.state.invitadoTemp.length}>
                         <div className="card-body">
-                            <h5 className="row">Resultado de la busqueda</h5>
+                            <h5 className="row">Resultado de la búsqueda </h5>
                             <div className="row" hidden={this.state.esInvitadoEvento}>
                                 <div className="col-md-3 row-secction">
                                     <label>Tipo de Ingreso</label>

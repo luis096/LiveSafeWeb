@@ -101,7 +101,7 @@ class Configuraciones extends Component {
                             {this.renderRedirect()}
                                 <Button bsStyle="default"  fill wd onClick={()=> {
                                     this.confirmar();
-                                }}>Reestablecer</Button>
+                                }}>Restablecer</Button>
                             </div>
                                 
                             </div>

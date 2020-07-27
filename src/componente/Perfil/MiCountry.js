@@ -43,7 +43,7 @@ class MiCountry extends Component {
             <div className="col-12">
                 <div className="row card">
                     <div className="card-body">
-                        <legend><h3 className="row">Mi Barrio</h3></legend>
+                        <legend><h3 className="row">Mi Country</h3></legend>
                         <div className="row">
                             <div className="col-md-3 row-secction">
                                 <h4><strong>Nombre del barrio</strong></h4>
