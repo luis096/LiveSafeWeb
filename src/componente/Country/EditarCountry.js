@@ -350,7 +350,7 @@ class EditarCountry extends Component {
                                     onChange={this.ChangeCalle.bind(this)}
                                 />
                             </div>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label> Número </label>
                                 <input className={ errorHTML.classNameError(this.errorNumero, 'form-control') }
                                        placeholder="Número"
