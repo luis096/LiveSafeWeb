@@ -210,9 +210,9 @@ class EditarAdministrador extends Component {
                                        hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
                             </div>
                         <div className="col-md-4 row-secction">
-                                <label> Numero de Documento </label>
+                                <label> Número de Documento </label>
                                 <input className={ errorHTML.classNameError(this.errorDocumento, 'form-control') }
-                                       placeholder="Numero de Documento"
+                                       placeholder="Número de Documento"
                                        value={this.state.documento}
                                        onChange={this.ChangeDocumento}/>
                                 {errorHTML.errorLabel(this.errorDocumento)}

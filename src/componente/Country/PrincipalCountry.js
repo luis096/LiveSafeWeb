@@ -199,11 +199,11 @@ class PrincipalCountry extends Component {
     render() {
         return (
             <div className="col-12">
-                <legend><h3 className="row">Barrios</h3></legend>
+                <legend><h3 className="row">Country</h3></legend>
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
-                        <h5 className="row">Filtros de busqueda</h5>
+                        <h5 className="row">Filtros de búsqueda </h5>
                         <div className='row'>
                             <div className="col-md-3 row-secction">
                                 <label>Nombre</label>
@@ -250,7 +250,7 @@ class PrincipalCountry extends Component {
                     <Button bsStyle="default"  style={{marginRight: "10px"}}  fill wd onClick={()=> {
                         this.reestablecer();
                     }}>
-                        Reestablecer
+                        Restablecer
                     </Button>
                     <Button bsStyle="primary" fill wd onClick={()=> {
                         this.consultar(0, true);
@@ -259,18 +259,18 @@ class PrincipalCountry extends Component {
                     </Button>
                 </div>
                 <div className="card row" hidden={!this.state.barrios.length}>
-                    <h4 className="row">Barrios ({this.total})</h4>
+                    <h4 className="row">Countries ({this.total})</h4>
                     <div className="card-body">
                         <table className="table table-hover">
                             <thead>
                             <tr>
-                                <th scope="col">Indice</th>
-                                <th scope="col">Nombre</th>
-                                <th scope="col">Titular</th>
-                                <th scope="col">Calle y Numero</th>
-                                <th scope="col">Celular</th>
-                                <th scope="col">Fecha Alta</th>
-                                <th scope="col">Editar</th>
+                                <th  style={{textAlign:'center'}} scope="col">Indice</th>
+                                <th style={{textAlign:'center'}}  scope="col">Nombre</th>
+                                <th style={{textAlign:'center'}}  scope="col">Titular</th>
+                                <th  style={{textAlign:'center'}} scope="col">Calle y Número</th>
+                                <th  style={{textAlign:'center'}} scope="col">Celular</th>
+                                <th  style={{textAlign:'center'}} scope="col">Fecha Alta</th>
+                                <th style={{textAlign:'center'}}  scope="col">Editar</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -280,13 +280,13 @@ class PrincipalCountry extends Component {
                                         let editar = '/root/editarCountry/' + bar[1];
                                         return (
                                             <tr className="table-light">
-                                                <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                                <td>{bar[0].Nombre}</td>
-                                                <td>{bar[0].Titular}</td>
-                                                <td>{bar[0].Calle + ' ' + bar[0].Numero}</td>
-                                                <td>{bar[0].Celular}</td>
-                                                <td>{hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}</td>
-                                                <td><Link to={editar}><Button bsStyle="warning" fill wd>
+                                                <th  style={{textAlign:'center'}} scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
+                                                <td style={{textAlign:'center'}} >{bar[0].Nombre}</td>
+                                                <td style={{textAlign:'center'}} >{bar[0].Titular}</td>
+                                                <td style={{textAlign:'center'}} >{bar[0].Calle + ' ' + bar[0].Numero}</td>
+                                                <td style={{textAlign:'center'}} >{bar[0].Celular}</td>
+                                                <td style={{textAlign:'center'}} >{hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}</td>
+                                                <td style={{textAlign:'center'}} ><Link to={editar}><Button bsStyle="warning" fill wd>
                                                     Editar
                                                 </Button></Link></td>
                                             </tr>

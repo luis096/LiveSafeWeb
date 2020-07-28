@@ -297,7 +297,7 @@ class PrincipalReserva extends Component {
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
-                        <h5 className="row">Filtros de busqueda</h5>
+                        <h5 className="row">Filtros de búsqueda </h5>
                         <div className='row'>
                             <div className="col-md-3 row-secction">
                                 <label>Nombre</label>
@@ -360,7 +360,7 @@ class PrincipalReserva extends Component {
                     <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={()=> {
                         this.reestablecer();
                     }}>
-                        Reestablecer
+                        Restablecer
                     </Button>
                     <Button bsStyle="primary" fill wd onClick={()=> {
                         this.consultar(0, true);
@@ -376,15 +376,15 @@ class PrincipalReserva extends Component {
                         <table className="table table-hover">
                             <thead>
                             <tr>
-                                <th scope="col">Indice</th>
-                                <th scope="col">Nombre</th>
-                                <th scope="col">Servicio</th>
-                                <th scope="col">Estado</th>
-                                <th scope="col">Dia</th>
-                                <th scope="col">Hora desde</th>
-                                <th scope="col">Hora hasta</th>
-                                <th scope="col">Visualizar</th>
-                                <th scope="col">Cancelar</th>
+                                <th  style={{textAlign:'center'}} scope="col">Indice</th>
+                                <th  style={{textAlign:'center'}} scope="col">Nombre</th>
+                                <th  style={{textAlign:'center'}} scope="col">Servicio</th>
+                                <th  style={{textAlign:'center'}} scope="col">Estado</th>
+                                <th  style={{textAlign:'center'}} scope="col">Dia</th>
+                                <th  style={{textAlign:'center'}} scope="col">Hora desde</th>
+                                <th  style={{textAlign:'center'}} scope="col">Hora hasta</th>
+                                <th  style={{textAlign:'center'}} scope="col">Visualizar</th>
+                                <th  style={{textAlign:'center'}} scope="col">Cancelar</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -396,17 +396,17 @@ class PrincipalReserva extends Component {
                                     let estado = validator.estadoReserva(desde, hasta, res[0].Cancelado);
                                     return (
                                         <tr className="table-light">
-                                            <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                            <th scope="row">{res[0].Nombre}</th>
-                                            <th scope="row">{res[0].Servicio}</th>
-                                            <td>{estado.Nombre}</td>
-                                            <td>{desde.toLocaleDateString()}</td>
-                                            <td>{desde.toLocaleTimeString()}</td>
-                                            <td>{hasta.toLocaleTimeString()}</td>
-                                            <td><Link to={editar}><Button bsStyle="info" fill wd>
+                                            <th  style={{textAlign:'center'}} scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
+                                            <th  style={{textAlign:'center'}} scope="row">{res[0].Nombre}</th>
+                                            <th  style={{textAlign:'center'}} scope="row">{res[0].Servicio}</th>
+                                            <td style={{textAlign:'center'}} >{estado.Nombre}</td>
+                                            <td style={{textAlign:'center'}} >{desde.toLocaleDateString()}</td>
+                                            <td style={{textAlign:'center'}} >{desde.toLocaleTimeString()}</td>
+                                            <td style={{textAlign:'center'}} >{hasta.toLocaleTimeString()}</td>
+                                            <td style={{textAlign:'center'}} ><Link to={editar}><Button bsStyle="info" fill wd>
                                                 Visualizar
                                             </Button></Link></td>
-                                            <td><Button bsStyle="warning" fill wd disabled={estado.Id != 0}
+                                            <td style={{textAlign:'center'}} ><Button bsStyle="warning" fill wd disabled={estado.Id != 0}
                                                         onClick={()=> {
                                                             this.cancelar(res);
                                                         }}>

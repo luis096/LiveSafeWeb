@@ -228,7 +228,7 @@ class PrincipalEncargado extends Component {
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
-                        <h5 className="row">Filtros de busqueda</h5>
+                        <h5 className="row">Filtros de búsqueda </h5>
                         <div className='row'>
                             <div className="col-md-3 row-secction">
                                 <label>Nombre</label>
@@ -256,7 +256,7 @@ class PrincipalEncargado extends Component {
                                 />
                             </div>
                             <div className="col-md-3 row-secction">
-                                <label>Numero Documento</label>
+                                <label>Número de Documento</label>
                                 <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
                                        value={this.state.documento}
                                        onChange={this.ChangeDocumento} placeholder="Nro Documento"
@@ -295,7 +295,7 @@ class PrincipalEncargado extends Component {
                     <Button bsStyle="default"  style={{marginRight: "10px"}}   fill wd onClick={()=> {
                         this.reestablecer();
                     }}>
-                        Reestablecer
+                        Restablecer
                     </Button>
                     <Button bsStyle="primary" fill wd onClick={()=> {
                         this.consultar(0, true);
@@ -306,10 +306,10 @@ class PrincipalEncargado extends Component {
                 {this.descargar()}
                 <div className="card row" hidden={!this.state.encargados.length}>
                     <div className="row">
-                        <div className="col-md-6 row-secction">
+                        <div className="col-md-6 title row-secction">
                             <h4 style={{margin: '0px'}}>Encargados ({this.total})</h4>
                         </div>
-                        <div className="col-md-6 row-secction izquierda">
+                        <div className="col-md-6 row-secction btnDescarga">
                             <Button bsStyle="success" fill onClick={()=> {
                                 this.setState({descargar: true});
                             }}>Descargar</Button>
@@ -319,13 +319,13 @@ class PrincipalEncargado extends Component {
                         <table className="table table-hover">
                             <thead>
                             <tr>
-                                <th scope="col">Indice</th>
-                                <th scope="col">Nombre y Apellido</th>
-                                <th scope="col">Tipo Documento</th>
-                                <th scope="col">Documento</th>
-                                <th scope="col">Celular</th>
-                                <th scope="col">Fecha de Alta</th>
-                                <th scope="col">Editar</th>
+                                <th  style={{textAlign:'center'}} scope="col">Indice</th>
+                                <th style={{textAlign:'center'}}  scope="col">Nombre y Apellido</th>
+                                <th  style={{textAlign:'center'}} scope="col">Tipo Documento</th>
+                                <th  style={{textAlign:'center'}} scope="col">Documento</th>
+                                <th  style={{textAlign:'center'}} scope="col">Celular</th>
+                                <th  style={{textAlign:'center'}} scope="col">Fecha de Alta</th>
+                                <th  style={{textAlign:'center'}} scope="col">Editar</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -336,13 +336,13 @@ class PrincipalEncargado extends Component {
                                         let editar = '/admin/editarEncargado/' + enc[1];
                                         return (
                                             <tr className="table-light">
-                                                <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                                <td>{enc[0].Nombre}, {enc[0].Apellido}</td>
-                                                <td>{tipoDocumento}</td>
-                                                <td>{enc[0].Documento}</td>
-                                                <td>{enc[0].Celular}</td>
-                                                <td>{hora.toLocaleString()}</td>
-                                                <td><Link to={editar}><Button bsStyle="warning" fill wd>
+                                                <th  style={{textAlign:'center'}} scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
+                                                <td style={{textAlign:'center'}} >{enc[0].Nombre}, {enc[0].Apellido}</td>
+                                                <td style={{textAlign:'center'}} >{tipoDocumento}</td>
+                                                <td style={{textAlign:'center'}} >{enc[0].Documento}</td>
+                                                <td style={{textAlign:'center'}} >{enc[0].Celular}</td>
+                                                <td style={{textAlign:'center'}} >{hora.toLocaleString()}</td>
+                                                <td style={{textAlign:'center'}} ><Link to={editar}><Button bsStyle="warning" fill wd>
                                                     Editar
                                                 </Button></Link></td>
                                             </tr>

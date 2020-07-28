@@ -239,7 +239,7 @@ class PrincialIngreso extends Component {
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
-                        <h5 className="row">Filtros de busqueda</h5>
+                        <h5 className="row">Filtros de búsqueda </h5>
                         <div className='row'>
                             <div className="col-md-3 row-secction">
                                 <label>Nombre</label>
@@ -267,7 +267,7 @@ class PrincialIngreso extends Component {
                                 />
                             </div>
                             <div className="col-md-3 row-secction">
-                                <label>Numero Documento</label>
+                                <label>Número de Documento</label>
                                 <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
                                        value={this.state.documento}
                                        onChange={this.ChangeDocumento} placeholder="Nro Documento"
@@ -306,7 +306,7 @@ class PrincialIngreso extends Component {
                     <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={()=> {
                          this.reestablecer();
                     }}>
-                        Reestablecer
+                        Restablecer
                     </Button>
                     <Button bsStyle="primary" fill wd onClick={()=> {
                         this.consultar(0, true);
@@ -317,10 +317,10 @@ class PrincialIngreso extends Component {
                 {this.descargar()}
                 <div className="card row" hidden={!this.state.ingresos.length}>
                     <div className="row">
-                        <div className="col-md-6 row-secction">
+                        <div className="col-md-6 title row-secction">
                             <h4 style={{margin: '0px'}}>Ingresos ({this.total})</h4>
                         </div>
-                        <div className="col-md-6 row-secction izquierda">
+                        <div className="col-md-6 row-secction btnDescarga">
                             <Button bsStyle="success" fill onClick={()=> {
                                 this.setState({descargar: true});
                             }}>Descargar</Button>
@@ -330,12 +330,12 @@ class PrincialIngreso extends Component {
                         <table className="table table-hover">
                             <thead>
                             <tr>
-                                <th scope="col">Indice</th>
-                                <th scope="col">Nombre y Apellido</th>
-                                <th scope="col">Documento</th>
-                                <th scope="col">Fecha y Hora</th>
-                                <th scope="col">Observacion</th>
-                                <th scope="col">Cancelar</th>
+                                <th  style={{textAlign:'center'}} scope="col">Indice</th>
+                                <th  style={{textAlign:'center'}} scope="col">Nombre y Apellido</th>
+                                <th  style={{textAlign:'center'}} scope="col">Documento</th>
+                                <th  style={{textAlign:'center'}} scope="col">Fecha y Hora</th>
+                                <th  style={{textAlign:'center'}} scope="col">Observacion</th>
+                                <th  style={{textAlign:'center'}} scope="col">Cancelar</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -344,12 +344,12 @@ class PrincialIngreso extends Component {
                                         let hora = ing[0].Hora ? new Date(ing[0].Hora.seconds * 1000) : new Date();
                                         return (
                                             <tr className="table-light">
-                                                <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                                <th scope="row">{ing[0].Nombre}, {ing[0].Apellido}</th>
-                                                <td>{ing[0].Documento}</td>
-                                                <td>{hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}</td>
-                                                <td>{ing[0].Observacion ? 'Si' : 'No'}</td>
-                                                <td><Button bsStyle="warning" fill wd onClick={()=> {
+                                                <th  style={{textAlign:'center'}} scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
+                                                <th  style={{textAlign:'center'}} scope="row">{ing[0].Nombre}, {ing[0].Apellido}</th>
+                                                <td style={{textAlign:'center'}} >{ing[0].Documento}</td>
+                                                <td style={{textAlign:'center'}} >{hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}</td>
+                                                <td style={{textAlign:'center'}} >{ing[0].Observacion ? 'Si' : 'No'}</td>
+                                                <td style={{textAlign:'center'}} ><Button bsStyle="warning" fill wd onClick={()=> {
                                                     console.log('cancelar');
                                                 }}>
                                                     Cancelar

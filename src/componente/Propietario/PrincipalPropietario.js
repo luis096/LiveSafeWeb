@@ -228,7 +228,7 @@ class PrincipalPropietario extends Component {
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
-                        <h5 className="row">Filtros de busqueda</h5>
+                        <h5 className="row">Filtros de búsqueda </h5>
                         <div className='row'>
                             <div className="col-md-3 row-secction">
                                 <label>Nombre</label>
@@ -256,7 +256,7 @@ class PrincipalPropietario extends Component {
                                 />
                             </div>
                             <div className="col-md-3 row-secction">
-                                <label>Numero Documento</label>
+                                <label>Número de Documento</label>
                                 <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
                                        value={this.state.documento}
                                        onChange={this.ChangeDocumento} placeholder="Nro Documento"
@@ -295,7 +295,7 @@ class PrincipalPropietario extends Component {
                     <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={()=> {
                         this.reestablecer();
                     }}>
-                        Reestablecer
+                        Restablecer
                     </Button>
                     <Button bsStyle="primary" fill wd onClick={()=> {
                         this.consultar(0, true);
@@ -306,10 +306,10 @@ class PrincipalPropietario extends Component {
                 {this.descargar()}
                 <div className="card row" hidden={!this.state.propietarios.length}>
                     <div className="row">
-                        <div className="col-md-6 row-secction">
+                        <div className="col-md-6 title row-secction">
                             <h4 style={{margin: '0px'}}>Propietarios ({this.total})</h4>
                         </div>
-                        <div className="col-md-6 row-secction izquierda">
+                        <div className="col-md-6 row-secction btnDescarga ">
                             <Button bsStyle="success" fill onClick={()=> {
                                 this.setState({descargar: true});
                             }}>Descargar</Button>
@@ -319,13 +319,13 @@ class PrincipalPropietario extends Component {
                         <table className="table table-hover">
                             <thead>
                             <tr>
-                                <th scope="col">Indice</th>
-                                <th scope="col">Nombre y Apellido</th>
-                                <th scope="col">Tipo Documento</th>
-                                <th scope="col">Documento</th>
-                                <th scope="col">Titular</th>
-                                <th scope="col">Fecha de Alta</th>
-                                <th scope="col">Editar</th>
+                                <th style={{textAlign:'center'}}  scope="col">Indice</th>
+                                <th  style={{textAlign:'center'}} scope="col">Nombre y Apellido</th>
+                                <th  style={{textAlign:'center'}} scope="col">Tipo Documento</th>
+                                <th  style={{textAlign:'center'}} scope="col">Documento</th>
+                                <th  style={{textAlign:'center'}} scope="col">Titular</th>
+                                <th  style={{textAlign:'center'}} scope="col">Fecha de Alta</th>
+                                <th  style={{textAlign:'center'}} scope="col">Editar</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -336,13 +336,13 @@ class PrincipalPropietario extends Component {
                                         let editar = '/admin/editarPropietario/' + prop[1];
                                         return (
                                             <tr className="table-light">
-                                                <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                                <td>{prop[0].Nombre}, {prop[0].Apellido}</td>
-                                                <td>{tipoDocumento}</td>
-                                                <td>{prop[0].Documento}</td>
-                                                <td>{prop[0].Titular?'Si':'No'}</td>
-                                                <td>{hora.toLocaleString()}</td>
-                                                <td><Link to={editar}><Button bsStyle="warning" fill wd>
+                                                <th style={{textAlign:'center'}} scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
+                                                <td style={{textAlign:'center'}} >{prop[0].Nombre}, {prop[0].Apellido}</td>
+                                                <td style={{textAlign:'center'}} >{tipoDocumento}</td>
+                                                <td style={{textAlign:'center'}} >{prop[0].Documento}</td>
+                                                <td style={{textAlign:'center'}} >{prop[0].Titular?'Si':'No'}</td>
+                                                <td style={{textAlign:'center'}} >{hora.toLocaleString()}</td>
+                                                <td style={{textAlign:'center'}} ><Link to={editar}><Button bsStyle="warning" fill wd>
                                                     Editar
                                                 </Button></Link></td>
                                             </tr>

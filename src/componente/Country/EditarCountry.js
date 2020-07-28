@@ -350,10 +350,10 @@ class EditarCountry extends Component {
                                     onChange={this.ChangeCalle.bind(this)}
                                 />
                             </div>
-                            <div className="col-md-3 row-secction">
-                                <label> Numero </label>
-                                <input className={errorHTML.classNameError(this.errorNumero, 'form-control')}
-                                       placeholder="Numero"
+                            <div className="col-md-4 row-secction">
+                                <label> Número </label>
+                                <input className={ errorHTML.classNameError(this.errorNumero, 'form-control') }
+                                       placeholder="Número"
                                        value={this.state.numero}
                                        onChange={this.ChangeNumero}/>
                                 {errorHTML.errorLabel(this.errorNumero)}
@@ -371,7 +371,7 @@ class EditarCountry extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-6 row-secction">
-                                <label> Descripcion </label>
+                                <label> Descripción </label>
                                 <textarea className={ errorHTML.classNameError(this.errorDescripcion, 'form-control') }
                                           rows="3"
                                           placeholder="Description"

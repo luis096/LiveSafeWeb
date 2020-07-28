@@ -236,7 +236,7 @@ class PrincipalAdministrador extends Component {
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
-                        <h5 className="row">Filtros de busqueda</h5>
+                        <h5 className="row">Filtros de búsqueda </h5>
                         <div className='row'>
                             <div className="col-md-4 row-secction">
                                 <label>Nombre</label>
@@ -253,7 +253,7 @@ class PrincipalAdministrador extends Component {
                                 {errorHTML.errorLabel(this.errorApellido)}
                             </div>
                             <div className="col-md-4 row-secction">
-                                <label>Barrio</label>
+                                <label>Country</label>
                                 <Select
                                     isSearchable={true}
                                     value={this.state.barrio}
@@ -291,7 +291,7 @@ class PrincipalAdministrador extends Component {
                     <Button bsStyle="default"  style={{marginRight: "10px"}} fill wd onClick={()=> {
                         this.reestablecer();
                     }}>
-                        Reestablecer
+                        Restablecer
                     </Button>
                     <Button bsStyle="primary" fill wd onClick={()=> {
                         this.consultar(0, true);
@@ -302,19 +302,19 @@ class PrincipalAdministrador extends Component {
 
 
                 <div className="card row" hidden={!this.state.administradores.length}>
-                    <h4 className="row">Administradores ({this.total})</h4>
+                    <h4 className="row ">Administradores ({this.total})</h4>
                     <div className="card-body">
                         <table className="table table-hover">
                             <thead>
                             <tr>
-                                <th scope="col">Indice</th>
-                                <th scope="col">Apellido y Nombre</th>
-                                <th scope="col">Tipo Documento</th>
-                                <th scope="col">Documento</th>
-                                <th scope="col">Fecha Nacimiento</th>
-                                <th scope="col">Celular</th>
-                                <th scope="col">Fecha Alta</th>
-                                <th scope="col">Editar</th>
+                                <th style={{textAlign:'center'}} scope="col">Indice</th>
+                                <th  style={{textAlign:'center'}} scope="col">Apellido y Nombre</th>
+                                <th  style={{textAlign:'center'}} scope="col">Tipo Documento</th>
+                                <th  style={{textAlign:'center'}} scope="col">Documento</th>
+                                <th style={{textAlign:'center'}}  scope="col">Fecha Nacimiento</th>
+                                <th  style={{textAlign:'center'}} scope="col">Celular</th>
+                                <th  style={{textAlign:'center'}} scope="col">Fecha Alta</th>
+                                <th  style={{textAlign:'center'}} scope="col">Editar</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -326,14 +326,14 @@ class PrincipalAdministrador extends Component {
                                     let tipoDocLabel = operacion.obtenerDocumentoLabel(adm[0].TipoDocumento.id, this.state.tipoD);
                                     return (
                                         <tr className="table-light">
-                                            <th scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                            <td>{adm[0].Apellido + ', ' + adm[0].Nombre}</td>
-                                            <td>{tipoDocLabel}</td>
-                                            <td>{adm[0].Documento}</td>
-                                            <td>{nacimiento.toLocaleDateString()}</td>
-                                            <td>{adm[0].Celular}</td>
-                                            <td>{alta.toLocaleString()}</td>
-                                            <td><Link to={editar}><Button bsStyle="warning" fill wd>
+                                            <th style={{textAlign:'center'}} scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
+                                            <td style={{textAlign:'center'}}>{adm[0].Apellido + ', ' + adm[0].Nombre}</td>
+                                            <td style={{textAlign:'center'}}>{tipoDocLabel}</td>
+                                            <td style={{textAlign:'center'}}>{adm[0].Documento}</td>
+                                            <td style={{textAlign:'center'}}>{nacimiento.toLocaleDateString()}</td>
+                                            <td style={{textAlign:'center'}}>{adm[0].Celular}</td>
+                                            <td style={{textAlign:'center'}}>{alta.toLocaleString()}</td>
+                                            <td style={{textAlign:'center'}}><Link to={editar}><Button bsStyle="warning" fill wd>
                                                 Editar
                                             </Button></Link></td>
                                         </tr>

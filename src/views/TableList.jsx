@@ -29,7 +29,7 @@ class TableList extends Component {
     this.state= {
       barrios: []
   }
-    this.cabecera = ['Nombre', 'Calle', 'Numero', 'Titular', 'Celular', 'Editar', 'Eliminar'];
+    this.cabecera = ['Nombre', 'Calle', 'Número', 'Titular', 'Celular', 'Editar', 'Eliminar'];
   }
 
   async componentWillMount(){
@@ -51,8 +51,8 @@ class TableList extends Component {
           <Row>
             <Col md={12}>
               <Card
-                title="Barrios registrados"
-                category="Los siguientes barrios se encuentran registrados en el sistema"
+                title="Countries registrados"
+                category="Los siguientes countries se encuentran registrados en el sistema"
                 ctTableFullWidth
                 ctTableResponsive
                 content={
