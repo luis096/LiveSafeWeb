@@ -28,7 +28,8 @@ export const validator = {
     validarMail,
     fechaRango,
     isValid,
-    validarInvitado
+    validarInvitado,
+    validarInvitadoExistente
 };
 
 
@@ -124,6 +125,13 @@ function isValid(errores) {
 }
 
 function validarInvitado(desde, hasta) {
+    let hoy = new Date();
+    return (validator.obtenerFecha(desde) <= hoy && validator.obtenerFecha(hasta) >= hoy);
+}
+
+
+
+function validarInvitadoExistente(desde, hasta) {
     let hoy = new Date();
     return (validator.obtenerFecha(desde) <= hoy && validator.obtenerFecha(hasta) >= hoy);
 }

@@ -8,6 +8,7 @@ import { errorHTML } from '../Error';
 import { validator } from '../validator';
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
+import Select from "react-select";
 
 class EditarCountry extends Component {
     constructor(props) {
@@ -24,12 +25,20 @@ class EditarCountry extends Component {
             imagenCountry: '',
             upLoadValue: 0,
             imgStorgeRef: '',
-            borrar: false
+            borrar: false,
+            departamento: [],
+            departamentoBarrio: {label: "Select..."},
+            localidades: [],
+            localidadBarrio: {label: "Select..."},
+            calles: [],
+            calleBarrio: {label: "Select..."}
         };
         this.notificationSystem = React.createRef();
 
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeCalle = this.ChangeCalle.bind(this);
+        this.ChangeLoc = this.ChangeLoc.bind(this);
+        this.ChangeDto = this.ChangeDto.bind(this);
         this.ChangeNumero = this.ChangeNumero.bind(this);
         this.ChangeTitular = this.ChangeTitular.bind(this);
         this.ChangeCelular = this.ChangeCelular.bind(this);
@@ -58,7 +67,9 @@ class EditarCountry extends Component {
                 if (doc.exists) {
                     this.setState({
                         nombre: doc.data().Nombre,
-                        calle: doc.data().Calle,
+                        calleBarrio: doc.data().Calle,
+                        localidadBarrio: doc.data().Localidad,
+                        departamentoBarrio: doc.data().Departamento,
                         numero: doc.data().Numero,
                         titular: doc.data().Titular,
                         celular: doc.data().Celular,
@@ -73,6 +84,20 @@ class EditarCountry extends Component {
         } catch (e) {
             this.notificationSystem.current.addNotification(operacion.error(e.message));
         }
+
+        let depto = [];
+
+        fetch("https://apis.datos.gob.ar/georef/api/departamentos?provincia=14&max=1000").then(res => res.json())
+            .then((result) => {
+                    result.departamentos.forEach(loc => {
+                        depto.push({value: loc.id, label: loc.nombre})
+                    })
+                }
+                , (error) => {
+                    console.log(error);
+                });
+
+        this.setState({departamentos: depto});
 
         if (!!this.state.imagenCountry) {
             this.setState({imgStorgeRef: Storage.ref(this.state.imagenCountry), upLoadValue: 100});
@@ -101,14 +126,78 @@ class EditarCountry extends Component {
         else{this.errorCalle =validator.soloLetras(event.target.value)}
     }
 
+    ChangeCalle(event) {
+        this.setState({calleBarrio: event});
+    }
+
+    ChangeDto(event) {
+        let localidades = [];
+        this.setState({calleBarrio: {value: null, label: "Select..."}});
+        this.setState({localidadBarrio: {value: null, label: "Select..."}});
+
+        if (!!event) {
+            fetch("https://apis.datos.gob.ar/georef/api/localidades-censales?provincia=cordoba&departamento="
+                + event.value.toString() + "&max=1000&formato=json").then(res => res.json())
+                .then((result) => {
+                        result.localidades_censales.forEach(loc => {
+                            localidades.push({value: loc.id, label: loc.nombre})
+                        })
+                    }
+                    , (error) => {
+                        console.log(error);
+                    });
+        }
+        this.setState({localidades: localidades});
+        this.setState({departamentoBarrio: event});
+    }
+
+    async ChangeLoc(event) {
+        let callesLocalidad = [];
+        this.setState({localidadBarrio: event});
+        this.setState({calleBarrio: {value: null, label: "Select..."}});
+
+        let total = 0;
+        if (!!event) {
+            await fetch("https://apis.datos.gob.ar/georef/api/calles?provincia=14&&departamento="
+                + this.state.departamentoBarrio.value.toString() + "&localidad_censal=" + event.value.toString()
+                + "&max=4000&formato=json").then(res => res.json())
+                .then((result) => {
+                        result.calles.forEach(loc => {
+                            callesLocalidad.push({value: loc.id, label: loc.nombre})
+                        });
+                        total = result.total;
+                    }
+                    , (error) => {
+                        console.log(error);
+                    });
+        }
+
+        if (total > 5000) {
+            await fetch("https://apis.datos.gob.ar/georef/api/calles?provincia=14&&departamento="
+                + this.state.departamentoBarrio.value.toString() + "&localidad_censal=" + event.value.toString()
+                + "&max=5000&inicio=5000&formato=json").then(res => res.json())
+                .then((result) => {
+                        result.calles.forEach(loc => {
+                            callesLocalidad.push({value: loc.id, label: loc.nombre})
+                        });
+                        total = result.total;
+                    }
+                    , (error) => {
+                        console.log(error);
+                    });
+        }
+
+        this.setState({calles: callesLocalidad});
+    }
 
     ChangeNumero(event) {
         this.setState({numero: event.target.value});
-        if (event.target.value == "")
-        {this.errorNumero= validator.requerido(event.target.value)}
-        else{this.errorNumero =validator.numero(event.target.value)}
+        if (event.target.value == "") {
+            this.errorNumero = validator.requerido(event.target.value)
+        } else {
+            this.errorNumero = validator.numero(event.target.value)
+        }
     }
-
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
@@ -219,29 +308,65 @@ class EditarCountry extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-md-4 row-secction">
-                                <label> Calle </label>
-                                <input className={ errorHTML.classNameError(this.errorCalle, 'form-control') }
-                                       placeholder="Calle"
-                                       value={this.state.calle}
-                                       onChange={this.ChangeCalle}/>
-                                 {errorHTML.errorLabel(this.errorCalle)}
+                            <div className="row-secction col-md-3">
+                                <label> Departamento </label>
+                                <Select
+                                    className="select-documento"
+                                    classNamePrefix="select"
+                                    isDisabled={false}
+                                    isLoading={false}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    value={this.state.departamentoBarrio}
+                                    options={this.state.departamentos}
+                                    onChange={this.ChangeDto.bind(this)}
+                                />
                             </div>
-                            <div className="col-md-4 row-secction">
+                            <div className="row-secction col-md-3">
+                                <label> Localidad </label>
+                                <Select
+                                    className="select-documento"
+                                    classNamePrefix="select"
+                                    isDisabled={false}
+                                    isLoading={false}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    value={this.state.localidadBarrio}
+                                    options={this.state.localidades}
+                                    onChange={this.ChangeLoc.bind(this)}
+                                />
+                            </div>
+                            <div className="row-secction col-md-3">
+                                <label> Calle </label>
+                                <Select
+                                    className="select-documento"
+                                    classNamePrefix="select"
+                                    isDisabled={false}
+                                    isLoading={false}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    value={this.state.calleBarrio}
+                                    options={this.state.calles}
+                                    onChange={this.ChangeCalle.bind(this)}
+                                />
+                            </div>
+                            <div className="col-md-3 row-secction">
                                 <label> Numero </label>
-                                <input className={ errorHTML.classNameError(this.errorNumero, 'form-control') }
+                                <input className={errorHTML.classNameError(this.errorNumero, 'form-control')}
                                        placeholder="Numero"
                                        value={this.state.numero}
                                        onChange={this.ChangeNumero}/>
                                 {errorHTML.errorLabel(this.errorNumero)}
                             </div>
+                        </div>
+                        <div className="row">
                             <div className="col-md-4 row-secction">
                                 <label> Celular </label>
-                                <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
+                                <input className={errorHTML.classNameError(this.errorCelular, 'form-control')}
                                        placeholder="Celular"
                                        value={this.state.celular}
                                        onChange={this.ChangeCelular}/>
-                                 {errorHTML.errorLabel(this.errorCelular)}
+                                {errorHTML.errorLabel(this.errorCelular)}
                             </div>
                         </div>
                         <div className="row">
