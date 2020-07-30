@@ -5,30 +5,28 @@ import Datetime from 'react-datetime';
 import Switch from 'react-bootstrap-switch';
 import { errorHTML } from '../Error';
 import { validator } from '../validator';
-import Select from "react-select";
-import { style } from "../../variables/Variables";
-import NotificationSystem from "react-notification-system";
-import {operacion} from "../Operaciones";
-import {Col, Grid, Row} from "react-bootstrap";
-import Disponibilidad from "../Reserva/Disponibilidad";
-import {Calendar, momentLocalizer} from "react-big-calendar";
+import Select from 'react-select';
+import { style } from '../../variables/Variables';
+import NotificationSystem from 'react-notification-system';
+import { operacion } from '../Operaciones';
+import { Col, Grid, Row } from 'react-bootstrap';
+import Disponibilidad from '../Reserva/Disponibilidad';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 import Card from 'components/Card/Card.jsx';
-import moment from "moment";
-import SweetAlert from "react-bootstrap-sweetalert";
+import moment from 'moment';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
-import {  Views } from 'react-big-calendar'
-import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
+import { Views } from 'react-big-calendar';
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 
-import 'react-big-calendar/lib/addons/dragAndDrop/styles.scss'
+import 'react-big-calendar/lib/addons/dragAndDrop/styles.scss';
 
-const DragAndDropCalendar = withDragAndDrop(Calendar)
+const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 moment.locale('es');
 const localizer = momentLocalizer(moment);
 
-
 class AltaServicio extends Component {
-
     constructor() {
         super();
         this.state = {
@@ -39,8 +37,8 @@ class AltaServicio extends Component {
             horaHasta: new Date(2020, 0, 1, 18, 0),
             dias: [false, false, false, false, false, false, false],
             turnosMax: null,
-            turnoSelect:[],
-            turnosMaxSelect:[],
+            turnoSelect: [],
+            turnosMaxSelect: [],
             verCalendar: false,
             min: new Date(2019, 0, 1, 8, 0),
             max: new Date(2019, 0, 1, 18, 0),
@@ -48,7 +46,7 @@ class AltaServicio extends Component {
             events: [],
             duracionTurno: null,
             displayDragItemInCell: true,
-            newIdEvent: 1
+            newIdEvent: 1,
         };
         this.notificationSystem = React.createRef();
         this.addServicio = this.addServicio.bind(this);
@@ -64,36 +62,36 @@ class AltaServicio extends Component {
         this.moveEvent = this.moveEvent.bind(this);
         this.newEvent = this.newEvent.bind(this);
         this.delete = this.delete.bind(this);
-        this.errorNombre = {error: false, mensaje: ''};
-        this.errorHoraDesde = {error: false, mensaje: ''};
-        this.errorHoraHasta = {error: false, mensaje: ''};
-
+        this.errorNombre = { error: false, mensaje: '' };
+        this.errorHoraDesde = { error: false, mensaje: '' };
+        this.errorHoraHasta = { error: false, mensaje: '' };
     }
 
     async componentDidMount() {
-        this.actualizarHorasMax()
-        await Database.collection('Turnos').get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
-                this.state.turnoSelect.push(
-                    {value: doc.data().Duracion, label: doc.data().DuracionString}
-                );
+        this.actualizarHorasMax();
+        await Database.collection('Turnos')
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    this.state.turnoSelect.push({ value: doc.data().Duracion, label: doc.data().DuracionString });
+                });
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        }).catch((error) => {
-            this.notificationSystem.current.addNotification(operacion.error(error.message));
-        });
     }
 
     async actualizarHorasMax() {
-        await this.setState({turnosMaxSelect: []});
-         for(var i = 1; i <= 24; i++) {
-            this.state.turnosMaxSelect.push({value: i, label:i.toString()});
+        await this.setState({ turnosMaxSelect: [] });
+        for (var i = 1; i <= 24; i++) {
+            this.state.turnosMaxSelect.push({ value: i, label: i.toString() });
         }
     }
 
     async addServicio() {
         let horarios = [];
-        for(var i = 0; i < 7; i++) {
-            horarios.push({horarios: []});
+        for (var i = 0; i < 7; i++) {
+            horarios.push({ horarios: [] });
         }
 
         this.state.events.sort(function (a, b) {
@@ -105,71 +103,77 @@ class AltaServicio extends Component {
             }
 
             return 0;
-        })
+        });
 
         let hasta = 0;
         let desde = 24;
 
-        this.state.events.forEach(event => {
+        this.state.events.forEach((event) => {
             let dia = event.start.getDay();
             if (dia == 0) dia = 7;
             let id = horarios[dia - 1].horarios.length + 1;
-            horarios[dia - 1].horarios.push({desde: event.start, hasta: event.end, id: id})
+            horarios[dia - 1].horarios.push({ desde: event.start, hasta: event.end, id: id });
 
-            if (event.start.getHours() < desde) desde = event.start.getHours()
-            if (event.end.getHours() > hasta) hasta = event.end.getHours()
-        })
-
-        await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Servicios').add({
-            Nombre: this.state.nombre,
-            Estado: this.state.estado,
-            Disponibilidad: horarios,
-            HoraInicio: new Date(2020, 0, 1, desde, 0),
-            HoraFin: new Date(2020, 0, 1, hasta, 0),
-            // Descripcion: this.state.descripcion,
-            TurnosMax: this.state.turnosMax.value,
-            DuracionTurno: (this.state.duracionTurno.value * 60)
-        }).catch((error) => {
-            this.notificationSystem.current.addNotification(operacion.error(error.message));
+            if (event.start.getHours() < desde) desde = event.start.getHours();
+            if (event.end.getHours() > hasta) hasta = event.end.getHours();
         });
+
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Servicios')
+            .add({
+                Nombre: this.state.nombre,
+                Estado: this.state.estado,
+                Disponibilidad: horarios,
+                HoraInicio: new Date(2020, 0, 1, desde, 0),
+                HoraFin: new Date(2020, 0, 1, hasta, 0),
+                // Descripcion: this.state.descripcion,
+                TurnosMax: this.state.turnosMax.value,
+                DuracionTurno: this.state.duracionTurno.value * 60,
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
     }
 
     ChangeNombre(event) {
-        this.setState({nombre: event.target.value});
-        if (event.target.value == "")
-        {this.errorNombre= validator.requerido(event.target.value)}
-        else{this.errorNombre =validator.soloLetras(event.target.value)}
+        this.setState({ nombre: event.target.value });
+        if (event.target.value == '') {
+            this.errorNombre = validator.requerido(event.target.value);
+        } else {
+            this.errorNombre = validator.soloLetras(event.target.value);
+        }
     }
 
     async ChangeDesde(event) {
-        await this.setState({horaDesde: event});
-        await this.setState({duracionTurno: null, turnosMax: null});
+        await this.setState({ horaDesde: event });
+        await this.setState({ duracionTurno: null, turnosMax: null });
         await this.actualizarHorasMax();
     }
 
     async ChangeHasta(event) {
-        await this.setState({horaHasta: event});
-        await this.setState({duracionTurno: null, turnosMax: null});
+        await this.setState({ horaHasta: event });
+        await this.setState({ duracionTurno: null, turnosMax: null });
         await this.actualizarHorasMax();
     }
 
     ChangeDescripcion(event) {
-        this.setState({descripcion: event.target.value});
+        this.setState({ descripcion: event.target.value });
     }
 
     ChangeEstado() {
-        let {estado} = this.state;
+        let { estado } = this.state;
         estado = !estado;
-        this.setState({estado});
+        this.setState({ estado });
     }
 
     ChangeSelectTurnosMax(value) {
-        this.setState({turnosMax: value});
+        this.setState({ turnosMax: value });
     }
 
     async ChangeSelectTurno(value) {
-        await this.setState({events: [], verCalendar: false});
-        await this.setState({duracionTurno: value});
+        await this.setState({ events: [], verCalendar: false });
+        await this.setState({ duracionTurno: value });
     }
 
     registrar() {
@@ -182,7 +186,7 @@ class AltaServicio extends Component {
         let hora = date.getHours();
         if (minutos != 0 || minutos != 30) {
             if (minutos > 30) {
-                date.setHours((hora + 1), 0);
+                date.setHours(hora + 1, 0);
             } else {
                 date.setMinutes(0);
             }
@@ -191,7 +195,7 @@ class AltaServicio extends Component {
     }
 
     ChangeDia(num) {
-        let {dias} = this.state;
+        let { dias } = this.state;
         dias[num] = !dias[num];
         this.setState(dias);
     }
@@ -202,13 +206,13 @@ class AltaServicio extends Component {
             estado: true,
             descripcion: '',
             horasMax: null,
-            minMax: null
+            minMax: null,
         });
     }
 
     hideAlert() {
         this.setState({
-            alert: null
+            alert: null,
         });
     }
 
@@ -217,15 +221,13 @@ class AltaServicio extends Component {
         const slotInfo = { start: start, end: end, id: event.id };
         if (!this.validarHorario(slotInfo)) return;
 
-        const nextEvents = events.map(existingEvent => {
-            return existingEvent.id == event.id
-                ? { ...existingEvent, start, end }
-                : existingEvent
+        const nextEvents = events.map((existingEvent) => {
+            return existingEvent.id == event.id ? { ...existingEvent, start, end } : existingEvent;
         });
 
         this.setState({
-            events: nextEvents
-        })
+            events: nextEvents,
+        });
     };
 
     resizeEvent = ({ event, start, end }) => {
@@ -233,22 +235,19 @@ class AltaServicio extends Component {
         const slotInfo = { start: start, end: end, id: event.id };
         if (!this.validarHorario(slotInfo)) return;
 
-        const nextEvents = events.map(existingEvent => {
-            return existingEvent.id === event.id
-                ? { ...existingEvent, start, end }
-                : existingEvent
+        const nextEvents = events.map((existingEvent) => {
+            return existingEvent.id === event.id ? { ...existingEvent, start, end } : existingEvent;
         });
 
         this.setState({
             events: nextEvents,
-        })
+        });
     };
 
     newEvent(slotInfo) {
         let newEvents = this.state.events;
 
-        if (slotInfo.start.getHours() == slotInfo.end.getHours() &&
-            slotInfo.start.getMinutes() == slotInfo.end.getMinutes()) {
+        if (slotInfo.start.getHours() == slotInfo.end.getHours() && slotInfo.start.getMinutes() == slotInfo.end.getMinutes()) {
             return;
         }
 
@@ -256,26 +255,28 @@ class AltaServicio extends Component {
 
         let newId = this.state.newIdEvent;
         let nuevoHorario = {
-          id: newId,
-          title: 'Reserva',
-          start: slotInfo.start,
-          end: slotInfo.end,
+            id: newId,
+            title: 'Reserva',
+            start: slotInfo.start,
+            end: slotInfo.end,
         };
         newEvents.push(nuevoHorario);
         this.setState({
             events: newEvents,
-            newIdEvent: this.state.newIdEvent + 1
+            newIdEvent: this.state.newIdEvent + 1,
         });
     }
 
-    validarHorario(slotInfo){
+    validarHorario(slotInfo) {
         let isValid = true;
-        this.state.events.map((evento)=> {
+        this.state.events.map((evento) => {
             if (evento.start.getDay() == slotInfo.start.getDay() && evento.id != slotInfo.id) {
-                if ((evento.start <= slotInfo.start && evento.end > slotInfo.start) ||
+                if (
+                    (evento.start <= slotInfo.start && evento.end > slotInfo.start) ||
                     (evento.start < slotInfo.end && evento.end >= slotInfo.end) ||
-                    (evento.start > slotInfo.start && evento.end < slotInfo.end)) {
-                    this.notificationSystem.current.addNotification(operacion.error("Rango horario inválido"));
+                    (evento.start > slotInfo.start && evento.end < slotInfo.end)
+                ) {
+                    this.notificationSystem.current.addNotification(operacion.error('Rango horario inválido'));
                     isValid = false;
                 }
             }
@@ -285,36 +286,43 @@ class AltaServicio extends Component {
 
     delete(slotInfo) {
         let newEvents = this.state.events;
-        let deleted = newEvents.filter(x => x.id !== slotInfo.id);
+        let deleted = newEvents.filter((x) => x.id !== slotInfo.id);
         this.setState({
-            events: deleted
+            events: deleted,
         });
     }
-
 
     render() {
         return (
             <div className="col-12">
-                <legend><h3 className="row">Nuevo Servicio</h3></legend>
+                <legend>
+                    <h3 className="row">Nuevo Servicio</h3>
+                </legend>
                 <div className="row card">
                     <div className="card-body">
                         <div className="row">
                             <div className="row-secction col-md-3">
-                                    <label> Nombre </label>
-                                    <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') } placeholder="Nombre"
-                                        value={this.state.nombre}
-                                        onChange={this.ChangeNombre}
-                                    />
-                                    {errorHTML.errorLabel(this.errorNombre)}
+                                <label> Nombre </label>
+                                <input
+                                    type="name"
+                                    className={errorHTML.classNameError(this.errorNombre, 'form-control')}
+                                    placeholder="Nombre"
+                                    value={this.state.nombre}
+                                    onChange={this.ChangeNombre}
+                                />
+                                {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="row-secction col-md-2">
                                 <label>Disponibilidad del servicio</label>
                                 <div>
-                                    <Switch onText="Si" offText="No"
-                                            value={this.state.estado}
-                                            onChange={()=> {
-                                                this.ChangeEstado();
-                                            }}/>
+                                    <Switch
+                                        onText="Si"
+                                        offText="No"
+                                        value={this.state.estado}
+                                        onChange={() => {
+                                            this.ChangeEstado();
+                                        }}
+                                    />
                                 </div>
                             </div>
                             <div className="row-secction col-md-3">
@@ -327,7 +335,7 @@ class AltaServicio extends Component {
                                 />
                             </div>
                             <div className="row-secction col-md-3">
-                                <label>Turnos Maximos de Reserva</label>
+                                <label>Turnos Máximos de Reserva</label>
                                 <Select
                                     isClearable={true}
                                     value={this.state.turnosMax}
@@ -336,10 +344,12 @@ class AltaServicio extends Component {
                                 />
                             </div>
                             <div className="row-secction col-md-1">
-                                <br/>
-                                <Button bsStyle="warning" fill
-                                        disabled={!this.state.duracionTurno}
-                                        onClick={() => this.setState({verCalendar: true})}>
+                                <br />
+                                <Button
+                                    bsStyle="warning"
+                                    fill
+                                    disabled={!this.state.duracionTurno}
+                                    onClick={() => this.setState({ verCalendar: true })}>
                                     Agregar horarios
                                 </Button>
                             </div>
@@ -360,7 +370,7 @@ class AltaServicio extends Component {
                                         content={
                                             <DragAndDropCalendar
                                                 selectable
-                                                step={this.state.duracionTurno?this.state.duracionTurno.value * 60:30}
+                                                step={this.state.duracionTurno ? this.state.duracionTurno.value * 60 : 30}
                                                 localizer={localizer}
                                                 events={this.state.events}
                                                 onEventDrop={this.moveEvent}
@@ -394,7 +404,7 @@ class AltaServicio extends Component {
                     </Button>
                 </div>
                 <div>
-                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                    <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
                 {this.state.alert}
             </div>

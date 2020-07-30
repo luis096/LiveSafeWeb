@@ -9,13 +9,11 @@ import { validator } from '../validator';
 import Select from 'react-select';
 import Datetime from 'react-datetime';
 import { errorHTML } from '../Error';
-import { style } from "../../variables/Variables";
-import NotificationSystem from "react-notification-system";
-import {operacion} from "../Operaciones";
-
+import { style } from '../../variables/Variables';
+import NotificationSystem from 'react-notification-system';
+import { operacion } from '../Operaciones';
 
 class PrincipalReserva extends Component {
-
     constructor() {
         super();
         this.state = {
@@ -33,8 +31,8 @@ class PrincipalReserva extends Component {
             hasta: null,
             ultimo: [],
             primero: [],
-            errorDesde: {error: false, mensaje: ''},
-            errorHasta: {error: false, mensaje: ''},
+            errorDesde: { error: false, mensaje: '' },
+            errorHasta: { error: false, mensaje: '' },
         };
         this.notificationSystem = React.createRef();
         this.hideAlert = this.hideAlert.bind(this);
@@ -44,70 +42,70 @@ class PrincipalReserva extends Component {
         this.cancelar = this.cancelar.bind(this);
         this.cantidad = [];
         this.total = 0;
-        this.errorNombre = {error: false, mensaje: ''};
+        this.errorNombre = { error: false, mensaje: '' };
     }
 
     ChangeSelectEstado(value) {
-        this.setState({estado: value});
+        this.setState({ estado: value });
     }
 
     ChangeServicio(event) {
-        this.setState({servicio: event});
+        this.setState({ servicio: event });
     }
 
     ChangeNombre(event) {
-        this.setState({nombre: event.target.value});
+        this.setState({ nombre: event.target.value });
         this.errorNombre = validator.soloLetras(event.target.value);
     }
 
     ChangeDesde(event) {
-        this.setState({desde: new Date(event)});
+        this.setState({ desde: new Date(event) });
         this.setState({
             errorHasta: validator.fechaRango(new Date(event), this.state.hasta, true),
-            errorDesde: validator.fechaRango(new Date(event), this.state.hasta, false)
+            errorDesde: validator.fechaRango(new Date(event), this.state.hasta, false),
         });
     }
 
     ChangeHasta(event) {
-        this.setState({hasta: new Date(event)});
+        this.setState({ hasta: new Date(event) });
         this.setState({
             errorHasta: validator.fechaRango(this.state.desde, new Date(event), false),
-            errorDesde: validator.fechaRango(this.state.desde, new Date(event), true)
+            errorDesde: validator.fechaRango(this.state.desde, new Date(event), true),
         });
     }
 
     async componentDidMount() {
-        const {serviciosLista} = this.state;
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Servicios').get().then(querySnapshot=> {
-                querySnapshot.forEach(doc=> {
-                    serviciosLista.push(
-                        {value: doc.id, label: doc.data().Nombre}
-                    );
+        const { serviciosLista } = this.state;
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Servicios')
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    serviciosLista.push({ value: doc.id, label: doc.data().Nombre });
                 });
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        this.setState({serviciosLista});
+        this.setState({ serviciosLista });
     }
 
-
     async consultar(pagina, nueva) {
-        let {reservas} = this.state;
+        let { reservas } = this.state;
 
-        if(!validator.isValid([this.errorNombre, this.state.errorDesde, this.state.errorHasta])){
+        if (!validator.isValid([this.errorNombre, this.state.errorDesde, this.state.errorHasta])) {
             this.setState({
                 alert: (
                     <SweetAlert
-                        style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                        style={{ display: 'block', marginTop: '-100px', position: 'center' }}
                         title="Error"
-                        onConfirm={()=>this.hideAlert()}
-                        onCancel={()=>this.hideAlert()}
-                        confirmBtnBsStyle="danger"
-                    >
+                        onConfirm={() => this.hideAlert()}
+                        onCancel={() => this.hideAlert()}
+                        confirmBtnBsStyle="danger">
                         Hay errores en los filtros.
                     </SweetAlert>
-                )
+                ),
             });
             return;
         }
@@ -116,16 +114,19 @@ class PrincipalReserva extends Component {
             this.setState({
                 ultimo: [],
                 primero: [],
-                numPagina: -1
+                numPagina: -1,
             });
         }
         if (this.cantidad.length && (this.cantidad.length <= pagina || pagina < 0)) {
             return;
         }
 
-        let con = await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').doc(localStorage.getItem('idPersona'))
-            .collection('Reservas').orderBy('FechaDesde', 'desc');
+        let con = await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Propietarios')
+            .doc(localStorage.getItem('idPersona'))
+            .collection('Reservas')
+            .orderBy('FechaDesde', 'desc');
 
         let total = con;
 
@@ -163,29 +164,33 @@ class PrincipalReserva extends Component {
         // }
 
         if (nueva) {
-            await total.get().then((doc)=> {
-                this.total = doc.docs.length;
-            }).catch((error) => {
-                this.notificationSystem.current.addNotification(operacion.error(error.message));
-            });
+            await total
+                .get()
+                .then((doc) => {
+                    this.total = doc.docs.length;
+                })
+                .catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
+                });
         }
 
         reservas = [];
         let ultimo = null;
         let primero = null;
-        await con.get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
-                if (!primero) {
-                    primero = doc;
-                }
-                ultimo = doc;
-                reservas.push(
-                    [doc.data(), doc.id]
-                );
+        await con
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (!primero) {
+                        primero = doc;
+                    }
+                    ultimo = doc;
+                    reservas.push([doc.data(), doc.id]);
+                });
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        }).catch((error) => {
-            this.notificationSystem.current.addNotification(operacion.error(error.message));
-        });
 
         if ((pagina > this.state.numPagina || this.state.numPagina < 0) && !this.state.ultimo[pagina]) {
             this.state.ultimo.push(ultimo);
@@ -195,7 +200,7 @@ class PrincipalReserva extends Component {
             this.cantidad = paginador.cantidad(this.total);
         }
 
-        this.setState({reservas, numPagina: (pagina)});
+        this.setState({ reservas, numPagina: pagina });
     }
 
     reestablecer() {
@@ -209,10 +214,10 @@ class PrincipalReserva extends Component {
             estado: null,
             desde: null,
             hasta: null,
-            errorDesde: {error: false, mensaje: ''},
-            errorHasta: {error: false, mensaje: ''}
+            errorDesde: { error: false, mensaje: '' },
+            errorHasta: { error: false, mensaje: '' },
         });
-        this.errorNombre = {error: false, mensaje: ''};
+        this.errorNombre = { error: false, mensaje: '' };
     }
 
     cancelar(res) {
@@ -222,48 +227,54 @@ class PrincipalReserva extends Component {
             alert: (
                 <SweetAlert
                     warning
-                    style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                    style={{ display: 'block', marginTop: '-100px', position: 'center' }}
                     title="¿Estas seguro?"
-                    onConfirm={()=>this.successDelete()}
-                    onCancel={()=>this.cancelDetele()}
+                    onConfirm={() => this.successDelete()}
+                    onCancel={() => this.cancelDetele()}
                     confirmBtnBsStyle="info"
                     cancelBtnBsStyle="danger"
                     confirmBtnText="Si, estoy seguro"
                     cancelBtnText="Cancelar"
-                    showCancel
-                >
+                    showCancel>
                     ¿Esta seguro de que desea cancelar la reserva?
                 </SweetAlert>
-            )
+            ),
         });
     }
 
     async successDelete() {
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Servicios').doc(this.state.reservaCancelar[0].IdServicio.id)
-            .collection('Reservas').doc(this.state.reservaCancelar[0].IdReservaServicio.id)
-            .set(this.state.reservaCancelar[0]).catch((error) => {
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Servicios')
+            .doc(this.state.reservaCancelar[0].IdServicio.id)
+            .collection('Reservas')
+            .doc(this.state.reservaCancelar[0].IdReservaServicio.id)
+            .set(this.state.reservaCancelar[0])
+            .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').doc(localStorage.getItem('idPersona'))
-            .collection('Reservas').doc(this.state.reservaCancelar[1])
-            .set(this.state.reservaCancelar[0]).catch((error) => {
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Propietarios')
+            .doc(localStorage.getItem('idPersona'))
+            .collection('Reservas')
+            .doc(this.state.reservaCancelar[1])
+            .set(this.state.reservaCancelar[0])
+            .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         this.setState({
             alert: (
                 <SweetAlert
                     success
-                    style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                    style={{ display: 'block', marginTop: '-100px', position: 'center' }}
                     title="Reserva cancelada"
-                    onConfirm={()=>this.hideAlert()}
-                    onCancel={()=>this.hideAlert()}
-                    confirmBtnBsStyle="info"
-                >
+                    onConfirm={() => this.hideAlert()}
+                    onCancel={() => this.hideAlert()}
+                    confirmBtnBsStyle="info">
                     La reserva se cancelo correctamente.
                 </SweetAlert>
-            )
+            ),
         });
     }
 
@@ -272,38 +283,42 @@ class PrincipalReserva extends Component {
             alert: (
                 <SweetAlert
                     danger
-                    style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                    style={{ display: 'block', marginTop: '-100px', position: 'center' }}
                     title="Se cancelo la operacion"
-                    onConfirm={()=>this.hideAlert()}
-                    onCancel={()=>this.hideAlert()}
-                    confirmBtnBsStyle="info"
-                >
+                    onConfirm={() => this.hideAlert()}
+                    onCancel={() => this.hideAlert()}
+                    confirmBtnBsStyle="info">
                     La reserva sigue vigente.
                 </SweetAlert>
-            )
+            ),
         });
     }
 
     hideAlert() {
         this.setState({
-            alert: null
+            alert: null,
         });
     }
 
     render() {
         return (
             <div className="col-12">
-                <legend><h3 className="row">Mis Reservas</h3></legend>
+                <legend>
+                    <h3 className="row">Mis Reservas</h3>
+                </legend>
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
                         <h5 className="row">Filtros de búsqueda </h5>
-                        <div className='row'>
+                        <div className="row">
                             <div className="col-md-3 row-secction">
                                 <label>Nombre</label>
-                                <input className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
-                                       value={this.state.nombre}
-                                       onChange={this.ChangeNombre} placeholder="Nombre"/>
+                                <input
+                                    className={errorHTML.classNameError(this.errorNombre, 'form-control')}
+                                    value={this.state.nombre}
+                                    onChange={this.ChangeNombre}
+                                    placeholder="Nombre"
+                                />
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-3 row-secction">
@@ -335,10 +350,10 @@ class PrincipalReserva extends Component {
                             <div className="col-md-3 row-secction">
                                 <label>Fecha Desde</label>
                                 <Datetime
-                                    className={errorHTML.classNameErrorDate(this.state.errorDesde, '') }
+                                    className={errorHTML.classNameErrorDate(this.state.errorDesde, '')}
                                     value={this.state.desde}
                                     onChange={this.ChangeDesde}
-                                    inputProps={{placeholder: 'Fecha Desde'}}
+                                    inputProps={{ placeholder: 'Fecha Desde' }}
                                 />
                                 {errorHTML.errorLabel(this.state.errorDesde)}
                             </div>
@@ -348,7 +363,7 @@ class PrincipalReserva extends Component {
                                     className={errorHTML.classNameErrorDate(this.state.errorHasta, '')}
                                     value={this.state.hasta}
                                     onChange={this.ChangeHasta}
-                                    inputProps={{placeholder: 'Fecha Hasta'}}
+                                    inputProps={{ placeholder: 'Fecha Hasta' }}
                                 />
                                 {errorHTML.errorLabel(this.state.errorHasta)}
                             </div>
@@ -357,81 +372,118 @@ class PrincipalReserva extends Component {
                 </div>
 
                 <div className="izquierda">
-                    <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={()=> {
-                        this.reestablecer();
-                    }}>
+                    <Button
+                        bsStyle="default"
+                        style={{ marginRight: '10px' }}
+                        fill
+                        wd
+                        onClick={() => {
+                            this.reestablecer();
+                        }}>
                         Restablecer
                     </Button>
-                    <Button bsStyle="primary" fill wd onClick={()=> {
-                        this.consultar(0, true);
-                    }}>
+                    <Button
+                        bsStyle="primary"
+                        fill
+                        wd
+                        onClick={() => {
+                            this.consultar(0, true);
+                        }}>
                         Consultar
                     </Button>
                 </div>
-
 
                 <div className="card row" hidden={!this.state.reservas.length}>
                     <h4 className="row">Reservas ({this.total})</h4>
                     <div className="card-body">
                         <table className="table table-hover">
                             <thead>
-                            <tr>
-                                <th  style={{textAlign:'center'}} scope="col">Indice</th>
-                                <th  style={{textAlign:'center'}} scope="col">Nombre</th>
-                                <th  style={{textAlign:'center'}} scope="col">Servicio</th>
-                                <th  style={{textAlign:'center'}} scope="col">Estado</th>
-                                <th  style={{textAlign:'center'}} scope="col">Dia</th>
-                                <th  style={{textAlign:'center'}} scope="col">Hora desde</th>
-                                <th  style={{textAlign:'center'}} scope="col">Hora hasta</th>
-                                <th  style={{textAlign:'center'}} scope="col">Visualizar</th>
-                                <th  style={{textAlign:'center'}} scope="col">Cancelar</th>
-                            </tr>
+                                <tr>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Índice
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Nombre
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Servicio
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Estado
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Día
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Hora desde
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Hora hasta
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Visualizar
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Cancelar
+                                    </th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {
-                                this.state.reservas.map((res, ind)=> {
+                                {this.state.reservas.map((res, ind) => {
                                     let desde = new Date(res[0].FechaDesde.seconds * 1000);
                                     let hasta = new Date(res[0].FechaHasta.seconds * 1000);
                                     let editar = '/propietario/visualizarReserva/' + res[1];
                                     let estado = validator.estadoReserva(desde, hasta, res[0].Cancelado);
                                     return (
                                         <tr className="table-light">
-                                            <th  style={{textAlign:'center'}} scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                            <th  style={{textAlign:'center'}} scope="row">{res[0].Nombre}</th>
-                                            <th  style={{textAlign:'center'}} scope="row">{res[0].Servicio}</th>
-                                            <td style={{textAlign:'center'}} >{estado.Nombre}</td>
-                                            <td style={{textAlign:'center'}} >{desde.toLocaleDateString()}</td>
-                                            <td style={{textAlign:'center'}} >{desde.toLocaleTimeString()}</td>
-                                            <td style={{textAlign:'center'}} >{hasta.toLocaleTimeString()}</td>
-                                            <td style={{textAlign:'center'}} ><Link to={editar}><Button bsStyle="info" fill wd>
-                                                Visualizar
-                                            </Button></Link></td>
-                                            <td style={{textAlign:'center'}} ><Button bsStyle="warning" fill wd disabled={estado.Id != 0}
-                                                        onClick={()=> {
-                                                            this.cancelar(res);
-                                                        }}>
-                                                Cancelar
-                                            </Button></td>
+                                            <th style={{ textAlign: 'center' }} scope="row">
+                                                {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
+                                            </th>
+                                            <th style={{ textAlign: 'center' }} scope="row">
+                                                {res[0].Nombre}
+                                            </th>
+                                            <th style={{ textAlign: 'center' }} scope="row">
+                                                {res[0].Servicio}
+                                            </th>
+                                            <td style={{ textAlign: 'center' }}>{estado.Nombre}</td>
+                                            <td style={{ textAlign: 'center' }}>{desde.toLocaleDateString()}</td>
+                                            <td style={{ textAlign: 'center' }}>{desde.toLocaleTimeString()}</td>
+                                            <td style={{ textAlign: 'center' }}>{hasta.toLocaleTimeString()}</td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                <Link to={editar}>
+                                                    <Button bsStyle="info" fill wd>
+                                                        Visualizar
+                                                    </Button>
+                                                </Link>
+                                            </td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                <Button
+                                                    bsStyle="warning"
+                                                    fill
+                                                    wd
+                                                    disabled={estado.Id != 0}
+                                                    onClick={() => {
+                                                        this.cancelar(res);
+                                                    }}>
+                                                    Cancelar
+                                                </Button>
+                                            </td>
                                         </tr>
                                     );
-                                })
-                            }
+                                })}
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div className="text-center" hidden={!this.state.reservas.length}>
                     <Pagination className="pagination-no-border">
-                        <Pagination.First onClick={()=>this.consultar((this.state.numPagina - 1), false)}/>
+                        <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
 
-                        {
-                            this.cantidad.map(num=> {
-                                return (<Pagination.Item
-                                    active={(num == this.state.numPagina)}>{num + 1}</Pagination.Item>);
-                            })
-                        }
+                        {this.cantidad.map((num) => {
+                            return <Pagination.Item active={num == this.state.numPagina}>{num + 1}</Pagination.Item>;
+                        })}
 
-                        <Pagination.Last onClick={()=>this.consultar((this.state.numPagina + 1), false)}/>
+                        <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
                     </Pagination>
                 </div>
                 <div className="row card" hidden={this.state.reservas.length}>
@@ -440,7 +492,7 @@ class PrincipalReserva extends Component {
                     </div>
                 </div>
                 <div>
-                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                    <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
             </div>
         );

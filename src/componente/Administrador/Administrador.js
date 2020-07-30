@@ -4,9 +4,7 @@ import { Database } from '../../config/config';
 import { Link, NavLink } from 'react-router-dom';
 import ModalEliminar from '../ModalEliminar';
 
-
 class Administrador extends Component {
-
     constructor(props) {
         super(props);
 
@@ -31,36 +29,35 @@ class Administrador extends Component {
     }
 
     eliminar() {
-        Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Administradores').doc(this.idAdministrador).delete()
-            .then(
-                this.props.act(this.idAdministrador)
-            )
-            .catch(err=> {
+        Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Administradores')
+            .doc(this.idAdministrador)
+            .delete()
+            .then(this.props.act(this.idAdministrador))
+            .catch((err) => {
                 //En caso de error, hacer esto...
             });
     }
 
     render() {
         return (
-
             <tr>
-                <th scope="row">{this.nombre}, {this.apellido}</th>
+                <th scope="row">
+                    {this.nombre} {this.apellido}
+                </th>
                 <td>{this.documento}</td>
                 <td>{this.celular}</td>
 
-                <td><NavLink
-                      to={this.urlEditar}
-                      className="nav-link"
-                      activeClassName="active"
-                    >
-                      <i className='pe-7s-pen'/>
-                    </NavLink></td>
-                <td><ModalEliminar nombre='Administrador' elemento={this.nombre} borrar={this.eliminar}></ModalEliminar>
+                <td>
+                    <NavLink to={this.urlEditar} className="nav-link" activeClassName="active">
+                        <i className="pe-7s-pen" />
+                    </NavLink>
+                </td>
+                <td>
+                    <ModalEliminar nombre="Administrador" elemento={this.nombre} borrar={this.eliminar}></ModalEliminar>
                 </td>
             </tr>
-
-
         );
     }
 }

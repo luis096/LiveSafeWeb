@@ -1,21 +1,19 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import '../Style/Alta.css';
-import {Database} from '../../config/config';
+import { Database } from '../../config/config';
 import Button from 'components/CustomButton/CustomButton.jsx';
-import {Link} from 'react-router-dom';
-import {Modal, Alert, Grid, Row, Col} from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Modal, Alert, Grid, Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
-import {validator} from '../validator';
-import {operacion} from "../Operaciones";
-import {style} from "../../variables/Variables";
-import NotificationSystem from "react-notification-system";
-import {TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
+import { validator } from '../validator';
+import { operacion } from '../Operaciones';
+import { style } from '../../variables/Variables';
+import NotificationSystem from 'react-notification-system';
+import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import classnames from 'classnames';
-import {CopyToClipboard} from 'react-copy-to-clipboard';
-
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 class VisualizarReserva extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -33,7 +31,7 @@ class VisualizarReserva extends Component {
             tipoDocumento: '',
             estado: {},
             tipoD: [],
-            activeTab: '1'
+            activeTab: '1',
         };
         this.notificationSystem = React.createRef();
         const url = this.props.location.pathname.split('/');
@@ -46,119 +44,148 @@ class VisualizarReserva extends Component {
         this.agregarNuevoInvitado = this.agregarNuevoInvitado.bind(this);
         this.permiteAgregar = this.permiteAgregar.bind(this);
         this.permiteConfirmar = this.permiteConfirmar.bind(this);
-        this.conexion = Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').doc(localStorage.getItem('idPersona'))
-            .collection('Reservas').doc(this.idReserva);
+        this.conexion = Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Propietarios')
+            .doc(localStorage.getItem('idPersona'))
+            .collection('Reservas')
+            .doc(this.idReserva);
     }
 
     async componentDidMount() {
         var confirmados = [];
         var pendientes = [];
-        await this.conexion.get().then(doc => {
+        await this.conexion.get().then((doc) => {
             this.setState({
                 reserva: doc.data(),
                 desde: new Date(doc.data().FechaDesde.seconds * 1000),
-                hasta: new Date(doc.data().FechaHasta.seconds * 1000)
+                hasta: new Date(doc.data().FechaHasta.seconds * 1000),
             });
         });
-        this.setState({estado: validator.estadoReserva(this.state.desde, this.state.hasta, this.state.reserva.Cancelado)});
-        await this.conexion.collection('Invitados').get().then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-                if (doc.exists) {
-                    if (doc.data().Estado) {
-                        confirmados.push([doc.data(), doc.id]);
-                    } else {
-                        pendientes.push([doc.data(), doc.id]);
+        this.setState({ estado: validator.estadoReserva(this.state.desde, this.state.hasta, this.state.reserva.Cancelado) });
+        await this.conexion
+            .collection('Invitados')
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (doc.exists) {
+                        if (doc.data().Estado) {
+                            confirmados.push([doc.data(), doc.id]);
+                        } else {
+                            pendientes.push([doc.data(), doc.id]);
+                        }
                     }
-                }
+                });
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        }).catch((error) => {
-            this.notificationSystem.current.addNotification(operacion.error(error.message));
-        });
         this.setState({
             invitadosConfirmados: confirmados,
-            invitadosPendientes: pendientes
+            invitadosPendientes: pendientes,
         });
-        await Database.collection('TipoDocumento').get().then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-                this.state.tipoD.push(
-                    {value: doc.id, label: doc.data().Nombre}
-                );
+        await Database.collection('TipoDocumento')
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    this.state.tipoD.push({ value: doc.id, label: doc.data().Nombre });
+                });
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        }).catch((error) => {
-            this.notificationSystem.current.addNotification(operacion.error(error.message));
-        });
-    };
-
+    }
 
     toggle(tab) {
-        if (this.state.activeTab !== tab) this.setState({activeTab: tab});
+        if (this.state.activeTab !== tab) this.setState({ activeTab: tab });
     }
 
     actualizar(id, pendiente) {
-        const {invitadosPendientes, invitadosConfirmados} = this.state;
+        const { invitadosPendientes, invitadosConfirmados } = this.state;
         if (pendiente) {
-            invitadosPendientes.map(valor => {
+            invitadosPendientes.map((valor) => {
                 if (valor[1] == id) {
                     invitadosPendientes.splice(invitadosPendientes.indexOf(valor), 1);
                     invitadosConfirmados.push(valor);
                 }
             });
         } else {
-            invitadosConfirmados.map(valor => {
+            invitadosConfirmados.map((valor) => {
                 if (valor[1] == id) {
                     invitadosConfirmados.splice(invitadosConfirmados.indexOf(valor), 1);
                     invitadosPendientes.push(valor);
                 }
             });
         }
-        this.setState({invitadosPendientes, invitadosConfirmados});
+        this.setState({ invitadosPendientes, invitadosConfirmados });
     }
 
     async agregarInvitado(invitado, id) {
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('InvitacionesEventos').add({
-                IdReserva: Database.doc('Country/' + localStorage.getItem('idCountry') +
-                    '/Propietarios/' + localStorage.getItem('idPersona') + '/Reservas/' + this.idReserva),
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('InvitacionesEventos')
+            .add({
+                IdReserva: Database.doc(
+                    'Country/' +
+                        localStorage.getItem('idCountry') +
+                        '/Propietarios/' +
+                        localStorage.getItem('idPersona') +
+                        '/Reservas/' +
+                        this.idReserva
+                ),
                 FechaDesde: this.state.desde,
                 FechaHasta: this.state.hasta,
                 TipoDocumento: invitado.TipoDocumento,
                 Documento: invitado.Documento,
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        await this.conexion.collection('Invitados').doc(id).update({Estado: true}).catch((error) => {
-            this.notificationSystem.current.addNotification(operacion.error(error.message));
-        });
+        await this.conexion
+            .collection('Invitados')
+            .doc(id)
+            .update({ Estado: true })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
     }
 
     modalAgregarInvitado() {
-        this.setState({showModal: true});
+        this.setState({ showModal: true });
     }
 
     async agregarNuevoInvitado() {
-        const {invitadosConfirmados} = this.state;
-        var invitado = [{
-            Nombre: this.state.nombre,
-            Apellido: this.state.apellido,
-            Documento: this.state.documento,
-            TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
-            TipoDocumentoLabel: this.state.tipoDocumento.label,
-            Estado: true,
-            IdInvitado: ''
-        }, ''];
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').doc(localStorage.getItem('idPersona'))
-            .collection('Reservas').doc(this.idReserva).collection('Invitados')
-            .add(invitado[0]).then(doc => {
+        const { invitadosConfirmados } = this.state;
+        var invitado = [
+            {
+                Nombre: this.state.nombre,
+                Apellido: this.state.apellido,
+                Documento: this.state.documento,
+                TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
+                TipoDocumentoLabel: this.state.tipoDocumento.label,
+                Estado: true,
+                IdInvitado: '',
+            },
+            '',
+        ];
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Propietarios')
+            .doc(localStorage.getItem('idPersona'))
+            .collection('Reservas')
+            .doc(this.idReserva)
+            .collection('Invitados')
+            .add(invitado[0])
+            .then((doc) => {
                 invitado[1] = doc.id;
                 invitadosConfirmados.push(invitado);
-                this.setState({invitadosConfirmados});
+                this.setState({ invitadosConfirmados });
                 this.agregarInvitado(invitado[0], doc.id);
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        this.setState({showModal: false});
+        this.setState({ showModal: false });
     }
 
     async cancelarInvitacion(inv) {
@@ -166,60 +193,79 @@ class VisualizarReserva extends Component {
             return;
         }
         inv[0].Estado = false;
-        let referenciaReserva = Database.doc('Country/' + localStorage.getItem('idCountry') +
-            '/Propietarios/' + localStorage.getItem('idPersona') + '/Reservas/' + this.idReserva);
+        let referenciaReserva = Database.doc(
+            'Country/' +
+                localStorage.getItem('idCountry') +
+                '/Propietarios/' +
+                localStorage.getItem('idPersona') +
+                '/Reservas/' +
+                this.idReserva
+        );
         let idEliminar = '';
-        await this.conexion.collection('Invitados').doc(inv[1]).update({Estado: false}).catch((error) => {
-            this.notificationSystem.current.addNotification(operacion.error(error.message));
-        });
-
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('InvitacionesEventos').where('IdReserva', '==', referenciaReserva)
-            .where('Documento', '==', inv[0].Documento).where('TipoDocumento', '==', inv[0].TipoDocumento)
-            .get().then(querySnapshot => {
-                querySnapshot.forEach(doc => {
-                    idEliminar = doc.id;
-                });
-            }).catch((error) => {
+        await this.conexion
+            .collection('Invitados')
+            .doc(inv[1])
+            .update({ Estado: false })
+            .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('InvitacionesEventos').doc(idEliminar).delete().catch((error) => {
+
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('InvitacionesEventos')
+            .where('IdReserva', '==', referenciaReserva)
+            .where('Documento', '==', inv[0].Documento)
+            .where('TipoDocumento', '==', inv[0].TipoDocumento)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    idEliminar = doc.id;
+                });
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('InvitacionesEventos')
+            .doc(idEliminar)
+            .delete()
+            .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         this.actualizar(inv[1], false);
     }
 
-
     ChangeNombre(event) {
-        this.setState({nombre: event.target.value});
+        this.setState({ nombre: event.target.value });
     }
 
     ChangeApellido(event) {
-        this.setState({apellido: event.target.value});
+        this.setState({ apellido: event.target.value });
     }
 
     ChangeSelect(event) {
-        this.setState({tipoDocumento: event});
+        this.setState({ tipoDocumento: event });
     }
 
     ChangeDocumento(event) {
-        this.setState({documento: event.target.value});
+        this.setState({ documento: event.target.value });
     }
 
     permiteAgregar() {
         return !(this.state.estado.Id == 0);
     }
 
-
     permiteConfirmar() {
-        return (this.state.estado.Id == 2 || this.state.estado.Id == 3);
+        return this.state.estado.Id == 2 || this.state.estado.Id == 3;
     }
 
     render() {
         return (
             <div className="col-12">
-                <legend><h3 className="row"> Visualizar reserva</h3></legend>
+                <legend>
+                    <h3 className="row"> Visualizar reserva</h3>
+                </legend>
                 <div className="row">
                     <div className="col-md-4 row-secction">
                         <h4>Nombre del servicio</h4>
@@ -248,37 +294,52 @@ class VisualizarReserva extends Component {
                         <label>{this.state.hasta ? this.state.hasta.toLocaleTimeString() : '-'}</label>
                     </div>
                 </div>
-                <legend/>
+                <legend />
                 <h3 className="row">Invitados de la reserva</h3>
                 <div className="row col-md-12">
                     <div className="row-secction col-md-6">
                         <label>Link de invitación</label>
-                        <input type="text" className="form-control" readOnly
-                               value={'https://livesafeweb.web.app/#/invitado/' + localStorage.getItem('idCountry') + '/' +
-                               localStorage.getItem('idPersona') + '/' + this.idReserva}/>
+                        <input
+                            type="text"
+                            className="form-control"
+                            readOnly
+                            value={
+                                'https://livesafeweb.web.app/#/invitado/' +
+                                localStorage.getItem('idCountry') +
+                                '/' +
+                                localStorage.getItem('idPersona') +
+                                '/' +
+                                this.idReserva
+                            }
+                        />
                     </div>
                     <div className="row-secction col-md-3">
-                        <br/>
+                        <br />
                         <CopyToClipboard
-                            text={'https://livesafeweb.web.app/#/invitado/' + localStorage.getItem('idCountry') + '/' +
-                            localStorage.getItem('idPersona') + '/' + this.idReserva}
-                            onCopy={() => this.notificationSystem.current.addNotification(
-                                operacion.registroConExito("Copiado en portapapeles"))}>
-                            <Button bsStyle="success" fill>Copiar</Button>
+                            text={
+                                'https://livesafeweb.web.app/#/invitado/' +
+                                localStorage.getItem('idCountry') +
+                                '/' +
+                                localStorage.getItem('idPersona') +
+                                '/' +
+                                this.idReserva
+                            }
+                            onCopy={() =>
+                                this.notificationSystem.current.addNotification(operacion.registroConExito('Copiado en portapapeles'))
+                            }>
+                            <Button bsStyle="success" fill>
+                                Copiar
+                            </Button>
                         </CopyToClipboard>
                     </div>
                     <div className="izquierda row-secction col-md-2">
-                        <Button bsStyle="primary" fill wd onClick={this.modalAgregarInvitado}
-                                disabled={this.permiteAgregar()}>
+                        <Button bsStyle="primary" fill wd onClick={this.modalAgregarInvitado} disabled={this.permiteAgregar()}>
                             Agregar invitado
                         </Button>
                     </div>
                 </div>
                 <div className="row">
-                    <Modal
-                        show={this.state.showModal}
-                        onHide={() => this.setState({showModal: false})}
-                    >
+                    <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
                         <Modal.Header closeButton>
                             <Modal.Title>Agregar un nuevo invitado</Modal.Title>
                         </Modal.Header>
@@ -286,20 +347,28 @@ class VisualizarReserva extends Component {
                             <div className="row">
                                 <div className="row-secction">
                                     <label> Nombre </label>
-                                    <input type="name" className="form-control" placeholder="Name"
-                                           value={this.state.nombre}
-                                           onChange={this.ChangeNombre}/>
+                                    <input
+                                        type="name"
+                                        className="form-control"
+                                        placeholder="Name"
+                                        value={this.state.nombre}
+                                        onChange={this.ChangeNombre}
+                                    />
                                 </div>
                                 <div className="row-secction">
                                     <label> Apellido </label>
-                                    <input type="family-name" className="form-control" placeholder="Surname"
-                                           value={this.state.apellido}
-                                           onChange={this.ChangeApellido}/>
+                                    <input
+                                        type="family-name"
+                                        className="form-control"
+                                        placeholder="Surname"
+                                        value={this.state.apellido}
+                                        onChange={this.ChangeApellido}
+                                    />
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="row-secction">
-                                    <label> Tipo Documento </label>
+                                    <label> Tipo de Documento </label>
                                     <Select
                                         className="select-documento"
                                         classNamePrefix="select"
@@ -313,49 +382,43 @@ class VisualizarReserva extends Component {
                                 </div>
                                 <div className="row-secction">
                                     <label> Número de Documento </label>
-                                    <input type="document" className="form-control" placeholder="Document number"
-                                           value={this.state.documento}
-                                           onChange={this.ChangeDocumento}/>
+                                    <input
+                                        type="document"
+                                        className="form-control"
+                                        placeholder="Document number"
+                                        value={this.state.documento}
+                                        onChange={this.ChangeDocumento}
+                                    />
                                 </div>
                             </div>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button
-                                simple
-                                onClick={() => this.setState({showModal: false})}
-                            >
+                            <Button simple onClick={() => this.setState({ showModal: false })}>
                                 Cerrar
                             </Button>
-                            <Button
-                                bsStyle="success"
-                                fill
-                                onClick={this.agregarNuevoInvitado}
-                            >
+                            <Button bsStyle="success" fill onClick={this.agregarNuevoInvitado}>
                                 Agregar
                             </Button>
                         </Modal.Footer>
                     </Modal>
-
                 </div>
                 <div className="card row">
                     <Nav tabs>
-                        <NavItem className={this.state.activeTab !== '1' ? "navSelected" : ""}>
+                        <NavItem className={this.state.activeTab !== '1' ? 'navSelected' : ''}>
                             <NavLink
                                 onClick={() => {
                                     this.toggle('1');
                                 }}
-                                className="textNav"
-                            >
+                                className="textNav">
                                 Confirmados ({this.state.invitadosConfirmados.length})
                             </NavLink>
                         </NavItem>
-                        <NavItem className={this.state.activeTab !== '2' ? "navSelected" : ""}>
+                        <NavItem className={this.state.activeTab !== '2' ? 'navSelected' : ''}>
                             <NavLink
                                 onClick={() => {
                                     this.toggle('2');
                                 }}
-                                className="textNav"
-                            >
+                                className="textNav">
                                 Pendientes de confirmación ({this.state.invitadosPendientes.length})
                             </NavLink>
                         </NavItem>
@@ -365,31 +428,34 @@ class VisualizarReserva extends Component {
                             <div hidden={!this.state.invitadosConfirmados.length}>
                                 <table className="table table-hover">
                                     <thead>
-                                    <tr>
-                                        <th scope="col">Nombre y Apellido</th>
-                                        <th scope="col">Tipo Doc.</th>
-                                        <th scope="col">Documento</th>
-                                        <th scope="col">Accion</th>
-                                    </tr>
+                                        <tr>
+                                            <th scope="col">Nombre y Apellido</th>
+                                            <th scope="col">Tipo Doc.</th>
+                                            <th scope="col">Documento</th>
+                                            <th scope="col">Accion</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    {
-                                        this.state.invitadosConfirmados.map(inv => {
+                                        {this.state.invitadosConfirmados.map((inv) => {
                                             return (
                                                 <tr className="table-light">
                                                     <th scope="row">{inv[0].Nombre + ', ' + inv[0].Apellido}</th>
                                                     <td>{inv[0].TipoDocumentoLabel}</td>
                                                     <td>{inv[0].Documento}</td>
-                                                    <td><Button bsStyle="warning" fill disabled={this.permiteAgregar()}
-                                                                onClick={() => {
-                                                                    this.cancelarInvitacion(inv)
-                                                                }}>
-                                                        Cancelar
-                                                    </Button></td>
+                                                    <td>
+                                                        <Button
+                                                            bsStyle="warning"
+                                                            fill
+                                                            disabled={this.permiteAgregar()}
+                                                            onClick={() => {
+                                                                this.cancelarInvitacion(inv);
+                                                            }}>
+                                                            Cancelar
+                                                        </Button>
+                                                    </td>
                                                 </tr>
                                             );
-                                        })
-                                    }
+                                        })}
                                     </tbody>
                                 </table>
                             </div>
@@ -401,33 +467,36 @@ class VisualizarReserva extends Component {
                             <div hidden={!this.state.invitadosPendientes.length}>
                                 <table className="table table-hover">
                                     <thead>
-                                    <tr>
-                                        <th scope="col">Nombre y Apellido</th>
-                                        <th scope="col">Tipo Doc.</th>
-                                        <th scope="col">Documento</th>
-                                        <th scope="col">Accion</th>
-                                    </tr>
+                                        <tr>
+                                            <th scope="col">Nombre y Apellido</th>
+                                            <th scope="col">Tipo Doc.</th>
+                                            <th scope="col">Documento</th>
+                                            <th scope="col">Accion</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    {
-                                        this.state.invitadosPendientes.map(inv => {
+                                        {this.state.invitadosPendientes.map((inv) => {
                                             return (
                                                 <tr className="table-light">
                                                     <th scope="row">{inv[0].Nombre + ', ' + inv[0].Apellido}</th>
                                                     <td>{inv[0].TipoDocumentoLabel}</td>
                                                     <td>{inv[0].Documento}</td>
-                                                    <td><Button bsStyle="success" fill
-                                                                disabled={this.permiteConfirmar()} onClick={() => {
-                                                        inv[0].Estado = true;
-                                                        this.agregarInvitado(inv[0], inv[1]);
-                                                        this.actualizar(inv[1], true);
-                                                    }}>
-                                                        Confirmar
-                                                    </Button></td>
+                                                    <td>
+                                                        <Button
+                                                            bsStyle="success"
+                                                            fill
+                                                            disabled={this.permiteConfirmar()}
+                                                            onClick={() => {
+                                                                inv[0].Estado = true;
+                                                                this.agregarInvitado(inv[0], inv[1]);
+                                                                this.actualizar(inv[1], true);
+                                                            }}>
+                                                            Confirmar
+                                                        </Button>
+                                                    </td>
                                                 </tr>
                                             );
-                                        })
-                                    }
+                                        })}
                                     </tbody>
                                 </table>
                             </div>
@@ -437,11 +506,8 @@ class VisualizarReserva extends Component {
                         </TabPane>
                     </TabContent>
                 </div>
-                < div>
-                    < NotificationSystem
-                        ref={this.notificationSystem}
-                        style={style}
-                    />
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
             </div>
         );

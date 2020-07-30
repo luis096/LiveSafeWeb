@@ -1,4 +1,3 @@
-
 import Dashboard from 'views/Dashboard.jsx';
 import Buttons from 'views/Components/Buttons.jsx';
 import GridSystem from 'views/Components/GridSystem.jsx';
@@ -25,46 +24,45 @@ import RegisterPage from 'views/Pages/RegisterPage.jsx';
 import LockScreenPage from 'views/Pages/LockScreenPage.jsx';
 
 //Root
-import PrincipalCountry from 'componente/Country/PrincipalCountry.js'
-import AltaCountry from 'componente/Country/AltaCountry.js'
-import EditarCountry from 'componente/Country/EditarCountry.js'
-import PrincipalAdministrador from 'componente/Administrador/PrincipalAdministrador.js'
-import AltaAdministrador from 'componente/Administrador/AltaAdministrador.js'
-import EditarAdministrador from 'componente/Administrador/EditarAdministrador.js'
+import PrincipalCountry from 'componente/Country/PrincipalCountry.js';
+import AltaCountry from 'componente/Country/AltaCountry.js';
+import EditarCountry from 'componente/Country/EditarCountry.js';
+import PrincipalAdministrador from 'componente/Administrador/PrincipalAdministrador.js';
+import AltaAdministrador from 'componente/Administrador/AltaAdministrador.js';
+import EditarAdministrador from 'componente/Administrador/EditarAdministrador.js';
 
 //Admin
-import PrincipalPropietario from 'componente/Propietario/PrincipalPropietario.js'
-import AltaPropietario from 'componente/Propietario/AltaPropietario.js'
-import EditarPropietario from 'componente/Propietario/EditarPropietario.js'
-import PrincipalServicio from 'componente/Servicio/PrincipalServicio.js'
-import AltaServicio from 'componente/Servicio/AltaServicio'
-import EditarServicio from 'componente/Servicio/EditarServicio.js'
-import PrincipalEncargado from 'componente/Encargado/PrincipalEncargado'
-import AltaEncargado from 'componente/Encargado/AltaEncargado'
-import EditarEncargado from 'componente/Encargado/EditarEncargado'
-import Graficos from "./componente/Reportes/Graficos"
-
+import PrincipalPropietario from 'componente/Propietario/PrincipalPropietario.js';
+import AltaPropietario from 'componente/Propietario/AltaPropietario.js';
+import EditarPropietario from 'componente/Propietario/EditarPropietario.js';
+import PrincipalServicio from 'componente/Servicio/PrincipalServicio.js';
+import AltaServicio from 'componente/Servicio/AltaServicio';
+import EditarServicio from 'componente/Servicio/EditarServicio.js';
+import PrincipalEncargado from 'componente/Encargado/PrincipalEncargado';
+import AltaEncargado from 'componente/Encargado/AltaEncargado';
+import EditarEncargado from 'componente/Encargado/EditarEncargado';
+import Graficos from './componente/Reportes/Graficos';
 
 //Encargado
-import PrincipalIngreso from 'componente/Ingresos/PrincipalIngreso.js'
-import AltaIngreso from 'componente/Ingresos/AltaIngreso'
-import PrincipalEgreso from 'componente/Egresos/PrincipalEgreso.js'
-import AltaEgreso from 'componente/Egresos/AltaEgreso'
+import PrincipalIngreso from 'componente/Ingresos/PrincipalIngreso.js';
+import AltaIngreso from 'componente/Ingresos/AltaIngreso';
+import PrincipalEgreso from 'componente/Egresos/PrincipalEgreso.js';
+import AltaEgreso from 'componente/Egresos/AltaEgreso';
 
-import AltaInvitado from 'componente/Invitado/AltaInvitado.js'
+import AltaInvitado from 'componente/Invitado/AltaInvitado.js';
 
 //Propietario
-import PrincipalInvitado from 'componente/Invitado/PrincipalInvitados.js'
-import EditarInvitado from 'componente/Invitado/EditarInvitado.js'
+import PrincipalInvitado from 'componente/Invitado/PrincipalInvitados.js';
+import EditarInvitado from 'componente/Invitado/EditarInvitado.js';
 
-import PrincipalReserva from './componente/Reserva/PrincipalReserva.js'
-import AltaReserva from './componente/Reserva/AltaReserva.js'
-import VisualizarReserva from './componente/Reserva/VisualizarReserva.js'
+import PrincipalReserva from './componente/Reserva/PrincipalReserva.js';
+import AltaReserva from './componente/Reserva/AltaReserva.js';
+import VisualizarReserva from './componente/Reserva/VisualizarReserva.js';
 
 //Todos
-import MiPerfil from 'componente/Perfil/MiPerfil'
-import MiCountry from 'componente/Perfil/MiCountry'
-import Config from 'componente/Perfil/Configuraciones'
+import MiPerfil from 'componente/Perfil/MiPerfil';
+import MiCountry from 'componente/Perfil/MiCountry';
+import Config from 'componente/Perfil/Configuraciones';
 
 var routes = [
     {
@@ -72,7 +70,7 @@ var routes = [
         layout: '/example',
         name: 'Dashboard',
         icon: 'pe-7s-graph',
-        component: Dashboard
+        component: Dashboard,
     },
     {
         collapse: true,
@@ -87,51 +85,51 @@ var routes = [
                 layout: '/root',
                 name: 'Buttons',
                 mini: 'B',
-                component: Buttons
+                component: Buttons,
             },
             {
                 path: '/grid-system',
                 layout: '/admin',
                 name: 'Grid System',
                 mini: 'GS',
-                component: GridSystem
+                component: GridSystem,
             },
             {
                 path: '/panels',
                 layout: '/admin',
                 name: 'Panels',
                 mini: 'P',
-                component: Panels
+                component: Panels,
             },
             {
                 path: '/sweet-alert',
                 layout: '/propietario',
                 name: 'Sweet Alert',
                 mini: 'SA',
-                component: SweetAlert
+                component: SweetAlert,
             },
             {
                 path: '/notifications',
                 layout: '/propietario',
                 name: 'Notifications',
                 mini: 'N',
-                component: Notifications
+                component: Notifications,
             },
             {
                 path: '/encargado',
                 layout: '/encargado',
                 name: 'Icons',
                 mini: 'I',
-                component: Icons
+                component: Icons,
             },
             {
                 path: '/typography',
                 layout: '/admin',
                 name: 'Typography',
                 mini: 'T',
-                component: Typography
-            }
-        ]
+                component: Typography,
+            },
+        ],
     },
     {
         collapse: true,
@@ -146,30 +144,30 @@ var routes = [
                 layout: '/example',
                 name: 'Regular Forms',
                 mini: 'RF',
-                component: RegularForms
+                component: RegularForms,
             },
             {
                 path: '/extended-forms',
                 layout: '/example',
                 name: 'Extended Forms',
                 mini: 'EF',
-                component: ExtendedForms
+                component: ExtendedForms,
             },
             {
                 path: '/validation-forms',
                 layout: '/example',
                 name: 'Validation Forms',
                 mini: 'VF',
-                component: ValidationForms
+                component: ValidationForms,
             },
             {
                 path: '/wizard',
                 layout: '/example',
                 name: 'Wizard',
                 mini: 'W',
-                component: Wizard
-            }
-        ]
+                component: Wizard,
+            },
+        ],
     },
     {
         collapse: true,
@@ -184,23 +182,23 @@ var routes = [
                 layout: '/admin',
                 name: 'Regular Tables',
                 mini: 'RT',
-                component: RegularTables
+                component: RegularTables,
             },
             {
                 path: '/extended-tables',
                 layout: '/admin',
                 name: 'Extended Tables',
                 mini: 'ET',
-                component: ExtendedTables
+                component: ExtendedTables,
             },
             {
                 path: '/react-table',
                 layout: '/admin',
                 name: 'React Table',
                 mini: 'RT',
-                component: ReactTables
-            }
-        ]
+                component: ReactTables,
+            },
+        ],
     },
     {
         collapse: true,
@@ -215,30 +213,30 @@ var routes = [
                 layout: '/admin',
                 name: 'Google Maps',
                 mini: 'GM',
-                component: GoogleMaps
+                component: GoogleMaps,
             },
             {
                 path: '/full-screen-maps',
                 layout: '/admin',
                 name: 'Full Screen Map',
                 mini: 'FSM',
-                component: FullScreenMap
+                component: FullScreenMap,
             },
             {
                 path: '/vector-maps',
                 layout: '/admin',
                 name: 'Vector Map',
                 mini: 'VM',
-                component: VectorMap
-            }
-        ]
+                component: VectorMap,
+            },
+        ],
     },
     {
         path: '/charts',
         layout: '/asd',
         name: 'Charts',
         icon: 'pe-7s-graph1',
-        component: Charts
+        component: Charts,
     },
 
     {
@@ -246,7 +244,7 @@ var routes = [
         layout: '/example',
         name: 'Calendar',
         icon: 'pe-7s-date',
-        component: Calendar
+        component: Calendar,
     },
     {
         collapse: true,
@@ -261,30 +259,30 @@ var routes = [
                 layout: '/example',
                 name: 'User Page',
                 mini: 'UP',
-                component: UserPage
+                component: UserPage,
             },
             {
                 path: '/login-page',
                 layout: '/root',
                 name: 'Login Page',
                 mini: 'LP',
-                component: LoginPage
+                component: LoginPage,
             },
             {
                 path: '/register-page',
                 layout: '/root',
                 name: 'Register',
                 mini: 'RP',
-                component: RegisterPage
+                component: RegisterPage,
             },
             {
                 path: '/lock-screen-page',
                 layout: '/root',
                 name: 'Lock Screen Page',
                 mini: 'LSP',
-                component: LockScreenPage
-            }
-        ]
+                component: LockScreenPage,
+            },
+        ],
     },
     {
         collapse: true,
@@ -299,14 +297,14 @@ var routes = [
                 layout: '/root',
                 name: 'Country',
                 mini: 'B',
-                component: PrincipalCountry
+                component: PrincipalCountry,
             },
             {
                 path: '/altaCountry',
                 layout: '/root',
                 name: 'Nuevo Country',
                 mini: 'NB',
-                component: AltaCountry
+                component: AltaCountry,
             },
             {
                 path: '/editarCountry',
@@ -314,9 +312,9 @@ var routes = [
                 name: 'Editar Country',
                 mini: 'EC',
                 noVisualizar: true,
-                component: EditarCountry
-            }
-        ]
+                component: EditarCountry,
+            },
+        ],
     },
     {
         collapse: true,
@@ -331,14 +329,14 @@ var routes = [
                 layout: '/root',
                 name: 'Administradores',
                 mini: 'A',
-                component: PrincipalAdministrador
+                component: PrincipalAdministrador,
             },
             {
                 path: '/altaAdministrador',
                 layout: '/root',
                 name: 'Nuevo Administrador',
                 mini: 'NB',
-                component: AltaAdministrador
+                component: AltaAdministrador,
             },
             {
                 path: '/editarAdministrador',
@@ -346,9 +344,9 @@ var routes = [
                 name: 'Editar Administrador',
                 mini: 'EC',
                 noVisualizar: true,
-                component: EditarAdministrador
-            }
-        ]
+                component: EditarAdministrador,
+            },
+        ],
     },
     {
         collapse: true,
@@ -363,14 +361,14 @@ var routes = [
                 layout: '/admin',
                 name: 'Propietarios',
                 mini: 'P',
-                component: PrincipalPropietario
+                component: PrincipalPropietario,
             },
             {
                 path: '/altaPropietario',
                 layout: '/admin',
                 name: 'Nuevo Propietario',
                 mini: 'NP',
-                component: AltaPropietario
+                component: AltaPropietario,
             },
             {
                 path: '/editarPropietario',
@@ -378,9 +376,9 @@ var routes = [
                 name: 'Editar Propietario',
                 mini: 'EP',
                 noVisualizar: true,
-                component: EditarPropietario
-            }
-        ]
+                component: EditarPropietario,
+            },
+        ],
     },
     {
         collapse: true,
@@ -395,14 +393,14 @@ var routes = [
                 layout: '/admin',
                 name: 'Encargados',
                 mini: 'EN',
-                component: PrincipalEncargado
+                component: PrincipalEncargado,
             },
             {
                 path: '/altaEncargado',
                 layout: '/admin',
                 name: 'Nuevo Encargado',
                 mini: 'NE',
-                component: AltaEncargado
+                component: AltaEncargado,
             },
             {
                 path: '/editarEncargado',
@@ -410,9 +408,9 @@ var routes = [
                 name: 'Editar Encargado',
                 mini: 'EE',
                 noVisualizar: true,
-                component: EditarEncargado
-            }
-        ]
+                component: EditarEncargado,
+            },
+        ],
     },
     {
         collapse: true,
@@ -427,14 +425,14 @@ var routes = [
                 layout: '/admin',
                 name: 'Servicios',
                 mini: 'S',
-                component: PrincipalServicio
+                component: PrincipalServicio,
             },
             {
                 path: '/altaServicio',
                 layout: '/admin',
                 name: 'Nuevo Servicio',
                 mini: 'NS',
-                component: AltaServicio
+                component: AltaServicio,
             },
             {
                 path: '/editarServicio',
@@ -442,9 +440,9 @@ var routes = [
                 name: 'Editar Servicio',
                 mini: 'ES',
                 noVisualizar: true,
-                component: EditarServicio
-            }
-        ]
+                component: EditarServicio,
+            },
+        ],
     },
     {
         collapse: true,
@@ -459,9 +457,9 @@ var routes = [
                 layout: '/admin',
                 name: 'Reportes',
                 mini: 'R',
-                component: Graficos
+                component: Graficos,
             },
-        ]
+        ],
     },
     {
         collapse: true,
@@ -476,14 +474,14 @@ var routes = [
                 layout: '/propietario',
                 name: 'Mis Reservas',
                 mini: 'MR',
-                component: PrincipalReserva
+                component: PrincipalReserva,
             },
             {
                 path: '/altaReserva',
                 layout: '/propietario',
                 name: 'Nueva Reserva',
                 mini: 'NR',
-                component: AltaReserva
+                component: AltaReserva,
             },
             {
                 path: '/visualizarReserva',
@@ -491,9 +489,9 @@ var routes = [
                 name: 'Visualizar Reserva',
                 mini: 'VR',
                 noVisualizar: true,
-                component: VisualizarReserva
-            }
-        ]
+                component: VisualizarReserva,
+            },
+        ],
     },
     {
         collapse: true,
@@ -508,14 +506,14 @@ var routes = [
                 layout: '/propietario',
                 name: 'Mis Invitados',
                 mini: 'MI',
-                component: PrincipalInvitado
+                component: PrincipalInvitado,
             },
             {
                 path: '/altaInvitado',
                 layout: '/propietario',
                 name: 'Nuevo Invitado',
                 mini: 'NI',
-                component: AltaInvitado
+                component: AltaInvitado,
             },
             {
                 path: '/editarInvitado',
@@ -523,9 +521,9 @@ var routes = [
                 name: 'Editar Invitado',
                 mini: 'EI',
                 noVisualizar: true,
-                component: EditarInvitado
+                component: EditarInvitado,
             },
-        ]
+        ],
     },
     {
         collapse: true,
@@ -540,16 +538,16 @@ var routes = [
                 layout: '/encargado',
                 name: 'Ingresos',
                 mini: 'IN',
-                component: PrincipalIngreso
+                component: PrincipalIngreso,
             },
             {
                 path: '/altaIngreso',
                 layout: '/encargado',
-                name: 'Nueva Ingreso',
+                name: 'Nuevo Ingreso',
                 mini: 'NI',
-                component: AltaIngreso
-            }
-        ]
+                component: AltaIngreso,
+            },
+        ],
     },
     {
         collapse: true,
@@ -564,16 +562,16 @@ var routes = [
                 layout: '/encargado',
                 name: 'Egresos',
                 mini: 'EG',
-                component: PrincipalEgreso
+                component: PrincipalEgreso,
             },
             {
                 path: '/altaEgreso',
                 layout: '/encargado',
                 name: 'Nuevo Egreso',
                 mini: 'NE',
-                component: AltaEgreso
-            }
-        ]
+                component: AltaEgreso,
+            },
+        ],
     },
     {
         path: '/editarInvitado',
@@ -581,7 +579,7 @@ var routes = [
         name: 'Editar Invitado',
         icon: 'pe-7s-graph',
         noVisualizar: true,
-        component: EditarInvitado
+        component: EditarInvitado,
     },
     {
         path: '/altaInvitado',
@@ -589,7 +587,7 @@ var routes = [
         name: 'Nuevo Invitado',
         icon: 'pe-7s-graph',
         noVisualizar: true,
-        component: AltaInvitado
+        component: AltaInvitado,
     },
     //Se repiten en los distintos perfiles
     {
@@ -598,7 +596,7 @@ var routes = [
         name: 'Mi Perfil',
         icon: 'pe-7s-graph',
         noVisualizar: true,
-        component: MiPerfil
+        component: MiPerfil,
     },
     {
         path: '/miCountry',
@@ -606,7 +604,7 @@ var routes = [
         name: 'Mi Country',
         icon: 'pe-7s-graph',
         noVisualizar: true,
-        component: MiCountry
+        component: MiCountry,
     },
     {
         path: '/configuraciones',
@@ -614,7 +612,7 @@ var routes = [
         name: 'Configuraciones',
         icon: 'pe-7s-graph',
         noVisualizar: true,
-        component: Config
+        component: Config,
     },
     {
         path: '/miPerfil',
@@ -622,7 +620,7 @@ var routes = [
         name: 'Mi Perfil',
         icon: 'pe-7s-graph',
         noVisualizar: true,
-        component: MiPerfil
+        component: MiPerfil,
     },
     {
         path: '/miCountry',
@@ -630,7 +628,7 @@ var routes = [
         name: 'Mi Country',
         icon: 'pe-7s-graph',
         noVisualizar: true,
-        component: MiCountry
+        component: MiCountry,
     },
     {
         path: '/configuraciones',
@@ -638,7 +636,7 @@ var routes = [
         name: 'Configuraciones',
         icon: 'pe-7s-graph',
         noVisualizar: true,
-        component: Config
+        component: Config,
     },
     {
         path: '/miPerfil',
@@ -646,7 +644,7 @@ var routes = [
         name: 'Mi Perfil',
         icon: 'pe-7s-graph',
         noVisualizar: true,
-        component: MiPerfil
+        component: MiPerfil,
     },
     {
         path: '/miCountry',
@@ -654,7 +652,7 @@ var routes = [
         name: 'Mi Country',
         icon: 'pe-7s-graph',
         noVisualizar: true,
-        component: MiCountry
+        component: MiCountry,
     },
     {
         path: '/configuraciones',
@@ -662,9 +660,8 @@ var routes = [
         name: 'Configuraciones',
         icon: 'pe-7s-graph',
         noVisualizar: true,
-        component: Config
+        component: Config,
     },
-
 ];
 
 export default routes;

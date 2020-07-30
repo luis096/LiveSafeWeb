@@ -10,13 +10,11 @@ import { Pagination } from 'react-bootstrap';
 import { paginador } from '../Paginador';
 import { validator } from '../validator';
 import { errorHTML } from '../Error';
-import { style } from "../../variables/Variables"
-import NotificationSystem from "react-notification-system";
-import {operacion} from "../Operaciones";
-
+import { style } from '../../variables/Variables';
+import NotificationSystem from 'react-notification-system';
+import { operacion } from '../Operaciones';
 
 class PrincipalCountry extends Component {
-
     constructor() {
         super();
         this.state = {
@@ -29,8 +27,8 @@ class PrincipalCountry extends Component {
             ultimo: [],
             primero: [],
             numPagina: -1,
-            errorDesde: {error: false, mensaje: ''},
-            errorHasta: {error: false, mensaje: ''}
+            errorDesde: { error: false, mensaje: '' },
+            errorHasta: { error: false, mensaje: '' },
         };
         this.notificationSystem = React.createRef();
 
@@ -41,52 +39,51 @@ class PrincipalCountry extends Component {
         this.ChangeHasta = this.ChangeHasta.bind(this);
         this.cantidad = [];
         this.total = 0;
-        this.errorNombre = {error: false, mensaje: ''};
-        this.errorTitular = {error: false, mensaje: ''};
+        this.errorNombre = { error: false, mensaje: '' };
+        this.errorTitular = { error: false, mensaje: '' };
     }
 
     ChangeNombre(event) {
-        this.setState({nombre: event.target.value});
+        this.setState({ nombre: event.target.value });
         this.errorNombre = validator.soloLetras(event.target.value);
     }
 
     ChangeTitular(event) {
-        this.setState({titular: event.target.value});
+        this.setState({ titular: event.target.value });
         this.errorTitular = validator.soloLetras(event.target.value);
     }
 
     ChangeDesde(event) {
-        this.setState({desde: new Date(event)});
+        this.setState({ desde: new Date(event) });
         this.setState({
             errorHasta: validator.fechaRango(new Date(event), this.state.hasta, true),
-            errorDesde: validator.fechaRango(new Date(event), this.state.hasta, false)
+            errorDesde: validator.fechaRango(new Date(event), this.state.hasta, false),
         });
     }
 
     ChangeHasta(event) {
-        this.setState({hasta: new Date(event)});
+        this.setState({ hasta: new Date(event) });
         this.setState({
             errorHasta: validator.fechaRango(this.state.desde, new Date(event), false),
-            errorDesde: validator.fechaRango(this.state.desde, new Date(event), true)
+            errorDesde: validator.fechaRango(this.state.desde, new Date(event), true),
         });
     }
 
     async consultar(pagina, nueva) {
-        let {barrios} = this.state;
+        let { barrios } = this.state;
 
         if (!validator.isValid([this.errorNombre, this.errorTitular, this.state.errorDesde, this.state.errorHasta])) {
             this.setState({
                 alert: (
                     <SweetAlert
-                        style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                        style={{ display: 'block', marginTop: '-100px', position: 'center' }}
                         title="Error"
-                        onConfirm={()=>this.hideAlert()}
-                        onCancel={()=>this.hideAlert()}
-                        confirmBtnBsStyle="danger"
-                    >
+                        onConfirm={() => this.hideAlert()}
+                        onCancel={() => this.hideAlert()}
+                        confirmBtnBsStyle="danger">
                         Hay errores en los filtros.
                     </SweetAlert>
-                )
+                ),
             });
             return;
         }
@@ -95,7 +92,7 @@ class PrincipalCountry extends Component {
             this.setState({
                 ultimo: [],
                 primero: [],
-                numPagina: -1
+                numPagina: -1,
             });
         }
         if (this.cantidad.length && (this.cantidad.length <= pagina || pagina < 0)) {
@@ -136,29 +133,33 @@ class PrincipalCountry extends Component {
         }
 
         if (nueva) {
-            await total.get().then((doc)=> {
-                this.total = doc.docs.length;
-            }).catch((error) => {
-                this.notificationSystem.current.addNotification(operacion.error(error.message));
-            });
+            await total
+                .get()
+                .then((doc) => {
+                    this.total = doc.docs.length;
+                })
+                .catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
+                });
         }
 
         barrios = [];
         let ultimo = null;
         let primero = null;
-        await con.get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
-                if (!primero) {
-                    primero = doc;
-                }
-                ultimo = doc;
-                barrios.push(
-                    [doc.data(), doc.id]
-                );
+        await con
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (!primero) {
+                        primero = doc;
+                    }
+                    ultimo = doc;
+                    barrios.push([doc.data(), doc.id]);
+                });
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        }).catch((error) => {
-            this.notificationSystem.current.addNotification(operacion.error(error.message));
-        });
 
         if ((pagina > this.state.numPagina || this.state.numPagina < 0) && !this.state.ultimo[pagina]) {
             this.state.ultimo.push(ultimo);
@@ -168,12 +169,12 @@ class PrincipalCountry extends Component {
             this.cantidad = paginador.cantidad(this.total);
         }
 
-        this.setState({barrios, numPagina: (pagina)});
+        this.setState({ barrios, numPagina: pagina });
     }
 
     hideAlert() {
         this.setState({
-            alert: null
+            alert: null,
         });
     }
 
@@ -186,37 +187,43 @@ class PrincipalCountry extends Component {
             hasta: null,
             ultimo: [],
             primero: [],
-            errorDesde: {error: false, mensaje: ''},
-            errorHasta: {error: false, mensaje: ''}
+            errorDesde: { error: false, mensaje: '' },
+            errorHasta: { error: false, mensaje: '' },
         });
         this.cantidad = [];
         this.total = 0;
-        this.errorNombre = {error: false, mensaje: ''};
-        this.errorTitular = {error: false, mensaje: ''};
+        this.errorNombre = { error: false, mensaje: '' };
+        this.errorTitular = { error: false, mensaje: '' };
     }
-
 
     render() {
         return (
             <div className="col-12">
-                <legend><h3 className="row">Country</h3></legend>
+                <legend>
+                    <h3 className="row">Country</h3>
+                </legend>
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
                         <h5 className="row">Filtros de búsqueda </h5>
-                        <div className='row'>
+                        <div className="row">
                             <div className="col-md-3 row-secction">
-                                <label>Nombre</label>
-                                <input className={errorHTML.classNameError(this.errorNombre, 'form-control')}
-                                       value={this.state.nombre}
-                                       onChange={this.ChangeNombre} placeholder="Nombre"/>
+                                <label>Nombre del barrio</label>
+                                <input
+                                    className={errorHTML.classNameError(this.errorNombre, 'form-control')}
+                                    value={this.state.nombre}
+                                    onChange={this.ChangeNombre}
+                                    placeholder="Nombre"
+                                />
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label>Titular</label>
-                                <input className={errorHTML.classNameError(this.errorTitular, 'form-control')}
-                                       value={this.state.titular}
-                                       onChange={this.ChangeTitular} placeholder="Apellido"
+                                <input
+                                    className={errorHTML.classNameError(this.errorTitular, 'form-control')}
+                                    value={this.state.titular}
+                                    onChange={this.ChangeTitular}
+                                    placeholder="Apellido"
                                 />
                                 {errorHTML.errorLabel(this.errorTitular)}
                             </div>
@@ -226,10 +233,11 @@ class PrincipalCountry extends Component {
                                     className={this.state.errorDesde.error ? 'has-error' : ''}
                                     value={this.state.desde}
                                     onChange={this.ChangeDesde}
-                                    inputProps={{placeholder: 'Fecha Desde'}}
+                                    inputProps={{ placeholder: 'Fecha Desde' }}
                                 />
-                                <label className='small text-danger'
-                                       hidden={!this.state.errorDesde.error}>{this.state.errorDesde.mensaje}</label>
+                                <label className="small text-danger" hidden={!this.state.errorDesde.error}>
+                                    {this.state.errorDesde.mensaje}
+                                </label>
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label>Fecha Hasta</label>
@@ -237,24 +245,34 @@ class PrincipalCountry extends Component {
                                     className={this.state.errorHasta.error ? 'has-error' : ''}
                                     value={this.state.hasta}
                                     onChange={this.ChangeHasta}
-                                    inputProps={{placeholder: 'Fecha Hasta'}}
+                                    inputProps={{ placeholder: 'Fecha Hasta' }}
                                 />
-                                <label className='small text-danger'
-                                       hidden={!this.state.errorHasta.error}>{this.state.errorHasta.mensaje}</label>
+                                <label className="small text-danger" hidden={!this.state.errorHasta.error}>
+                                    {this.state.errorHasta.mensaje}
+                                </label>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="izquierda">
-                    <Button bsStyle="default"  style={{marginRight: "10px"}}  fill wd onClick={()=> {
-                        this.reestablecer();
-                    }}>
+                    <Button
+                        bsStyle="default"
+                        style={{ marginRight: '10px' }}
+                        fill
+                        wd
+                        onClick={() => {
+                            this.reestablecer();
+                        }}>
                         Restablecer
                     </Button>
-                    <Button bsStyle="primary" fill wd onClick={()=> {
-                        this.consultar(0, true);
-                    }}>
+                    <Button
+                        bsStyle="primary"
+                        fill
+                        wd
+                        onClick={() => {
+                            this.consultar(0, true);
+                        }}>
                         Consultar
                     </Button>
                 </div>
@@ -263,53 +281,69 @@ class PrincipalCountry extends Component {
                     <div className="card-body">
                         <table className="table table-hover">
                             <thead>
-                            <tr>
-                                <th  style={{textAlign:'center'}} scope="col">Indice</th>
-                                <th style={{textAlign:'center'}}  scope="col">Nombre</th>
-                                <th style={{textAlign:'center'}}  scope="col">Titular</th>
-                                <th  style={{textAlign:'center'}} scope="col">Calle y Número</th>
-                                <th  style={{textAlign:'center'}} scope="col">Celular</th>
-                                <th  style={{textAlign:'center'}} scope="col">Fecha Alta</th>
-                                <th style={{textAlign:'center'}}  scope="col">Editar</th>
-                            </tr>
+                                <tr>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Índice
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Nombre
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Titular
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Calle y Número
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Celular
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Fecha de Alta
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Editar
+                                    </th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {
-                                this.state.barrios.map((bar, ind)=> {
-                                        let hora = validator.obtenerFecha(bar[0].FechaAlta);
-                                        let editar = '/root/editarCountry/' + bar[1];
-                                        return (
-                                            <tr className="table-light">
-                                                <th  style={{textAlign:'center'}} scope="row">{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                                <td style={{textAlign:'center'}} >{bar[0].Nombre}</td>
-                                                <td style={{textAlign:'center'}} >{bar[0].Titular}</td>
-                                                <td style={{textAlign:'center'}} >{bar[0].Calle + ' ' + bar[0].Numero}</td>
-                                                <td style={{textAlign:'center'}} >{bar[0].Celular}</td>
-                                                <td style={{textAlign:'center'}} >{hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}</td>
-                                                <td style={{textAlign:'center'}} ><Link to={editar}><Button bsStyle="warning" fill wd>
-                                                    Editar
-                                                </Button></Link></td>
-                                            </tr>
-                                        );
-                                    }
-                                )
-                            }
+                                {this.state.barrios.map((bar, ind) => {
+                                    let hora = validator.obtenerFecha(bar[0].FechaAlta);
+                                    let editar = '/root/editarCountry/' + bar[1];
+                                    return (
+                                        <tr className="table-light">
+                                            <th style={{ textAlign: 'center' }} scope="row">
+                                                {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
+                                            </th>
+                                            <td style={{ textAlign: 'center' }}>{bar[0].Nombre}</td>
+                                            <td style={{ textAlign: 'center' }}>{bar[0].Titular}</td>
+                                            <td style={{ textAlign: 'center' }}>{bar[0].Calle + ' ' + bar[0].Numero}</td>
+                                            <td style={{ textAlign: 'center' }}>{bar[0].Celular}</td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                {hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}
+                                            </td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                <Link to={editar}>
+                                                    <Button bsStyle="warning" fill wd>
+                                                        Editar
+                                                    </Button>
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div className="text-center" hidden={!this.state.barrios.length}>
                     <Pagination className="pagination-no-border">
-                        <Pagination.First onClick={()=>this.consultar((this.state.numPagina - 1), false)}/>
+                        <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
 
-                        {
-                            this.cantidad.map(num=> {
-                                return (<Pagination.Item
-                                    active={(num == this.state.numPagina)}>{num + 1}</Pagination.Item>);
-                            })
-                        }
+                        {this.cantidad.map((num) => {
+                            return <Pagination.Item active={num == this.state.numPagina}>{num + 1}</Pagination.Item>;
+                        })}
 
-                        <Pagination.Last onClick={()=>this.consultar((this.state.numPagina + 1), false)}/>
+                        <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
                     </Pagination>
                 </div>
                 <div className="row card" hidden={this.state.barrios.length}>
@@ -318,7 +352,7 @@ class PrincipalCountry extends Component {
                     </div>
                 </div>
                 <div>
-                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                    <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
             </div>
         );

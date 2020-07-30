@@ -9,12 +9,11 @@ import { paginador } from '../Paginador';
 import { validator } from '../validator';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { errorHTML } from '../Error';
-import { style } from "../../variables/Variables";
-import NotificationSystem from "react-notification-system";
-import {operacion} from "../Operaciones";
+import { style } from '../../variables/Variables';
+import NotificationSystem from 'react-notification-system';
+import { operacion } from '../Operaciones';
 
 class PrincipalInvitados extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -35,7 +34,10 @@ class PrincipalInvitados extends Component {
             estado: null,
             documento: '',
             invitadoCancelar: {},
-            estadoLista: [{value: true, label: 'Activo'}, {value: false, label: 'Inactivo'}]
+            estadoLista: [
+                { value: true, label: 'Activo' },
+                { value: false, label: 'Inactivo' },
+            ],
         };
         this.notificationSystem = React.createRef();
         this.modalAgregarInvitado = this.modalAgregarInvitado.bind(this);
@@ -51,59 +53,59 @@ class PrincipalInvitados extends Component {
         this.cancelar = this.cancelar.bind(this);
         this.cantidad = [];
         this.total = 0;
-        this.errorNombre = {error: false, mensaje: ''};
-        this.errorApellido = {error: false, mensaje: ''};
-        this.errorDocumento = {error: false, mensaje: ''};
+        this.errorNombre = { error: false, mensaje: '' };
+        this.errorApellido = { error: false, mensaje: '' };
+        this.errorDocumento = { error: false, mensaje: '' };
     }
 
     async componentDidMount() {
-        const {tipoD} = this.state;
-        await Database.collection('TipoDocumento').get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
-                tipoD.push(
-                    {value: doc.id, label: doc.data().Nombre}
-                );
+        const { tipoD } = this.state;
+        await Database.collection('TipoDocumento')
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    tipoD.push({ value: doc.id, label: doc.data().Nombre });
+                });
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        }).catch((error) => {
-            this.notificationSystem.current.addNotification(operacion.error(error.message));
-        });
-        this.setState({tipoD});
+        this.setState({ tipoD });
     }
 
     ChangeNombre(event) {
-        this.setState({nombre: event.target.value});
+        this.setState({ nombre: event.target.value });
         this.errorNombre = validator.soloLetras(event.target.value);
     }
 
     ChangeApellido(event) {
-        this.setState({apellido: event.target.value});
+        this.setState({ apellido: event.target.value });
         this.errorApellido = validator.soloLetras(event.target.value);
     }
 
     ChangeSelectEstado(value) {
-        this.setState({estado: value});
+        this.setState({ estado: value });
     }
 
     ChangeDocumento(event) {
-        this.setState({documento: event.target.value});
+        this.setState({ documento: event.target.value });
         this.errorDocumento = validator.numero(event.target.value);
     }
 
     async consultar(pagina, nueva) {
-        let {invitados} = this.state;
+        let { invitados } = this.state;
         if (!validator.isValid([this.errorNombre, this.errorDocumento, this.errorApellido])) {
             this.setState({
                 alert: (
                     <SweetAlert
-                        style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                        style={{ display: 'block', marginTop: '-100px', position: 'center' }}
                         title="Error"
-                        onConfirm={()=>this.hideAlert()}
-                        onCancel={()=>this.hideAlert()}
-                        confirmBtnBsStyle="danger"
-                    >
+                        onConfirm={() => this.hideAlert()}
+                        onCancel={() => this.hideAlert()}
+                        confirmBtnBsStyle="danger">
                         Hay errores en los filtros.
                     </SweetAlert>
-                )
+                ),
             });
             return;
         }
@@ -112,15 +114,14 @@ class PrincipalInvitados extends Component {
             this.setState({
                 ultimo: [],
                 primero: [],
-                numPagina: -1
+                numPagina: -1,
             });
         }
         if (this.cantidad.length && (this.cantidad.length <= pagina || pagina < 0)) {
             return;
         }
 
-        let con = await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Invitados');
+        let con = await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Invitados');
 
         let total = con;
 
@@ -157,29 +158,33 @@ class PrincipalInvitados extends Component {
         }
 
         if (nueva) {
-            await total.get().then((doc)=> {
-                this.total = doc.docs.length;
-            }).catch((error) => {
-                this.notificationSystem.current.addNotification(operacion.error(error.message));
-            });
+            await total
+                .get()
+                .then((doc) => {
+                    this.total = doc.docs.length;
+                })
+                .catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
+                });
         }
 
         invitados = [];
         let ultimo = null;
         let primero = null;
-        await con.get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
-                if (!primero) {
-                    primero = doc;
-                }
-                ultimo = doc;
-                invitados.push(
-                    [doc.data(), doc.id]
-                );
+        await con
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (!primero) {
+                        primero = doc;
+                    }
+                    ultimo = doc;
+                    invitados.push([doc.data(), doc.id]);
+                });
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        }).catch((error) => {
-            this.notificationSystem.current.addNotification(operacion.error(error.message));
-        });
         if ((pagina > this.state.numPagina || this.state.numPagina < 0) && !this.state.ultimo[pagina]) {
             this.state.ultimo.push(ultimo);
             this.state.primero.push(primero);
@@ -187,7 +192,7 @@ class PrincipalInvitados extends Component {
         if (nueva) {
             this.cantidad = paginador.cantidad(this.total);
         }
-        this.setState({invitados, numPagina: (pagina)});
+        this.setState({ invitados, numPagina: pagina });
     }
 
     reestablecer() {
@@ -199,41 +204,45 @@ class PrincipalInvitados extends Component {
             nombre: '',
             apellido: '',
             estado: null,
-            documento: ''
+            documento: '',
         });
-        this.errorNombre = {error: false, mensaje: ''};
-        this.errorApellido = {error: false, mensaje: ''};
-        this.errorDocumento = {error: false, mensaje: ''};
+        this.errorNombre = { error: false, mensaje: '' };
+        this.errorApellido = { error: false, mensaje: '' };
+        this.errorDocumento = { error: false, mensaje: '' };
     }
 
     async modalAgregarInvitado() {
-        const {reservas} = this.state;
+        const { reservas } = this.state;
         if (reservas.length) {
-            this.setState({showModal: true});
+            this.setState({ showModal: true });
             return;
         }
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').doc(localStorage.getItem('idPersona'))
-            .collection('Reservas').orderBy('FechaDesde', 'desc').get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
-                if (!doc.data().Cancelado && validator.obtenerFecha(doc.data().FechaDesde) > new Date()) {
-                    reservas.push(
-                        {
-                            value: doc.id, label: doc.data().Nombre,
-                            fechaDesde: doc.data().FechaDesde, fechaHasta: doc.data().FechaHasta
-                        }
-                    );
-                }
-
-            });
-        }).catch((error) => {
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Propietarios')
+            .doc(localStorage.getItem('idPersona'))
+            .collection('Reservas')
+            .orderBy('FechaDesde', 'desc')
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (!doc.data().Cancelado && validator.obtenerFecha(doc.data().FechaDesde) > new Date()) {
+                        reservas.push({
+                            value: doc.id,
+                            label: doc.data().Nombre,
+                            fechaDesde: doc.data().FechaDesde,
+                            fechaHasta: doc.data().FechaHasta,
+                        });
+                    }
+                });
+            })
+            .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        this.setState({reservas, showModal: true});
+        this.setState({ reservas, showModal: true });
     }
 
     async agregarNuevoInvitado() {
-
         let invitado = {
             Nombre: this.state.invitadoReserva[0].Nombre,
             Apellido: this.state.invitadoReserva[0].Apellido,
@@ -241,35 +250,48 @@ class PrincipalInvitados extends Component {
             TipoDocumento: this.state.invitadoReserva[0].TipoDocumento,
             TipoDocumentoLabel: this.obtenerDocumentoLabel(this.state.invitadoReserva[0].TipoDocumento.id),
             Estado: true,
-            IdInvitado: this.state.invitadoReserva[1]
+            IdInvitado: this.state.invitadoReserva[1],
         };
 
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Propietarios').doc(localStorage.getItem('idPersona'))
-            .collection('Reservas').doc(this.state.reservaSelceccionada.value).collection('Invitados')
-            .add(invitado).catch((error) => {
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Propietarios')
+            .doc(localStorage.getItem('idPersona'))
+            .collection('Reservas')
+            .doc(this.state.reservaSelceccionada.value)
+            .collection('Invitados')
+            .add(invitado)
+            .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-             .collection('InvitacionesEventos').add({
-                IdReserva: Database.doc('Country/' + localStorage.getItem('idCountry') +
-                    '/Propietarios/' + localStorage.getItem('idPersona') +
-                    '/Reservas/' + this.state.reservaSelceccionada.value),
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('InvitacionesEventos')
+            .add({
+                IdReserva: Database.doc(
+                    'Country/' +
+                        localStorage.getItem('idCountry') +
+                        '/Propietarios/' +
+                        localStorage.getItem('idPersona') +
+                        '/Reservas/' +
+                        this.state.reservaSelceccionada.value
+                ),
                 FechaDesde: this.state.reservaSelceccionada.fechaDesde,
                 FechaHasta: this.state.reservaSelceccionada.fechaHasta,
                 Documento: invitado.Documento,
-                TipoDocumento: invitado.TipoDocumento
-            }).catch((error) => {
+                TipoDocumento: invitado.TipoDocumento,
+            })
+            .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
-        this.setState({showModal: false});
+        this.setState({ showModal: false });
     }
 
     obtenerDocumentoLabel(id) {
         let label = null;
-        this.state.tipoD.map(doc=> {
+        this.state.tipoD.map((doc) => {
             if (doc.value == id) {
                 label = doc.label;
             }
@@ -278,7 +300,7 @@ class PrincipalInvitados extends Component {
     }
 
     ChangeSelect(event) {
-        this.setState({reservaSelceccionada: event});
+        this.setState({ reservaSelceccionada: event });
     }
 
     cancelar(inv) {
@@ -288,47 +310,48 @@ class PrincipalInvitados extends Component {
             alert: (
                 <SweetAlert
                     warning
-                    style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                    style={{ display: 'block', marginTop: '-100px', position: 'center' }}
                     title="¿Estas seguro?"
-                    onConfirm={()=>this.successDelete()}
-                    onCancel={()=>this.cancelDetele()}
+                    onConfirm={() => this.successDelete()}
+                    onCancel={() => this.cancelDetele()}
                     confirmBtnBsStyle="info"
                     cancelBtnBsStyle="danger"
                     confirmBtnText="Si, estoy seguro"
                     cancelBtnText="Cancelar"
-                    showCancel
-                >
+                    showCancel>
                     ¿Esta seguro de que desea eliminar invitado?
                 </SweetAlert>
-            )
+            ),
         });
     }
 
     async successDelete() {
-        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Invitados').doc(this.state.invitadoCancelar[1])
-            .set(this.state.invitadoCancelar[0]).catch((error) => {
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Invitados')
+            .doc(this.state.invitadoCancelar[1])
+            .set(this.state.invitadoCancelar[0])
+            .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
         this.setState({
             alert: (
                 <SweetAlert
                     success
-                    style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                    style={{ display: 'block', marginTop: '-100px', position: 'center' }}
                     title="Invitado Eliminado"
-                    onConfirm={()=>this.hideAlert()}
-                    onCancel={()=>this.hideAlert()}
-                    confirmBtnBsStyle="info"
-                >
+                    onConfirm={() => this.hideAlert()}
+                    onCancel={() => this.hideAlert()}
+                    confirmBtnBsStyle="info">
                     El invitado se elimino correctamente
                 </SweetAlert>
-            )
+            ),
         });
     }
 
     hideAlert() {
         this.setState({
-            alert: null
+            alert: null,
         });
     }
 
@@ -337,46 +360,54 @@ class PrincipalInvitados extends Component {
             alert: (
                 <SweetAlert
                     danger
-                    style={{display: 'block', marginTop: '-100px', position: 'center'}}
+                    style={{ display: 'block', marginTop: '-100px', position: 'center' }}
                     title="Se cancelo la operacion"
-                    onConfirm={()=>this.hideAlert()}
-                    onCancel={()=>this.hideAlert()}
-                    confirmBtnBsStyle="info"
-                >
+                    onConfirm={() => this.hideAlert()}
+                    onCancel={() => this.hideAlert()}
+                    confirmBtnBsStyle="info">
                     El invitado no fue eliminado.
                 </SweetAlert>
-            )
+            ),
         });
     }
 
     render() {
         return (
             <div className="col-12">
-                <legend><h3 className="row">Mis invitados</h3></legend>
+                <legend>
+                    <h3 className="row">Mis invitados</h3>
+                </legend>
                 <div className="row card">
                     <div className="card-body">
                         <h5 className="row">Filtros de búsqueda </h5>
-                        <div className='row'>
+                        <div className="row">
                             <div className="col-md-3 row-secction">
                                 <label>Nombre</label>
-                                <input className={errorHTML.classNameError(this.errorNombre, 'form-control')}
-                                       value={this.state.nombre}
-                                       onChange={this.ChangeNombre} placeholder="Nombre"/>
+                                <input
+                                    className={errorHTML.classNameError(this.errorNombre, 'form-control')}
+                                    value={this.state.nombre}
+                                    onChange={this.ChangeNombre}
+                                    placeholder="Nombre"
+                                />
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label>Apellido</label>
-                                <input className={errorHTML.classNameError(this.errorApellido, 'form-control')}
-                                       value={this.state.apellido}
-                                       onChange={this.ChangeApellido} placeholder="Apellido"
+                                <input
+                                    className={errorHTML.classNameError(this.errorApellido, 'form-control')}
+                                    value={this.state.apellido}
+                                    onChange={this.ChangeApellido}
+                                    placeholder="Apellido"
                                 />
                                 {errorHTML.errorLabel(this.errorApellido)}
                             </div>
                             <div className="col-md-3 row-secction">
-                                <label>Nro Documento</label>
-                                <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
-                                       value={this.state.documento}
-                                       onChange={this.ChangeDocumento} placeholder="Nro Documento"
+                                <label>Número de Documento</label>
+                                <input
+                                    className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
+                                    value={this.state.documento}
+                                    onChange={this.ChangeDocumento}
+                                    placeholder="Nro. de Documento"
                                 />
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
@@ -387,7 +418,7 @@ class PrincipalInvitados extends Component {
                                     isLoading={false}
                                     isClearable={true}
                                     isSearchable={true}
-                                    value = {this.state.estado}
+                                    value={this.state.estado}
                                     options={this.state.estadoLista}
                                     onChange={this.ChangeSelectEstado.bind(this)}
                                 />
@@ -396,14 +427,23 @@ class PrincipalInvitados extends Component {
                     </div>
                 </div>
                 <div className="izquierda">
-                    <Button bsStyle="default" style={{marginRight: "10px"}} fill wd onClick={()=> {
-                        this.reestablecer();
-                    }}>
+                    <Button
+                        bsStyle="default"
+                        style={{ marginRight: '10px' }}
+                        fill
+                        wd
+                        onClick={() => {
+                            this.reestablecer();
+                        }}>
                         Restablecer
                     </Button>
-                    <Button bsStyle="primary" fill wd onClick={()=> {
-                        this.consultar(0, true);
-                    }}>
+                    <Button
+                        bsStyle="primary"
+                        fill
+                        wd
+                        onClick={() => {
+                            this.consultar(0, true);
+                        }}>
                         Consultar
                     </Button>
                 </div>
@@ -413,65 +453,94 @@ class PrincipalInvitados extends Component {
                     <div className="card-body">
                         <table className="table table-hover">
                             <thead>
-                            <tr>
-                                <th  style={{textAlign:'center'}} scope="col">Indice</th>
-                                <th  style={{textAlign:'center'}} scope="col">Tipo Documento</th>
-                                <th  style={{textAlign:'center'}} scope="col">Documento</th>
-                                <th  style={{textAlign:'center'}} scope="col">Apellido y Nombre</th>
-                                {/*<th scope="col">Grupo</th>*/}
-                                <th  style={{textAlign:'center'}} scope="col">Estado</th>
-                                <th  style={{textAlign:'center'}} scope="col">Invitar a Evento</th>
-                                <th  style={{textAlign:'center'}} scope="col">Editar</th>
-                                <th style={{textAlign:'center'}}  scope="col">Eliminar</th>
-                            </tr>
+                                <tr>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Índice
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Tipo Documento
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Documento
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Nombre y Apellido
+                                    </th>
+                                    {/*<th scope="col">Grupo</th>*/}
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Estado
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Invitar a Evento
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Editar
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
+                                        Eliminar
+                                    </th>
+                                </tr>
                             </thead>
 
                             <tbody>
-                            {
-                                this.state.invitados.map((inv, ind)=> {
-                                        return (
-                                            <tr className="table-light">
-                                                <th style={{textAlign:'center'}} >{ind + 1 + (paginador.getTamPagina() * this.state.numPagina)}</th>
-                                                <td style={{textAlign:'center'}} >{this.obtenerDocumentoLabel(inv[0].TipoDocumento.id)}</td>
-                                                <td style={{textAlign:'center'}} >{inv[0].Documento}</td>
-                                                <td style={{textAlign:'center'}} >{inv[0].Nombre}, {inv[0].Apellido}</td>
-                                                {/*<td>{inv[0].Grupo}</td>*/}
-                                                <td style={{textAlign:'center'}} >{inv[0].Estado ? 'Activo' : 'Inactivo'}</td>
-                                                <td style={{textAlign:'center'}} ><Button bsStyle="info" fill
-                                                            disabled={false} onClick={()=> {
-                                                    this.setState({invitadoReserva: inv});
-                                                    this.modalAgregarInvitado();
-                                                }}>Invitar</Button></td>
-                                                <td style={{textAlign:'center'}} ><NavLink
-                                                    to={'editarInvitado/' + inv[1]}
-                                                    className="nav-link"
-                                                    activeClassName="active"
-                                                >
-                                                    <Button bsStyle="warning" fill>Editar</Button>
-                                                </NavLink></td>
-                                                <td style={{textAlign:'center'}} ><Button bsStyle="danger" fill onClick={()=> {
-                                                    this.cancelar(inv);
-                                                }}>Eliminar</Button></td>
-                                            </tr>
-                                        );
-                                    }
-                                )}
+                                {this.state.invitados.map((inv, ind) => {
+                                    return (
+                                        <tr className="table-light">
+                                            <th style={{ textAlign: 'center' }}>
+                                                {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
+                                            </th>
+                                            <td style={{ textAlign: 'center' }}>{this.obtenerDocumentoLabel(inv[0].TipoDocumento.id)}</td>
+                                            <td style={{ textAlign: 'center' }}>{inv[0].Documento}</td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                {inv[0].Nombre} {inv[0].Apellido}
+                                            </td>
+                                            {/*<td>{inv[0].Grupo}</td>*/}
+                                            <td style={{ textAlign: 'center' }}>{inv[0].Estado ? 'Activo' : 'Inactivo'}</td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                <Button
+                                                    bsStyle="info"
+                                                    fill
+                                                    disabled={false}
+                                                    onClick={() => {
+                                                        this.setState({ invitadoReserva: inv });
+                                                        this.modalAgregarInvitado();
+                                                    }}>
+                                                    Invitar
+                                                </Button>
+                                            </td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                <NavLink to={'editarInvitado/' + inv[1]} className="nav-link" activeClassName="active">
+                                                    <Button bsStyle="warning" fill>
+                                                        Editar
+                                                    </Button>
+                                                </NavLink>
+                                            </td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                <Button
+                                                    bsStyle="danger"
+                                                    fill
+                                                    onClick={() => {
+                                                        this.cancelar(inv);
+                                                    }}>
+                                                    Eliminar
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div className="text-center" hidden={!this.state.invitados.length}>
                     <Pagination className="pagination-no-border">
-                        <Pagination.First onClick={()=>this.consultar((this.state.numPagina - 1), false)}/>
+                        <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
 
-                        {
-                            this.cantidad.map(num=> {
-                                return (<Pagination.Item
-                                    active={(num == this.state.numPagina)}>{num + 1}</Pagination.Item>);
-                            })
-                        }
+                        {this.cantidad.map((num) => {
+                            return <Pagination.Item active={num == this.state.numPagina}>{num + 1}</Pagination.Item>;
+                        })}
 
-                        <Pagination.Last onClick={()=>this.consultar((this.state.numPagina + 1), false)}/>
+                        <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
                     </Pagination>
                 </div>
                 <div className="row card" hidden={this.state.invitados.length}>
@@ -480,10 +549,7 @@ class PrincipalInvitados extends Component {
                     </div>
                 </div>
 
-                <Modal
-                    show={this.state.showModal}
-                    onHide={()=>this.setState({showModal: false})}
-                >
+                <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
                     <Modal.Header closeButton>
                         <Modal.Title>Invitar a evento</Modal.Title>
                     </Modal.Header>
@@ -498,26 +564,19 @@ class PrincipalInvitados extends Component {
                             options={this.state.reservas}
                             onChange={this.ChangeSelect.bind(this)}
                         />
-                        <br/>
+                        <br />
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button
-                            simple
-                            onClick={()=>this.setState({showModal: false})}
-                        >
+                        <Button simple onClick={() => this.setState({ showModal: false })}>
                             Cerrar
                         </Button>
-                        <Button
-                            bsStyle="success"
-                            fill
-                            onClick={this.agregarNuevoInvitado}
-                        >
+                        <Button bsStyle="success" fill onClick={this.agregarNuevoInvitado}>
                             Agregar
                         </Button>
                     </Modal.Footer>
                 </Modal>
                 <div>
-                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                    <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
             </div>
         );
