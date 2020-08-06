@@ -325,7 +325,7 @@ class PrincipalAdministrador extends Component {
                             <thead>
                                 <tr>
                                     <th style={{ textAlign: 'center' }} scope="col">
-                                        Indice
+                                        Índice
                                     </th>
                                     <th style={{ textAlign: 'center' }} scope="col">
                                         Nombre y Apellido
@@ -361,7 +361,9 @@ class PrincipalAdministrador extends Component {
                                             <th style={{ textAlign: 'center' }} scope="row">
                                                 {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
                                             </th>
-                                            <td style={{ textAlign: 'center' }}>{adm[0].Nombre + adm[0].Apellido}</td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                {adm[0].Nombre} {adm[0].Apellido}
+                                            </td>
                                             <td style={{ textAlign: 'center' }}>{tipoDocLabel}</td>
                                             <td style={{ textAlign: 'center' }}>{adm[0].Documento}</td>
                                             <td style={{ textAlign: 'center' }}>{nacimiento.toLocaleDateString()}</td>
