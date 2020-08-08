@@ -262,8 +262,8 @@ class AltaIngreso extends Component {
                 .add({
                     Fecha: new Date(),
                     IdPropietario: datosPersonas.IdPropietario,
-                    Tipo: 'Nuevo Ingreso',
-                    Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' ingreso al barrio.',
+                    Tipo: 'Ingreso',
+                    Texto: this.state.nombre + ' ' + this.state.apellido + ' ha ingresado al complejo.',
                     Visto: false,
                 })
                 .then(this.reestablecer)

@@ -196,8 +196,8 @@ class AltaEgreso extends Component {
                     .add({
                         Fecha: new Date(),
                         IdPropietario: ingreso[0].IdPropietario,
-                        Tipo: 'Nuevo Egreso',
-                        Texto: 'El invitado ' + this.state.apellido + ', ' + this.state.nombre + ' salio al barrio.',
+                        Tipo: 'Egreso',
+                        Texto: this.state.nombre + ' ' + this.state.apellido + ' ha salido del complejo.',
                         Visto: false,
                     })
                     .catch((error) => {
