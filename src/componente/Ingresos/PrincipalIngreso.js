@@ -196,7 +196,7 @@ class PrincialIngreso extends Component {
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         datos = doc.data();
-                        datos.Hora = validator.obtenerFecha(doc.data().Hora).toLocaleString();
+                        datos.Hora = validator.obtenerFecha(doc.data().Fecha).toLocaleString();
                         datos.TipoDocumento = operacion.obtenerDocumentoLabel(datos.TipoDocumento.id, this.state.tipoD);
                         datos.Tipo = datos.IdPropietario ? 'Invitado' : 'Propietario';
                         elementos.push(datos);
@@ -223,10 +223,10 @@ class PrincialIngreso extends Component {
         }
 
         if (this.state.desde) {
-            con = con.where('Hora', '>=', this.state.desde);
+            con = con.where('Fecha', '>=', this.state.desde);
         }
         if (this.state.hasta) {
-            con = con.where('Hora', '<=', this.state.hasta);
+            con = con.where('Fecha', '<=', this.state.hasta);
         }
         if (this.state.nombre) {
             con = con.where('Nombre', '==', this.state.nombre);
@@ -390,7 +390,7 @@ class PrincialIngreso extends Component {
                             </thead>
                             <tbody>
                                 {this.state.ingresos.map((ing, ind) => {
-                                    let hora = ing[0].Hora ? new Date(ing[0].Hora.seconds * 1000) : new Date();
+                                    let hora = ing[0].Fecha ? new Date(ing[0].Fecha.seconds * 1000) : new Date();
                                     return (
                                         <tr className="table-light">
                                             <th style={{ textAlign: 'center' }} scope="row">

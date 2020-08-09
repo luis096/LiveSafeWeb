@@ -103,7 +103,7 @@ class AltaEgreso extends Component {
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
             .collection('Ingresos')
-            .orderBy('Hora', 'desc')
+            .orderBy('Fecha', 'desc')
             .where('Documento', '==', this.state.documento)
             .where('TipoDocumento', '==', refTipoDocumento)
             .limit(1)
@@ -175,7 +175,7 @@ class AltaEgreso extends Component {
             Apellido: this.state.apellido,
             TipoDocumento: operacion.obtenerReferenciaDocumento(this.state.tipoDocumento),
             Documento: this.state.documento,
-            Hora: new Date(),
+            Fecha: new Date(),
             Observacion: this.state.observacion,
             IdEncargado: operacion.obtenerMiReferencia(2),
         };

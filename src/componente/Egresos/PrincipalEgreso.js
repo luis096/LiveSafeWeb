@@ -200,7 +200,7 @@ class PrincialEgreso extends Component {
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         datos = doc.data();
-                        datos.Hora = validator.obtenerFecha(doc.data().Hora).toLocaleString();
+                        datos.Hora = validator.obtenerFecha(doc.data().Fecha).toLocaleString();
                         datos.TipoDocumento = operacion.obtenerDocumentoLabel(datos.TipoDocumento.id, this.state.tipoD);
                         datos.Tipo = datos.IdPropietario ? 'Invitado' : 'Propietario';
                         elementos.push(datos);
@@ -227,10 +227,10 @@ class PrincialEgreso extends Component {
         }
 
         if (this.state.desde) {
-            con = con.where('Hora', '>=', this.state.desde);
+            con = con.where('Fecha', '>=', this.state.desde);
         }
         if (this.state.hasta) {
-            con = con.where('Hora', '<=', this.state.hasta);
+            con = con.where('Fecha', '<=', this.state.hasta);
         }
         if (this.state.nombre) {
             con = con.where('Nombre', '==', this.state.nombre);
@@ -410,7 +410,7 @@ class PrincialEgreso extends Component {
 
                             <tbody>
                                 {this.state.egresos.map((egr, ind) => {
-                                    let hora = validator.obtenerFecha(egr[0].Hora);
+                                    let hora = validator.obtenerFecha(egr[0].Fecha);
 
                                     return (
                                         <tr className="table-light">

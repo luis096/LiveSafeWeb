@@ -42,6 +42,7 @@ import PrincipalEncargado from 'componente/Encargado/PrincipalEncargado';
 import AltaEncargado from 'componente/Encargado/AltaEncargado';
 import EditarEncargado from 'componente/Encargado/EditarEncargado';
 import Graficos from './componente/Reportes/Graficos';
+import ReservasXServicios from "./componente/Reportes/ReservasXServicios";
 
 //Encargado
 import PrincipalIngreso from 'componente/Ingresos/PrincipalIngreso.js';
@@ -453,10 +454,24 @@ var routes = [
         icon: 'pe-7s-display1',
         views: [
             {
-                path: '/report',
+                path: '/report/0',
                 layout: '/admin',
-                name: 'Reportes',
-                mini: 'R',
+                name: 'Reservas',
+                mini: 'Re',
+                component: ReservasXServicios,
+            },
+            {
+                path: '/report/1',
+                layout: '/admin',
+                name: 'Ingresos',
+                mini: 'In',
+                component: Graficos,
+            },
+            {
+                path: '/report/2',
+                layout: '/admin',
+                name: 'Egresos',
+                mini: 'Eg',
                 component: Graficos,
             },
         ],

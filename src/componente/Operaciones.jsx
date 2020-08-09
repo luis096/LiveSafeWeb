@@ -20,7 +20,10 @@ export const operacion = {
     obtenerDisponibleString,
     esDiaDisponible,
     error,
-    registroConExito
+    registroConExito,
+    obtenerMeses,
+    obtenerAnios,
+    obtenerMesesLabels
 };
 
 async function obtenerTiposDocumento() {
@@ -104,4 +107,44 @@ function registroConExito(mensaje) {
         autoDismiss: 2
     };
     return obj;
+}
+
+function obtenerMeses(num) {
+    let esHasta = num === 2?12:0;
+    let meses = [
+        { value:( 1 + esHasta) , label: "Enero" },
+        { value:( 2 + esHasta) , label: "Febrero" },
+        { value:( 3 + esHasta) , label: "Marzo" },
+        { value:( 4 + esHasta) , label: "Abril" },
+        { value:( 5 + esHasta) , label: "Mayo" },
+        { value:( 6 + esHasta) , label: "Junio" },
+        { value:( 7 + esHasta) , label: "Julio" },
+        { value:( 8 + esHasta) , label: "Agosto" },
+        { value:( 9 + esHasta) , label: "Septiembre" },
+        { value:( 10 + esHasta) , label: "Octubre" },
+        { value:( 11 + esHasta) , label: "Noviembre" },
+        { value:( 12 + esHasta) , label: "Diciembre" },
+        ];
+    return meses;
+}
+
+function obtenerAnios() {
+    let anios = [{ value: 2019, label: "2019" },
+        { value: 2020, label: "2020" }];
+    return anios;
+}
+
+function obtenerMesesLabels(desde, hasta, mismoAnio) {
+    let meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto',
+        'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto',
+        'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+    let labels = [];
+    let limiteHasta = mismoAnio?hasta-12:hasta;
+    for(var i = desde; i <= limiteHasta; i++) {
+        labels.push(meses[i - 1]);
+    }
+
+    return labels;
 }

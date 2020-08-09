@@ -7,6 +7,15 @@ import Button from 'components/CustomButton/CustomButton.jsx';
 import { Collapse } from 'reactstrap';
 import Card from 'components/Card/Card.jsx';
 import "./Graficos.css"
+import Select from "react-select";
+import {operacion} from "../Operaciones";
+import {detachMarkedSpans} from "codemirror/src/line/spans";
+import NotificationSystem from "react-notification-system";
+import {style} from "../../variables/Variables";
+import icono from "../../Icono2.ico";
+import logo from  "../../logoLiveSafe.png"
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 class Graficos extends Component {
 
@@ -14,21 +23,58 @@ class Graficos extends Component {
         super(props);
         this.state = {
             alert: null,
+            nombreReporte: "",
             loaing: false,
-            pagina: true,
             dataLineIngresos: {},
-            dataServicios: {},
-            reservas: [],
-            numPagina: 1,
-            servicio: null,
-            collapsed: false,
-            sinDatos: false
+            sinDatos: true,
+            anioDesde: null,
+            anioHasta: null,
+            aniosDesde: null,
+            aniosHasta: null,
+            mesDesde: null,
+            mesHasta: null,
+            mesesDesde: null,
+            mesesHasta: null,
         };
-
+        this.notificationSystem = React.createRef();
         this.consultar = this.consultar.bind(this);
-        this.consultarServicios = this.consultarServicios.bind(this);
-        this.consultarServicios();
+        this.isValidRangeDate = this.isValidRangeDate.bind(this);
+
     }
+
+    componentDidMount() {
+        const url = this.props.location.pathname.split('/');
+
+        if (url[url.length - 1] === '1') {
+            this.setState({nombreReporte: "Ingresos"})
+        } else {this.setState({nombreReporte: "Egresos"}) }
+
+        this.setState({
+           mesesDesde: operacion.obtenerMeses(1),
+            mesesHasta: operacion.obtenerMeses(2),
+            aniosHasta: operacion.obtenerAnios(),
+            aniosDesde: operacion.obtenerAnios()
+        });
+
+
+    }
+
+    ChangeSelectMesDesde(value) {
+        this.setState({ mesDesde: value });
+    }
+
+    ChangeSelectMesHasta(value) {
+        this.setState({ mesHasta: value });
+    }
+
+    ChangeSelectAnioDesde(value) {
+        this.setState({ anioDesde: value });
+    }
+
+    ChangeSelectAnioHasta(value) {
+        this.setState({ anioHasta: value });
+    }
+
 
     getRandomColor() {
         var letters = '0123456789ABCDEF';
@@ -39,70 +85,53 @@ class Graficos extends Component {
         return color;
     }
 
-    async consultarServicios() {
-        let servicios = [];
-        let reservas = [];
-        let dataService = [];
-        let color = [];
-        let porcentajes = [];
 
-        await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Servicios')
-            .get().then(querySnapshot=> {
-                querySnapshot.forEach(doc => {
-                    servicios.push(doc.data().Nombre);
-                    dataService.push(0);
-                    color.push(this.getRandomColor());
-                });
-            });
-
-        await Database.collectionGroup('Reservas').where('IdReservaServicio', '==', null)
-            .get().then(querySnapshot=> {
-            querySnapshot.forEach(doc => {
-                reservas.push(doc.data());
-            });
-        });
-
-        if (!reservas.length) return;
-        reservas.forEach( value => {
-            let index = servicios.indexOf(value.Servicio.toString());
-            dataService[index] = dataService[index] + 1;
-        });
-
-        let total = 0;
-        dataService.forEach(x => { total += x});
-        dataService.forEach((x, i) => { porcentajes[i] = ((x * 100) / total) });
-
-        this.setState({dataService: {
-                labels: servicios,
-                datasets: [{
-                    data: dataService,
-                    backgroundColor: color
-                }]
-            }, servicio: {
-                labels: servicios,
-                porcentajes: porcentajes,
-                color: color
-            }
-        });
+    isValidRangeDate() {
+        console.log("Pasi 0");
+        if (!this.state.mesHasta || !this.state.mesDesde ||
+            !this.state.anioDesde || !this.state.anioHasta ) return false;
+        console.log("Pasi 1");
+        if ( ((this.state.mesHasta.value - this.state.mesDesde.value) > 24 &&
+            this.state.anioDesde.value  !== this.state.anioHasta.value) ||
+            (this.state.anioDesde.value > this.state.anioHasta.value)) return false;
+        console.log("Pasi 2");
+        if (this.state.anioDesde.value  === this.state.anioHasta.value &&
+            (this.state.mesDesde.value > (this.state.mesHasta.value - 12))) return false;
+        console.log("Pasi 3");
+        return true;
     }
 
     async consultar(tipo) {
         let ingresos = [];
-        for(var i = 0; i < 12; i++) {
+        if (!this.isValidRangeDate()) return;
+
+        let mismoAnio = (this.state.anioDesde.value === this.state.anioHasta.value);
+
+        let cantidad = mismoAnio?(this.state.mesHasta.value - this.state.mesDesde.value - 12)
+            :(this.state.mesHasta.value - this.state.mesDesde.value);
+
+        for(var i = 0; i <= cantidad; i++) {
             ingresos.push(0);
         }
+
         await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection(tipo)
-            .where('Hora', '>', new Date(2020, 0)).get().then(querySnapshot=> {
+            .where('Fecha', '>=', new Date(this.state.anioDesde.value, this.state.mesDesde.value - 1))
+            .where('Fecha', '<=', new Date(this.state.anioHasta.value, this.state.mesHasta.value - 12))
+            .get().then(querySnapshot=> {
                 querySnapshot.forEach(doc => {
-                    let mes = validator.obtenerFecha(doc.data().Hora).getMonth();
-                    ingresos[mes] = ingresos[mes] + 1;
+                    let mes = validator.obtenerFecha(doc.data().Fecha).getMonth();
+                    let anio = validator.obtenerFecha(doc.data().Fecha).getFullYear();
+                    let desplazamiento = (this.state.mesDesde.value - 1);
+                    if (!mismoAnio) {
+                        mes = anio===2020?mes+12:mes;
+                    }
+                    ingresos[mes - desplazamiento] = ingresos[mes - desplazamiento] + 1;
                 });
             });
 
         this.setState({dataLineIngresos:
                 {
-                    labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto',
-                        'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                    labels: operacion.obtenerMesesLabels(this.state.mesDesde.value,this.state.mesHasta.value, mismoAnio),
                     datasets: [
                         {
                             label: tipo,
@@ -126,102 +155,114 @@ class Graficos extends Component {
                             data: ingresos
                         }
                     ]
-                }
+                },
+            sinDatos: false
         });
     }
 
 
+    pdf() {
+        let titulo = "LiveSafe - Reporte de "+ this.state.nombreReporte.toLowerCase() +" por mes - " +
+            this.state.mesDesde.label + " " + this.state.anioDesde.label
+            + " - " + this.state.mesHasta.label + " " + this.state.anioHasta.label;
+        const pdf = new jsPDF('L', 'px');
+        html2canvas(document.querySelector("#reporte")).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            pdf.text(titulo, 10, 20);
+            pdf.addImage(imgData, 'PNG', 10, 30, 570, 320);
+            pdf.save(this.state.nombreReporte + "-por-mes.pdf ");
+        });
+    }
+
     render() {
         return (
             <div className="col-12">
-                <div className="row card" hidden={1 !== this.state.numPagina}>
-                    <div className="card-body">
-                        <div className='row'>
-                            <div className="col-12">
-                                <h3>Reservas por servicio</h3>
-                                <Button bsStyle="warning" fill wd
-                                        disabled={!this.state.dataService}
-                                        onClick={() => { this.setState({collapsed: !this.state.collapsed})}}>
-                                    Ver porcentajes
-                                </Button>
-                                <div hidden={this.state.dataService}>
-                                    <h5>No existen reservas realizadas en los servicios del barrio.</h5>
-                                </div>
-                                <div className="conteiner-porcentajes">
-                                    <Collapse isOpen={this.state.collapsed}>
-                                        <Card title={"Porcentajes:"} content={
-                                            <div className="row">
-                                                {
-                                                    this.state.servicio && this.state.servicio.labels.map((value, i) => {
-                                                    return ( <div className="row-secction col-md-3 porcentajes">
-                                                            <div className="colorReference"
-                                                                 style={{background : this.state.servicio.color[i]}}>
-                                                            </div>
-                                                            <span className="servicioText">{value + ": " +
-                                                            this.state.servicio.porcentajes[i].toFixed(2)
-                                                            + "%"}</span>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        }>
-                                        </Card>
-                                    </Collapse>
-                                </div>
-                            </div>
-                            <Pie data={this.state.dataService}
-                                 width={100} height={40}
-                                 options={{ maintainAspectRatio: false }}/>
-
-                        </div>
-                    </div>
-                </div>
-                <div className="row card" hidden={2 !== this.state.numPagina}>
+                <div className="row card">
                     <div className='row'>
                         <div className="row-secction col-md-6">
-                            <h3>Cantidad de ingresos por mes</h3>
-                        </div>
-                        {/*<div className="row-secction col-md-2">*/}
-                        {/*    <label>Mes</label>*/}
-                        {/*</div>*/}
-                        {/*<div className="row-secction col-md-2">*/}
-                        {/*    <label>Mes</label>*/}
-                        {/*</div>*/}
-
-                    </div>
-                    <div className="card-body">
-                        <div className='row'>
-                            <Line data={this.state.dataLineIngresos} width={100} height={40}/>
+                            <h3>Cantidad de {this.state.nombreReporte.toLowerCase()} por mes</h3>
                         </div>
                     </div>
-                </div>
-
-                <div className="row card" hidden={3 !== this.state.numPagina}>
                     <div className='row'>
-                        <div className="row-secction col-md-6">
-                            <h3>Cantidad de egresos por mes</h3>
+                        <div className="row-secction col-md-5">
+                            <h6>Desde:</h6>
+                        </div>
+                        <div className="row-secction col-md-5">
+                            <h6>Hasta:</h6>
                         </div>
                     </div>
-                    <div className="card-body">
-                        <div className='row'>
+                    <div className='row'>
+                        <div className="row-secction col-md-3">
+                            <label>Mes</label>
+                            <Select
+                                isClearable={true}
+                                isSearchable={true}
+                                value={this.state.mesDesde}
+                                options={this.state.mesesDesde}
+                                onChange={this.ChangeSelectMesDesde.bind(this)}
+                            />
+                        </div>
+                        <div className="row-secction col-md-2">
+                            <label>Año</label>
+                            <Select
+                                isClearable={true}
+                                isSearchable={true}
+                                value={this.state.anioDesde}
+                                options={this.state.aniosDesde}
+                                onChange={this.ChangeSelectAnioDesde.bind(this)}
+                            />
+                        </div>
+                        <div className="row-secction col-md-3">
+                            <label>Mes</label>
+                            <Select
+                                isClearable={true}
+                                isSearchable={true}
+                                value={this.state.mesHasta}
+                                options={this.state.mesesHasta}
+                                onChange={this.ChangeSelectMesHasta.bind(this)}
+                            />
+                        </div>
+                        <div className="row-secction col-md-2">
+                            <label>Año</label>
+                            <Select
+                                isClearable={true}
+                                isSearchable={true}
+                                value={this.state.anioHasta}
+                                options={this.state.aniosHasta}
+                                onChange={this.ChangeSelectAnioHasta.bind(this)}
+                            />
+                        </div>
+                        <div className="row-secction col-md-1">
+                            <br/>
+                            <Button bsStyle="warning" fill
+                                    onClick={() => { this.consultar(this.state.nombreReporte) }}>
+                                Consultar
+                            </Button>
+                        </div>
+                    </div>
+                    <div className="card-body" hidden={this.state.sinDatos}>
+                        <div className='row' id="reporte">
                             <Line data={this.state.dataLineIngresos} width={100} height={40}/>
                         </div>
+                        <div className="text-center">
+                            <Button bsStyle="success" fill
+                                    onClick={() => { this.pdf() }}>
+                                Descargar Grafico
+                            </Button>
+                        </div>
+
                     </div>
                 </div>
-                <div className="text-center">
-                    <Pagination className="pagination-no-border">
-                        <Pagination.Item active={(1 === this.state.numPagina)}
-                                         onClick={()=> {this.consultarServicios(); this.setState({ numPagina: 1})}}>1
-                        </Pagination.Item>
-                        <Pagination.Item active={(2 === this.state.numPagina)}
-                                         onClick={()=> {this.consultar("Ingresos"); this.setState({ numPagina: 2})}}>2
-                        </Pagination.Item>
-                        <Pagination.Item active={(3 === this.state.numPagina)}
-                                         onClick={()=> {this.consultar("Egresos"); this.setState({ numPagina: 3})}}>3
-                        </Pagination.Item>
-                    </Pagination>
+                <div className="row card" hidden={!this.state.sinDatos}>
+                    <div className="card-body">
+                        <div className='row'>
+                            <h3>Sin datos</h3>
+                        </div>
+                    </div>
                 </div>
-
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                </div>
             </div>
         );
     }

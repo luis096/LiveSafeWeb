@@ -239,7 +239,7 @@ class AltaIngreso extends Component {
             Apellido: this.state.apellido || 'Invitado Evento',
             TipoDocumento: datosPersonas.TipoDocumento,
             Documento: datosPersonas.Documento,
-            Hora: new Date(),
+            Fecha: new Date(),
             Egreso: false,
             Estado: true,
             Observacion: observacion,
@@ -321,7 +321,7 @@ class AltaIngreso extends Component {
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
             .collection('Ingresos')
-            .orderBy('Hora', 'desc')
+            .orderBy('Fecha', 'desc')
             .where('Documento', '==', this.state.documento)
             .where('TipoDocumento', '==', refTipoDocumento)
             .limit(1)
