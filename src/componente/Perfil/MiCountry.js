@@ -50,19 +50,29 @@ class MiCountry extends Component {
                                 <h5>{barrio.Nombre}</h5>
                             </div>
                             <div className="col-md-3 row-secction">
+                                <h4><strong>Departamento</strong></h4>
+                                <h5>{barrio.Departamento?barrio.Departamento.label:"-"}</h5>
+                            </div>
+                            <div className="col-md-3 row-secction">
+                                <h4><strong>Localidad</strong></h4>
+                                <h5>{barrio.Localidad?barrio.Localidad.label:"-"}</h5>
+                            </div>
+                            <div className="col-md-3 row-secction">
                                 <h4><strong>Calle y Número</strong></h4>
                                 <h5>{barrio.Calle + ' ' + barrio.Numero}</h5>
                             </div>
+                        </div>
+                        <div className="row">
                             <div className="col-md-3 row-secction">
                                 <h4><strong>Contacto</strong></h4>
                                 <h5>{barrio.Celular || 'Sin Datos'}</h5>
                             </div>
-                            <div className="col-md-3 row-secction">
+                            <div className="col-md-6 row-secction">
                                 <h4><strong>Descripción del barrio</strong></h4>
                                 <h5>{barrio.Descripcion || 'Sin Datos'}</h5>
                             </div>
                         </div>
-                        <div className="row col-md-3">
+                        <div className="text-center">
                             <img id="imgBarrio" height="420" width="420"/>
                         </div>
                     </div>

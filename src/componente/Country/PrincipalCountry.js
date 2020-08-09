@@ -319,7 +319,7 @@ class PrincipalCountry extends Component {
                                             <td style={{ textAlign: 'center' }}>{bar[0].Calle + ' ' + bar[0].Numero}</td>
                                             <td style={{ textAlign: 'center' }}>{bar[0].Celular}</td>
                                             <td style={{ textAlign: 'center' }}>
-                                                {hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}
+                                                {hora.toLocaleDateString()}
                                             </td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <Link to={editar}>

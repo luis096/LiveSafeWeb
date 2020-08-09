@@ -68,22 +68,33 @@ class AltaServicio extends Component {
     }
 
     async componentDidMount() {
-        this.actualizarHorasMax();
+        let turnos = [];
         await Database.collection('Turnos')
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
-                    this.state.turnoSelect.push({ value: doc.data().Duracion, label: doc.data().DuracionString });
+                    turnos.push({ value: doc.data().Duracion, label: doc.data().DuracionString });
                 });
             })
             .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
+        turnos = turnos.sort(function (a, b) {
+            if (a.value > b.value) return 1;
+            if (a.value < b.value) return -1;
+            return 0;
+        });
+
+        this.setState({turnoSelect: turnos})
     }
 
     async actualizarHorasMax() {
         await this.setState({ turnosMaxSelect: [] });
-        for (var i = 1; i <= 24; i++) {
+
+        if (!this.state.duracionTurno || !this.state.duracionTurno.value) return;
+        let cantidad = 24 / this.state.duracionTurno.value;
+
+        for (var i = 1; i <= cantidad; i++) {
             this.state.turnosMaxSelect.push({ value: i, label: i.toString() });
         }
     }
@@ -174,6 +185,7 @@ class AltaServicio extends Component {
     async ChangeSelectTurno(value) {
         await this.setState({ events: [], verCalendar: false });
         await this.setState({ duracionTurno: value });
+        this.actualizarHorasMax();
     }
 
     registrar() {

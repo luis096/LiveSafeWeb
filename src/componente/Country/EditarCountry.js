@@ -29,9 +29,7 @@ class EditarCountry extends Component {
             departamento: [],
             departamentoBarrio: {label: "Select..."},
             localidades: [],
-            localidadBarrio: {label: "Select..."},
-            calles: [],
-            calleBarrio: {label: "Select..."}
+            localidadBarrio: {label: "Select..."}
         };
         this.notificationSystem = React.createRef();
 
@@ -67,7 +65,7 @@ class EditarCountry extends Component {
                 if (doc.exists) {
                     this.setState({
                         nombre: doc.data().Nombre,
-                        calleBarrio: doc.data().Calle,
+                        calle: doc.data().Calle,
                         localidadBarrio: doc.data().Localidad,
                         departamentoBarrio: doc.data().Departamento,
                         numero: doc.data().Numero,
@@ -91,7 +89,17 @@ class EditarCountry extends Component {
             .then((result) => {
                     result.departamentos.forEach(loc => {
                         depto.push({value: loc.id, label: loc.nombre})
-                    })
+                    });
+
+                    depto = depto.sort(function (a, b) {
+                        if (a.label > b.label) {
+                            return 1;
+                        }
+                        if (a.label < b.label) {
+                            return -1;
+                        }
+                        return 0;
+                    });
                 }
                 , (error) => {
                     console.log(error);
@@ -113,7 +121,7 @@ class EditarCountry extends Component {
 
     ChangeNombre(event) {
         this.setState({nombre: event.target.value});
-        if (event.target.value == "")
+        if (event.target.value === "")
         {this.errorNombre= validator.requerido(event.target.value)}
         else{this.errorNombre =validator.soloLetras(event.target.value)}
     }
@@ -121,13 +129,9 @@ class EditarCountry extends Component {
 
     ChangeCalle(event) {
         this.setState({calle: event.target.value});
-        if (event.target.value == "")
+        if (event.target.value === "")
         {this.errorCalle= validator.requerido(event.target.value)}
         else{this.errorCalle =validator.soloLetras(event.target.value)}
-    }
-
-    ChangeCalle(event) {
-        this.setState({calleBarrio: event});
     }
 
     ChangeDto(event) {
@@ -141,7 +145,17 @@ class EditarCountry extends Component {
                 .then((result) => {
                         result.localidades_censales.forEach(loc => {
                             localidades.push({value: loc.id, label: loc.nombre})
-                        })
+                        });
+
+                        localidades = localidades.sort(function (a, b) {
+                            if (a.label > b.label) {
+                                return 1;
+                            }
+                            if (a.label < b.label) {
+                                return -1;
+                            }
+                            return 0;
+                        });
                     }
                     , (error) => {
                         console.log(error);
@@ -151,48 +165,13 @@ class EditarCountry extends Component {
         this.setState({departamentoBarrio: event});
     }
 
-    async ChangeLoc(event) {
-        let callesLocalidad = [];
+    ChangeLoc(event) {
         this.setState({localidadBarrio: event});
-        this.setState({calleBarrio: {value: null, label: "Select..."}});
-
-        let total = 0;
-        if (!!event) {
-            await fetch("https://apis.datos.gob.ar/georef/api/calles?provincia=14&&departamento="
-                + this.state.departamentoBarrio.value.toString() + "&localidad_censal=" + event.value.toString()
-                + "&max=4000&formato=json").then(res => res.json())
-                .then((result) => {
-                        result.calles.forEach(loc => {
-                            callesLocalidad.push({value: loc.id, label: loc.nombre})
-                        });
-                        total = result.total;
-                    }
-                    , (error) => {
-                        console.log(error);
-                    });
-        }
-
-        if (total > 5000) {
-            await fetch("https://apis.datos.gob.ar/georef/api/calles?provincia=14&&departamento="
-                + this.state.departamentoBarrio.value.toString() + "&localidad_censal=" + event.value.toString()
-                + "&max=5000&inicio=5000&formato=json").then(res => res.json())
-                .then((result) => {
-                        result.calles.forEach(loc => {
-                            callesLocalidad.push({value: loc.id, label: loc.nombre})
-                        });
-                        total = result.total;
-                    }
-                    , (error) => {
-                        console.log(error);
-                    });
-        }
-
-        this.setState({calles: callesLocalidad});
     }
 
     ChangeNumero(event) {
         this.setState({numero: event.target.value});
-        if (event.target.value == "") {
+        if (event.target.value === "") {
             this.errorNumero = validator.requerido(event.target.value)
         } else {
             this.errorNumero = validator.numero(event.target.value)
@@ -201,14 +180,14 @@ class EditarCountry extends Component {
 
     ChangeCelular(event) {
         this.setState({celular: event.target.value});
-        if (event.target.value == "")
+        if (event.target.value === "")
         {this.errorCelular= validator.requerido(event.target.value)}
         else{this.errorCelular =validator.numero(event.target.value)}
     }
 
     ChangeTitular(event) {
         this.setState({titular: event.target.value});
-        if (event.target.value == "")
+        if (event.target.value === "")
         {this.errorTitular= validator.requerido(event.target.value)}
         else{this.errorTitular =validator.soloLetras(event.target.value)}
     }
@@ -338,17 +317,13 @@ class EditarCountry extends Component {
                             </div>
                             <div className="row-secction col-md-3">
                                 <label> Calle </label>
-                                <Select
-                                    className="select-documento"
-                                    classNamePrefix="select"
-                                    isDisabled={false}
-                                    isLoading={false}
-                                    isClearable={true}
-                                    isSearchable={true}
-                                    value={this.state.calleBarrio}
-                                    options={this.state.calles}
-                                    onChange={this.ChangeCalle.bind(this)}
+                                <input
+                                    className={errorHTML.classNameError(this.errorCalle, 'form-control')}
+                                    placeholder="Calle"
+                                    value={this.state.calle}
+                                    onChange={this.ChangeCalle}
                                 />
+                                {errorHTML.errorLabel(this.errorCalle)}
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label> Número </label>

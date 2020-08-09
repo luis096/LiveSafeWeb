@@ -49,15 +49,25 @@ class EditarServicio extends Component {
     }
 
     async componentDidMount() {
+        let turnos = [];
         await Database.collection('Turnos').get().then(querySnapshot=> {
             querySnapshot.forEach(doc=> {
-                this.state.turnoSelect.push(
+                turnos.push(
                     {value: doc.data().Duracion, label: doc.data().DuracionString}
                 );
             });
         }).catch((error) => {
             this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
+
+        turnos = turnos.sort(function (a, b) {
+            if (a.value > b.value) return 1;
+            if (a.value < b.value) return -1;
+            return 0;
+        });
+
+        this.setState({turnoSelect: turnos})
+
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.idServicio).get().then(doc=> {
                 if (doc.exists) {
@@ -76,6 +86,7 @@ class EditarServicio extends Component {
         let newEvents = [];
 
         let diaNumber = new Date().getDay();
+        if (diaNumber === 0 ) diaNumber = 7;
         let fecha = new Date().getDate();
         let mes = new Date().getMonth();
         let anio = new Date().getFullYear();
@@ -90,7 +101,7 @@ class EditarServicio extends Component {
                start.getDay()===0?diaOficial = 7:diaOficial = start.getDay();
                let nuevoHorario = {
                    title: "Reserva",
-                   color: "red",
+                   color: "blue",
                    start: new Date(anio, mes, (fecha + (diaOficial - diaNumber)), start.getHours(), start.getMinutes()),
                    end: new Date(anio, mes, (fecha + (diaOficial - diaNumber)), end.getHours(), end.getMinutes()),
                };
@@ -107,7 +118,7 @@ class EditarServicio extends Component {
 
         this.state.events.forEach(event => {
             let dia = event.start.getDay();
-            if (dia == 0) dia = 7;
+            if (dia === 0) dia = 7;
             let id = horarios[dia - 1].horarios.length + 1;
             horarios[dia - 1].horarios.push({desde: event.start, hasta: event.end, id: id});
 
@@ -125,7 +136,9 @@ class EditarServicio extends Component {
 
     async actualizarHorasMax() {
         await this.setState({turnosMaxSelect: []});
-        for(var i = 1; i <= 24; i++) {
+        if (!this.state.duracionTurno) return;
+        let cantidad = 24 / (this.state.duracionTurno / 60);
+        for(var i = 1; i <= cantidad; i++) {
             this.state.turnosMaxSelect.push({value: i, label:i.toString()});
             if (i === this.state.turnosMax) {
                 this.setState({turnosMax: {value: i, label:i.toString()}})

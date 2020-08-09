@@ -25,16 +25,14 @@ class AltaCountry extends Component {
             departamento: [],
             departamentoBarrio: { label: 'Select...' },
             localidades: [],
-            localidadBarrio: { label: 'Select...' },
-            calles: [],
-            calleBarrio: { label: 'Select...' },
+            localidadBarrio: { label: 'Select...' }
         };
         this.notificationSystem = React.createRef();
         this.ChangeNombre = this.ChangeNombre.bind(this);
         this.ChangeNumero = this.ChangeNumero.bind(this);
+        this.ChangeCalle = this.ChangeCalle.bind(this);
         this.ChangeTitular = this.ChangeTitular.bind(this);
         this.ChangeCelular = this.ChangeCelular.bind(this);
-        this.ChangeCalle = this.ChangeCalle.bind(this);
         this.ChangeLoc = this.ChangeLoc.bind(this);
         this.ChangeDto = this.ChangeDto.bind(this);
         this.ChangeDescripcion = this.ChangeDescripcion.bind(this);
@@ -59,6 +57,16 @@ class AltaCountry extends Component {
                 (result) => {
                     result.departamentos.forEach((loc) => {
                         depto.push({ value: loc.id, label: loc.nombre });
+                    });
+
+                    depto = depto.sort(function (a, b) {
+                        if (a.label > b.label) {
+                            return 1;
+                        }
+                        if (a.label < b.label) {
+                            return -1;
+                        }
+                        return 0;
                     });
                 },
                 (error) => {
@@ -105,7 +113,7 @@ class AltaCountry extends Component {
 
     ChangeNombre(event) {
         this.setState({ nombre: event.target.value });
-        if (event.target.value == '') {
+        if (event.target.value === '') {
             this.errorNombre = validator.requerido(event.target.value);
         } else {
             this.errorNombre = validator.soloLetras(event.target.value);
@@ -113,12 +121,17 @@ class AltaCountry extends Component {
     }
 
     ChangeCalle(event) {
-        this.setState({ calleBarrio: event });
+        this.setState({ calle: event.target.value });
+        if (event.target.value === '') {
+            this.errorCalle = validator.requerido(event.target.value);
+        } else {
+            this.errorCalle = validator.soloLetras(event.target.value);
+        }
     }
 
     ChangeNumero(event) {
         this.setState({ numero: event.target.value });
-        if (event.target.value == '') {
+        if (event.target.value === '') {
             this.errorNumero = validator.requerido(event.target.value);
         } else {
             this.errorNumero = validator.numero(event.target.value);
@@ -127,7 +140,7 @@ class AltaCountry extends Component {
 
     ChangeCelular(event) {
         this.setState({ celular: event.target.value });
-        if (event.target.value == '') {
+        if (event.target.value === '') {
             this.errorCelular = validator.requerido(event.target.value);
         } else {
             this.errorCelular = validator.numero(event.target.value);
@@ -136,7 +149,7 @@ class AltaCountry extends Component {
 
     ChangeTitular(event) {
         this.setState({ titular: event.target.value });
-        if (event.target.value == '') {
+        if (event.target.value === '') {
             this.errorTitular = validator.requerido(event.target.value);
         } else {
             this.errorTitular = validator.soloLetras(event.target.value);
@@ -150,7 +163,6 @@ class AltaCountry extends Component {
 
     ChangeDto(event) {
         let localidades = [];
-        this.setState({ calleBarrio: { value: null, label: 'Select...' } });
         this.setState({ localidadBarrio: { value: null, label: 'Select...' } });
 
         if (!!event) {
@@ -165,6 +177,15 @@ class AltaCountry extends Component {
                         result.localidades_censales.forEach((loc) => {
                             localidades.push({ value: loc.id, label: loc.nombre });
                         });
+                        localidades = localidades.sort(function (a, b) {
+                            if (a.label > b.label) {
+                                return 1;
+                            }
+                            if (a.label < b.label) {
+                                return -1;
+                            }
+                            return 0;
+                        });
                     },
                     (error) => {
                         console.log(error);
@@ -176,56 +197,54 @@ class AltaCountry extends Component {
     }
 
     async ChangeLoc(event) {
-        let callesLocalidad = [];
         this.setState({ localidadBarrio: event });
-        this.setState({ calleBarrio: { value: null, label: 'Select...' } });
 
         let total = 0;
-        if (!!event) {
-            await fetch(
-                'https://apis.datos.gob.ar/georef/api/calles?provincia=14&&departamento=' +
-                    this.state.departamentoBarrio.value.toString() +
-                    '&localidad_censal=' +
-                    event.value.toString() +
-                    '&max=4000&formato=json'
-            )
-                .then((res) => res.json())
-                .then(
-                    (result) => {
-                        result.calles.forEach((loc) => {
-                            callesLocalidad.push({ value: loc.id, label: loc.nombre });
-                        });
-                        total = result.total;
-                    },
-                    (error) => {
-                        console.log(error);
-                    }
-                );
-        }
-
-        if (total > 5000) {
-            await fetch(
-                'https://apis.datos.gob.ar/georef/api/calles?provincia=14&&departamento=' +
-                    this.state.departamentoBarrio.value.toString() +
-                    '&localidad_censal=' +
-                    event.value.toString() +
-                    '&max=5000&inicio=5000&formato=json'
-            )
-                .then((res) => res.json())
-                .then(
-                    (result) => {
-                        result.calles.forEach((loc) => {
-                            callesLocalidad.push({ value: loc.id, label: loc.nombre });
-                        });
-                        total = result.total;
-                    },
-                    (error) => {
-                        console.log(error);
-                    }
-                );
-        }
-
-        this.setState({ calles: callesLocalidad });
+        // if (!!event) {
+        //     await fetch(
+        //         'https://apis.datos.gob.ar/georef/api/calles?provincia=14&&departamento=' +
+        //             this.state.departamentoBarrio.value.toString() +
+        //             '&localidad_censal=' +
+        //             event.value.toString() +
+        //             '&max=4000&formato=json'
+        //     )
+        //         .then((res) => res.json())
+        //         .then(
+        //             (result) => {
+        //                 result.calles.forEach((loc) => {
+        //                     callesLocalidad.push({ value: loc.id, label: loc.nombre });
+        //                 });
+        //                 total = result.total;
+        //             },
+        //             (error) => {
+        //                 console.log(error);
+        //             }
+        //         );
+        // }
+        //
+        // if (total > 5000) {
+        //     await fetch(
+        //         'https://apis.datos.gob.ar/georef/api/calles?provincia=14&&departamento=' +
+        //             this.state.departamentoBarrio.value.toString() +
+        //             '&localidad_censal=' +
+        //             event.value.toString() +
+        //             '&max=5000&inicio=5000&formato=json'
+        //     )
+        //         .then((res) => res.json())
+        //         .then(
+        //             (result) => {
+        //                 result.calles.forEach((loc) => {
+        //                     callesLocalidad.push({ value: loc.id, label: loc.nombre });
+        //                 });
+        //                 total = result.total;
+        //             },
+        //             (error) => {
+        //                 console.log(error);
+        //             }
+        //         );
+        // }
+        //
+        // this.setState({ calles: callesLocalidad });
     }
 
     eliminarImg() {
@@ -249,7 +268,7 @@ class AltaCountry extends Component {
         await Database.collection('Country')
             .add({
                 Nombre: this.state.nombre,
-                Calle: this.state.calleBarrio,
+                Calle: this.state.calle,
                 Departamento: this.state.departamentoBarrio,
                 Localidad: this.state.localidadBarrio,
                 Numero: this.state.numero,
@@ -325,17 +344,13 @@ class AltaCountry extends Component {
                             </div>
                             <div className="row-secction col-md-3">
                                 <label> Calle </label>
-                                <Select
-                                    className="select-documento"
-                                    classNamePrefix="select"
-                                    isDisabled={false}
-                                    isLoading={false}
-                                    isClearable={true}
-                                    isSearchable={true}
-                                    value={this.state.calleBarrio}
-                                    options={this.state.calles}
-                                    onChange={this.ChangeCalle.bind(this)}
+                                <input
+                                    className={errorHTML.classNameError(this.errorCalle, 'form-control')}
+                                    placeholder="Calle"
+                                    value={this.state.calle}
+                                    onChange={this.ChangeCalle}
                                 />
+                                {errorHTML.errorLabel(this.errorCalle)}
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label> Número </label>

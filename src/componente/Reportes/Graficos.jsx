@@ -96,7 +96,7 @@ class Graficos extends Component {
             (this.state.anioDesde.value > this.state.anioHasta.value)) return false;
         console.log("Pasi 2");
         if (this.state.anioDesde.value  === this.state.anioHasta.value &&
-            (this.state.mesDesde.value > (this.state.mesHasta.value - 12))) return false;
+            (this.state.mesDesde.value >= (this.state.mesHasta.value - 12))) return false;
         console.log("Pasi 3");
         return true;
     }
@@ -162,15 +162,15 @@ class Graficos extends Component {
 
 
     pdf() {
-        let titulo = "LiveSafe - Reporte de "+ this.state.nombreReporte.toLowerCase() +" por mes - " +
+        let titulo = "LiveSafe - Reporte de "+ this.state.nombreReporte.toLowerCase() +" por mes, desde " +
             this.state.mesDesde.label + " " + this.state.anioDesde.label
-            + " - " + this.state.mesHasta.label + " " + this.state.anioHasta.label;
+            + " a " + this.state.mesHasta.label + " " + this.state.anioHasta.label;
         const pdf = new jsPDF('L', 'px');
         html2canvas(document.querySelector("#reporte")).then(canvas => {
             const imgData = canvas.toDataURL('image/png');
             pdf.text(titulo, 10, 20);
             pdf.addImage(imgData, 'PNG', 10, 30, 570, 320);
-            pdf.save(this.state.nombreReporte + "-por-mes.pdf ");
+            pdf.save(this.state.nombreReporte + "-por-mes.pdf");
         });
     }
 
