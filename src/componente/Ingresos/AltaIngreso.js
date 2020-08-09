@@ -554,10 +554,10 @@ class AltaIngreso extends Component {
                             <table className="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Indice</th>
+                                        <th scope="col">Índice</th>
                                         <th scope="col">Tipo Documento</th>
                                         <th scope="col">Documento</th>
-                                        <th scope="col">Apellido y Nombre</th>
+                                        <th scope="col">Nombre y Apellido</th>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -354,7 +354,7 @@ class PrincipalEncargado extends Component {
                             <thead>
                                 <tr>
                                     <th style={{ textAlign: 'center' }} scope="col">
-                                        Indice
+                                        Índice
                                     </th>
                                     <th style={{ textAlign: 'center' }} scope="col">
                                         Nombre y Apellido
