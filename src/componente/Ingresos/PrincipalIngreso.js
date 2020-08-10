@@ -375,6 +375,9 @@ class PrincialIngreso extends Component {
                                         Nombre y Apellido
                                     </th>
                                     <th style={{ textAlign: 'center' }} scope="col">
+                                        Tipo Documento
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
                                         Documento
                                     </th>
                                     <th style={{ textAlign: 'center' }} scope="col">
@@ -396,9 +399,12 @@ class PrincialIngreso extends Component {
                                             <th style={{ textAlign: 'center' }} scope="row">
                                                 {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
                                             </th>
-                                            <th style={{ textAlign: 'center' }} scope="row">
+                                            <td style={{ textAlign: 'center' }} scope="row">
                                                 {ing[0].Nombre} {ing[0].Apellido}
-                                            </th>
+                                            </td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                {operacion.obtenerDocumentoLabel(ing[0].TipoDocumento.id, this.state.tipoD)}
+                                            </td>
                                             <td style={{ textAlign: 'center' }}>{ing[0].Documento}</td>
                                             <td style={{ textAlign: 'center' }}>
                                                 {hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}
@@ -408,7 +414,6 @@ class PrincialIngreso extends Component {
                                                 <Button
                                                     bsStyle="warning"
                                                     fill
-                                                    wd
                                                     onClick={() => {
                                                         console.log('cancelar');
                                                     }}>

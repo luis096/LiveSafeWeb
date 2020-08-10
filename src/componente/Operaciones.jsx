@@ -1,5 +1,5 @@
 import React from 'react';
-import { Database } from '../config/config';
+import {Database} from '../config/config';
 
 const PERFILES = ['/Root/', '/Administradores/', '/Encargados/', '/Propietarios/'];
 const DIAS = ['Lun', 'Mar','Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
@@ -23,7 +23,8 @@ export const operacion = {
     registroConExito,
     obtenerMeses,
     obtenerAnios,
-    obtenerMesesLabels
+    obtenerMesesLabels,
+    sinResultados
 };
 
 async function obtenerTiposDocumento() {
@@ -147,4 +148,15 @@ function obtenerMesesLabels(desde, hasta, mismoAnio) {
     }
 
     return labels;
+}
+
+function sinResultados() {
+    let obj = {
+        title: <span style={{color: "black"}} data-notify="icon" className="pe-7s-attention"/>,
+        message: (<div style={{color: "black"}}>No se encontraron resultados.</div>),
+        level: "warning",
+        position: "bc",
+        autoDismiss: 3
+    };
+    return obj;
 }

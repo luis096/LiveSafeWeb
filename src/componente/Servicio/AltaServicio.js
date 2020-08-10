@@ -90,6 +90,7 @@ class AltaServicio extends Component {
 
     async actualizarHorasMax() {
         await this.setState({ turnosMaxSelect: [] });
+        await this.setState({ turnosMax: null });
 
         if (!this.state.duracionTurno || !this.state.duracionTurno.value) return;
         let cantidad = 24 / this.state.duracionTurno.value;
@@ -304,6 +305,11 @@ class AltaServicio extends Component {
         });
     }
 
+    verCalendar() {
+
+        this.setState({duracionTurno: null, turnosMax: null , verCalendar: false});
+    }
+
     render() {
         return (
             <div className="col-12">
@@ -341,6 +347,7 @@ class AltaServicio extends Component {
                                 <label>Duración de turno</label>
                                 <Select
                                     isClearable={true}
+                                    isDisabled={this.state.verCalendar}
                                     value={this.state.duracionTurno}
                                     options={this.state.turnoSelect}
                                     onChange={this.ChangeSelectTurno.bind(this)}
@@ -355,7 +362,7 @@ class AltaServicio extends Component {
                                     onChange={this.ChangeSelectTurnosMax.bind(this)}
                                 />
                             </div>
-                            <div className="row-secction col-md-1">
+                            <div className="row-secction col-md-1" hidden={!!this.state.verCalendar}>
                                 <br />
                                 <Button
                                     bsStyle="warning"
@@ -363,6 +370,15 @@ class AltaServicio extends Component {
                                     disabled={!this.state.duracionTurno}
                                     onClick={() => this.setState({ verCalendar: true })}>
                                     Agregar horarios
+                                </Button>
+                            </div>
+                            <div className="row-secction col-md-1" hidden={!this.state.verCalendar}>
+                                <br />
+                                <Button
+                                    bsStyle="danger"
+                                    fill
+                                    onClick={() => this.verCalendar()}>
+                                    X
                                 </Button>
                             </div>
                         </div>

@@ -103,7 +103,10 @@ class Graficos extends Component {
 
     async consultar(tipo) {
         let ingresos = [];
-        if (!this.isValidRangeDate()) return;
+        if (!this.isValidRangeDate()) {
+            this.notificationSystem.current.addNotification(operacion.error("Error en rango de fechas ingresados."));
+            return;
+        }
 
         let mismoAnio = (this.state.anioDesde.value === this.state.anioHasta.value);
 

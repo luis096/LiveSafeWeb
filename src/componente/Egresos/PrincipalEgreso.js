@@ -432,7 +432,6 @@ class PrincialEgreso extends Component {
                                                 <Button
                                                     bsStyle="warning"
                                                     fill
-                                                    wd
                                                     onClick={() => {
                                                         console.log('cancelar');
                                                     }}>

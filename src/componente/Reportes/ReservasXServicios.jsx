@@ -70,6 +70,12 @@ class ReservasXServicios extends Component {
         return color;
     }
 
+    isValidRangeDate() {
+        if (!this.state.desde || !this.state.hasta) return false;
+        if (this.state.desde >= this.state.hasta) return false;
+        return true;
+    }
+
     async consultar() {
         let servicios = [];
         let reservas = [];
@@ -77,6 +83,11 @@ class ReservasXServicios extends Component {
         let color = [];
         let porcentajes = [];
         let idCountryStorage = localStorage.getItem('idCountry');
+
+        if (!this.isValidRangeDate()) {
+            this.notificationSystem.current.addNotification(operacion.error("Error en rango de fechas ingresados."));
+            return;
+        }
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Servicios')
             .get().then(querySnapshot => {
@@ -103,6 +114,7 @@ class ReservasXServicios extends Component {
 
         if (!reservas.length) {
             this.setState({sinDatos: true});
+            this.notificationSystem.current.addNotification(operacion.sinResultados());
             return;
         }
 
