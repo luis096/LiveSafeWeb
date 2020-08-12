@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import '../Style/Alta.css';
-import {Database, Storage} from '../../config/config';
+import { Database, Storage } from '../../config/config';
 import Button from 'components/CustomButton/CustomButton.jsx';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { operacion } from '../Operaciones';
 import { errorHTML } from '../Error';
 import { validator } from '../validator';
-import { style } from "../../variables/Variables";
-import NotificationSystem from "react-notification-system";
-import Select from "react-select";
+import { style } from '../../variables/Variables';
+import NotificationSystem from 'react-notification-system';
+import Select from 'react-select';
 
 class EditarCountry extends Component {
     constructor(props) {
@@ -27,9 +27,9 @@ class EditarCountry extends Component {
             imgStorgeRef: '',
             borrar: false,
             departamento: [],
-            departamentoBarrio: {label: "Select..."},
+            departamentoBarrio: { label: 'Seleccione un departamento' },
             localidades: [],
-            localidadBarrio: {label: "Select..."}
+            localidadBarrio: { label: 'Seleccione una localidad' },
         };
         this.notificationSystem = React.createRef();
 
@@ -48,47 +48,51 @@ class EditarCountry extends Component {
         const url = this.props.location.pathname.split('/');
         this.idBarrio = url[url.length - 1];
 
-
-        this.errorNombre = {error: false, mensaje: ''};
-        this.errorTitular = {error: false, mensaje: ''};
-        this.errorCalle = {error: false, mensaje: ''};
-        this.errorCelular= {error:false, mensaje:''};
-        this.errorNumero= {error:false, mensaje:''};
-        this.errorDescripcion= {error:false, mensaje:''}
+        this.errorNombre = { error: false, mensaje: '' };
+        this.errorTitular = { error: false, mensaje: '' };
+        this.errorCalle = { error: false, mensaje: '' };
+        this.errorCelular = { error: false, mensaje: '' };
+        this.errorNumero = { error: false, mensaje: '' };
+        this.errorDescripcion = { error: false, mensaje: '' };
     }
-
 
     async componentDidMount() {
         document.getElementById('imgBarrio').src = '';
         try {
-            await Database.collection('Country').doc(this.idBarrio).get().then(doc=> {
-                if (doc.exists) {
-                    this.setState({
-                        nombre: doc.data().Nombre,
-                        calle: doc.data().Calle,
-                        localidadBarrio: doc.data().Localidad,
-                        departamentoBarrio: doc.data().Departamento,
-                        numero: doc.data().Numero,
-                        titular: doc.data().Titular,
-                        celular: doc.data().Celular,
-                        fechaAlta: doc.data().FechaAlta,
-                        descripcion: doc.data().Descripcion,
-                        imagenCountry: doc.data().Imagen
-                    });
-                }
-            }).catch((error) => {
-                this.notificationSystem.current.addNotification(operacion.error(error.message));
-            });
+            await Database.collection('Country')
+                .doc(this.idBarrio)
+                .get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        this.setState({
+                            nombre: doc.data().Nombre,
+                            calle: doc.data().Calle,
+                            localidadBarrio: doc.data().Localidad,
+                            departamentoBarrio: doc.data().Departamento,
+                            numero: doc.data().Numero,
+                            titular: doc.data().Titular,
+                            celular: doc.data().Celular,
+                            fechaAlta: doc.data().FechaAlta,
+                            descripcion: doc.data().Descripcion,
+                            imagenCountry: doc.data().Imagen,
+                        });
+                    }
+                })
+                .catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
+                });
         } catch (e) {
             this.notificationSystem.current.addNotification(operacion.error(e.message));
         }
 
         let depto = [];
 
-        fetch("https://apis.datos.gob.ar/georef/api/departamentos?provincia=14&max=1000").then(res => res.json())
-            .then((result) => {
-                    result.departamentos.forEach(loc => {
-                        depto.push({value: loc.id, label: loc.nombre})
+        fetch('https://apis.datos.gob.ar/georef/api/departamentos?provincia=14&max=1000')
+            .then((res) => res.json())
+            .then(
+                (result) => {
+                    result.departamentos.forEach((loc) => {
+                        depto.push({ value: loc.id, label: loc.nombre });
                     });
 
                     depto = depto.sort(function (a, b) {
@@ -100,51 +104,63 @@ class EditarCountry extends Component {
                         }
                         return 0;
                     });
-                }
-                , (error) => {
+                },
+                (error) => {
                     console.log(error);
-                });
+                }
+            );
 
-        this.setState({departamentos: depto});
+        this.setState({ departamentos: depto });
 
         if (!!this.state.imagenCountry) {
-            this.setState({imgStorgeRef: Storage.ref(this.state.imagenCountry), upLoadValue: 100});
-            Storage.ref(this.state.imagenCountry).getDownloadURL().then((url)=>{
-                document.getElementById('imgBarrio').src = url;
-            }).catch((error) => {
-                this.notificationSystem.current.addNotification(operacion.error(error.message));
-            });
+            this.setState({ imgStorgeRef: Storage.ref(this.state.imagenCountry), upLoadValue: 100 });
+            Storage.ref(this.state.imagenCountry)
+                .getDownloadURL()
+                .then((url) => {
+                    document.getElementById('imgBarrio').src = url;
+                })
+                .catch((error) => {
+                    this.notificationSystem.current.addNotification(operacion.error(error.message));
+                });
         } else {
-            this.setState({borrar: true});
+            this.setState({ borrar: true });
         }
     }
 
     ChangeNombre(event) {
-        this.setState({nombre: event.target.value});
-        if (event.target.value === "")
-        {this.errorNombre= validator.requerido(event.target.value)}
-        else{this.errorNombre =validator.soloLetras(event.target.value)}
+        this.setState({ nombre: event.target.value });
+        if (event.target.value === '') {
+            this.errorNombre = validator.requerido(event.target.value);
+        } else {
+            this.errorNombre = validator.soloLetras(event.target.value);
+        }
     }
 
-
     ChangeCalle(event) {
-        this.setState({calle: event.target.value});
-        if (event.target.value === "")
-        {this.errorCalle= validator.requerido(event.target.value)}
-        else{this.errorCalle =validator.soloLetras(event.target.value)}
+        this.setState({ calle: event.target.value });
+        if (event.target.value === '') {
+            this.errorCalle = validator.requerido(event.target.value);
+        } else {
+            this.errorCalle = validator.soloLetras(event.target.value);
+        }
     }
 
     ChangeDto(event) {
         let localidades = [];
-        this.setState({calleBarrio: {value: null, label: "Select..."}});
-        this.setState({localidadBarrio: {value: null, label: "Select..."}});
+        this.setState({ calleBarrio: { value: null, label: 'Select...' } });
+        this.setState({ localidadBarrio: { value: null, label: 'Seleccione una localidad' } });
 
         if (!!event) {
-            fetch("https://apis.datos.gob.ar/georef/api/localidades-censales?provincia=cordoba&departamento="
-                + event.value.toString() + "&max=1000&formato=json").then(res => res.json())
-                .then((result) => {
-                        result.localidades_censales.forEach(loc => {
-                            localidades.push({value: loc.id, label: loc.nombre})
+            fetch(
+                'https://apis.datos.gob.ar/georef/api/localidades-censales?provincia=cordoba&departamento=' +
+                event.value.toString() +
+                '&max=1000&formato=json'
+            )
+                .then((res) => res.json())
+                .then(
+                    (result) => {
+                        result.localidades_censales.forEach((loc) => {
+                            localidades.push({ value: loc.id, label: loc.nombre });
                         });
 
                         localidades = localidades.sort(function (a, b) {
@@ -156,46 +172,50 @@ class EditarCountry extends Component {
                             }
                             return 0;
                         });
-                    }
-                    , (error) => {
+                    },
+                    (error) => {
                         console.log(error);
-                    });
+                    }
+                );
         }
-        this.setState({localidades: localidades});
-        this.setState({departamentoBarrio: event});
+        this.setState({ localidades: localidades });
+        this.setState({ departamentoBarrio: event });
     }
 
     ChangeLoc(event) {
-        this.setState({localidadBarrio: event});
+        this.setState({ localidadBarrio: event });
     }
 
     ChangeNumero(event) {
-        this.setState({numero: event.target.value});
-        if (event.target.value === "") {
-            this.errorNumero = validator.requerido(event.target.value)
+        this.setState({ numero: event.target.value });
+        if (event.target.value === '') {
+            this.errorNumero = validator.requerido(event.target.value);
         } else {
-            this.errorNumero = validator.numero(event.target.value)
+            this.errorNumero = validator.numero(event.target.value);
         }
     }
 
     ChangeCelular(event) {
-        this.setState({celular: event.target.value});
-        if (event.target.value === "")
-        {this.errorCelular= validator.requerido(event.target.value)}
-        else{this.errorCelular =validator.numero(event.target.value)}
+        this.setState({ celular: event.target.value });
+        if (event.target.value === '') {
+            this.errorCelular = validator.requerido(event.target.value);
+        } else {
+            this.errorCelular = validator.numero(event.target.value);
+        }
     }
 
     ChangeTitular(event) {
-        this.setState({titular: event.target.value});
-        if (event.target.value === "")
-        {this.errorTitular= validator.requerido(event.target.value)}
-        else{this.errorTitular =validator.soloLetras(event.target.value)}
+        this.setState({ titular: event.target.value });
+        if (event.target.value === '') {
+            this.errorTitular = validator.requerido(event.target.value);
+        } else {
+            this.errorTitular = validator.soloLetras(event.target.value);
+        }
     }
 
     ChangeDescripcion(event) {
-        this.setState({descripcion: event.target.value});
+        this.setState({ descripcion: event.target.value });
         this.errorDescripcion = validator.soloLetras(event.target.value);
-
     }
 
     handleFiles(event) {
@@ -204,84 +224,101 @@ class EditarCountry extends Component {
         const storageRef = Storage.ref(name);
         const task = storageRef.put(file);
 
-        this.setState({imgStorgeRef: storageRef, imagenCountry: name});
-        task.on('state_changed', (snapshot) => {
-            let porcentaje = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            this.setState({
-                upLoadValue: porcentaje
-            });
-        }, error=> {
+        this.setState({ imgStorgeRef: storageRef, imagenCountry: name });
+        task.on(
+            'state_changed',
+            (snapshot) => {
+                let porcentaje = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                this.setState({
+                    upLoadValue: porcentaje,
+                });
+            },
+            (error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
-        }, ()=> {
-            this.setState({
-                upLoadValue: 100,
-            });
-            Storage.ref(name).getDownloadURL().then((url)=>{
-                document.getElementById('imgBarrio').src = url;
-            }).catch((error) => {
-                this.notificationSystem.current.addNotification(operacion.error(error.message));
-            });
-        })
+            },
+            () => {
+                this.setState({
+                    upLoadValue: 100,
+                });
+                Storage.ref(name)
+                    .getDownloadURL()
+                    .then((url) => {
+                        document.getElementById('imgBarrio').src = url;
+                    })
+                    .catch((error) => {
+                        this.notificationSystem.current.addNotification(operacion.error(error.message));
+                    });
+            }
+        );
     }
 
     eliminarImg() {
-        if (this.state.borrar){
-            this.state.imgStorgeRef.delete().then(() => {
-                document.getElementById('imgBarrio').src = '';
-                this.setState({imgStorgeRef: '', upLoadValue: 0, name: ''})
-            }).catch((error) => {
-                console.log('Error:', error)
-            });
+        if (this.state.borrar) {
+            this.state.imgStorgeRef
+                .delete()
+                .then(() => {
+                    document.getElementById('imgBarrio').src = '';
+                    this.setState({ imgStorgeRef: '', upLoadValue: 0, name: '' });
+                })
+                .catch((error) => {
+                    console.log('Error:', error);
+                });
         } else {
             document.getElementById('imgBarrio').src = '';
-            this.setState({imgStorgeRef: '', upLoadValue: 0, name: ''})
-            this.setState({borrar: true});
+            this.setState({ imgStorgeRef: '', upLoadValue: 0, name: '' });
+            this.setState({ borrar: true });
         }
     }
 
     async registrar() {
-       //  if (this.state.nombre == "" || this.state.calle == "" || this.state.numero =="" || this.state.titular == "" ||
-       //  this.state.celular == "" ) {
-       //     operacion.sinCompletar("Debe completar todos los campos requeridos")
-       //     return
-       // }
-        await Database.collection('Country').doc(this.idBarrio).update({
-            Nombre: this.state.nombre,
-            Calle: this.state.calle,
-            Numero: this.state.numero,
-            Titular: this.state.titular,
-            Celular: this.state.celular,
-            Descripcion: this.state.descripcion,
-            Imagen: this.state.imagenCountry
-        }).catch((error) => {
-            this.notificationSystem.current.addNotification(operacion.error(error.message));
-        });
+        //  if (this.state.nombre == "" || this.state.calle == "" || this.state.numero =="" || this.state.titular == "" ||
+        //  this.state.celular == "" ) {
+        //     operacion.sinCompletar("Debe completar todos los campos requeridos")
+        //     return
+        // }
+        await Database.collection('Country')
+            .doc(this.idBarrio)
+            .update({
+                Nombre: this.state.nombre,
+                Calle: this.state.calle,
+                Numero: this.state.numero,
+                Titular: this.state.titular,
+                Celular: this.state.celular,
+                Descripcion: this.state.descripcion,
+                Imagen: this.state.imagenCountry,
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
     }
-
 
     render() {
         return (
             <div className="col-12">
-                <legend><h3 className="row">Editar barrio</h3></legend>
+                <legend>
+                    <h3 className="row">Editar country</h3>
+                </legend>
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
                         <div className="row">
-                        <div className="col-md-6 row-secction">
-                                <label> Nombre del barrio </label>
-                                <input className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
-                                       placeholder="Nombre"
-                                       value={this.state.nombre}
-                                       onChange={this.ChangeNombre}
+                            <div className="col-md-6 row-secction">
+                                <label> Nombre del country </label>
+                                <input
+                                    className={errorHTML.classNameError(this.errorNombre, 'form-control')}
+                                    placeholder="Nombre"
+                                    value={this.state.nombre}
+                                    onChange={this.ChangeNombre}
                                 />
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-6 row-secction">
                                 <label> Titular </label>
-                                <input className={ errorHTML.classNameError(this.errorTitular, 'form-control') }
-                                       placeholder="Titular"
-                                       value={this.state.titular}
-                                       onChange={this.ChangeTitular}
+                                <input
+                                    className={errorHTML.classNameError(this.errorTitular, 'form-control')}
+                                    placeholder="Titular"
+                                    value={this.state.titular}
+                                    onChange={this.ChangeTitular}
                                 />
                                 {errorHTML.errorLabel(this.errorTitular)}
                             </div>
@@ -327,48 +364,56 @@ class EditarCountry extends Component {
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label> Número </label>
-                                <input className={ errorHTML.classNameError(this.errorNumero, 'form-control') }
-                                       placeholder="Número"
-                                       value={this.state.numero}
-                                       onChange={this.ChangeNumero}/>
+                                <input
+                                    className={errorHTML.classNameError(this.errorNumero, 'form-control')}
+                                    placeholder="Número"
+                                    value={this.state.numero}
+                                    onChange={this.ChangeNumero}
+                                />
                                 {errorHTML.errorLabel(this.errorNumero)}
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-md-4 row-secction">
                                 <label> Celular </label>
-                                <input className={errorHTML.classNameError(this.errorCelular, 'form-control')}
-                                       placeholder="Celular"
-                                       value={this.state.celular}
-                                       onChange={this.ChangeCelular}/>
+                                <input
+                                    className={errorHTML.classNameError(this.errorCelular, 'form-control')}
+                                    placeholder="Celular"
+                                    value={this.state.celular}
+                                    onChange={this.ChangeCelular}
+                                />
                                 {errorHTML.errorLabel(this.errorCelular)}
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-md-6 row-secction">
                                 <label> Descripción </label>
-                                <textarea className={ errorHTML.classNameError(this.errorDescripcion, 'form-control') }
-                                          rows="3"
-                                          placeholder="Description"
-                                          value={this.state.descripcion}
-                                          onChange={this.ChangeDescripcion}/>
-                              {errorHTML.errorLabel(this.errorDescripcion)}
+                                <textarea
+                                    className={errorHTML.classNameError(this.errorDescripcion, 'form-control')}
+                                    rows="3"
+                                    placeholder="Descripción"
+                                    value={this.state.descripcion}
+                                    onChange={this.ChangeDescripcion}
+                                />
+                                {errorHTML.errorLabel(this.errorDescripcion)}
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-md-12 row-secction">
-                                <label> Imagen del barrio </label>
+                                <label> Imagen del country </label>
                                 <div hidden={!!this.state.upLoadValue}>
                                     <div hidden={!this.state.upLoadValue}>
-                                        <progress value={this.state.upLoadValue} max='100'>
+                                        <progress value={this.state.upLoadValue} max="100">
                                             {this.state.upLoadValue}%
                                         </progress>
                                     </div>
-                                    <input type="file" onChange={this.handleFiles}/>
+                                    <input type="file" onChange={this.handleFiles} />
                                 </div>
-                                <img width="320" id="imgBarrio"/>
+                                <img width="320" id="imgBarrio" />
                                 <div hidden={this.state.upLoadValue != 100}>
-                                    <Button bsStyle="warning" fill onClick={this.eliminarImg}>X</Button>
+                                    <Button bsStyle="warning" fill onClick={this.eliminarImg}>
+                                        X
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -380,10 +425,9 @@ class EditarCountry extends Component {
                     </Button>
                 </div>
                 <div>
-                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                    <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
             </div>
-
         );
     }
 }

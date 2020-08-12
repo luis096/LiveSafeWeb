@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { Grid, Row, Col } from "react-bootstrap";
-import {Calendar, momentLocalizer} from "react-big-calendar";
+import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Card from "components/Card/Card.jsx";
 import { events } from "variables/Variables.jsx";
 
 const localizer = momentLocalizer(moment);
- 
+
 class CalendarComponent extends Component {
   constructor(props) {
     super(props);
@@ -30,7 +30,7 @@ class CalendarComponent extends Component {
           validationMsg={'El nombre es requerido para realizar la reserva.'}
           showCancel
           style={{ display: "block", marginTop: "-100px", position: "center" }}
-          title="Ingrese nombre del evento"
+          title="Ingrese el nombre de la reserva"
           onConfirm={e => this.addNewEvent(e, slotInfo)}
           onCancel={() => this.hideAlert()}
           confirmBtnBsStyle="info"

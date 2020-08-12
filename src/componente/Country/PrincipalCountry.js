@@ -208,7 +208,7 @@ class PrincipalCountry extends Component {
                         <h5 className="row">Filtros de búsqueda </h5>
                         <div className="row">
                             <div className="col-md-3 row-secction">
-                                <label>Nombre del barrio</label>
+                                <label>Nombre del country</label>
                                 <input
                                     className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                     value={this.state.nombre}
@@ -223,7 +223,7 @@ class PrincipalCountry extends Component {
                                     className={errorHTML.classNameError(this.errorTitular, 'form-control')}
                                     value={this.state.titular}
                                     onChange={this.ChangeTitular}
-                                    placeholder="Apellido"
+                                    placeholder="Titular"
                                 />
                                 {errorHTML.errorLabel(this.errorTitular)}
                             </div>
@@ -318,9 +318,7 @@ class PrincipalCountry extends Component {
                                             <td style={{ textAlign: 'center' }}>{bar[0].Titular}</td>
                                             <td style={{ textAlign: 'center' }}>{bar[0].Calle + ' ' + bar[0].Numero}</td>
                                             <td style={{ textAlign: 'center' }}>{bar[0].Celular}</td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                {hora.toLocaleDateString()}
-                                            </td>
+                                            <td style={{ textAlign: 'center' }}>{hora.toLocaleDateString()}</td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <Link to={editar}>
                                                     <Button bsStyle="warning" fill wd>

@@ -26,7 +26,7 @@ class EditarEncargado extends Component {
             usuario: '',
             idCountry: '',
             tipoD: [],// Para cargar el combo
-            temp: '', 
+            temp: '',
             resultado: ''
         };
         this.notificationSystem = React.createRef();
@@ -43,20 +43,20 @@ class EditarEncargado extends Component {
         const url = this.props.location.pathname.split('/');
         this.idEncargado = url[url.length - 1];
 
-        this.errorTipoDocumento = {error: false, mensaje: ''};
-        this.errorNombre = {error: false, mensaje: ''};
-        this.errorApellido = {error: false, mensaje: ''};
-        this.errorDocumento = {error: false, mensaje: ''};
-        this.errorCelular= {error:false, mensaje:''};
+        this.errorTipoDocumento = { error: false, mensaje: '' };
+        this.errorNombre = { error: false, mensaje: '' };
+        this.errorApellido = { error: false, mensaje: '' };
+        this.errorDocumento = { error: false, mensaje: '' };
+        this.errorCelular = { error: false, mensaje: '' };
 
     }
 
     async componentDidMount() {
-        const {tipoD, encargados} = this.state;
-        await Database.collection('TipoDocumento').get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
+        const { tipoD, encargados } = this.state;
+        await Database.collection('TipoDocumento').get().then(querySnapshot => {
+            querySnapshot.forEach(doc => {
                 this.state.tipoD.push(
-                    {value: doc.id, label: doc.data().Nombre}
+                    { value: doc.id, label: doc.data().Nombre }
                 );
             });
         }).catch((error) => {
@@ -64,7 +64,7 @@ class EditarEncargado extends Component {
         });
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Encargados').doc(this.idEncargado).get()
-            .then(doc=> {
+            .then(doc => {
                 if (doc.exists) {
                     this.state.encargados.push(doc.data());
                 } else {
@@ -73,13 +73,13 @@ class EditarEncargado extends Component {
             }).catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        this.setState({tipoD});
-        this.setState({encargados});
+        this.setState({ tipoD });
+        this.setState({ encargados });
         const estrella = this.state.encargados[0];
         await Database.collection('TipoDocumento').doc(estrella.TipoDocumento.id).get()
-            .then(doc=> {
+            .then(doc => {
                 if (doc.exists) {
-                    this.state.tipoDocumento = {value: doc.id, label: doc.data().Nombre};
+                    this.state.tipoDocumento = { value: doc.id, label: doc.data().Nombre };
                 }
             }).catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
@@ -100,69 +100,65 @@ class EditarEncargado extends Component {
     async editEncargado() {
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Encargados').doc(this.idEncargado).set({
-            Nombre: this.state.nombre,
-            Apellido: this.state.apellido,
-            Celular: this.state.celular,
-            TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
-            Documento: this.state.documento,
-            FechaNacimiento:  new Date(this.state.fechaNacimiento),
-            FechaAlta: this.state.fechaAlta,
-            Usuario: this.state.usuario
-        }).catch((error) => {
+                Nombre: this.state.nombre,
+                Apellido: this.state.apellido,
+                Celular: this.state.celular,
+                TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumento.valueOf().value),
+                Documento: this.state.documento,
+                FechaNacimiento: new Date(this.state.fechaNacimiento),
+                FechaAlta: this.state.fechaAlta,
+                Usuario: this.state.usuario
+            }).catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
     }
 
     ChangeNombre(event) {
-        this.setState({nombre: event.target.value});
-        if (event.target.value == "")
-        {this.errorNombre= validator.requerido(event.target.value)}
-        else{this.errorNombre =validator.soloLetras(event.target.value)}
+        this.setState({ nombre: event.target.value });
+        if (event.target.value == "") { this.errorNombre = validator.requerido(event.target.value) }
+        else { this.errorNombre = validator.soloLetras(event.target.value) }
     }
 
     ChangeApellido(event) {
-        this.setState({apellido: event.target.value});
-        if (event.target.value == "")
-        {this.errorApellido = validator.requerido(event.target.value)}
-        else{this.errorApellido =validator.soloLetras(event.target.value)}
+        this.setState({ apellido: event.target.value });
+        if (event.target.value == "") { this.errorApellido = validator.requerido(event.target.value) }
+        else { this.errorApellido = validator.soloLetras(event.target.value) }
 
     }
 
     ChangeNumero(event) {
-        this.setState({numero: event.target.value});
+        this.setState({ numero: event.target.value });
 
     }
 
     ChangeDocumento(event) {
-        this.setState({documento: event.target.value});
-        if (event.target.value == "")
-        {this.errorDocumento = validator.requerido(event.target.value)}
-        else{this.errorDocumento =validator.numero(event.target.value)}
+        this.setState({ documento: event.target.value });
+        if (event.target.value == "") { this.errorDocumento = validator.requerido(event.target.value) }
+        else { this.errorDocumento = validator.numero(event.target.value) }
 
     }
 
     ChangeCelular(event) {
-        this.setState({celular: event.target.value});
-        if (event.target.value == "")
-        {this.errorCelular = validator.requerido(event.target.value)}
-        else{this.errorCelular =validator.numero(event.target.value)}
+        this.setState({ celular: event.target.value });
+        if (event.target.value == "") { this.errorCelular = validator.requerido(event.target.value) }
+        else { this.errorCelular = validator.numero(event.target.value) }
 
     }
 
- 
+
     ChangeSelect(value) {
-        this.setState({tipoDocumento: value});
+        this.setState({ tipoDocumento: value });
         this.errorTipoDocumento = validator.requerido(value ? value.value : null);
 
     }
 
     ChangeFechaNacimiento(event) {
-        this.setState({fechaNacimiento: event});
+        this.setState({ fechaNacimiento: event });
     }
 
     ChangeRadio(event) {
-        this.setState({titular: event.currentTarget.value});
+        this.setState({ titular: event.currentTarget.value });
     }
 
     registrar() {
@@ -175,88 +171,88 @@ class EditarEncargado extends Component {
     }
 
     render() {
-        return ( <div className="col-12">
-        <legend><h3 className="row">Editar Encargado</h3></legend>
-        {this.state.alert}
-        <div className="row card">
-            <div className="card-body">
-                <div className="row">
-                    <div className="col-md-4 row-secction">
-                        <label> Nombre </label>
-                        <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
-                               placeholder="Nombre"
-                               value={this.state.nombre}
-                               onChange={this.ChangeNombre}
-                        />
-                        {errorHTML.errorLabel(this.errorNombre)}
+        return (<div className="col-12">
+            <legend><h3 className="row">Editar Encargado</h3></legend>
+            {this.state.alert}
+            <div className="row card">
+                <div className="card-body">
+                    <div className="row">
+                        <div className="col-md-4 row-secction">
+                            <label> Nombre </label>
+                            <input type="name" className={errorHTML.classNameError(this.errorNombre, 'form-control')}
+                                placeholder="Nombre"
+                                value={this.state.nombre}
+                                onChange={this.ChangeNombre}
+                            />
+                            {errorHTML.errorLabel(this.errorNombre)}
+                        </div>
+                        <div className="col-md-4 row-secction">
+                            <label> Apellido </label>
+                            <input className={errorHTML.classNameError(this.errorApellido, 'form-control')}
+                                placeholder="Apellido"
+                                value={this.state.apellido}
+                                onChange={this.ChangeApellido} />
+                            {errorHTML.errorLabel(this.errorApellido)}
+                        </div>
+                        <div className="col-md-4 row-secction">
+                            <label> Fecha de Nacimiento </label>
+                            <Datetime
+                                inputProps={{ placeholder: 'Fecha de Nacimiento' }}
+                                timeFormat={false}
+                                value={this.state.fechaNacimiento}
+                                onChange={this.ChangeFechaNacimiento}
+                            />
+                        </div>
                     </div>
-                    <div className="col-md-4 row-secction">
-                        <label> Apellido </label>
-                        <input className={ errorHTML.classNameError(this.errorApellido, 'form-control') }
-                               placeholder="Apellido"
-                               value={this.state.apellido}
-                               onChange={this.ChangeApellido}/>
-                        {errorHTML.errorLabel(this.errorApellido)}
-                    </div>
-                    <div className="col-md-4 row-secction">
-                        <label> Fecha de Nacimiento </label>
-                        <Datetime
-                            inputProps={{placeholder: 'Fecha de Nacimiento'}}
-                            timeFormat={false}
-                            value={this.state.fechaNacimiento}
-                            onChange={this.ChangeFechaNacimiento}
-                        />
+                    <div className="row">
+                        <div className="col-md-4 row-secction">
+                            <label> Número de Documento </label>
+                            <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
+                                placeholder="Número de Documento"
+                                value={this.state.documento}
+                                onChange={this.ChangeDocumento} />
+                            {errorHTML.errorLabel(this.errorDocumento)}
+                        </div>
+                        <div className="col-md-4 row-secction">
+                            <label> Tipo de Documento </label>
+                            <Select
+                                isClearable={true}
+                                isSearchable={true}
+                                options={this.state.tipoD}
+                                value={this.state.tipoDocumento}
+                                onChange={this.ChangeSelect.bind(this)}
+                                styles={this.errorTipoDocumento.error ? {
+                                    control: (base, state) => ({
+                                        ...base,
+                                        borderColor: 'red',
+                                        boxShadow: 'red'
+                                    })
+                                } : {}}
+                            />
+                            <label className='small text-danger'
+                                hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
+                        </div>
+                        <div className="col-md-4 row-secction">
+                            <label> Celular </label>
+                            <input className={errorHTML.classNameError(this.errorCelular, 'form-control')}
+                                placeholder="Celular"
+                                value={this.state.celular}
+                                onChange={this.ChangeCelular}
+                            />
+                            {errorHTML.errorLabel(this.errorCelular)}
+                        </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-md-4 row-secction">
-                        <label> Número de Documento </label>
-                        <input className={ errorHTML.classNameError(this.errorDocumento, 'form-control') }
-                               placeholder="Número de Documento"
-                               value={this.state.documento}
-                               onChange={this.ChangeDocumento}/>
-                        {errorHTML.errorLabel(this.errorDocumento)}
-                    </div>
-                    <div className="col-md-4 row-secction">
-                        <label> Tipo de Documento </label>
-                        <Select
-                            isClearable={true}
-                            isSearchable={true}
-                            options={this.state.tipoD}
-                            value = {this.state.tipoDocumento }
-                            onChange={this.ChangeSelect.bind(this)}
-                            styles={this.errorTipoDocumento.error ? {
-                                control: (base, state)=>({
-                                    ...base,
-                                    borderColor: 'red',
-                                    boxShadow: 'red'
-                                })
-                            } : {}}
-                        />
-                        <label className='small text-danger'
-                               hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
-                    </div>
-                    <div className="col-md-4 row-secction">
-                        <label> Celular </label>
-                        <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
-                               placeholder="Celular"
-                               value={this.state.celular}
-                               onChange={this.ChangeCelular}
-                        />
-                        {errorHTML.errorLabel(this.errorCelular)}
-                    </div>
-                </div>
-                </div>
-        </div>
-        <div className="text-center">
-            <Button bsStyle="primary" fill wd onClick={this.registrar}>
-            Guardar Cambio
+            </div>
+            <div className="text-center">
+                <Button bsStyle="primary" fill wd onClick={this.registrar}>
+                    Guardar cambios
             </Button>
+            </div>
+            <div>
+                <NotificationSystem ref={this.notificationSystem} style={style} />
+            </div>
         </div>
-                <div>
-                    <NotificationSystem ref={this.notificationSystem} style={style}/>
-                </div>
-    </div>
         );
 
 

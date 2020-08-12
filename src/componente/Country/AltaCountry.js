@@ -23,9 +23,9 @@ class AltaCountry extends Component {
             upLoadValue: 0,
             imgStorgeRef: '',
             departamento: [],
-            departamentoBarrio: { label: 'Select...' },
+            departamentoBarrio: { label: 'Seleccione un departamento' },
             localidades: [],
-            localidadBarrio: { label: 'Select...' }
+            localidadBarrio: { label: 'Seleccione una localidad' },
         };
         this.notificationSystem = React.createRef();
         this.ChangeNombre = this.ChangeNombre.bind(this);
@@ -163,13 +163,13 @@ class AltaCountry extends Component {
 
     ChangeDto(event) {
         let localidades = [];
-        this.setState({ localidadBarrio: { value: null, label: 'Select...' } });
+        this.setState({ localidadBarrio: { value: null, label: 'Seleccione una localidad' } });
 
         if (!!event) {
             fetch(
                 'https://apis.datos.gob.ar/georef/api/localidades-censales?provincia=cordoba&departamento=' +
-                    event.value.toString() +
-                    '&max=1000&formato=json'
+                event.value.toString() +
+                '&max=1000&formato=json'
             )
                 .then((res) => res.json())
                 .then(
@@ -287,14 +287,14 @@ class AltaCountry extends Component {
         return (
             <div className="col-12">
                 <legend>
-                    <h3 className="row">Nuevo barrio</h3>
+                    <h3 className="row">Nuevo country</h3>
                 </legend>
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
                         <div className="row">
                             <div className="col-md-6 row-secction">
-                                <label> Nombre del barrio </label>
+                                <label> Nombre del country </label>
                                 <input
                                     className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                     placeholder="Nombre"
@@ -390,7 +390,7 @@ class AltaCountry extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-12 row-secction">
-                                <label> Imagen del barrio </label>
+                                <label> Imagen del country </label>
                                 <div hidden={!!this.state.upLoadValue}>
                                     <div hidden={!this.state.upLoadValue}>
                                         <progress value={this.state.upLoadValue} max="100">

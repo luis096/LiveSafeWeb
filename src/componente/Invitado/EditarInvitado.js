@@ -187,7 +187,7 @@ class EditarInvitado extends Component {
                                 <input
                                     type="name"
                                     className={errorHTML.classNameError(this.errorGrupo, 'form-control')}
-                                    placeholder="Name"
+                                    placeholder="Nombre"
                                     value={this.state.grupo}
                                     onChange={this.ChangeGrupo}
                                 />
@@ -277,7 +277,7 @@ class EditarInvitado extends Component {
                 </div>
                 <div className="text-center">
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
-                        Registrar
+                        Guardar cambios
                     </Button>
                 </div>
                 <div>

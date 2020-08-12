@@ -1,19 +1,19 @@
-import React, {Component} from 'react';
-import {Pie, Line} from "react-chartjs-2";
-import {Database} from "../../config/config";
-import {validator} from "../validator";
-import {Pagination} from "react-bootstrap";
+import React, { Component } from 'react';
+import { Pie, Line } from "react-chartjs-2";
+import { Database } from "../../config/config";
+import { validator } from "../validator";
+import { Pagination } from "react-bootstrap";
 import Button from 'components/CustomButton/CustomButton.jsx';
-import {Collapse} from 'reactstrap';
+import { Collapse } from 'reactstrap';
 import Card from 'components/Card/Card.jsx';
 import "./Graficos.css"
 import Select from "react-select";
-import {operacion} from "../Operaciones";
-import {detachMarkedSpans} from "codemirror/src/line/spans";
-import {errorHTML} from "../Error";
+import { operacion } from "../Operaciones";
+import { detachMarkedSpans } from "codemirror/src/line/spans";
+import { errorHTML } from "../Error";
 import Datetime from "react-datetime";
 import NotificationSystem from "react-notification-system";
-import {style} from "../../variables/Variables";
+import { style } from "../../variables/Variables";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -31,8 +31,8 @@ class ReservasXServicios extends Component {
             sinDatos: true,
             desde: null,
             hasta: null,
-            errorDesde: {error: false, mensaje: ''},
-            errorHasta: {error: false, mensaje: ''},
+            errorDesde: { error: false, mensaje: '' },
+            errorHasta: { error: false, mensaje: '' },
         };
         this.notificationSystem = React.createRef();
         this.consultar = this.consultar.bind(this);
@@ -46,7 +46,7 @@ class ReservasXServicios extends Component {
 
 
     ChangeDesde(event) {
-        this.setState({desde: new Date(event)});
+        this.setState({ desde: new Date(event) });
         this.setState({
             errorHasta: validator.fechaRango(new Date(event), this.state.hasta, true),
             errorDesde: validator.fechaRango(new Date(event), this.state.hasta, false),
@@ -54,7 +54,7 @@ class ReservasXServicios extends Component {
     }
 
     ChangeHasta(event) {
-        this.setState({hasta: new Date(event)});
+        this.setState({ hasta: new Date(event) });
         this.setState({
             errorHasta: validator.fechaRango(this.state.desde, new Date(event), false),
             errorDesde: validator.fechaRango(this.state.desde, new Date(event), true),
@@ -113,7 +113,7 @@ class ReservasXServicios extends Component {
             });
 
         if (!reservas.length) {
-            this.setState({sinDatos: true});
+            this.setState({ sinDatos: true });
             this.notificationSystem.current.addNotification(operacion.sinResultados());
             return;
         }
@@ -149,7 +149,7 @@ class ReservasXServicios extends Component {
     pdf() {
         let titulo = "LiveSafe - Reporte de reservas por servicio - " +
             this.state.desde.toLocaleDateString()
-            + " - " +  this.state.hasta.toLocaleDateString();
+            + " - " + this.state.hasta.toLocaleDateString();
 
         let porcentajes = "Porcentajes: ";
         this.state.servicio.labels.map((value, i) => {
@@ -161,7 +161,7 @@ class ReservasXServicios extends Component {
         html2canvas(document.querySelector("#reporte")).then(canvas => {
             const imgData = canvas.toDataURL('image/png');
             pdf.text(titulo, 10, 20);
-            pdf.text(porcentajes, 10, 40, {maxWidth: 600});
+            pdf.text(porcentajes, 10, 40, { maxWidth: 600 });
             pdf.addImage(imgData, 'PNG', -100, 100, 800, 300);
             pdf.save("Reservas-por-servicio.pdf");
         });
@@ -183,7 +183,7 @@ class ReservasXServicios extends Component {
                                     value={this.state.desde}
                                     onChange={this.ChangeDesde}
                                     timeFormat={false}
-                                    inputProps={{placeholder: 'Fecha Desde'}}
+                                    inputProps={{ placeholder: 'Fecha Desde' }}
                                 />
                                 <label className="small text-danger" hidden={!this.state.errorDesde.error}>
                                     {this.state.errorDesde.mensaje}
@@ -196,19 +196,19 @@ class ReservasXServicios extends Component {
                                     value={this.state.hasta}
                                     onChange={this.ChangeHasta}
                                     timeFormat={false}
-                                    inputProps={{placeholder: 'Fecha Hasta'}}
+                                    inputProps={{ placeholder: 'Fecha Hasta' }}
                                 />
                                 <label className="small text-danger" hidden={!this.state.errorHasta.error}>
                                     {this.state.errorHasta.mensaje}
                                 </label>
                             </div>
                             <div className="col-md-2 row-secction">
-                                <br/>
+                                <br />
                                 <Button bsStyle="primary" fill wd
-                                        disabled={this.state.errorHasta.error || this.state.errorDesde.error}
-                                        onClick={() => {
-                                            this.consultar()
-                                        }}>
+                                    disabled={this.state.errorHasta.error || this.state.errorDesde.error}
+                                    onClick={() => {
+                                        this.consultar()
+                                    }}>
                                     Consultar
                                 </Button>
                             </div>
@@ -222,14 +222,14 @@ class ReservasXServicios extends Component {
                         <div className='row'>
                             <div className="col-12">
                                 <Button bsStyle="warning" fill wd
-                                        disabled={!this.state.dataService}
-                                        onClick={() => {
-                                            this.setState({collapsed: !this.state.collapsed})
-                                        }}>
+                                    disabled={!this.state.dataService}
+                                    onClick={() => {
+                                        this.setState({ collapsed: !this.state.collapsed })
+                                    }}>
                                     Ver porcentajes
                                 </Button>
                                 <div hidden={this.state.dataService}>
-                                    <h5>No existen reservas realizadas en los servicios del barrio.</h5>
+                                    <h5>No existen reservas realizadas en los servicios del country.</h5>
                                 </div>
                                 <div className="conteiner-porcentajes" id="porcentajes">
                                     <Collapse isOpen={this.state.collapsed}>
@@ -238,13 +238,13 @@ class ReservasXServicios extends Component {
                                                 {
                                                     this.state.servicio && this.state.servicio.labels.map((value, i) => {
                                                         return (<div className="row-secction col-md-3 porcentajes">
-                                                                <div className="colorReference"
-                                                                     style={{background: this.state.servicio.color[i]}}>
-                                                                </div>
-                                                                <span className="servicioText">{value + ": " +
+                                                            <div className="colorReference"
+                                                                style={{ background: this.state.servicio.color[i] }}>
+                                                            </div>
+                                                            <span className="servicioText">{value + ": " +
                                                                 this.state.servicio.porcentajes[i].toFixed(2)
                                                                 + "%"}</span>
-                                                            </div>
+                                                        </div>
                                                         );
                                                     })}
                                             </div>
@@ -255,11 +255,11 @@ class ReservasXServicios extends Component {
                             </div>
                             <div id="reporte">
                                 <Pie data={this.state.dataService}
-                                     width={400} height={160}/>
+                                    width={400} height={160} />
                             </div>
                             <div className="text-center">
                                 <Button bsStyle="success" fill
-                                        onClick={() => { this.pdf() }}>
+                                    onClick={() => { this.pdf() }}>
                                     Descargar Grafico
                                 </Button>
                             </div>
@@ -270,12 +270,12 @@ class ReservasXServicios extends Component {
                 <div className="row card" hidden={!this.state.sinDatos}>
                     <div className="card-body">
                         <div className='row'>
-                            <h3>Sin datos</h3>
+                            <h3>No hay datos disponibles aún</h3>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                    <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
             </div>
         );

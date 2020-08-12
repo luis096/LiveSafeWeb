@@ -8,8 +8,8 @@ import { errorHTML } from '../Error';
 import Select from "react-select";
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
-import {operacion} from "../Operaciones";
-import {Col, Grid, Row} from "react-bootstrap";
+import { operacion } from "../Operaciones";
+import { Col, Grid, Row } from "react-bootstrap";
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import Card from 'components/Card/Card.jsx';
 import moment from 'moment';
@@ -35,8 +35,8 @@ class EditarServicio extends Component {
             max: new Date(2019, 0, 1, 23, 0),
             dias: null,
             turnosMax: null,
-            turnoSelect:[],
-            turnosMaxSelect:[],
+            turnoSelect: [],
+            turnosMaxSelect: [],
             duracionTurno: null,
         };
         this.notificationSystem = React.createRef();
@@ -45,15 +45,15 @@ class EditarServicio extends Component {
         const url = this.props.location.pathname.split('/');
         this.idServicio = url[url.length - 1];
 
-        this.errorNombre = {error: false, mensaje: ''};
+        this.errorNombre = { error: false, mensaje: '' };
     }
 
     async componentDidMount() {
         let turnos = [];
-        await Database.collection('Turnos').get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
+        await Database.collection('Turnos').get().then(querySnapshot => {
+            querySnapshot.forEach(doc => {
                 turnos.push(
-                    {value: doc.data().Duracion, label: doc.data().DuracionString}
+                    { value: doc.data().Duracion, label: doc.data().DuracionString }
                 );
             });
         }).catch((error) => {
@@ -66,10 +66,10 @@ class EditarServicio extends Component {
             return 0;
         });
 
-        this.setState({turnoSelect: turnos})
+        this.setState({ turnoSelect: turnos })
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Servicios').doc(this.idServicio).get().then(doc=> {
+            .collection('Servicios').doc(this.idServicio).get().then(doc => {
                 if (doc.exists) {
                     this.setState({
                         nombre: doc.data().Nombre,
@@ -86,30 +86,30 @@ class EditarServicio extends Component {
         let newEvents = [];
 
         let diaNumber = new Date().getDay();
-        if (diaNumber === 0 ) diaNumber = 7;
+        if (diaNumber === 0) diaNumber = 7;
         let fecha = new Date().getDate();
         let mes = new Date().getMonth();
         let anio = new Date().getFullYear();
 
         this.state.dias.forEach(dia => {
-           let horario = dia.horarios;
-           horario.forEach(value => {
+            let horario = dia.horarios;
+            horario.forEach(value => {
 
-               let diaOficial = 0;
-               let start = validator.obtenerFecha(value.desde);
-               let end = validator.obtenerFecha(value.hasta);
-               start.getDay()===0?diaOficial = 7:diaOficial = start.getDay();
-               let nuevoHorario = {
-                   title: "Reserva",
-                   color: "blue",
-                   start: new Date(anio, mes, (fecha + (diaOficial - diaNumber)), start.getHours(), start.getMinutes()),
-                   end: new Date(anio, mes, (fecha + (diaOficial - diaNumber)), end.getHours(), end.getMinutes()),
-               };
-               newEvents.push(nuevoHorario);
-           });
+                let diaOficial = 0;
+                let start = validator.obtenerFecha(value.desde);
+                let end = validator.obtenerFecha(value.hasta);
+                start.getDay() === 0 ? diaOficial = 7 : diaOficial = start.getDay();
+                let nuevoHorario = {
+                    title: "Reserva",
+                    color: "blue",
+                    start: new Date(anio, mes, (fecha + (diaOficial - diaNumber)), start.getHours(), start.getMinutes()),
+                    end: new Date(anio, mes, (fecha + (diaOficial - diaNumber)), end.getHours(), end.getMinutes()),
+                };
+                newEvents.push(nuevoHorario);
+            });
         });
 
-        this.setState({ events: newEvents});
+        this.setState({ events: newEvents });
 
         let hasta = 0;
         let desde = 24;
@@ -120,7 +120,7 @@ class EditarServicio extends Component {
             let dia = event.start.getDay();
             if (dia === 0) dia = 7;
             let id = horarios[dia - 1].horarios.length + 1;
-            horarios[dia - 1].horarios.push({desde: event.start, hasta: event.end, id: id});
+            horarios[dia - 1].horarios.push({ desde: event.start, hasta: event.end, id: id });
 
             if (event.start.getHours() < desde) desde = event.start.getHours();
             if (event.end.getHours() > hasta) hasta = event.end.getHours();
@@ -135,13 +135,13 @@ class EditarServicio extends Component {
     }
 
     async actualizarHorasMax() {
-        await this.setState({turnosMaxSelect: []});
+        await this.setState({ turnosMaxSelect: [] });
         if (!this.state.duracionTurno) return;
         let cantidad = 24 / (this.state.duracionTurno / 60);
-        for(var i = 1; i <= cantidad; i++) {
-            this.state.turnosMaxSelect.push({value: i, label:i.toString()});
+        for (var i = 1; i <= cantidad; i++) {
+            this.state.turnosMaxSelect.push({ value: i, label: i.toString() });
             if (i === this.state.turnosMax) {
-                this.setState({turnosMax: {value: i, label:i.toString()}})
+                this.setState({ turnosMax: { value: i, label: i.toString() } })
             }
         }
     }
@@ -149,22 +149,22 @@ class EditarServicio extends Component {
     async editServicio() {
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.idServicio).update({
-            Estado: this.state.estado,
-            TurnosMax: this.state.turnosMax.value
-        }).catch((error) => {
+                Estado: this.state.estado,
+                TurnosMax: this.state.turnosMax.value
+            }).catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
     }
 
     ChangeEstado() {
-        let {estado} = this.state;
+        let { estado } = this.state;
         estado = !estado;
-        this.setState({estado});
+        this.setState({ estado });
     }
 
     ChangeSelectTurnosMax(value) {
-        this.setState({turnosMax: value});
+        this.setState({ turnosMax: value });
     }
 
     registrar() {
@@ -181,29 +181,29 @@ class EditarServicio extends Component {
                         <div className="row">
                             <div className="row-secction col-md-3">
                                 <label> Nombre </label>
-                                <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') } placeholder="Nombre"
-                                       value={this.state.nombre} readOnly
+                                <input type="name" className={errorHTML.classNameError(this.errorNombre, 'form-control')} placeholder="Nombre"
+                                    value={this.state.nombre} readOnly
                                 />
                             </div>
                             <div className="row-secction col-md-2">
                                 <label>Disponibilidad del servicio</label>
                                 <div>
                                     <Switch onText="Si" offText="No"
-                                            value={this.state.estado}
-                                            onChange={()=> {
-                                                this.ChangeEstado();
-                                            }}/>
+                                        value={this.state.estado}
+                                        onChange={() => {
+                                            this.ChangeEstado();
+                                        }} />
                                 </div>
                             </div>
                             <div className="row-secction col-md-3">
-                                <label>Duración de turno</label>
+                                <label>Duración del turno</label>
                                 <input className='form-control' readOnly
-                                       value={(this.state.duracionTurno / 60) >= 1 ? (this.state.duracionTurno / 60) + ' Hs.':
-                                           (this.state.duracionTurno) + ' Min.'}
+                                    value={(this.state.duracionTurno / 60) >= 1 ? (this.state.duracionTurno / 60) + ' Hs.' :
+                                        (this.state.duracionTurno) + ' Min.'}
                                 />
                             </div>
                             <div className="row-secction col-md-3">
-                                <label>Turnos Maximos de Reserva</label>
+                                <label>Cantidad máxima de turnos</label>
                                 <Select
                                     isClearable={true}
                                     value={this.state.turnosMax}
@@ -219,7 +219,7 @@ class EditarServicio extends Component {
                                 <Col md={12}>
                                     <Calendar
                                         selectable
-                                        step={this.state.duracionTurno?this.state.duracionTurno:60}
+                                        step={this.state.duracionTurno ? this.state.duracionTurno : 60}
                                         min={this.state.min}
                                         max={this.state.max}
                                         localizer={localizer}
@@ -237,11 +237,11 @@ class EditarServicio extends Component {
                 </div>
                 <div className="text-center">
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
-                        Registrar
+                        Guardar cambios
                     </Button>
                 </div>
                 <div>
-                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                    <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
                 {this.state.alert}
             </div>
