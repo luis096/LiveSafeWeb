@@ -297,7 +297,7 @@ var routes = [
                 path: '/country',
                 layout: '/root',
                 name: 'Country',
-                mini: 'C',
+                mini: 'Co',
                 component: PrincipalCountry,
             },
             {
@@ -329,7 +329,7 @@ var routes = [
                 path: '/administradores',
                 layout: '/root',
                 name: 'Administradores',
-                mini: 'A',
+                mini: 'Ad',
                 component: PrincipalAdministrador,
             },
             {
@@ -361,7 +361,7 @@ var routes = [
                 path: '/propietarios',
                 layout: '/admin',
                 name: 'Propietarios',
-                mini: 'P',
+                mini: 'Pr',
                 component: PrincipalPropietario,
             },
             {
@@ -393,7 +393,7 @@ var routes = [
                 path: '/encargado',
                 layout: '/admin',
                 name: 'Encargados',
-                mini: 'EN',
+                mini: 'En',
                 component: PrincipalEncargado,
             },
             {
@@ -425,7 +425,7 @@ var routes = [
                 path: '/servicios',
                 layout: '/admin',
                 name: 'Servicios',
-                mini: 'S',
+                mini: 'Se',
                 component: PrincipalServicio,
             },
             {
@@ -552,7 +552,7 @@ var routes = [
                 path: '/ingresos',
                 layout: '/encargado',
                 name: 'Ingresos',
-                mini: 'IN',
+                mini: 'In',
                 component: PrincipalIngreso,
             },
             {
@@ -576,7 +576,7 @@ var routes = [
                 path: '/egresos',
                 layout: '/encargado',
                 name: 'Egresos',
-                mini: 'EG',
+                mini: 'Eg',
                 component: PrincipalEgreso,
             },
             {

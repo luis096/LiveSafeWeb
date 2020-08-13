@@ -135,17 +135,24 @@ class PrincialIngreso extends Component {
         let con = this.obtenerConsulta(true);
         let total = this.obtenerConsulta(false);
 
-        let resultado = await paginador.paginar(
-            con,
-            total,
-            this.total,
-            nueva,
-            this.cantidad,
-            this.state.numPagina,
-            pagina,
-            this.state.primero,
-            this.state.ultimo
-        );
+        let resultado = null;
+        try {
+            resultado = await paginador.paginar(
+                con,
+                total,
+                this.total,
+                nueva,
+                this.cantidad,
+                this.state.numPagina,
+                pagina,
+                this.state.primero,
+                this.state.ultimo
+            );
+
+        } catch (e) {
+            this.notificationSystem.current.addNotification(operacion.error(e.message));
+            return;
+        }
 
         this.cantidad = resultado.cantidad;
         this.total = resultado.total;
@@ -217,11 +224,12 @@ class PrincialIngreso extends Component {
     }
 
     obtenerConsulta(conLimite) {
-        let con = Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Ingresos');
+        let con = Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Ingresos').orderBy('Fecha', 'desc');
         if (conLimite) {
             con = con.limit(paginador.getTamPagina());
         }
-
+        con = con.where('Estado', '==', true);
         if (this.state.desde) {
             con = con.where('Fecha', '>=', this.state.desde);
         }
@@ -243,6 +251,59 @@ class PrincialIngreso extends Component {
         }
 
         return con;
+    }
+
+    cancelar(idIngreso) {
+
+        this.setState({
+            alert: (
+                <SweetAlert
+                    warning
+                    style={{ display: 'block', marginTop: '-100px', position: 'center' }}
+                    title="¿Estas seguro?"
+                    onConfirm={() => this.cancelConfirmado(idIngreso)}
+                    onCancel={() => this.cancelDetele()}
+                    confirmBtnBsStyle="info"
+                    cancelBtnBsStyle="danger"
+                    confirmBtnText="Si, estoy seguro"
+                    cancelBtnText="Cancelar"
+                    showCancel>
+                    ¿Esta seguro de que desea cancelar el ingreso?
+                </SweetAlert>
+            ),
+        });
+    }
+
+    async cancelConfirmado(idIngreso) {
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Ingresos').doc(idIngreso).update({ Estado: false }).then(
+        this.setState({
+            alert: (
+                <SweetAlert
+                    success
+                    style={{ display: 'block', marginTop: '-100px', position: 'center' }}
+                    title="Ingreso cancelado"
+                    onConfirm={() => this.hideAlert()}
+                    onCancel={() => this.hideAlert()}
+                    confirmBtnBsStyle="info">
+                </SweetAlert>
+            ),
+        }));
+    }
+
+    cancelDetele() {
+        this.setState({
+            alert: (
+                <SweetAlert
+                    danger
+                    style={{ display: 'block', marginTop: '-100px', position: 'center' }}
+                    title="Se cancelo la operacion"
+                    onConfirm={() => this.hideAlert()}
+                    onCancel={() => this.hideAlert()}
+                    confirmBtnBsStyle="info">
+                </SweetAlert>
+            ),
+        });
     }
 
     render() {
@@ -415,7 +476,7 @@ class PrincialIngreso extends Component {
                                                     bsStyle="warning"
                                                     fill
                                                     onClick={() => {
-                                                        console.log('cancelar');
+                                                        this.cancelar(ing[1]);
                                                     }}>
                                                     Cancelar
                                                 </Button>

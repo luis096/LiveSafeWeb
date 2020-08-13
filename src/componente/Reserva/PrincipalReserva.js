@@ -126,7 +126,7 @@ class PrincipalReserva extends Component {
             .collection('Propietarios')
             .doc(localStorage.getItem('idPersona'))
             .collection('Reservas')
-            .orderBy('FechaDesde', 'asc');
+            .orderBy('FechaDesde', 'desc');
 
         let total = con;
 

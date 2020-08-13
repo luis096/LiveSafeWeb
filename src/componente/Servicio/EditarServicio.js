@@ -100,7 +100,7 @@ class EditarServicio extends Component {
                 let end = validator.obtenerFecha(value.hasta);
                 start.getDay() === 0 ? diaOficial = 7 : diaOficial = start.getDay();
                 let nuevoHorario = {
-                    title: "Reserva",
+                    title: "",
                     color: "blue",
                     start: new Date(anio, mes, (fecha + (diaOficial - diaNumber)), start.getHours(), start.getMinutes()),
                     end: new Date(anio, mes, (fecha + (diaOficial - diaNumber)), end.getHours(), end.getMinutes()),

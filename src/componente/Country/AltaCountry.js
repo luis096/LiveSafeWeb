@@ -322,8 +322,9 @@ class AltaCountry extends Component {
                                     classNamePrefix="select"
                                     isDisabled={false}
                                     isLoading={false}
-                                    isClearable={true}
+                                    isClearable={false}
                                     isSearchable={true}
+                                    value={this.state.departamentoBarrio}
                                     options={this.state.departamentos}
                                     onChange={this.ChangeDto.bind(this)}
                                 />
@@ -335,7 +336,7 @@ class AltaCountry extends Component {
                                     classNamePrefix="select"
                                     isDisabled={false}
                                     isLoading={false}
-                                    isClearable={true}
+                                    isClearable={false}
                                     isSearchable={true}
                                     value={this.state.localidadBarrio}
                                     options={this.state.localidades}

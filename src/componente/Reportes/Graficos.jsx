@@ -118,6 +118,7 @@ class Graficos extends Component {
         }
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection(tipo)
+            .where('Estado', '==', true)
             .where('Fecha', '>=', new Date(this.state.anioDesde.value, this.state.mesDesde.value - 1))
             .where('Fecha', '<=', new Date(this.state.anioHasta.value, this.state.mesHasta.value - 12))
             .get().then(querySnapshot => {
@@ -238,7 +239,7 @@ class Graficos extends Component {
                         </div>
                         <div className="row-secction col-md-1">
                             <br />
-                            <Button bsStyle="warning" fill
+                            <Button bsStyle="primary" fill
                                 onClick={() => { this.consultar(this.state.nombreReporte) }}>
                                 Consultar
                             </Button>

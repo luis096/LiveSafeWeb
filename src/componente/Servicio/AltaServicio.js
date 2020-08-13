@@ -269,7 +269,7 @@ class AltaServicio extends Component {
         let newId = this.state.newIdEvent;
         let nuevoHorario = {
             id: newId,
-            title: 'Reserva',
+            title: '',
             start: slotInfo.start,
             end: slotInfo.end,
         };

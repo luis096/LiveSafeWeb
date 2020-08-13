@@ -147,7 +147,6 @@ class EditarCountry extends Component {
 
     ChangeDto(event) {
         let localidades = [];
-        this.setState({ calleBarrio: { value: null, label: 'Select...' } });
         this.setState({ localidadBarrio: { value: null, label: 'Seleccione una localidad' } });
 
         if (!!event) {
