@@ -105,7 +105,7 @@ class AltaIngreso extends Component {
         await this.buscarPersona();
         if (!this.state.invitadoTemp.length) {
             this.state.existeInvitado
-                ? this.errorIngreso('La persona no esta invitada o vencio su plazo de invitacion al barrio')
+                ? this.errorIngreso('La persona no esta invitada o vencio su plazo de invitacion al Country')
                 : this.noEncontrado('La persona no se encuentra registrada en el sistema. ¿Desea agregarla como un nuevo invitado? ');
         }
     }
@@ -220,7 +220,7 @@ class AltaIngreso extends Component {
     async registrar() {
         let invalido = await this.buscarEnIngresos();
         if (invalido) {
-            this.solicitarObservacion('La persona ya registra un ingreso el barrio.' + ' Para continuear indique una observacion: ');
+            this.solicitarObservacion('La persona ya registra un ingreso el Country.' + ' Para continuear indique una observacion: ');
         } else {
             this.agregarIngreso('');
         }
@@ -263,7 +263,7 @@ class AltaIngreso extends Component {
                     Fecha: new Date(),
                     IdPropietario: datosPersonas.IdPropietario,
                     Tipo: 'Ingreso',
-                    Texto: this.state.nombre + ' ' + this.state.apellido + ' ha ingresado al complejo.',
+                    Texto: this.state.nombre + ' ' + this.state.apellido + ' ha ingresado al Country.',
                     Visto: false,
                 })
                 .then(this.reestablecer)
@@ -536,7 +536,7 @@ class AltaIngreso extends Component {
                                 </div>
                             </div>
                             <div className="row" hidden={!this.state.esInvitadoEvento}>
-                                <label>La persona se encuentra invitada a un evento dentro del barrio.</label>
+                                <label>La persona se encuentra invitada a un evento dentro del Country.</label>
                             </div>
                         </div>
                     </div>

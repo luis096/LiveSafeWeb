@@ -46,7 +46,7 @@ class MiCountry extends Component {
                         <legend><h3 className="row">Mi Country</h3></legend>
                         <div className="row">
                             <div className="col-md-3 row-secction">
-                                <h4><strong>Nombre del barrio</strong></h4>
+                                <h4><strong>Nombre del Country</strong></h4>
                                 <h5>{barrio.Nombre}</h5>
                             </div>
                             <div className="col-md-3 row-secction">
@@ -68,7 +68,7 @@ class MiCountry extends Component {
                                 <h5>{barrio.Celular || 'Sin Datos'}</h5>
                             </div>
                             <div className="col-md-6 row-secction">
-                                <h4><strong>Descripción del barrio</strong></h4>
+                                <h4><strong>Descripción del Country</strong></h4>
                                 <h5>{barrio.Descripcion || 'Sin Datos'}</h5>
                             </div>
                         </div>

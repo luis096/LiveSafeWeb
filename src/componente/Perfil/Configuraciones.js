@@ -90,20 +90,33 @@ class Configuraciones extends Component {
                     <div className="card-body">
                         <legend><h3 className="row"><i className="pe-7s-tools"/> Configuraciones</h3></legend>
                         <div className="row">
-                        <h4><strong style={{paddingLeft: "18px"}}>Cambiar mi contraseña</strong></h4>
+                        <h4><strong style={{paddingLeft: "18px"}}>Cambiar contraseña</strong></h4>
                             <div className="col-12 row-secction">  
+                          
                             <div className="col-md-6">
                                 <input className='form-control'
                                        value={this.state.pass}
+                                       type="password"
+                                       defaultChecked=""
                                        onChange={this.ChangePass} placeholder="Nueva contraseña"/>
                             </div>
                             <div className="col-md-6">
+                                <input className='form-control'
+                                type="password"
+                                        placeholder="Repetir Nueva contraseña"/>
+                            </div>
+                            <div style={{marginTop:'10px'}} className="col-md-6">
+                                <input className='form-control'
+                                    type="password"
+                                        placeholder="Contraseña Actual"/>
+                            </div>
+                            <div style={{marginTop:'10px'}}  className="col-md-6">
                             {this.renderRedirect()}
                                 <Button bsStyle="default"  fill wd onClick={()=> {
                                     this.confirmar();
-                                }}>Restablecer</Button>
+                                }}>Confirmar</Button>
                             </div>
-                                
+                           
                             </div>
                         </div>
                     </div>

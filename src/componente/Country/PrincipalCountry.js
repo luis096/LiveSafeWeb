@@ -208,7 +208,7 @@ class PrincipalCountry extends Component {
                         <h5 className="row">Filtros de búsqueda </h5>
                         <div className="row">
                             <div className="col-md-3 row-secction">
-                                <label>Nombre del barrio</label>
+                                <label>Nombre del Country</label>
                                 <input
                                     className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                     value={this.state.nombre}
@@ -223,7 +223,7 @@ class PrincipalCountry extends Component {
                                     className={errorHTML.classNameError(this.errorTitular, 'form-control')}
                                     value={this.state.titular}
                                     onChange={this.ChangeTitular}
-                                    placeholder="Apellido"
+                                    placeholder="Titular"
                                 />
                                 {errorHTML.errorLabel(this.errorTitular)}
                             </div>

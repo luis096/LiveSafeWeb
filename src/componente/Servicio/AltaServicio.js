@@ -318,8 +318,9 @@ class AltaServicio extends Component {
                 </legend>
                 <div className="row card">
                     <div className="card-body">
-                        <div className="row">
-                            <div className="row-secction col-md-3">
+                        <div className="row " style={{ display:'grid'}}>
+                            <div>
+                            <div className="row-secction col-md-4">
                                 <label> Nombre </label>
                                 <input
                                     type="name"
@@ -330,7 +331,7 @@ class AltaServicio extends Component {
                                 />
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
-                            <div className="row-secction col-md-2">
+                            <div style={{ display:'grid', justifyContent:'center'}} className="row-secction col-md-4">
                                 <label>Disponibilidad del servicio</label>
                                 <div>
                                     <Switch
@@ -343,7 +344,7 @@ class AltaServicio extends Component {
                                     />
                                 </div>
                             </div>
-                            <div className="row-secction col-md-3">
+                            <div className="row-secction col-md-4">
                                 <label>Duración de turno</label>
                                 <Select
                                     isClearable={true}
@@ -353,7 +354,9 @@ class AltaServicio extends Component {
                                     onChange={this.ChangeSelectTurno.bind(this)}
                                 />
                             </div>
-                            <div className="row-secction col-md-3">
+                        </div>
+                        <div style={{ marginTop:'15px'}} >
+                            <div className="row-secction col-md-5" >
                                 <label>Turnos Máximos de Reserva</label>
                                 <Select
                                     isClearable={true}
@@ -362,7 +365,7 @@ class AltaServicio extends Component {
                                     onChange={this.ChangeSelectTurnosMax.bind(this)}
                                 />
                             </div>
-                            <div className="row-secction col-md-1" hidden={!!this.state.verCalendar}>
+                            <div style={{ display:'grid', marginTop:'4px'}} className="row-secction col-md-6" hidden={!!this.state.verCalendar}>
                                 <br />
                                 <Button
                                     bsStyle="warning"
@@ -372,8 +375,7 @@ class AltaServicio extends Component {
                                     Agregar horarios
                                 </Button>
                             </div>
-                            <div className="row-secction col-md-1" hidden={!this.state.verCalendar}>
-                                <br />
+                            <div style={{marginTop:'22px'}} className="row-secction col-md-1" hidden={!this.state.verCalendar}>
                                 <Button
                                     bsStyle="danger"
                                     fill
@@ -381,6 +383,7 @@ class AltaServicio extends Component {
                                     X
                                 </Button>
                             </div>
+                        </div>
                         </div>
                         {/*<div className="row">*/}
                         {/*    <label> Descripcion </ label>*/}
@@ -426,7 +429,7 @@ class AltaServicio extends Component {
                         </Grid>
                     </div>
                 </div>
-                <div hidden={!this.state.verCalendar} className="text-center">
+                <div  style={{marginBottom:'8px'}} hidden={!this.state.verCalendar} className="text-center">
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
                         Registrar
                     </Button>

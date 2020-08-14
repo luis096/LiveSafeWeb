@@ -9,6 +9,8 @@ import { validator } from '../validator';
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
 import Select from "react-select";
+import Delete from '../../assets/img/delete.svg'
+
 
 class EditarCountry extends Component {
     constructor(props) {
@@ -262,13 +264,13 @@ class EditarCountry extends Component {
     render() {
         return (
             <div className="col-12">
-                <legend><h3 className="row">Editar barrio</h3></legend>
+                <legend><h3 className="row">Editar Country</h3></legend>
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
                         <div className="row">
                         <div className="col-md-6 row-secction">
-                                <label> Nombre del barrio </label>
+                                <label> Nombre del Country </label>
                                 <input className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
                                        placeholder="Nombre"
                                        value={this.state.nombre}
@@ -356,8 +358,13 @@ class EditarCountry extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-md-12 row-secction">
-                                <label> Imagen del barrio </label>
+                            <div style={{display:"inline-block"}}>
+                            <div style={{display:"flex", justifyContent:'space-between'}} >
+                                    <label> Imagen del Country </label>
+                                    <div hidden={this.state.upLoadValue != 100}>
+                                       <img style={{width:'20px'}} src={Delete}  onClick={this.eliminarImg}/>
+                                </div>
+                                </div>
                                 <div hidden={!!this.state.upLoadValue}>
                                     <div hidden={!this.state.upLoadValue}>
                                         <progress value={this.state.upLoadValue} max='100'>
@@ -367,9 +374,7 @@ class EditarCountry extends Component {
                                     <input type="file" onChange={this.handleFiles}/>
                                 </div>
                                 <img width="320" id="imgBarrio"/>
-                                <div hidden={this.state.upLoadValue != 100}>
-                                    <Button bsStyle="warning" fill onClick={this.eliminarImg}>X</Button>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
