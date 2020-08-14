@@ -6,9 +6,10 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import { operacion } from '../Operaciones';
 import { errorHTML } from '../Error';
 import { validator } from '../validator';
-import { style } from '../../variables/Variables';
-import NotificationSystem from 'react-notification-system';
-import Select from 'react-select';
+import { style } from "../../variables/Variables";
+import NotificationSystem from "react-notification-system";
+import Select from "react-select";
+import Delete from '../../assets/img/delete.svg'
 
 class EditarCountry extends Component {
     constructor(props) {
@@ -398,8 +399,13 @@ class EditarCountry extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-md-12 row-secction">
-                                <label> Imagen del country </label>
+                            <div style={{display:"inline-block"}}>
+                            <div style={{display:"flex", justifyContent:'space-between'}} >
+                                    <label> Imagen del country </label>
+                                    <div hidden={this.state.upLoadValue != 100}>
+                                       <img style={{width:'20px'}} src={Delete}  onClick={this.eliminarImg}/>
+                                </div>
+                                </div>
                                 <div hidden={!!this.state.upLoadValue}>
                                     <div hidden={!this.state.upLoadValue}>
                                         <progress value={this.state.upLoadValue} max="100">
@@ -408,12 +414,8 @@ class EditarCountry extends Component {
                                     </div>
                                     <input type="file" onChange={this.handleFiles} />
                                 </div>
-                                <img width="320" id="imgBarrio" />
-                                <div hidden={this.state.upLoadValue != 100}>
-                                    <Button bsStyle="warning" fill onClick={this.eliminarImg}>
-                                        X
-                                    </Button>
-                                </div>
+                                <img width="320" id="imgBarrio"/>
+
                             </div>
                         </div>
                     </div>

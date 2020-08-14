@@ -83,7 +83,7 @@ class MiCountry extends Component {
                             </div>
                             <div className="col-md-6 row-secction">
                                 <h4>
-                                    <strong>Descripción del barrio</strong>
+                                    <strong>Descripción del country</strong>
                                 </h4>
                                 <h5>{barrio.Descripcion || 'Sin Datos'}</h5>
                             </div>

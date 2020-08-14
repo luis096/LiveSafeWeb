@@ -105,7 +105,7 @@ class AltaIngreso extends Component {
         await this.buscarPersona();
         if (!this.state.invitadoTemp.length) {
             this.state.existeInvitado
-                ? this.errorIngreso('La persona no está invitada o venció su plazo de invitacion al complejo.')
+                ? this.errorIngreso('La persona no está invitada o venció su plazo de invitacion al country.')
                 : this.noEncontrado('La persona no se encuentra registrada en el sistema. ¿Desea agregarla como un nuevo invitado? ');
         }
     }
@@ -220,7 +220,7 @@ class AltaIngreso extends Component {
     async registrar() {
         let invalido = await this.buscarEnIngresos();
         if (invalido) {
-            this.solicitarObservacion('La persona ya registra un ingreso el barrio.' + ' Para continuear indique una observación: ');
+            this.solicitarObservacion('La persona ya registra un ingreso el country.' + ' Para continuar indique una observación: ');
         } else {
             this.agregarIngreso('');
         }
@@ -263,7 +263,7 @@ class AltaIngreso extends Component {
                     Fecha: new Date(),
                     IdPropietario: datosPersonas.IdPropietario,
                     Tipo: 'Ingreso',
-                    Texto: this.state.nombre + ' ' + this.state.apellido + ' ha ingresado al complejo.',
+                    Texto: this.state.nombre + ' ' + this.state.apellido + ' ha ingresado al Country.',
                     Visto: false,
                 })
                 .then(this.reestablecer)

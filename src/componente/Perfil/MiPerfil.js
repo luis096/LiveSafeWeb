@@ -137,7 +137,7 @@ class MiPerfil extends Component {
                                     value={this.state.tipoDocumentoNombre}/>
 
                             </div>
-                            <div className="col-md-3 row-secction">
+                            <div className="col-md-4 row-secction">
                                 <label> Celular </label>
                                 <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
                                        placeholder="Celular"
@@ -146,12 +146,7 @@ class MiPerfil extends Component {
                                 />
                                 {errorHTML.errorLabel(this.errorCelular)}
                             </div>
-                            <div className="col-md-1 row-secction">
-                                <br/>
-                                <Button bsStyle="primary" fill onClick={this.actualizar}>
-                                    Guardar
-                                </Button>
-                            </div>
+                            
                         </div>
                         <div className="row">
                             <div className="col-md-6 row-secction">
@@ -159,6 +154,12 @@ class MiPerfil extends Component {
                                 <input type="email" className="form-control" readOnly
                                        placeholder="ingrese el mail"
                                        value={this.state.mail}/>
+                            </div>
+                            <div style={{marginTop:'5px'}} className="col-md-4 row-secction">
+                                <br/>
+                                <Button bsStyle="primary" fill onClick={this.actualizar}>
+                                    Guardar
+                                </Button>
                             </div>
                         </div>
                     </div>
