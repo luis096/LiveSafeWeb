@@ -103,6 +103,7 @@ class AltaEgreso extends Component {
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
             .collection('Ingresos')
+            .where('Estado', '==', true)
             .orderBy('Fecha', 'desc')
             .where('Documento', '==', this.state.documento)
             .where('TipoDocumento', '==', refTipoDocumento)
@@ -178,6 +179,7 @@ class AltaEgreso extends Component {
             Fecha: new Date(),
             Observacion: this.state.observacion,
             IdEncargado: operacion.obtenerMiReferencia(2),
+            Estado: true
         };
 
         if (!this.state.observacion) {

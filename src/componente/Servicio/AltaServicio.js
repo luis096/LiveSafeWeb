@@ -85,7 +85,7 @@ class AltaServicio extends Component {
             return 0;
         });
 
-        this.setState({turnoSelect: turnos})
+        this.setState({ turnoSelect: turnos })
     }
 
     async actualizarHorasMax() {
@@ -269,7 +269,7 @@ class AltaServicio extends Component {
         let newId = this.state.newIdEvent;
         let nuevoHorario = {
             id: newId,
-            title: 'Reserva',
+            title: '',
             start: slotInfo.start,
             end: slotInfo.end,
         };
@@ -307,7 +307,7 @@ class AltaServicio extends Component {
 
     verCalendar() {
 
-        this.setState({duracionTurno: null, turnosMax: null , verCalendar: false});
+        this.setState({ duracionTurno: null, turnosMax: null, verCalendar: false });
     }
 
     render() {
@@ -345,7 +345,7 @@ class AltaServicio extends Component {
                                 </div>
                             </div>
                             <div className="row-secction col-md-4">
-                                <label>Duración de turno</label>
+                                <label>Duración del turno</label>
                                 <Select
                                     isClearable={true}
                                     isDisabled={this.state.verCalendar}
@@ -357,7 +357,7 @@ class AltaServicio extends Component {
                         </div>
                         <div style={{ marginTop:'15px'}} >
                             <div className="row-secction col-md-5" >
-                                <label>Turnos Máximos de Reserva</label>
+                                <label>Cantidad máxima de turnos</label>
                                 <Select
                                     isClearable={true}
                                     value={this.state.turnosMax}

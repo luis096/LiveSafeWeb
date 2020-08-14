@@ -33,6 +33,7 @@ class PrincialEgreso extends Component {
             documento: '',
             apellido: '',
             tipoD: [],
+            tipoDocumento: '',
             nombre: '',
             alert: null,
             desde: null,
@@ -155,9 +156,6 @@ class PrincialEgreso extends Component {
                 .then((doc) => {
                     this.total = doc.docs.length;
                 })
-                .catch((error) => {
-                    this.notificationSystem.current.addNotification(operacion.error(error.message));
-                });
         }
 
         egresos = [];
@@ -221,11 +219,12 @@ class PrincialEgreso extends Component {
     }
 
     obtenerConsulta(conLimite) {
-        let con = Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Egresos');
+        let con = Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Egresos').orderBy('Fecha', 'desc');
         if (conLimite) {
             con = con.limit(paginador.getTamPagina());
         }
-
+        con = con.where('Estado', '==', true);
         if (this.state.desde) {
             con = con.where('Fecha', '>=', this.state.desde);
         }
@@ -241,6 +240,11 @@ class PrincialEgreso extends Component {
         if (this.state.documento) {
             con = con.where('Documento', '==', this.state.documento);
         }
+        if (this.state.tipoDocumento && this.state.tipoDocumento.value) {
+            let tipoDocumentoRef = operacion.obtenerReferenciaDocumento(this.state.tipoDocumento);
+            con = con.where('TipoDocumento', '==', tipoDocumentoRef);
+        }
+
 
         return con;
     }
@@ -261,6 +265,7 @@ class PrincialEgreso extends Component {
             hasta: null,
             ultimo: [],
             primero: [],
+            tipoDocumento: '',
             errorDesde: { error: false, mensaje: '' },
             errorHasta: { error: false, mensaje: '' },
         });
@@ -269,6 +274,64 @@ class PrincialEgreso extends Component {
         this.errorNombre = { error: false, mensaje: '' };
         this.errorApellido = { error: false, mensaje: '' };
         this.errorDocumento = { error: false, mensaje: '' };
+    }
+
+
+    ChangeSelect(value) {
+        this.setState({ tipoDocumento: value });
+    }
+
+    cancelar(idEgreso) {
+
+        this.setState({
+            alert: (
+                <SweetAlert
+                    warning
+                    style={{ display: 'block', marginTop: '-100px', position: 'center' }}
+                    title="¿Estas seguro?"
+                    onConfirm={() => this.cancelConfirmado(idEgreso)}
+                    onCancel={() => this.cancelDetele()}
+                    confirmBtnBsStyle="info"
+                    cancelBtnBsStyle="danger"
+                    confirmBtnText="Si, estoy seguro"
+                    cancelBtnText="Cancelar"
+                    showCancel>
+                    ¿Esta seguro de que desea cancelar el egreso?
+                </SweetAlert>
+            ),
+        });
+    }
+
+    async cancelConfirmado(idEgreso) {
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Egresos').doc(idEgreso).update({ Estado: false }).then(
+                this.setState({
+                    alert: (
+                        <SweetAlert
+                            success
+                            style={{ display: 'block', marginTop: '-100px', position: 'center' }}
+                            title="Egreso cancelado"
+                            onConfirm={() => this.hideAlert()}
+                            onCancel={() => this.hideAlert()}
+                            confirmBtnBsStyle="info">
+                        </SweetAlert>
+                    ),
+                }));
+    }
+
+    cancelDetele() {
+        this.setState({
+            alert: (
+                <SweetAlert
+                    danger
+                    style={{ display: 'block', marginTop: '-100px', position: 'center' }}
+                    title="Se cancelo la operacion"
+                    onConfirm={() => this.hideAlert()}
+                    onCancel={() => this.hideAlert()}
+                    confirmBtnBsStyle="info">
+                </SweetAlert>
+            ),
+        });
     }
 
     render() {
@@ -282,7 +345,7 @@ class PrincialEgreso extends Component {
                     <div className="card-body">
                         <h5 className="row">Filtros de búsqueda </h5>
                         <div className="row">
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label>Nombre</label>
                                 <input
                                     className={errorHTML.classNameError(this.errorNombre, 'form-control')}
@@ -292,7 +355,7 @@ class PrincialEgreso extends Component {
                                 />
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label>Apellido</label>
                                 <input
                                     className={errorHTML.classNameError(this.errorApellido, 'form-control')}
@@ -302,7 +365,17 @@ class PrincialEgreso extends Component {
                                 />
                                 {errorHTML.errorLabel(this.errorApellido)}
                             </div>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
+                                <label>Tipo de Documento</label>
+                                <Select
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    value={this.state.tipoDocumento}
+                                    options={this.state.tipoD}
+                                    onChange={this.ChangeSelect.bind(this)}
+                                />
+                            </div>
+                            <div className="col-md-3 row-secction">
                                 <label>Número de Documento</label>
                                 <input
                                     className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
@@ -314,7 +387,7 @@ class PrincialEgreso extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label>Fecha Desde</label>
                                 <Datetime
                                     className={this.state.errorDesde.error ? 'has-error' : ''}
@@ -326,7 +399,7 @@ class PrincialEgreso extends Component {
                                     {this.state.errorDesde.mensaje}
                                 </label>
                             </div>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label>Fecha Hasta</label>
                                 <Datetime
                                     className={this.state.errorHasta.error ? 'has-error' : ''}
@@ -433,7 +506,7 @@ class PrincialEgreso extends Component {
                                                     bsStyle="warning"
                                                     fill
                                                     onClick={() => {
-                                                        console.log('cancelar');
+                                                        this.cancelar(egr[1]);
                                                     }}>
                                                     Cancelar
                                                 </Button>

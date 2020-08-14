@@ -127,11 +127,11 @@ class VisualizarReserva extends Component {
             .add({
                 IdReserva: Database.doc(
                     'Country/' +
-                        localStorage.getItem('idCountry') +
-                        '/Propietarios/' +
-                        localStorage.getItem('idPersona') +
-                        '/Reservas/' +
-                        this.idReserva
+                    localStorage.getItem('idCountry') +
+                    '/Propietarios/' +
+                    localStorage.getItem('idPersona') +
+                    '/Reservas/' +
+                    this.idReserva
                 ),
                 FechaDesde: this.state.desde,
                 FechaHasta: this.state.hasta,
@@ -195,11 +195,11 @@ class VisualizarReserva extends Component {
         inv[0].Estado = false;
         let referenciaReserva = Database.doc(
             'Country/' +
-                localStorage.getItem('idCountry') +
-                '/Propietarios/' +
-                localStorage.getItem('idPersona') +
-                '/Reservas/' +
-                this.idReserva
+            localStorage.getItem('idCountry') +
+            '/Propietarios/' +
+            localStorage.getItem('idPersona') +
+            '/Reservas/' +
+            this.idReserva
         );
         let idEliminar = '';
         await this.conexion
@@ -350,7 +350,7 @@ class VisualizarReserva extends Component {
                                     <input
                                         type="name"
                                         className="form-control"
-                                        placeholder="Name"
+                                        placeholder="Nombre"
                                         value={this.state.nombre}
                                         onChange={this.ChangeNombre}
                                     />
@@ -360,7 +360,7 @@ class VisualizarReserva extends Component {
                                     <input
                                         type="family-name"
                                         className="form-control"
-                                        placeholder="Surname"
+                                        placeholder="Apellido"
                                         value={this.state.apellido}
                                         onChange={this.ChangeApellido}
                                     />
@@ -385,7 +385,7 @@ class VisualizarReserva extends Component {
                                     <input
                                         type="document"
                                         className="form-control"
-                                        placeholder="Document number"
+                                        placeholder="Documento"
                                         value={this.state.documento}
                                         onChange={this.ChangeDocumento}
                                     />
@@ -501,7 +501,7 @@ class VisualizarReserva extends Component {
                                 </table>
                             </div>
                             <div hidden={this.state.invitadosPendientes.length} className="row">
-                                <h5>No existen invitaciones pendientes de confirmacion</h5>
+                                <h5>No existen invitaciones pendientes de confirmación</h5>
                             </div>
                         </TabPane>
                     </TabContent>

@@ -29,7 +29,7 @@ class AltaAdministrador extends Component {
             idCountry: '',
             tipoD: [],
             countryList: [],
-            errorMail: {error: false, mensaje: ''}
+            errorMail: { error: false, mensaje: '' }
         };
         this.notificationSystem = React.createRef();
         this.addAdministrador = this.addAdministrador.bind(this);
@@ -42,38 +42,38 @@ class AltaAdministrador extends Component {
         this.crearUsuario = this.crearUsuario.bind(this);
         this.registrar = this.registrar.bind(this);
 
-        this.errorNombre = {error: false, mensaje: ''};
-        this.errorApellido = {error: false, mensaje: ''};
-        this.errorDocumento = {error: false, mensaje: ''};
-        this.errorCelular= {error:false, mensaje:''};
-        this.errorTipoDocumento = {error: false, mensaje: ''};
-        this.errorMail= {error:false, mensaje:''}
-        this.errorCountry= {error:false, mensaje:''}
+        this.errorNombre = { error: false, mensaje: '' };
+        this.errorApellido = { error: false, mensaje: '' };
+        this.errorDocumento = { error: false, mensaje: '' };
+        this.errorCelular = { error: false, mensaje: '' };
+        this.errorTipoDocumento = { error: false, mensaje: '' };
+        this.errorMail = { error: false, mensaje: '' }
+        this.errorCountry = { error: false, mensaje: '' }
 
     }
 
 
     async componentDidMount() {
-        const {tipoD, countryList} = this.state;
-        await Database.collection('TipoDocumento').get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
+        const { tipoD, countryList } = this.state;
+        await Database.collection('TipoDocumento').get().then(querySnapshot => {
+            querySnapshot.forEach(doc => {
                 tipoD.push(
-                    {value: doc.id, label: doc.data().Nombre}
+                    { value: doc.id, label: doc.data().Nombre }
                 );
             });
         }).catch((error) => {
             this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
-        await Database.collection('Country').get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
+        await Database.collection('Country').get().then(querySnapshot => {
+            querySnapshot.forEach(doc => {
                 this.state.countryList.push(
-                    {value: doc.id, label: doc.data().Nombre}
+                    { value: doc.id, label: doc.data().Nombre }
                 );
             });
         }).catch((error) => {
             this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
-        this.setState({tipoD, countryList});
+        this.setState({ tipoD, countryList });
     }
 
 
@@ -88,8 +88,8 @@ class AltaAdministrador extends Component {
                 FechaNacimiento: new Date(this.state.fechaNacimiento),
                 FechaAlta: new Date(),
                 Usuario: this.state.mail,
-            }).then(doc=> {
-                this.setState({idAdminCreado: doc.id});
+            }).then(doc => {
+                this.setState({ idAdminCreado: doc.id });
             }).catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
@@ -97,53 +97,48 @@ class AltaAdministrador extends Component {
     }
 
     ChangeNombre(event) {
-        this.setState({nombre: event.target.value});
-        if (event.target.value == "")
-        {this.errorNombre= validator.requerido(event.target.value)}
-        else{this.errorNombre =validator.soloLetras(event.target.value)}
+        this.setState({ nombre: event.target.value });
+        if (event.target.value == "") { this.errorNombre = validator.requerido(event.target.value) }
+        else { this.errorNombre = validator.soloLetras(event.target.value) }
     }
     ChangeApellido(event) {
-        this.setState({apellido: event.target.value});
-        if (event.target.value == "")
-        {this.errorApellido= validator.requerido(event.target.value)}
-        else{this.errorApellido =validator.soloLetras(event.target.value)}
+        this.setState({ apellido: event.target.value });
+        if (event.target.value == "") { this.errorApellido = validator.requerido(event.target.value) }
+        else { this.errorApellido = validator.soloLetras(event.target.value) }
     }
 
     ChangeCelular(event) {
-        this.setState({celular: event.target.value});
-        if (event.target.value == "")
-        {this.errorCelular= validator.requerido(event.target.value)}
-        else{this.errorCelular =validator.numero(event.target.value)}
+        this.setState({ celular: event.target.value });
+        if (event.target.value == "") { this.errorCelular = validator.requerido(event.target.value) }
+        else { this.errorCelular = validator.numero(event.target.value) }
     }
 
     ChangeDocumento(event) {
-        this.setState({documento: event.target.value});
-        if (event.target.value == "")
-        {this.errorDocumento= validator.requerido(event.target.value)}
-        else{this.errorDocumento =validator.numero(event.target.value)}
+        this.setState({ documento: event.target.value });
+        if (event.target.value == "") { this.errorDocumento = validator.requerido(event.target.value) }
+        else { this.errorDocumento = validator.numero(event.target.value) }
     }
 
     ChangeMail(event) {
-        this.setState({mail: event.target.value});
-        if (event.target.value == "")
-        {this.errorMail= validator.requerido(event.target.value)}
-        else{this.errorMail =validator.mail(event.target.value)}
+        this.setState({ mail: event.target.value });
+        if (event.target.value == "") { this.errorMail = validator.requerido(event.target.value) }
+        else { this.errorMail = validator.mail(event.target.value) }
     }
 
     ChangeSelect(value) {
-        this.setState({tipoDocumento: value});
+        this.setState({ tipoDocumento: value });
         this.errorTipoDocumento = validator.requerido(value ? value.value : null);
 
     }
 
     ChangeSelectCountry(value) {
-        this.setState({idCountry: value});
+        this.setState({ idCountry: value });
         this.errorCountry = validator.requerido(value ? value.value : null);
 
     }
 
     ChangeFechaNacimiento(event) {
-        this.setState({fechaNacimiento: event});
+        this.setState({ fechaNacimiento: event });
     }
 
 
@@ -157,12 +152,12 @@ class AltaAdministrador extends Component {
         if (mailValido) {
             await this.addAdministrador();
         } else {
-            this.setState({errorMail: {error: true, mensaje: 'El mail ingresado ya esta en uso. Intente nuevamente'}})
+            this.setState({ errorMail: { error: true, mensaje: 'El mail ingresado ya esta en uso. Intente nuevamente' } })
         }
     }
 
     async crearUsuario() {
-        const {mail} = this.state;
+        const { mail } = this.state;
         const pass = this.state.documento;
 
         await Database.collection('UsuariosTemp').doc(mail).set({
@@ -188,25 +183,25 @@ class AltaAdministrador extends Component {
                         <div className="row">
                             <div className="col-md-4 row-secction">
                                 <label> Nombre </label>
-                                <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
-                                       placeholder="Nombre"
-                                       value={this.state.nombre}
-                                       onChange={this.ChangeNombre}
+                                <input type="name" className={errorHTML.classNameError(this.errorNombre, 'form-control')}
+                                    placeholder="Nombre"
+                                    value={this.state.nombre}
+                                    onChange={this.ChangeNombre}
                                 />
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Apellido </label>
-                                <input className={ errorHTML.classNameError(this.errorApellido, 'form-control') }
-                                       placeholder="Apellido"
-                                       value={this.state.apellido}
-                                       onChange={this.ChangeApellido}/>
+                                <input className={errorHTML.classNameError(this.errorApellido, 'form-control')}
+                                    placeholder="Apellido"
+                                    value={this.state.apellido}
+                                    onChange={this.ChangeApellido} />
                                 {errorHTML.errorLabel(this.errorApellido)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Fecha de Nacimiento </label>
                                 <Datetime
-                                    inputProps={{placeholder: 'Fecha de Nacimiento'}}
+                                    inputProps={{ placeholder: 'Fecha de Nacimiento' }}
                                     timeFormat={false}
                                     value={this.state.fechaNacimiento}
                                     onChange={this.ChangeFechaNacimiento}
@@ -216,10 +211,10 @@ class AltaAdministrador extends Component {
                         <div className="row">
                             <div className="col-md-4 row-secction">
                                 <label> Número  de Documento </label>
-                                <input className={ errorHTML.classNameError(this.errorDocumento, 'form-control') }
-                                       placeholder="Número  de Documento"
-                                       value={this.state.documento}
-                                       onChange={this.ChangeDocumento}/>
+                                <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
+                                    placeholder="Número  de Documento"
+                                    value={this.state.documento}
+                                    onChange={this.ChangeDocumento} />
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
                             <div className="col-md-4 row-secction">
@@ -228,10 +223,10 @@ class AltaAdministrador extends Component {
                                     isClearable={true}
                                     isSearchable={true}
                                     options={this.state.tipoD}
-                                    value = {this.state.tipoDocumento }
+                                    value={this.state.tipoDocumento}
                                     onChange={this.ChangeSelect.bind(this)}
                                     styles={this.errorTipoDocumento.error ? {
-                                        control: (base, state)=>({
+                                        control: (base, state) => ({
                                             ...base,
                                             borderColor: 'red',
                                             boxShadow: 'red'
@@ -239,14 +234,14 @@ class AltaAdministrador extends Component {
                                     } : {}}
                                 />
                                 <label className='small text-danger'
-                                       hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
+                                    hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Celular </label>
-                                <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
-                                       placeholder="Celular"
-                                       value={this.state.celular}
-                                       onChange={this.ChangeCelular}
+                                <input className={errorHTML.classNameError(this.errorCelular, 'form-control')}
+                                    placeholder="Celular"
+                                    value={this.state.celular}
+                                    onChange={this.ChangeCelular}
                                 />
                                 {errorHTML.errorLabel(this.errorCelular)}
                             </div>
@@ -254,10 +249,10 @@ class AltaAdministrador extends Component {
                         <div className="row">
                             <div className="col-md-6 row-secction">
                                 <label> Dirección de correo electrónico </label>
-                                <input type="email" className={ errorHTML.classNameError(this.errorMail, 'form-control') }
-                                       placeholder="ingrese el mail"
-                                       onChange={this.ChangeMail}
-                                       value={this.state.mail}/>
+                                <input type="email" className={errorHTML.classNameError(this.errorMail, 'form-control')}
+                                    placeholder="Correo electrónico"
+                                    onChange={this.ChangeMail}
+                                    value={this.state.mail} />
                                 {errorHTML.errorLabel(this.errorMail)}
                             </div>
                             <div className="col-md-6 row-secction">
@@ -268,7 +263,7 @@ class AltaAdministrador extends Component {
                                     options={this.state.countryList}
                                     onChange={this.ChangeSelectCountry.bind(this)}
                                     styles={this.errorCountry.error ? {
-                                        control: (base, state)=>({
+                                        control: (base, state) => ({
                                             ...base,
                                             borderColor: 'red',
                                             boxShadow: 'red'
@@ -276,10 +271,10 @@ class AltaAdministrador extends Component {
                                     } : {}}
                                 />
                                 <label className='small text-danger'
-                                       hidden={!this.errorCountry.error}>{this.errorCountry.mensaje}</label>
+                                    hidden={!this.errorCountry.error}>{this.errorCountry.mensaje}</label>
                             </div>
                         </div>
-                        </div>
+                    </div>
                 </div>
                 <div className="text-center">
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
@@ -287,7 +282,7 @@ class AltaAdministrador extends Component {
                     </Button>
                 </div>
                 <div>
-                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                    <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
             </div>
         );

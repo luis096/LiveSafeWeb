@@ -1,19 +1,19 @@
-import React, {Component} from 'react';
-import {Pie, Line} from "react-chartjs-2";
-import {Database} from "../../config/config";
-import {validator} from "../validator";
-import {Pagination} from "react-bootstrap";
+import React, { Component } from 'react';
+import { Pie, Line } from "react-chartjs-2";
+import { Database } from "../../config/config";
+import { validator } from "../validator";
+import { Pagination } from "react-bootstrap";
 import Button from 'components/CustomButton/CustomButton.jsx';
 import { Collapse } from 'reactstrap';
 import Card from 'components/Card/Card.jsx';
 import "./Graficos.css"
 import Select from "react-select";
-import {operacion} from "../Operaciones";
-import {detachMarkedSpans} from "codemirror/src/line/spans";
+import { operacion } from "../Operaciones";
+import { detachMarkedSpans } from "codemirror/src/line/spans";
 import NotificationSystem from "react-notification-system";
-import {style} from "../../variables/Variables";
+import { style } from "../../variables/Variables";
 import icono from "../../Icono2.ico";
-import logo from  "../../logoLiveSafe.png"
+import logo from "../../logoLiveSafe.png"
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -46,11 +46,11 @@ class Graficos extends Component {
         const url = this.props.location.pathname.split('/');
 
         if (url[url.length - 1] === '1') {
-            this.setState({nombreReporte: "Ingresos"})
-        } else {this.setState({nombreReporte: "Egresos"}) }
+            this.setState({ nombreReporte: "Ingresos" })
+        } else { this.setState({ nombreReporte: "Egresos" }) }
 
         this.setState({
-           mesesDesde: operacion.obtenerMeses(1),
+            mesesDesde: operacion.obtenerMeses(1),
             mesesHasta: operacion.obtenerMeses(2),
             aniosHasta: operacion.obtenerAnios(),
             aniosDesde: operacion.obtenerAnios()
@@ -89,13 +89,13 @@ class Graficos extends Component {
     isValidRangeDate() {
         console.log("Pasi 0");
         if (!this.state.mesHasta || !this.state.mesDesde ||
-            !this.state.anioDesde || !this.state.anioHasta ) return false;
+            !this.state.anioDesde || !this.state.anioHasta) return false;
         console.log("Pasi 1");
-        if ( ((this.state.mesHasta.value - this.state.mesDesde.value) > 24 &&
-            this.state.anioDesde.value  !== this.state.anioHasta.value) ||
+        if (((this.state.mesHasta.value - this.state.mesDesde.value) > 24 &&
+            this.state.anioDesde.value !== this.state.anioHasta.value) ||
             (this.state.anioDesde.value > this.state.anioHasta.value)) return false;
         console.log("Pasi 2");
-        if (this.state.anioDesde.value  === this.state.anioHasta.value &&
+        if (this.state.anioDesde.value === this.state.anioHasta.value &&
             (this.state.mesDesde.value >= (this.state.mesHasta.value - 12))) return false;
         console.log("Pasi 3");
         return true;
@@ -110,62 +110,64 @@ class Graficos extends Component {
 
         let mismoAnio = (this.state.anioDesde.value === this.state.anioHasta.value);
 
-        let cantidad = mismoAnio?(this.state.mesHasta.value - this.state.mesDesde.value - 12)
-            :(this.state.mesHasta.value - this.state.mesDesde.value);
+        let cantidad = mismoAnio ? (this.state.mesHasta.value - this.state.mesDesde.value - 12)
+            : (this.state.mesHasta.value - this.state.mesDesde.value);
 
-        for(var i = 0; i <= cantidad; i++) {
+        for (var i = 0; i <= cantidad; i++) {
             ingresos.push(0);
         }
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection(tipo)
+            .where('Estado', '==', true)
             .where('Fecha', '>=', new Date(this.state.anioDesde.value, this.state.mesDesde.value - 1))
             .where('Fecha', '<=', new Date(this.state.anioHasta.value, this.state.mesHasta.value - 12))
-            .get().then(querySnapshot=> {
+            .get().then(querySnapshot => {
                 querySnapshot.forEach(doc => {
                     let mes = validator.obtenerFecha(doc.data().Fecha).getMonth();
                     let anio = validator.obtenerFecha(doc.data().Fecha).getFullYear();
                     let desplazamiento = (this.state.mesDesde.value - 1);
                     if (!mismoAnio) {
-                        mes = anio===2020?mes+12:mes;
+                        mes = anio === 2020 ? mes + 12 : mes;
                     }
                     ingresos[mes - desplazamiento] = ingresos[mes - desplazamiento] + 1;
                 });
             });
 
-        this.setState({dataLineIngresos:
-                {
-                    labels: operacion.obtenerMesesLabels(this.state.mesDesde.value,this.state.mesHasta.value, mismoAnio),
-                    datasets: [
-                        {
-                            label: tipo,
-                            fill: true,
-                            lineTension: 0.2,
-                            backgroundColor: (tipo === "Ingresos")?'rgba(75,192,192,0.4)':'rgba(192,1,6,0.4)',
-                            borderColor: (tipo === "Ingresos")?'rgba(75,192,192,1)':'rgb(192,103,96)',
-                            borderCapStyle: 'butt',
-                            borderDash: [],
-                            borderDashOffset: 0.0,
-                            borderJoinStyle: 'miter',
-                            pointBorderColor: (tipo === "Ingresos")?'rgba(75,192,192,1)':'rgb(192,103,96)',
-                            pointBackgroundColor: '#fff',
-                            pointBorderWidth: 1,
-                            pointHoverRadius: 5,
-                            pointHoverBackgroundColor: (tipo === "Ingresos")?'rgba(75,192,192,1)':'rgb(192,103,96)',
-                            pointHoverBorderColor: 'rgba(220,220,220,1)',
-                            pointHoverBorderWidth: 2,
-                            pointRadius: 1,
-                            pointHitRadius: 10,
-                            data: ingresos
-                        }
-                    ]
-                },
+        this.setState({
+            dataLineIngresos:
+            {
+                labels: operacion.obtenerMesesLabels(this.state.mesDesde.value, this.state.mesHasta.value, mismoAnio),
+                datasets: [
+                    {
+                        label: tipo,
+                        fill: true,
+                        lineTension: 0.2,
+                        backgroundColor: (tipo === "Ingresos") ? 'rgba(75,192,192,0.4)' : 'rgba(192,1,6,0.4)',
+                        borderColor: (tipo === "Ingresos") ? 'rgba(75,192,192,1)' : 'rgb(192,103,96)',
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: (tipo === "Ingresos") ? 'rgba(75,192,192,1)' : 'rgb(192,103,96)',
+                        pointBackgroundColor: '#fff',
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: (tipo === "Ingresos") ? 'rgba(75,192,192,1)' : 'rgb(192,103,96)',
+                        pointHoverBorderColor: 'rgba(220,220,220,1)',
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: ingresos
+                    }
+                ]
+            },
             sinDatos: false
         });
     }
 
 
     pdf() {
-        let titulo = "LiveSafe - Reporte de "+ this.state.nombreReporte.toLowerCase() +" por mes, desde " +
+        let titulo = "LiveSafe - Reporte de " + this.state.nombreReporte.toLowerCase() + " por mes, desde " +
             this.state.mesDesde.label + " " + this.state.anioDesde.label
             + " a " + this.state.mesHasta.label + " " + this.state.anioHasta.label;
         const pdf = new jsPDF('L', 'px');
@@ -236,20 +238,20 @@ class Graficos extends Component {
                             />
                         </div>
                         <div className="row-secction col-md-1">
-                            <br/>
-                            <Button bsStyle="warning" fill
-                                    onClick={() => { this.consultar(this.state.nombreReporte) }}>
+                            <br />
+                            <Button bsStyle="primary" fill
+                                onClick={() => { this.consultar(this.state.nombreReporte) }}>
                                 Consultar
                             </Button>
                         </div>
                     </div>
                     <div className="card-body" hidden={this.state.sinDatos}>
                         <div className='row' id="reporte">
-                            <Line data={this.state.dataLineIngresos} width={100} height={40}/>
+                            <Line data={this.state.dataLineIngresos} width={100} height={40} />
                         </div>
                         <div className="text-center">
                             <Button bsStyle="success" fill
-                                    onClick={() => { this.pdf() }}>
+                                onClick={() => { this.pdf() }}>
                                 Descargar Grafico
                             </Button>
                         </div>
@@ -259,12 +261,12 @@ class Graficos extends Component {
                 <div className="row card" hidden={!this.state.sinDatos}>
                     <div className="card-body">
                         <div className='row'>
-                            <h3>Sin datos</h3>
+                            <h3>No hay datos disponibles aún</h3>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                    <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
             </div>
         );

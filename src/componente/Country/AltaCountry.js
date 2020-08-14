@@ -23,9 +23,9 @@ class AltaCountry extends Component {
             upLoadValue: 0,
             imgStorgeRef: '',
             departamento: [],
-            departamentoBarrio: { label: 'Select...' },
+            departamentoBarrio: { label: 'Seleccione un departamento' },
             localidades: [],
-            localidadBarrio: { label: 'Select...' }
+            localidadBarrio: { label: 'Seleccione una localidad' },
         };
         this.notificationSystem = React.createRef();
         this.ChangeNombre = this.ChangeNombre.bind(this);
@@ -163,13 +163,13 @@ class AltaCountry extends Component {
 
     ChangeDto(event) {
         let localidades = [];
-        this.setState({ localidadBarrio: { value: null, label: 'Select...' } });
+        this.setState({ localidadBarrio: { value: null, label: 'Seleccione una localidad' } });
 
         if (!!event) {
             fetch(
                 'https://apis.datos.gob.ar/georef/api/localidades-censales?provincia=cordoba&departamento=' +
-                    event.value.toString() +
-                    '&max=1000&formato=json'
+                event.value.toString() +
+                '&max=1000&formato=json'
             )
                 .then((res) => res.json())
                 .then(
@@ -287,14 +287,14 @@ class AltaCountry extends Component {
         return (
             <div className="col-12">
                 <legend>
-                    <h3 className="row">Nuevo Country</h3>
+                    <h3 className="row">Nuevo country</h3>
                 </legend>
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
                         <div className="row">
                             <div className="col-md-6 row-secction">
-                                <label> Nombre del Country </label>
+                                <label> Nombre del country </label>
                                 <input
                                     className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                     placeholder="Nombre"
@@ -322,8 +322,9 @@ class AltaCountry extends Component {
                                     classNamePrefix="select"
                                     isDisabled={false}
                                     isLoading={false}
-                                    isClearable={true}
+                                    isClearable={false}
                                     isSearchable={true}
+                                    value={this.state.departamentoBarrio}
                                     options={this.state.departamentos}
                                     onChange={this.ChangeDto.bind(this)}
                                 />
@@ -335,7 +336,7 @@ class AltaCountry extends Component {
                                     classNamePrefix="select"
                                     isDisabled={false}
                                     isLoading={false}
-                                    isClearable={true}
+                                    isClearable={false}
                                     isSearchable={true}
                                     value={this.state.localidadBarrio}
                                     options={this.state.localidades}
@@ -391,12 +392,12 @@ class AltaCountry extends Component {
                         <div className="row">
                             <div style={{display:"inline-block"}} >
                                 <div style={{display:"flex", justifyContent:'space-between'}} >
-                                    <label> Imagen del Country </label>
+                                    <label> Imagen del country </label>
                                     <div hidden={this.state.upLoadValue != 100}>
                                        <img style={{width:'20px'}} src={Delete}  onClick={this.eliminarImg}/>
                                 </div>
                                 </div>
-                                
+
                                 <div hidden={!!this.state.upLoadValue}>
                                     <div hidden={!this.state.upLoadValue}>
                                         <progress value={this.state.upLoadValue} max="100">
@@ -406,7 +407,7 @@ class AltaCountry extends Component {
                                     <input type="file" onChange={this.handleFiles} />
                                 </div>
                                 <img width="320" id="imgBarrio" />
-                                
+
                             </div>
                         </div>
                     </div>

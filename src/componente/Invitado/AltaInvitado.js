@@ -241,12 +241,12 @@ class AltaInvitado extends Component {
                                     styles={
                                         this.errorTipoDocumento.error
                                             ? {
-                                                  control: (base, state) => ({
-                                                      ...base,
-                                                      borderColor: 'red',
-                                                      boxShadow: 'red',
-                                                  }),
-                                              }
+                                                control: (base, state) => ({
+                                                    ...base,
+                                                    borderColor: 'red',
+                                                    boxShadow: 'red',
+                                                }),
+                                            }
                                             : {}
                                     }
                                 />
@@ -356,12 +356,12 @@ class AltaInvitado extends Component {
                                     styles={
                                         this.errorTipoDocumentoInvitado.error
                                             ? {
-                                                  control: (base, state) => ({
-                                                      ...base,
-                                                      borderColor: 'red',
-                                                      boxShadow: 'red',
-                                                  }),
-                                              }
+                                                control: (base, state) => ({
+                                                    ...base,
+                                                    borderColor: 'red',
+                                                    boxShadow: 'red',
+                                                }),
+                                            }
                                             : {}
                                     }
                                 />

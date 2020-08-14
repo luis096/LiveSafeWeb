@@ -39,30 +39,30 @@ class EditarAdministrador extends Component {
         const url = this.props.location.pathname.split('/');
         this.idAdministrador = url[url.length - 1];
 
-        this.errorNombre = {error: false, mensaje: ''};
-        this.errorApellido = {error: false, mensaje: ''};
-        this.errorDocumento = {error: false, mensaje: ''};
-        this.errorCelular= {error:false, mensaje:''};
-        this.errorTipoDocumento= {error:false, mensaje:''};
-        this.errorMail= {error:false, mensaje:''}
+        this.errorNombre = { error: false, mensaje: '' };
+        this.errorApellido = { error: false, mensaje: '' };
+        this.errorDocumento = { error: false, mensaje: '' };
+        this.errorCelular = { error: false, mensaje: '' };
+        this.errorTipoDocumento = { error: false, mensaje: '' };
+        this.errorMail = { error: false, mensaje: '' }
 
     }
 
     async componentDidMount() {
-        const {tipoD, countryList} = this.state;
-        await Database.collection('Country').get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
+        const { tipoD, countryList } = this.state;
+        await Database.collection('Country').get().then(querySnapshot => {
+            querySnapshot.forEach(doc => {
                 countryList.push(
-                    {value: doc.id, label: doc.data().Nombre}
+                    { value: doc.id, label: doc.data().Nombre }
                 );
             });
         }).catch((error) => {
             this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
-        await Database.collection('TipoDocumento').get().then(querySnapshot=> {
-            querySnapshot.forEach(doc=> {
+        await Database.collection('TipoDocumento').get().then(querySnapshot => {
+            querySnapshot.forEach(doc => {
                 tipoD.push(
-                    {value: doc.id, label: doc.data().Nombre}
+                    { value: doc.id, label: doc.data().Nombre }
                 );
             });
         }).catch((error) => {
@@ -71,14 +71,16 @@ class EditarAdministrador extends Component {
 
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Administradores').doc(this.idAdministrador).get()
-            .then(doc=> {
+            .then(doc => {
                 if (doc.exists) {
                     this.setState({
                         nombre: doc.data().Nombre,
                         apellido: doc.data().Apellido,
                         documento: doc.data().Documento,
-                        tipoDocumento:  {value: doc.data().TipoDocumento.id, label:
-                        operacion.obtenerDocumentoLabel(doc.data().TipoDocumento.id, tipoD)},
+                        tipoDocumento: {
+                            value: doc.data().TipoDocumento.id, label:
+                                operacion.obtenerDocumentoLabel(doc.data().TipoDocumento.id, tipoD)
+                        },
                         fechaNacimiento: validator.obtenerFecha(doc.data().FechaNacimiento),
                         celular: doc.data().Celular
                     })
@@ -87,7 +89,7 @@ class EditarAdministrador extends Component {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
-        this.setState({tipoD, countryList});
+        this.setState({ tipoD, countryList });
     }
 
 
@@ -107,41 +109,37 @@ class EditarAdministrador extends Component {
     }
 
     ChangeNombre(event) {
-        this.setState({nombre:event.target.value})
-        if (event.target.value == "")
-        {this.errorNombre= validator.requerido(event.target.value)}
-        else{this.errorNombre =validator.soloLetras(event.target.value)}
+        this.setState({ nombre: event.target.value })
+        if (event.target.value == "") { this.errorNombre = validator.requerido(event.target.value) }
+        else { this.errorNombre = validator.soloLetras(event.target.value) }
     }
 
     ChangeApellido(event) {
-        this.setState({apellido:event.target.value})
-        if (event.target.value == "")
-        {this.errorApellido= validator.requerido(event.target.value)}
-        else{this.errorApellido =validator.soloLetras(event.target.value)}
+        this.setState({ apellido: event.target.value })
+        if (event.target.value == "") { this.errorApellido = validator.requerido(event.target.value) }
+        else { this.errorApellido = validator.soloLetras(event.target.value) }
     }
 
     ChangeCelular(event) {
-        this.setState({celular: event.target.value});
-        if (event.target.value == "")
-        {this.errorCelular= validator.requerido(event.target.value)}
-        else{this.errorCelular =validator.numero(event.target.value)}
+        this.setState({ celular: event.target.value });
+        if (event.target.value == "") { this.errorCelular = validator.requerido(event.target.value) }
+        else { this.errorCelular = validator.numero(event.target.value) }
     }
 
     ChangeDocumento(event) {
-        this.setState({documento: event.target.value});
-        if (event.target.value == "")
-        {this.errorDocumento= validator.requerido(event.target.value)}
-        else{this.errorDocumento =validator.numero(event.target.value)}
+        this.setState({ documento: event.target.value });
+        if (event.target.value == "") { this.errorDocumento = validator.requerido(event.target.value) }
+        else { this.errorDocumento = validator.numero(event.target.value) }
     }
 
     ChangeSelect(value) {
-        this.setState({tipoDocumento: value});
+        this.setState({ tipoDocumento: value });
         this.errorTipoDocumento = validator.requerido(value ? value.value : null);
 
     }
 
     ChangeFechaNacimiento(event) {
-        this.setState({fechaNacimiento: event});
+        this.setState({ fechaNacimiento: event });
     }
 
 
@@ -162,27 +160,27 @@ class EditarAdministrador extends Component {
                 <div className="row card">
                     <div className="card-body">
                         <div className="row">
-                        <div className="col-md-4 row-secction">
+                            <div className="col-md-4 row-secction">
                                 <label> Nombre </label>
-                                <input type="name" className={ errorHTML.classNameError(this.errorNombre, 'form-control') }
-                                       placeholder="Nombre"
-                                       value={this.state.nombre}
-                                       onChange={this.ChangeNombre}
+                                <input type="name" className={errorHTML.classNameError(this.errorNombre, 'form-control')}
+                                    placeholder="Nombre"
+                                    value={this.state.nombre}
+                                    onChange={this.ChangeNombre}
                                 />
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Apellido </label>
-                                <input className={ errorHTML.classNameError(this.errorApellido, 'form-control') }
-                                       placeholder="Apellido"
-                                       value={this.state.apellido}
-                                       onChange={this.ChangeApellido}/>
+                                <input className={errorHTML.classNameError(this.errorApellido, 'form-control')}
+                                    placeholder="Apellido"
+                                    value={this.state.apellido}
+                                    onChange={this.ChangeApellido} />
                                 {errorHTML.errorLabel(this.errorApellido)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Fecha de Nacimiento </label>
                                 <Datetime
-                                    inputProps={{placeholder: 'Fecha de Nacimiento'}}
+                                    inputProps={{ placeholder: 'Fecha de Nacimiento' }}
                                     timeFormat={false}
                                     value={this.state.fechaNacimiento}
                                     onChange={this.ChangeFechaNacimiento}
@@ -190,16 +188,16 @@ class EditarAdministrador extends Component {
                             </div>
                         </div>
                         <div className="row">
-                        <div className="col-md-4 row-secction">
+                            <div className="col-md-4 row-secction">
                                 <label> Tipo de Documento </label>
                                 <Select
                                     isClearable={true}
                                     isSearchable={true}
                                     options={this.state.tipoD}
-                                    value = {this.state.tipoDocumento }
+                                    value={this.state.tipoDocumento}
                                     onChange={this.ChangeSelect.bind(this)}
                                     styles={this.errorTipoDocumento.error ? {
-                                        control: (base, state)=>({
+                                        control: (base, state) => ({
                                             ...base,
                                             borderColor: 'red',
                                             boxShadow: 'red'
@@ -207,22 +205,22 @@ class EditarAdministrador extends Component {
                                     } : {}}
                                 />
                                 <label className='small text-danger'
-                                       hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
+                                    hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
                             </div>
-                        <div className="col-md-4 row-secction">
+                            <div className="col-md-4 row-secction">
                                 <label> Número de Documento </label>
-                                <input className={ errorHTML.classNameError(this.errorDocumento, 'form-control') }
-                                       placeholder="Número de Documento"
-                                       value={this.state.documento}
-                                       onChange={this.ChangeDocumento}/>
+                                <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
+                                    placeholder="Número de Documento"
+                                    value={this.state.documento}
+                                    onChange={this.ChangeDocumento} />
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
                             <div className="col-md-4 row-secction">
                                 <label> Celular </label>
-                                <input className={ errorHTML.classNameError(this.errorCelular, 'form-control') }
-                                       placeholder="Celular"
-                                       value={this.state.celular}
-                                       onChange={this.ChangeCelular}
+                                <input className={errorHTML.classNameError(this.errorCelular, 'form-control')}
+                                    placeholder="Celular"
+                                    value={this.state.celular}
+                                    onChange={this.ChangeCelular}
                                 />
                                 {errorHTML.errorLabel(this.errorCelular)}
                             </div>
@@ -232,11 +230,11 @@ class EditarAdministrador extends Component {
                 </div>
                 <div className="text-center">
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
-                    Guardar Cambio
+                        Guardar cambios
                     </Button>
                 </div>
                 <div>
-                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                    <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
             </div>
         );

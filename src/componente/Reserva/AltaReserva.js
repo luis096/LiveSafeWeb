@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
-import { Database } from '../../config/config';
+import React, {Component} from 'react';
+import {Database} from '../../config/config';
 import Select from 'react-select';
 import Button from 'components/CustomButton/CustomButton.jsx';
-import { Grid, Row, Col } from 'react-bootstrap';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import {Grid, Row, Col} from 'react-bootstrap';
+import {Calendar, momentLocalizer} from 'react-big-calendar';
 import moment from 'moment';
 import 'moment/locale/es';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Card from 'components/Card/Card.jsx';
-import { validator } from '../validator';
+import {validator} from '../validator';
 import Disponibilidad from "./Disponibilidad";
 import {operacion} from "../Operaciones";
-import { style } from "../../variables/Variables";
+import {style} from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
-import { Collapse, CardBody } from 'reactstrap';
+import {Collapse, CardBody} from 'reactstrap';
 
 moment.locale('es');
 const localizer = momentLocalizer(moment);
@@ -48,8 +48,8 @@ class AltaReserva extends Component {
     async componentDidMount() {
         const {reservaLista} = this.state;
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Servicios').get().then(querySnapshot=> {
-                querySnapshot.forEach(doc=> {
+            .collection('Servicios').get().then(querySnapshot => {
+                querySnapshot.forEach(doc => {
                     reservaLista.push(
                         {value: doc.id, label: doc.data().Nombre}
                     );
@@ -65,7 +65,7 @@ class AltaReserva extends Component {
         let id = 0;
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.state.servicioSeleccionado.value)
-            .collection('Reservas').add(datos).then(doc=> {
+            .collection('Reservas').add(datos).then(doc => {
                 id = doc.id;
             }).catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
@@ -86,8 +86,8 @@ class AltaReserva extends Component {
                     <SweetAlert
                         style={{display: 'block', marginTop: '-100px', position: 'center'}}
                         title="No se puede realizar la consulta"
-                        onConfirm={()=>this.hideAlert()}
-                        onCancel={()=>this.hideAlert()}
+                        onConfirm={() => this.hideAlert()}
+                        onCancel={() => this.hideAlert()}
                         confirmBtnBsStyle="info"
                     >
                         Debe seleccionar un servicio para realizar la consulta.
@@ -98,7 +98,7 @@ class AltaReserva extends Component {
         }
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.state.servicioSeleccionado.value).get().then(
-                doc=> {
+                doc => {
                     this.setState({
                         min: validator.obtenerFecha(doc.data().HoraInicio),
                         max: validator.obtenerFecha(doc.data().HoraFin),
@@ -139,13 +139,13 @@ class AltaReserva extends Component {
             let desdeDb = validator.obtenerFecha(x.desde);
             let hastaDb = validator.obtenerFecha(x.hasta);
 
-            if (desdeDb.getHours() <= newEvent.start.getHours()){
+            if (desdeDb.getHours() <= newEvent.start.getHours()) {
                 if (desdeDb.getHours() == newEvent.start.getHours() &&
                     desdeDb.getMinutes() <= newEvent.start.getMinutes()) desde = true;
                 if (desdeDb.getHours() < newEvent.start.getHours()) desde = true;
             }
 
-            if (hastaDb.getHours() >= newEvent.end.getHours()){
+            if (hastaDb.getHours() >= newEvent.end.getHours()) {
                 if (hastaDb.getHours() == newEvent.end.getHours() &&
                     hastaDb.getMinutes() >= newEvent.end.getMinutes()) hasta = true;
                 if (hastaDb.getHours() >= newEvent.end.getHours()) hasta = true;
@@ -168,8 +168,8 @@ class AltaReserva extends Component {
                     <SweetAlert
                         style={{display: 'block', marginTop: '-100px', position: 'center'}}
                         title="No se puede realizar la reserva"
-                        onConfirm={()=>this.hideAlert()}
-                        onCancel={()=>this.hideAlert()}
+                        onConfirm={() => this.hideAlert()}
+                        onCancel={() => this.hideAlert()}
                         confirmBtnBsStyle="info"
                     >
                         La reserva debe ser posterior a la hora o fecha actual.
@@ -185,8 +185,8 @@ class AltaReserva extends Component {
                     <SweetAlert
                         style={{display: 'block', marginTop: '-100px', position: 'center'}}
                         title="No se puede realizar la reserva"
-                        onConfirm={()=>this.hideAlert()}
-                        onCancel={()=>this.hideAlert()}
+                        onConfirm={() => this.hideAlert()}
+                        onCancel={() => this.hideAlert()}
                         confirmBtnBsStyle="info"
                     >
                         El horario seleccionado no es valido
@@ -195,7 +195,7 @@ class AltaReserva extends Component {
             });
             return;
         }
-        this.state.events.map((evento)=> {
+        this.state.events.map((evento) => {
             if (evento.start.getDay() == slotInfo.start.getDay()) {
                 if ((evento.start <= slotInfo.start && evento.end > slotInfo.start) ||
                     (evento.start < slotInfo.end && evento.end >= slotInfo.end) ||
@@ -205,8 +205,8 @@ class AltaReserva extends Component {
                             <SweetAlert
                                 style={{display: 'block', marginTop: '-100px', position: 'center'}}
                                 title="No se puede realizar la reserva"
-                                onConfirm={()=>this.hideAlert()}
-                                onCancel={()=>this.hideAlert()}
+                                onConfirm={() => this.hideAlert()}
+                                onCancel={() => this.hideAlert()}
                                 confirmBtnBsStyle="info"
                             >
                                 No se puede resevar porque ya hay una reserva vigente en este horario.
@@ -223,8 +223,8 @@ class AltaReserva extends Component {
                     <SweetAlert
                         style={{display: 'block', marginTop: '-100px', position: 'center'}}
                         title="No se puede realizar la reserva"
-                        onConfirm={()=>this.hideAlert()}
-                        onCancel={()=>this.hideAlert()}
+                        onConfirm={() => this.hideAlert()}
+                        onCancel={() => this.hideAlert()}
                         confirmBtnBsStyle="info"
                     >
                         La reserva no debe durar mas de {this.state.turnosMax} turnos.
@@ -242,11 +242,13 @@ class AltaReserva extends Component {
                     validationMsg={'El nombre es requerido para realizar la reserva.'}
                     showCancel
                     style={{display: 'block', marginTop: '-100px', position: 'center', left: '50%'}}
-                    title="Ingrese nombre del evento"
-                    onConfirm={e=>this.addNewEvent(e, slotInfo)}
-                    onCancel={()=>this.hideAlert()}
+                    title="Ingrese el nombre del evento"
+                    onConfirm={e => this.addNewEvent(e, slotInfo)}
+                    onCancel={() => this.hideAlert()}
                     confirmBtnBsStyle="info"
                     cancelBtnBsStyle="danger"
+                    confirmBtnText="Ok"
+                    cancelBtnText="Cancelar"
                 />
             )
         });
@@ -305,8 +307,8 @@ class AltaReserva extends Component {
         let newEvents = [];
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').doc(this.state.servicioSeleccionado.value).collection('Reservas')
-            .where('FechaDesde', '>=', desde).where('FechaDesde', '<=', hasta).get().then(querySnapshot=> {
-                querySnapshot.forEach(doc=> {
+            .where('FechaDesde', '>=', desde).where('FechaDesde', '<=', hasta).get().then(querySnapshot => {
+                querySnapshot.forEach(doc => {
                     if (doc.exists && !doc.data().Cancelado) {
                         newEvents.push({
                             title: (idPersona === doc.data().IdPropietario.id) ? doc.data().Nombre : 'Reservado',
@@ -324,7 +326,7 @@ class AltaReserva extends Component {
 
     render() {
         return (
-            <div className="col-12" >
+            <div className="col-12">
                 <legend><h3 className="row">Nueva Reserva</h3></legend>
                 <div className="row card col-md-6" style={{display: 'flex'}}>
                     <div className="card-body">
@@ -341,7 +343,7 @@ class AltaReserva extends Component {
                                     options={this.state.reservaLista}
                                     onChange={this.ChangeSelect.bind(this)}
                                     styles={this.errorServicio.error ? {
-                                        control: (base, state)=>({
+                                        control: (base, state) => ({
                                             ...base,
                                             borderColor: 'red',
                                             boxShadow: 'red'
@@ -364,11 +366,12 @@ class AltaReserva extends Component {
                     <div className="row col-md-12">
                         <div className="row-secction col-md-8">
                             <span>
-                            <h3>Servicio: {this.state.servicioSeleccionado ?
-                                this.state.servicioSeleccionado.label : 'Sin servicio seleccionado'}</h3>
-
-                            (duración de turno: {(this.state.duracionTurno / 60) >= 1 ? (this.state.duracionTurno / 60) + 'Hs.':
-                                (this.state.duracionTurno) + 'min.'})
+                                <h3>Servicio: {this.state.servicioSeleccionado ?
+                                    this.state.servicioSeleccionado.label : 'Sin servicio seleccionado'}</h3>
+                                <h6>
+                            (Duración del turno: {(this.state.duracionTurno / 60) >= 1 ? (this.state.duracionTurno / 60) + 'Hs.' :
+                                    (this.state.duracionTurno) + 'min.'} - Cantidad de turnos max. consecutivos válidos: {this.state.turnosMax} turnos)
+                                </h6>
                             </span>
                         </div>
                     </div>
@@ -388,11 +391,11 @@ class AltaReserva extends Component {
                                             events={this.state.events}
                                             defaultView="week"
                                             views={['week']}
-                                            onNavigate={(nav)=>this.navigate(nav)}
+                                            onNavigate={(nav) => this.navigate(nav)}
                                             scrollToTime={new Date(2019, 11, 21, 6)}
                                             defaultDate={new Date()}
                                             // onSelectEvent={event=>this.selectedEvent(event)}
-                                            onSelectSlot={slotInfo=>this.addNewEventAlert(slotInfo)}
+                                            onSelectSlot={slotInfo => this.addNewEventAlert(slotInfo)}
                                             // eventPropGetter={this.eventColors} //quitar
                                         />
                                     }

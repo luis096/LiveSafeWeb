@@ -105,7 +105,7 @@ class AltaIngreso extends Component {
         await this.buscarPersona();
         if (!this.state.invitadoTemp.length) {
             this.state.existeInvitado
-                ? this.errorIngreso('La persona no esta invitada o vencio su plazo de invitacion al Country')
+                ? this.errorIngreso('La persona no está invitada o venció su plazo de invitacion al country.')
                 : this.noEncontrado('La persona no se encuentra registrada en el sistema. ¿Desea agregarla como un nuevo invitado? ');
         }
     }
@@ -220,7 +220,7 @@ class AltaIngreso extends Component {
     async registrar() {
         let invalido = await this.buscarEnIngresos();
         if (invalido) {
-            this.solicitarObservacion('La persona ya registra un ingreso el Country.' + ' Para continuear indique una observacion: ');
+            this.solicitarObservacion('La persona ya registra un ingreso el country.' + ' Para continuar indique una observación: ');
         } else {
             this.agregarIngreso('');
         }
@@ -297,7 +297,8 @@ class AltaIngreso extends Component {
                     showCancel
                     onConfirm={() => this.setState({ nuevoInvitado: true })}
                     onCancel={() => this.hideAlert()}
-                    confirmBtnText={'Nuevo Invitado'}
+                    confirmBtnText="Nuevo Invitado"
+                    cancelBtnText="Cancelar"
                     confirmBtnBsStyle="success"
                     cancelBtnBsStyle="danger">
                     {msg}
@@ -321,6 +322,7 @@ class AltaIngreso extends Component {
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
             .collection('Ingresos')
+            .where('Estado', '==', true)
             .orderBy('Fecha', 'desc')
             .where('Documento', '==', this.state.documento)
             .where('TipoDocumento', '==', refTipoDocumento)
@@ -438,12 +440,12 @@ class AltaIngreso extends Component {
                                     styles={
                                         this.errorTipoDocumento.error
                                             ? {
-                                                  control: (base, state) => ({
-                                                      ...base,
-                                                      borderColor: 'red',
-                                                      boxShadow: 'red',
-                                                  }),
-                                              }
+                                                control: (base, state) => ({
+                                                    ...base,
+                                                    borderColor: 'red',
+                                                    boxShadow: 'red',
+                                                }),
+                                            }
                                             : {}
                                     }
                                 />
@@ -475,12 +477,12 @@ class AltaIngreso extends Component {
                         </div>
                         <div hidden={this.state.invitadoTemp.length <= 1}>
                             <h5 className="row" hidden={this.state.autenticar}>
-                                La persona se encuentra actualmente invitada por mas de un propietario. Debe seleccionar el propietario al
+                                La persona ha sido invitada por más de un propietario. Debe seleccionar el propietario al
                                 cual se realiza la visita para registrar el ingreso
                             </h5>
                         </div>
                         <h5 className="row text-danger" hidden={!this.state.autenticar}>
-                            El invitado no esta autenticado
+                            El invitado no está autenticado
                         </h5>
                     </div>
                 </div>
@@ -536,7 +538,7 @@ class AltaIngreso extends Component {
                                 </div>
                             </div>
                             <div className="row" hidden={!this.state.esInvitadoEvento}>
-                                <label>La persona se encuentra invitada a un evento dentro del Country.</label>
+                                <label>La persona se encuentra invitada a un evento dentro del country.</label>
                             </div>
                         </div>
                     </div>

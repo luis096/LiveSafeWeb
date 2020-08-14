@@ -157,16 +157,8 @@ class InvitadoEvento extends Component {
                 .add({
                     Fecha: new Date(),
                     IdPropietario: Database.doc('Country/' + this.idCountry + '/Propietarios/' + this.idPropietario),
-                    Tipo: 'Nueva Solicitud',
-                    Texto:
-                        'El invitado ' +
-                        this.state.apellido +
-                        ', ' +
-                        this.state.nombre +
-                        ' le envio una solicitud ' +
-                        'para asistir al evento ' +
-                        this.state.reservaNombre +
-                        '.',
+                    Tipo: 'Invitación a evento',
+                    Texto: this.state.nombre + ' ' + this.state.apellido + 'se registró para asistir a tu evento "' + this.state.reservaNombre + '"."',
                     Visto: false,
                     IdReserva: this.idReserva,
                 })

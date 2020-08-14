@@ -121,7 +121,8 @@ class PrincipalInvitados extends Component {
             return;
         }
 
-        let con = await Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Invitados');
+        let con = await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Invitados');
 
         let total = con;
 
@@ -165,6 +166,7 @@ class PrincipalInvitados extends Component {
                 })
                 .catch((error) => {
                     this.notificationSystem.current.addNotification(operacion.error(error.message));
+                    console.log(error.message)
                 });
         }
 
@@ -458,15 +460,14 @@ class PrincipalInvitados extends Component {
                                         Índice
                                     </th>
                                     <th style={{ textAlign: 'center' }} scope="col">
+                                        Apellido y Nombre
+                                    </th>
+                                    <th style={{ textAlign: 'center' }} scope="col">
                                         Tipo Documento
                                     </th>
                                     <th style={{ textAlign: 'center' }} scope="col">
                                         Documento
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Nombre y Apellido
-                                    </th>
-                                    {/*<th scope="col">Grupo</th>*/}
                                     <th style={{ textAlign: 'center' }} scope="col">
                                         Estado
                                     </th>
@@ -484,17 +485,15 @@ class PrincipalInvitados extends Component {
 
                             <tbody>
                                 {this.state.invitados.map((inv, ind) => {
+                                    let nombre = !!inv[0].Apellido?inv[0].Apellido + ", " + inv[0].Nombre:"Sin Autenticar";
                                     return (
                                         <tr className="table-light">
                                             <th style={{ textAlign: 'center' }}>
                                                 {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
                                             </th>
+                                            <td style={{ textAlign: 'center' }}> {nombre} </td>
                                             <td style={{ textAlign: 'center' }}>{this.obtenerDocumentoLabel(inv[0].TipoDocumento.id)}</td>
                                             <td style={{ textAlign: 'center' }}>{inv[0].Documento}</td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                {inv[0].Nombre} {inv[0].Apellido}
-                                            </td>
-                                            {/*<td>{inv[0].Grupo}</td>*/}
                                             <td style={{ textAlign: 'center' }}>{inv[0].Estado ? 'Activo' : 'Inactivo'}</td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <Button
