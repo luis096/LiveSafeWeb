@@ -276,11 +276,11 @@ class PrincipalInvitados extends Component {
             .add({
                 IdReserva: Database.doc(
                     'Country/' +
-                        localStorage.getItem('idCountry') +
-                        '/Propietarios/' +
-                        localStorage.getItem('idPersona') +
-                        '/Reservas/' +
-                        this.state.reservaSelceccionada.value
+                    localStorage.getItem('idCountry') +
+                    '/Propietarios/' +
+                    localStorage.getItem('idPersona') +
+                    '/Reservas/' +
+                    this.state.reservaSelceccionada.value
                 ),
                 FechaDesde: this.state.reservaSelceccionada.fechaDesde,
                 FechaHasta: this.state.reservaSelceccionada.fechaHasta,
@@ -316,15 +316,15 @@ class PrincipalInvitados extends Component {
                 <SweetAlert
                     warning
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
-                    title="¿Estas seguro?"
+                    title="¿Estás seguro?"
                     onConfirm={() => this.successDelete()}
                     onCancel={() => this.cancelDetele()}
                     confirmBtnBsStyle="info"
                     cancelBtnBsStyle="danger"
-                    confirmBtnText="Si, estoy seguro"
-                    cancelBtnText="Cancelar"
+                    confirmBtnText="Sí, estoy seguro"
+                    cancelBtnText="No, deseo volver atrás"
                     showCancel>
-                    ¿Esta seguro de que desea eliminar invitado?
+                    ¿Está seguro de que desea eliminar el invitado?
                 </SweetAlert>
             ),
         });
@@ -344,11 +344,11 @@ class PrincipalInvitados extends Component {
                 <SweetAlert
                     success
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
-                    title="Invitado Eliminado"
+                    title="Invitado eliminado"
                     onConfirm={() => this.hideAlert()}
                     onCancel={() => this.hideAlert()}
                     confirmBtnBsStyle="info">
-                    El invitado se elimino correctamente
+                    El invitado se eliminó correctamente
                 </SweetAlert>
             ),
         });
@@ -366,7 +366,7 @@ class PrincipalInvitados extends Component {
                 <SweetAlert
                     danger
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
-                    title="Se cancelo la operacion"
+                    title="Operación cancelada"
                     onConfirm={() => this.hideAlert()}
                     onCancel={() => this.hideAlert()}
                     confirmBtnBsStyle="info">
@@ -453,109 +453,109 @@ class PrincipalInvitados extends Component {
                     </Button>
                 </div>
                 {this.state.alert}
-                { this.state.loading ? (
-                    <div style={{display:'flex', justifyContent:'center', marginTop:'100px'}} >
-                            <CircularProgress thickness="2" color={'white'} style={{width:'120px', height:'120px'}} />
-                    </div> ) : (
-                <div>
-                <div className="card row" hidden={!this.state.invitados.length}>
-                    <h4 className="row">Invitados ({this.total})</h4>
-                    <div className="card-body">
-                        <table className="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Índice
+                {this.state.loading ? (
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '100px' }} >
+                        <CircularProgress thickness="2" color={'white'} style={{ width: '120px', height: '120px' }} />
+                    </div>) : (
+                        <div>
+                            <div className="card row" hidden={!this.state.invitados.length}>
+                                <h4 className="row">Invitados ({this.total})</h4>
+                                <div className="card-body">
+                                    <table className="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Índice
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Apellido y Nombre
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Apellido y Nombre
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Tipo Documento
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Tipo Documento
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Documento
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Documento
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Estado
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Estado
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Invitar a Evento
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Invitar a Evento
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Editar
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Editar
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Eliminar
-                                    </th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {this.state.invitados.map((inv, ind) => {
-                                    let nombre = !!inv[0].Apellido?inv[0].Apellido + ", " + inv[0].Nombre:"Sin Autenticar";
-                                    return (
-                                        <tr className="table-light">
-                                            <th style={{ textAlign: 'center' }}>
-                                                {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
-                                            </th>
-                                            <td style={{ textAlign: 'center' }}> {nombre} </td>
-                                            <td style={{ textAlign: 'center' }}>{this.obtenerDocumentoLabel(inv[0].TipoDocumento.id)}</td>
-                                            <td style={{ textAlign: 'center' }}>{inv[0].Documento}</td>
-                                            <td style={{ textAlign: 'center' }}>{inv[0].Estado ? 'Activo' : 'Inactivo'}</td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                <Button
-                                                    bsStyle="info"
-                                                    fill
-                                                    disabled={false}
-                                                    onClick={() => {
-                                                        this.setState({ invitadoReserva: inv });
-                                                        this.modalAgregarInvitado();
-                                                    }}>
-                                                    Invitar
-                                                </Button>
-                                            </td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                <NavLink to={'editarInvitado/' + inv[1]} className="nav-link" activeClassName="active">
-                                                    <Button bsStyle="warning" fill>
-                                                        Editar
-                                                    </Button>
-                                                </NavLink>
-                                            </td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                <Button
-                                                    bsStyle="danger"
-                                                    fill
-                                                    onClick={() => {
-                                                        this.cancelar(inv);
-                                                    }}>
+                                                <th style={{ textAlign: 'center' }} scope="col">
                                                     Eliminar
+                                    </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            {this.state.invitados.map((inv, ind) => {
+                                                let nombre = !!inv[0].Apellido ? inv[0].Apellido + ", " + inv[0].Nombre : "Sin Autenticar";
+                                                return (
+                                                    <tr className="table-light">
+                                                        <th style={{ textAlign: 'center' }}>
+                                                            {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
+                                                        </th>
+                                                        <td style={{ textAlign: 'center' }}> {nombre} </td>
+                                                        <td style={{ textAlign: 'center' }}>{this.obtenerDocumentoLabel(inv[0].TipoDocumento.id)}</td>
+                                                        <td style={{ textAlign: 'center' }}>{inv[0].Documento}</td>
+                                                        <td style={{ textAlign: 'center' }}>{inv[0].Estado ? 'Activo' : 'Inactivo'}</td>
+                                                        <td style={{ textAlign: 'center' }}>
+                                                            <Button
+                                                                bsStyle="info"
+                                                                fill
+                                                                disabled={false}
+                                                                onClick={() => {
+                                                                    this.setState({ invitadoReserva: inv });
+                                                                    this.modalAgregarInvitado();
+                                                                }}>
+                                                                Invitar
                                                 </Button>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div className="text-center" hidden={!this.state.invitados.length}>
-                    <Pagination className="pagination-no-border">
-                        <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
+                                                        </td>
+                                                        <td style={{ textAlign: 'center' }}>
+                                                            <NavLink to={'editarInvitado/' + inv[1]} className="nav-link" activeClassName="active">
+                                                                <Button bsStyle="warning" fill>
+                                                                    Editar
+                                                    </Button>
+                                                            </NavLink>
+                                                        </td>
+                                                        <td style={{ textAlign: 'center' }}>
+                                                            <Button
+                                                                bsStyle="danger"
+                                                                fill
+                                                                onClick={() => {
+                                                                    this.cancelar(inv);
+                                                                }}>
+                                                                Eliminar
+                                                </Button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div className="text-center" hidden={!this.state.invitados.length}>
+                                <Pagination className="pagination-no-border">
+                                    <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
 
-                        {this.cantidad.map((num) => {
-                            return <Pagination.Item active={num == this.state.numPagina}>{num + 1}</Pagination.Item>;
-                        })}
+                                    {this.cantidad.map((num) => {
+                                        return <Pagination.Item active={num == this.state.numPagina}>{num + 1}</Pagination.Item>;
+                                    })}
 
-                        <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
-                    </Pagination>
-                </div>
-                <div className="row card" hidden={this.state.invitados.length}>
-                    <div className="card-body">
-                        <h4 className="row">No se encontraron resultados.</h4>
-                    </div>
-                </div>
-                </div> )}
+                                    <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
+                                </Pagination>
+                            </div>
+                            <div className="row card" hidden={this.state.invitados.length}>
+                                <div className="card-body">
+                                    <h4 className="row">No se encontraron resultados.</h4>
+                                </div>
+                            </div>
+                        </div>)}
 
                 <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
                     <Modal.Header closeButton>

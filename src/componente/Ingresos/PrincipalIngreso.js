@@ -227,7 +227,7 @@ class PrincialIngreso extends Component {
     }
 
     obtenerConsulta(conLimite) {
-        this.setState({loading: true})
+        this.setState({ loading: true })
         let con = Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Ingresos').orderBy('Fecha', 'desc');
         if (conLimite) {
@@ -264,15 +264,15 @@ class PrincialIngreso extends Component {
                 <SweetAlert
                     warning
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
-                    title="¿Estas seguro?"
+                    title="¿Estás seguro?"
                     onConfirm={() => this.cancelConfirmado(idIngreso)}
                     onCancel={() => this.cancelDetele()}
                     confirmBtnBsStyle="info"
                     cancelBtnBsStyle="danger"
-                    confirmBtnText="Si, estoy seguro"
-                    cancelBtnText="Cancelar"
+                    confirmBtnText="Sí, estoy seguro"
+                    cancelBtnText="No, deseo volver atrás"
                     showCancel>
-                    ¿Esta seguro de que desea cancelar el ingreso?
+                    ¿Está seguro de que desea cancelar el ingreso?
                 </SweetAlert>
             ),
         });
@@ -281,18 +281,18 @@ class PrincialIngreso extends Component {
     async cancelConfirmado(idIngreso) {
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Ingresos').doc(idIngreso).update({ Estado: false }).then(
-        this.setState({
-            alert: (
-                <SweetAlert
-                    success
-                    style={{ display: 'block', marginTop: '-100px', position: 'center' }}
-                    title="Ingreso cancelado"
-                    onConfirm={() => this.hideAlert()}
-                    onCancel={() => this.hideAlert()}
-                    confirmBtnBsStyle="info">
-                </SweetAlert>
-            ),
-        }));
+                this.setState({
+                    alert: (
+                        <SweetAlert
+                            success
+                            style={{ display: 'block', marginTop: '-100px', position: 'center' }}
+                            title="Ingreso cancelado"
+                            onConfirm={() => this.hideAlert()}
+                            onCancel={() => this.hideAlert()}
+                            confirmBtnBsStyle="info">
+                        </SweetAlert>
+                    ),
+                }));
     }
 
     cancelDetele() {
@@ -301,7 +301,7 @@ class PrincialIngreso extends Component {
                 <SweetAlert
                     danger
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
-                    title="Se cancelo la operacion"
+                    title="Operación cancelada"
                     onConfirm={() => this.hideAlert()}
                     onCancel={() => this.hideAlert()}
                     confirmBtnBsStyle="info">
@@ -413,107 +413,107 @@ class PrincialIngreso extends Component {
                     </Button>
                 </div>
                 {this.descargar()}
-                { this.state.loading ? (
-                    <div style={{display:'flex', justifyContent:'center', marginTop:'100px'}} >
-                            <CircularProgress thickness="2" color={'white'} style={{width:'120px', height:'120px'}} />
-                    </div> ) : (
-                <div>
-                <div className="card row" hidden={!this.state.ingresos.length}>
-                    <div className="row">
-                        <div className="col-md-6 title row-secction">
-                            <h4 style={{ margin: '0px' }}>Ingresos ({this.total})</h4>
-                        </div>
-                        <div className="col-md-6 row-secction btnDescarga">
-                            <Button
-                                bsStyle="success"
-                                fill
-                                onClick={() => {
-                                    this.setState({ descargar: true });
-                                }}>
-                                Descargar
+                {this.state.loading ? (
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '100px' }} >
+                        <CircularProgress thickness="2" color={'white'} style={{ width: '120px', height: '120px' }} />
+                    </div>) : (
+                        <div>
+                            <div className="card row" hidden={!this.state.ingresos.length}>
+                                <div className="row">
+                                    <div className="col-md-6 title row-secction">
+                                        <h4 style={{ margin: '0px' }}>Ingresos ({this.total})</h4>
+                                    </div>
+                                    <div className="col-md-6 row-secction btnDescarga">
+                                        <Button
+                                            bsStyle="success"
+                                            fill
+                                            onClick={() => {
+                                                this.setState({ descargar: true });
+                                            }}>
+                                            Descargar
                             </Button>
-                        </div>
-                    </div>
-                    <div className="card-body">
-                        <table className="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Índice
+                                    </div>
+                                </div>
+                                <div className="card-body">
+                                    <table className="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Índice
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Nombre y Apellido
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Nombre y Apellido
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Tipo Documento
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Tipo Documento
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Documento
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Documento
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Fecha y Hora
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Fecha y Hora
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Observación
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Observación
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Cancelar
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.state.ingresos.map((ing, ind) => {
-                                    let hora = ing[0].Fecha ? new Date(ing[0].Fecha.seconds * 1000) : new Date();
-                                    return (
-                                        <tr className="table-light">
-                                            <th style={{ textAlign: 'center' }} scope="row">
-                                                {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
-                                            </th>
-                                            <td style={{ textAlign: 'center' }} scope="row">
-                                                {ing[0].Nombre} {ing[0].Apellido}
-                                            </td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                {operacion.obtenerDocumentoLabel(ing[0].TipoDocumento.id, this.state.tipoD)}
-                                            </td>
-                                            <td style={{ textAlign: 'center' }}>{ing[0].Documento}</td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                {hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}
-                                            </td>
-                                            <td style={{ textAlign: 'center' }}>{ing[0].Observacion ? 'Si' : 'No'}</td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                <Button
-                                                    bsStyle="warning"
-                                                    fill
-                                                    onClick={() => {
-                                                        this.cancelar(ing[1]);
-                                                    }}>
+                                                <th style={{ textAlign: 'center' }} scope="col">
                                                     Cancelar
+                                    </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {this.state.ingresos.map((ing, ind) => {
+                                                let hora = ing[0].Fecha ? new Date(ing[0].Fecha.seconds * 1000) : new Date();
+                                                return (
+                                                    <tr className="table-light">
+                                                        <th style={{ textAlign: 'center' }} scope="row">
+                                                            {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
+                                                        </th>
+                                                        <td style={{ textAlign: 'center' }} scope="row">
+                                                            {ing[0].Nombre} {ing[0].Apellido}
+                                                        </td>
+                                                        <td style={{ textAlign: 'center' }}>
+                                                            {operacion.obtenerDocumentoLabel(ing[0].TipoDocumento.id, this.state.tipoD)}
+                                                        </td>
+                                                        <td style={{ textAlign: 'center' }}>{ing[0].Documento}</td>
+                                                        <td style={{ textAlign: 'center' }}>
+                                                            {hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}
+                                                        </td>
+                                                        <td style={{ textAlign: 'center' }}>{ing[0].Observacion ? 'Si' : 'No'}</td>
+                                                        <td style={{ textAlign: 'center' }}>
+                                                            <Button
+                                                                bsStyle="warning"
+                                                                fill
+                                                                onClick={() => {
+                                                                    this.cancelar(ing[1]);
+                                                                }}>
+                                                                Cancelar
                                                 </Button>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div className="text-center" hidden={!this.state.ingresos.length}>
-                    <Pagination className="pagination-no-border">
-                        <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div className="text-center" hidden={!this.state.ingresos.length}>
+                                <Pagination className="pagination-no-border">
+                                    <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
 
-                        {this.cantidad.map((num) => {
-                            return <Pagination.Item active={num == this.state.numPagina}>{num + 1}</Pagination.Item>;
-                        })}
+                                    {this.cantidad.map((num) => {
+                                        return <Pagination.Item active={num == this.state.numPagina}>{num + 1}</Pagination.Item>;
+                                    })}
 
-                        <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
-                    </Pagination>
-                </div>
-                <div className="row card" hidden={this.state.ingresos.length}>
-                    <div className="card-body">
-                        <h4 className="row">No se encontraron resultados.</h4>
-                    </div>
-                </div>
-                </div> )}
+                                    <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
+                                </Pagination>
+                            </div>
+                            <div className="row card" hidden={this.state.ingresos.length}>
+                                <div className="card-body">
+                                    <h4 className="row">No se encontraron resultados.</h4>
+                                </div>
+                            </div>
+                        </div>)}
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>

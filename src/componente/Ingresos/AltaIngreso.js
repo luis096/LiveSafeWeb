@@ -349,13 +349,14 @@ class AltaIngreso extends Component {
                     input
                     required
                     inputType={'textarea'}
-                    validationMsg={'La observacion es requerida para registrar el ingreso'}
+                    validationMsg={'La observación es requerida para registrar el ingreso'}
                     showCancel
                     style={{ display: 'block', marginTop: '-100px', position: 'center', left: '50%' }}
                     title="Advertencia"
                     onConfirm={(e) => this.agregarIngreso(e)}
                     onCancel={() => this.hideAlert()}
                     btnSize={'lg'}
+                    cancelBtnText={'Cancelar'}
                     confirmBtnText={'Confirmar'}
                     confirmBtnBsStyle="success"
                     cancelBtnBsStyle="danger">
