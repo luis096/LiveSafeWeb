@@ -5,6 +5,7 @@ const NUMBER_REGEXP = /^\d*$/;
 const DECIMAL_REGEXP = /^\d+(\.\d+){0,2}?$/;
 const EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
 const LETTERS_REGEXP = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]*$/;
+const LETTERS_NUMBER_REGEXP = /^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\s]*$/;
 const DECIMAL_WITH_TWO_DIGITS_REGEXP = /^[0-9]+(.[0-9]{0,2})?$/;
 const DECIMAL_10_DIG_BEFORE_3_DIG_AFTER_REGEXP = /^\d{0,10}(?:(?=\.)\.\d{0,3}|(?!\.))$/;
 const DECIMAL_10_DIG_BEFORE_2_DIG_AFTER_REGEXP = /^\d{0,10}(?:(?=\.)\.\d{0,2}|(?!\.))$/;
@@ -23,6 +24,7 @@ export const validator = {
     requerido,
     mail,
     soloLetras,
+    soloLetrasNumeros,
     estadoReserva,
     obtenerFecha,
     validarMail,
@@ -58,6 +60,14 @@ function soloLetras(valor) {
         mensaje: 'Solo ingresar letras'
     };
 }
+
+function soloLetrasNumeros(valor) {
+    return {
+        error: LETTERS_NUMBER_REGEXP.test(valor) ? false : true,
+        mensaje: 'Solo ingresar valores alfanuméricos'
+    };
+}
+
 
 function estadoReserva(desde, hasta, cancelado) {
     let hoy = new Date();

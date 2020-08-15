@@ -213,7 +213,7 @@ class PrincipalCountry extends Component {
                                     className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                     value={this.state.nombre}
                                     onChange={this.ChangeNombre}
-                                    placeholder="Nombre"
+                                    placeholder="Nombre del country"
                                 />
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>

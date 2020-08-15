@@ -93,7 +93,7 @@ function error(mensaje) {
         message: (<div>{mensaje}</div>),
         level: "error",
         position: "br",
-        autoDismiss: 15
+        autoDismiss: 7
         };
     return obj;
 }
@@ -105,7 +105,7 @@ function registroConExito(mensaje) {
         message: (<div style={{color: "black"}}>{mensaje}</div>),
         level: "success",
         position: "br",
-        autoDismiss: 2
+        autoDismiss: 5
     };
     return obj;
 }
