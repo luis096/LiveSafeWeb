@@ -146,6 +146,8 @@ class AltaCountry extends Component {
         } else {
             this.errorNumero = validator.numero(event.target.value);
         }
+        if (!event.target.value) return;
+        this.errorNumero = validator.longitud(event.target.value, 5);
     }
 
     ChangeCelular(event) {
@@ -155,6 +157,8 @@ class AltaCountry extends Component {
         } else {
             this.errorCelular = validator.numero(event.target.value);
         }
+        if (!event.target.value) return;
+        this.errorCelular = validator.longitud(event.target.value, 10);
     }
 
     ChangeTitular(event) {
@@ -308,6 +312,8 @@ class AltaCountry extends Component {
                                     placeholder="Nombre del country"
                                     value={this.state.nombre}
                                     onChange={this.ChangeNombre}
+                                    type="text"
+                                    maxLength={50}
                                 />
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
@@ -318,6 +324,8 @@ class AltaCountry extends Component {
                                     placeholder="Titular"
                                     value={this.state.titular}
                                     onChange={this.ChangeTitular}
+                                    type="text"
+                                    maxLength={50}
                                 />
                                 {errorHTML.errorLabel(this.errorTitular)}
                             </div>
@@ -358,6 +366,8 @@ class AltaCountry extends Component {
                                 <input
                                     className={errorHTML.classNameError(this.errorCalle, 'form-control')}
                                     placeholder="Calle"
+                                    type="text"
+                                    maxLength={50}
                                     value={this.state.calle}
                                     onChange={this.ChangeCalle}
                                 />
@@ -394,6 +404,8 @@ class AltaCountry extends Component {
                                 <textarea
                                     className={errorHTML.classNameError(this.errorDescripcion, 'form-control')}
                                     rows="3"
+                                    type="text"
+                                    maxLength={200}
                                     placeholder="Descripción"
                                     value={this.state.descripcion}
                                     onChange={this.ChangeDescripcion}

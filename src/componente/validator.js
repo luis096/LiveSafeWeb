@@ -23,6 +23,7 @@ export const validator = {
     numero,
     requerido,
     mail,
+    longitud,
     soloLetras,
     soloLetrasNumeros,
     estadoReserva,
@@ -68,6 +69,13 @@ function soloLetrasNumeros(valor) {
     };
 }
 
+function longitud(valor, longitud) {
+    let error = (valor.length > longitud);
+    return {
+        error: error,
+        mensaje: 'No debe superar los ' + longitud + ' caracteres'
+    };
+}
 
 function estadoReserva(desde, hasta, cancelado) {
     let hoy = new Date();
