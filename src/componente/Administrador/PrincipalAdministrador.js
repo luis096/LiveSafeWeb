@@ -31,6 +31,7 @@ class PrincipalAdministrador extends Component {
             ultimo: [],
             primero: [],
             loading: false,
+            administradoresTodos: [],
             errorDesde: { error: false, mensaje: '' },
             errorHasta: { error: false, mensaje: '' },
         };
@@ -50,7 +51,7 @@ class PrincipalAdministrador extends Component {
     }
 
     async componentDidMount() {
-        const { tipoD, barriosSelect } = this.state;
+        const { tipoD, barriosSelect, administradoresTodos } = this.state;
         await Database.collection('Country')
             .get()
             .then((querySnapshot) => {
@@ -71,7 +72,19 @@ class PrincipalAdministrador extends Component {
             .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        this.setState({ tipoD, barriosSelect, barrio: barriosSelect[0] });
+        await Database.collectionGroup('Administradores')
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    let id = doc.ref.path.toString().split('/');
+                    let idCountry = id[1];
+                    administradoresTodos.push([doc.data(), doc.id, idCountry]);
+                });
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
+        this.setState({ tipoD, barriosSelect, administradoresTodos});
     }
 
     ChangeBarrio(value) {
@@ -135,7 +148,7 @@ class PrincipalAdministrador extends Component {
             return;
         }
 
-        let con = await Database.collection('Country').doc(this.state.barrio.value).collection('Administradores');
+        let con = await Database.collectionGroup('Administradores');
 
         let total = con;
 
@@ -208,6 +221,40 @@ class PrincipalAdministrador extends Component {
         this.setState({ administradores, numPagina: pagina,  loading: false });
     }
 
+    consultarNoPaginado(pagina) {
+        const {administradoresTodos, numPagina} = this.state;
+        if ((administradoresTodos.length / 10) < pagina || pagina < 0) return;
+
+        this.setState({loading: true});
+        let result = administradoresTodos.slice(pagina*10, (pagina*10 + 10));
+
+        if (this.state.desde) {
+            result = result.filter(x => { return (validator.obtenerFecha(x[0].FechaAlta) >= new Date(this.state.desde)) });
+        }
+        if (this.state.hasta) {
+            result = result.filter(x => { return validator.obtenerFecha(x[0].FechaAlta) <= new Date(this.state.hasta) });
+        }
+        if (this.state.nombre) {
+            result = result.filter(x => { return x[0].Nombre.toUpperCase() === this.state.nombre.toUpperCase() });
+        }
+        if (this.state.apellido) {
+            result = result.filter(x => { return x[0].Apellido.toUpperCase() === this.state.apellido.toUpperCase() });
+        }
+        if (this.state.tipoDocumento && this.state.tipoDocumento.value) {
+            let tipoDocumentoRef = operacion.obtenerReferenciaDocumento(this.state.tipoDocumento);
+            result = result.filter(x => { return x[0].TipoDocumento === tipoDocumentoRef });
+        }
+        if (this.state.barrio && this.state.barrio.value) {
+            result = result.filter(x => { return x[2] === this.state.barrio.value.toString() });
+        }
+
+
+        this.total = result.length;
+        this.cantidad = paginador.cantidad(this.total);
+
+        this.setState({administradores: result, numPagina: pagina, loading: false})
+    }
+
     reestablecer() {
         this.setState({
             administradores: [],
@@ -216,6 +263,7 @@ class PrincipalAdministrador extends Component {
             apellido: '',
             desde: null,
             hasta: null,
+            barrio: null,
             ultimo: [],
             primero: [],
             errorDesde: { error: false, mensaje: '' },
@@ -313,9 +361,9 @@ class PrincipalAdministrador extends Component {
                     <Button
                         bsStyle="primary"
                         fill
-                        wd
+                        w
                         onClick={() => {
-                            this.consultar(0, true);
+                            this.consultarNoPaginado(0);
                         }}>
                         Consultar
                     </Button>
@@ -345,7 +393,7 @@ class PrincipalAdministrador extends Component {
                                         Documento
                                     </th>
                                     <th style={{ textAlign: 'center' }} scope="col">
-                                        Fecha Nacimiento
+                                        Country
                                     </th>
                                     <th style={{ textAlign: 'center' }} scope="col">
                                         Celular
@@ -361,7 +409,7 @@ class PrincipalAdministrador extends Component {
                             <tbody>
                                 {this.state.administradores.map((adm, ind) => {
                                     let editar = '/root/editarAdministrador/' + adm[1];
-                                    let nacimiento = validator.obtenerFecha(adm[0].FechaNacimiento);
+                                    let countryName = this.state.barriosSelect.find(x => { return adm[2].toString() === x.value.toString()});
                                     let alta = validator.obtenerFecha(adm[0].FechaAlta);
                                     let tipoDocLabel = operacion.obtenerDocumentoLabel(adm[0].TipoDocumento.id, this.state.tipoD);
                                     return (
@@ -374,7 +422,7 @@ class PrincipalAdministrador extends Component {
                                             </td>
                                             <td style={{ textAlign: 'center' }}>{tipoDocLabel}</td>
                                             <td style={{ textAlign: 'center' }}>{adm[0].Documento}</td>
-                                            <td style={{ textAlign: 'center' }}>{nacimiento.toLocaleDateString()}</td>
+                                            <td style={{ textAlign: 'center' }}>{countryName.label}</td>
                                             <td style={{ textAlign: 'center' }}>{adm[0].Celular}</td>
                                             <td style={{ textAlign: 'center' }}>{alta.toLocaleString()}</td>
                                             <td style={{ textAlign: 'center' }}>
@@ -394,13 +442,13 @@ class PrincipalAdministrador extends Component {
                 </div> )}
                 <div className="text-center" hidden={!this.state.administradores.length || this.state.loading}>
                     <Pagination className="pagination-no-border">
-                        <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
+                        <Pagination.First onClick={() => this.consultarNoPaginado(this.state.numPagina - 1)} />
 
                         {this.cantidad.map((num) => {
-                            return <Pagination.Item active={num == this.state.numPagina}>{num + 1}</Pagination.Item>;
+                            return <Pagination.Item active={num === this.state.numPagina}>{num + 1}</Pagination.Item>;
                         })}
 
-                        <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
+                        <Pagination.Last onClick={() => this.consultarNoPaginado(this.state.numPagina + 1)} />
                     </Pagination>
                 </div>
                 <div className="row card" hidden={this.state.administradores.length}>

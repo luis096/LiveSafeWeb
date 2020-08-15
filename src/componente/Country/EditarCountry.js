@@ -220,6 +220,12 @@ class EditarCountry extends Component {
 
     handleFiles(event) {
         const file = event.target.files[0];
+
+        if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/x-icon') {
+            this.notificationSystem.current.addNotification(operacion.error("Error en tipo de archivo"));
+            return;
+        }
+
         const name = `/Img/${file.name}`;
         const storageRef = Storage.ref(name);
         const task = storageRef.put(file);
@@ -401,7 +407,7 @@ class EditarCountry extends Component {
                         <div className="row">
                             <div style={{display:"inline-block"}}>
                             <div style={{display:"flex", justifyContent:'space-between'}} >
-                                    <label> Imagen del country </label>
+                                    <label> Mapa del country </label>
                                     <div hidden={this.state.upLoadValue != 100}>
                                        <img style={{width:'20px'}} src={Delete}  onClick={this.eliminarImg}/>
                                 </div>
@@ -412,7 +418,11 @@ class EditarCountry extends Component {
                                             {this.state.upLoadValue}%
                                         </progress>
                                     </div>
-                                    <input type="file" onChange={this.handleFiles} />
+                                    <label htmlFor="file" className="custom-file">
+                                        <i className="pe-7s-cloud-upload"/>
+                                        <p>Subir Imagen</p>
+                                    </label>
+                                    <input id="file" type="file" onChange={this.handleFiles} accept="image/*"/>
                                 </div>
                                 <img width="320" id="imgBarrio"/>
 

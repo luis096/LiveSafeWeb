@@ -12,6 +12,9 @@ import Button from 'components/CustomButton/CustomButton.jsx';
 import { validator } from '../validator';
 import NotificationSystem from "react-notification-system";
 import { operacion } from "../Operaciones";
+import Spinner from "react-spinner-material";
+import "../Style/SpinnerAltas.scss";
+
 
 class AltaPropietario extends Component {
     constructor() {
@@ -20,7 +23,7 @@ class AltaPropietario extends Component {
             idPropietarioCreado: '',
             nombre: '',
             apellido: '',
-            tipoDocumento: '',
+            tipoDocumento: {label: "Seleccionar"},
             documento: '',
             titular: true,
             telefonoFijo: '',
@@ -28,7 +31,7 @@ class AltaPropietario extends Component {
             fechaNacimiento: new Date(),
             idCountry: '',
             mail: '',
-            tipoD: [],// Para cargar el combo
+            tipoD: [],
             resultado: ''
         };
         this.notificationSystem = React.createRef();
@@ -51,8 +54,9 @@ class AltaPropietario extends Component {
         this.errorDocumento = { error: false, mensaje: '' };
         this.errorCelular = { error: false, mensaje: '' };
         this.errorTelefono = { error: false, mensaje: '' };
-        this.errorMail = { error: false, mensaje: '' }
+        this.errorMail = { error: false, mensaje: '' };
         this.errorTipoDocumento = { error: false, mensaje: '' };
+        this.errorFechaNacimiento = { error: false, mensaje: '' };
 
     }
 
@@ -93,13 +97,13 @@ class AltaPropietario extends Component {
 
     ChangeNombre(event) {
         this.setState({ nombre: event.target.value });
-        if (event.target.value == "") { this.errorNombre = validator.requerido(event.target.value) }
+        if (event.target.value === "") { this.errorNombre = validator.requerido(event.target.value) }
         else { this.errorNombre = validator.soloLetras(event.target.value) }
     }
 
     ChangeApellido(event) {
         this.setState({ apellido: event.target.value });
-        if (event.target.value == "") { this.errorApellido = validator.requerido(event.target.value) }
+        if (event.target.value === "") { this.errorApellido = validator.requerido(event.target.value) }
         else { this.errorApellido = validator.soloLetras(event.target.value) }
 
     }
@@ -111,7 +115,7 @@ class AltaPropietario extends Component {
 
     ChangeCelular(event) {
         this.setState({ celular: event.target.value });
-        if (event.target.value == "") { this.errorCelular = validator.requerido(event.target.value) }
+        if (event.target.value === "") { this.errorCelular = validator.requerido(event.target.value) }
         else { this.errorCelular = validator.numero(event.target.value) }
 
     }
@@ -128,14 +132,14 @@ class AltaPropietario extends Component {
     }
     ChangeDocumento(event) {
         this.setState({ documento: event.target.value });
-        if (event.target.value == "") { this.errorDocumento = validator.requerido(event.target.value) }
+        if (event.target.value === "") { this.errorDocumento = validator.requerido(event.target.value) }
         else { this.errorDocumento = validator.numero(event.target.value) }
 
     }
 
     ChangeMail(event) {
         this.setState({ mail: event.target.value });
-        if (event.target.value == "") { this.errorMail = validator.requerido(event.target.value) }
+        if (event.target.value === "") { this.errorMail = validator.requerido(event.target.value) }
         else { this.errorMail = validator.mail(event.target.value) }
 
     }
@@ -189,17 +193,36 @@ class AltaPropietario extends Component {
 
     }
 
+    FormInvalid() {
+
+        let invalid = (this.errorNombre.error || this.errorApellido.error ||
+            this.errorCelular.error || this.errorFechaNacimiento.error ||
+            this.errorDocumento.error || this.errorMail.error || this.errorTipoDocumento.error);
+
+        if (!invalid) {
+            invalid = (!this.state.nombre || !this.state.apellido ||
+                !this.state.celular || !this.state.fechaNacimiento ||
+                !this.state.documento || !this.state.mail || !this.state.tipoDocumento);
+        }
+
+        if (!invalid) {
+            invalid = (!this.state.tipoDocumento.value);
+        }
+
+        return invalid;
+    }
+
 
     render() {
         return (
-            <div className="col-12">
+            <div className={this.state.loading?"col-12 form":"col-12"}>
                 <legend><h3 className="row">Nuevo Propietario</h3></legend>
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
                         <div className="row">
                             <div className="col-md-4 row-secction">
-                                <label> Nombre </label>
+                                <label> Nombre (*)</label>
                                 <input type="name" className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                     placeholder="Nombre"
                                     value={this.state.nombre}
@@ -208,7 +231,7 @@ class AltaPropietario extends Component {
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-4 row-secction">
-                                <label> Apellido </label>
+                                <label> Apellido (*)</label>
                                 <input className={errorHTML.classNameError(this.errorApellido, 'form-control')}
                                     placeholder="Apellido"
                                     value={this.state.apellido}
@@ -216,7 +239,7 @@ class AltaPropietario extends Component {
                                 {errorHTML.errorLabel(this.errorApellido)}
                             </div>
                             <div className="col-md-4 row-secction">
-                                <label> Fecha de Nacimiento </label>
+                                <label> Fecha de Nacimiento (*)</label>
                                 <Datetime
                                     inputProps={{ placeholder: 'Fecha de Nacimiento' }}
                                     timeFormat={false}
@@ -227,17 +250,8 @@ class AltaPropietario extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-4 row-secction">
-                                <label> Número de Documento </label>
-                                <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
-                                    placeholder="Número de Documento"
-                                    value={this.state.documento}
-                                    onChange={this.ChangeDocumento} />
-                                {errorHTML.errorLabel(this.errorDocumento)}
-                            </div>
-                            <div className="col-md-4 row-secction">
-                                <label> Tipo de Documento </label>
+                                <label> Tipo de Documento (*)</label>
                                 <Select
-                                    isClearable={true}
                                     isSearchable={true}
                                     options={this.state.tipoD}
                                     value={this.state.tipoDocumento}
@@ -254,7 +268,15 @@ class AltaPropietario extends Component {
                                     hidden={!this.errorTipoDocumento.error}>{this.errorTipoDocumento.mensaje}</label>
                             </div>
                             <div className="col-md-4 row-secction">
-                                <label> Celular </label>
+                                <label> Número de Documento (*)</label>
+                                <input className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
+                                       placeholder="Número de Documento"
+                                       value={this.state.documento}
+                                       onChange={this.ChangeDocumento} />
+                                {errorHTML.errorLabel(this.errorDocumento)}
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <label> Celular (*)</label>
                                 <input className={errorHTML.classNameError(this.errorCelular, 'form-control')}
                                     placeholder="Celular"
                                     value={this.state.celular}
@@ -265,33 +287,37 @@ class AltaPropietario extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-6 row-secction">
-                                <label> Dirección de correo electrónico </label>
+                                <label> Dirección de correo electrónico (*)</label>
                                 <input type="email" className={errorHTML.classNameError(this.errorMail, 'form-control')}
                                     placeholder="Correo electrónico"
                                     onChange={this.ChangeMail}
                                     value={this.state.mail} />
                                 {errorHTML.errorLabel(this.errorMail)}
                             </div>
-                            <fieldset className="col-md-6 row-secction">
-                                <label> Titular</label>
-                                <div className="form-check">
-                                    <Switch onText="Si" offText="No"
-                                        value={this.state.titular}
-                                        onChange={() => {
-                                            this.ChangeRadio();
-                                        }} />
-                                </div>
-                            </fieldset>
+                            {/*<fieldset className="col-md-6 row-secction">*/}
+                            {/*    <label> Titular</label>*/}
+                            {/*    <div className="form-check">*/}
+                            {/*        <Switch onText="Si" offText="No"*/}
+                            {/*            value={this.state.titular}*/}
+                            {/*            onChange={() => {*/}
+                            {/*                this.ChangeRadio();*/}
+                            {/*            }} />*/}
+                            {/*    </div>*/}
+                            {/*</fieldset>*/}
                         </div>
                     </div>
                 </div>
                 <div className="text-center">
-                    <Button bsStyle="primary" fill wd onClick={this.registrar}>
+                    <Button bsStyle="primary" fill wd onClick={this.registrar} disabled={this.FormInvalid()}>
                         Registrar
                     </Button>
                 </div>
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
+                </div>
+                <div className="spinnerAlta" hidden={!this.state.loading}>
+                    <Spinner radius={80} color={'black'}
+                             stroke={5}/>
                 </div>
             </div>
         );

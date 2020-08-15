@@ -24,6 +24,8 @@ export const validator = {
     requerido,
     mail,
     longitud,
+    documento,
+    fecha,
     soloLetras,
     soloLetrasNumeros,
     estadoReserva,
@@ -55,6 +57,15 @@ function mail(valor) {
     return EMAIL_REGEXP.test(valor) ? false : true;
 }
 
+
+function fecha(valor) {
+
+    return {
+        error: !(valor instanceof Object),
+        mensaje: 'El formato de fecha debe ser: dd/mm/yyyy'
+    };
+}
+
 function soloLetras(valor) {
     return {
         error: LETTERS_REGEXP.test(valor) ? false : true,
@@ -74,6 +85,14 @@ function longitud(valor, longitud) {
     return {
         error: error,
         mensaje: 'No debe superar los ' + longitud + ' caracteres'
+    };
+}
+
+function documento(valor) {
+    let error = (valor.length > 8 || valor.length < 7);
+    return {
+        error: error,
+        mensaje: 'El documento debe tener entre 7 y 8 caracteres '
     };
 }
 

@@ -8,3 +8,26 @@
 .form {
   opacity: 0.5;
 }
+
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #106BA0;
+  display: flex;
+  transition: all .5s;
+  cursor: pointer;
+  padding: 10px 30px !important;
+  width: fit-content;
+  text-align: center;
+}
+
+.pe-7s-cloud-upload {
+  font-size: 30px;
+  padding-right: 10px;
+}

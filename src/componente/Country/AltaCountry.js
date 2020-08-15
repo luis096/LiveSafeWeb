@@ -416,7 +416,7 @@ class AltaCountry extends Component {
                         <div className="row">
                             <div style={{display:"inline-block"}} >
                                 <div style={{display:"flex", justifyContent:'space-between'}} >
-                                    <label> Imagen del country </label>
+                                    <label> Mapa del country </label>
                                     <div hidden={this.state.upLoadValue != 100}>
                                        <img style={{width:'20px'}} src={Delete}  onClick={this.eliminarImg}/>
                                 </div>
@@ -428,10 +428,13 @@ class AltaCountry extends Component {
                                             {this.state.upLoadValue}%
                                         </progress>
                                     </div>
-                                    <input type="file" onChange={this.handleFiles} accept="image/*" />
+                                    <label htmlFor="file" className="custom-file">
+                                        <i className="pe-7s-cloud-upload"/>
+                                        <p>Subir Imagen</p>
+                                    </label>
+                                    <input id="file" type="file" onChange={this.handleFiles} accept="image/*"/>
                                 </div>
                                 <img width="320" id="imgBarrio"/>
-
                             </div>
                         </div>
                     </div>

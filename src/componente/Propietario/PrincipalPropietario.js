@@ -209,7 +209,8 @@ class PrincipalPropietario extends Component {
 
     obtenerConsulta(conLimite) {
         this.setState({loading: true})
-        let con = Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Propietarios');
+        let con = Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Propietarios').orderBy('FechaAlta', 'desc');
         if (conLimite) {
             con = con.limit(paginador.getTamPagina());
         }
@@ -284,7 +285,7 @@ class PrincipalPropietario extends Component {
                                     className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
                                     value={this.state.documento}
                                     onChange={this.ChangeDocumento}
-                                    placeholder="Nro. de Documento"
+                                    placeholder="Número de Documento"
                                 />
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
