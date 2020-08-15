@@ -9,6 +9,10 @@ import NotificationSystem from 'react-notification-system';
 import { style } from '../../variables/Variables';
 import Select from 'react-select';
 import Delete from '../../assets/img/delete.svg'
+import {Redirect} from "react-router-dom";
+import Spinner from "react-spinner-material";
+import "../Style/SpinnerAltas.scss"
+
 class AltaCountry extends Component {
     constructor() {
         super();
@@ -26,6 +30,8 @@ class AltaCountry extends Component {
             departamentoBarrio: { label: 'Seleccione un departamento' },
             localidades: [],
             localidadBarrio: { label: 'Seleccione una localidad' },
+            redirect: false,
+            loading: false
         };
         this.notificationSystem = React.createRef();
         this.ChangeNombre = this.ChangeNombre.bind(this);
@@ -79,6 +85,10 @@ class AltaCountry extends Component {
 
     handleFiles(event) {
         const file = event.target.files[0];
+        if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/x-icon') {
+            this.notificationSystem.current.addNotification(operacion.error("Error en tipo de archivo"));
+            return;
+        }
         const name = `/Img/${file.name}`;
         const storageRef = Storage.ref(name);
         const task = storageRef.put(file);
@@ -116,7 +126,7 @@ class AltaCountry extends Component {
         if (event.target.value === '') {
             this.errorNombre = validator.requerido(event.target.value);
         } else {
-            this.errorNombre = validator.soloLetras(event.target.value);
+            this.errorNombre = validator.soloLetrasNumeros(event.target.value);
         }
     }
 
@@ -125,7 +135,7 @@ class AltaCountry extends Component {
         if (event.target.value === '') {
             this.errorCalle = validator.requerido(event.target.value);
         } else {
-            this.errorCalle = validator.soloLetras(event.target.value);
+            this.errorCalle = validator.soloLetrasNumeros(event.target.value);
         }
     }
 
@@ -152,13 +162,13 @@ class AltaCountry extends Component {
         if (event.target.value === '') {
             this.errorTitular = validator.requerido(event.target.value);
         } else {
-            this.errorTitular = validator.soloLetras(event.target.value);
+            this.errorTitular = validator.soloLetrasNumeros(event.target.value);
         }
     }
 
     ChangeDescripcion(event) {
         this.setState({ descripcion: event.target.value });
-        this.errorDescripcion = validator.soloLetras(event.target.value);
+        this.errorDescripcion = validator.soloLetrasNumeros(event.target.value);
     }
 
     ChangeDto(event) {
@@ -198,53 +208,6 @@ class AltaCountry extends Component {
 
     async ChangeLoc(event) {
         this.setState({ localidadBarrio: event });
-
-        let total = 0;
-        // if (!!event) {
-        //     await fetch(
-        //         'https://apis.datos.gob.ar/georef/api/calles?provincia=14&&departamento=' +
-        //             this.state.departamentoBarrio.value.toString() +
-        //             '&localidad_censal=' +
-        //             event.value.toString() +
-        //             '&max=4000&formato=json'
-        //     )
-        //         .then((res) => res.json())
-        //         .then(
-        //             (result) => {
-        //                 result.calles.forEach((loc) => {
-        //                     callesLocalidad.push({ value: loc.id, label: loc.nombre });
-        //                 });
-        //                 total = result.total;
-        //             },
-        //             (error) => {
-        //                 console.log(error);
-        //             }
-        //         );
-        // }
-        //
-        // if (total > 5000) {
-        //     await fetch(
-        //         'https://apis.datos.gob.ar/georef/api/calles?provincia=14&&departamento=' +
-        //             this.state.departamentoBarrio.value.toString() +
-        //             '&localidad_censal=' +
-        //             event.value.toString() +
-        //             '&max=5000&inicio=5000&formato=json'
-        //     )
-        //         .then((res) => res.json())
-        //         .then(
-        //             (result) => {
-        //                 result.calles.forEach((loc) => {
-        //                     callesLocalidad.push({ value: loc.id, label: loc.nombre });
-        //                 });
-        //                 total = result.total;
-        //             },
-        //             (error) => {
-        //                 console.log(error);
-        //             }
-        //         );
-        // }
-        //
-        // this.setState({ calles: callesLocalidad });
     }
 
     eliminarImg() {
@@ -252,7 +215,7 @@ class AltaCountry extends Component {
             .delete()
             .then(() => {
                 document.getElementById('imgBarrio').src = '';
-                this.setState({ imgStorgeRef: '', upLoadValue: 0, name: '', imagenCountry:'' });
+                this.setState({ imgStorgeRef: '', upLoadValue: 0, name: ''});
             })
             .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
@@ -260,11 +223,8 @@ class AltaCountry extends Component {
     }
 
     async registrar() {
-        // if (this.state.nombre == "" || this.state.calle == "" || this.state.numero =="" || this.state.titular == "" ||
-        //  this.state.celular == "" ) {
-        //     operacion.sinCompletar("Debe completar todos los campos requeridos")
-        //     return
-        // }
+        this.setState({loading: true});
+        let error = false;
         await Database.collection('Country')
             .add({
                 Nombre: this.state.nombre,
@@ -274,37 +234,85 @@ class AltaCountry extends Component {
                 Numero: this.state.numero,
                 Titular: this.state.titular,
                 Celular: this.state.celular,
-                Descripcion: this.state.descripcion,
+                Descripcion: !!this.state.descripcion?this.state.descripcion:"Sin descripción",
                 FechaAlta: new Date(),
                 Imagen: this.state.imagenCountry,
             })
-            .catch((error) => {
-                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            .catch((e) => {
+                error = true;
+                this.state.loading = false;
+                this.notificationSystem.current.addNotification(operacion.error(e.message));
             });
+
+        if (error) return;
+        this.reset();
+        this.notificationSystem.current.addNotification(
+            operacion.registroConExito("El country se registró con exito"));
+    }
+
+    reset() {
+        this.setState({
+            nombre: '',
+            calle: '',
+            numero: '',
+            titular: '',
+            celular: '',
+            descripcion: '',
+            imagenCountry: '',
+            upLoadValue: 0,
+            imgStorgeRef: '',
+            departamento: [],
+            departamentoBarrio: { label: 'Seleccione un departamento' },
+            localidades: [],
+            localidadBarrio: { label: 'Seleccione una localidad' },
+            loading: false
+        });
+        document.getElementById('imgBarrio').src = '';
+    }
+
+    FormInvalid() {
+
+        let invalid = (this.errorNombre.error || this.errorTitular.error ||
+            this.errorCalle.error || this.errorNumero.error ||
+            this.errorCelular.error || this.errorDescripcion.error);
+
+        if (!invalid) {
+            invalid = (!this.state.nombre || !this.state.titular ||
+                !this.state.calle || !this.state.numero ||
+                !this.state.celular || !this.state.departamentoBarrio
+                || !this.state.localidadBarrio);
+        }
+
+        if (!invalid) {
+            invalid = (!this.state.departamentoBarrio.value
+                || !this.state.localidadBarrio.value);
+        }
+
+        return invalid;
     }
 
     render() {
         return (
-            <div className="col-12">
+            <div className={this.state.loading?"col-12 form":"col-12"}>
                 <legend>
-                    <h3 className="row">Nuevo country</h3>
+                    <h3 className="row">Nuevo Country</h3>
                 </legend>
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
                         <div className="row">
                             <div className="col-md-6 row-secction">
-                                <label> Nombre del country </label>
+                                <label> Nombre del country (*)</label>
                                 <input
                                     className={errorHTML.classNameError(this.errorNombre, 'form-control')}
-                                    placeholder="Nombre"
+                                    placeholder="Nombre del country"
                                     value={this.state.nombre}
                                     onChange={this.ChangeNombre}
                                 />
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
                             <div className="col-md-6 row-secction">
-                                <label> Titular </label>
+                                <label> Titular (*)</label>
                                 <input
                                     className={errorHTML.classNameError(this.errorTitular, 'form-control')}
                                     placeholder="Titular"
@@ -316,7 +324,7 @@ class AltaCountry extends Component {
                         </div>
                         <div className="row">
                             <div className="row-secction col-md-3">
-                                <label> Departamento </label>
+                                <label> Departamento (*)</label>
                                 <Select
                                     className="select-documento"
                                     classNamePrefix="select"
@@ -324,13 +332,14 @@ class AltaCountry extends Component {
                                     isLoading={false}
                                     isClearable={false}
                                     isSearchable={true}
+                                    noOptionsMessage={() => "Sin opciones disponibles"}
                                     value={this.state.departamentoBarrio}
                                     options={this.state.departamentos}
                                     onChange={this.ChangeDto.bind(this)}
                                 />
                             </div>
                             <div className="row-secction col-md-3">
-                                <label> Localidad </label>
+                                <label> Localidad (*)</label>
                                 <Select
                                     className="select-documento"
                                     classNamePrefix="select"
@@ -338,13 +347,14 @@ class AltaCountry extends Component {
                                     isLoading={false}
                                     isClearable={false}
                                     isSearchable={true}
+                                    noOptionsMessage={() => "Sin opciones disponibles"}
                                     value={this.state.localidadBarrio}
                                     options={this.state.localidades}
                                     onChange={this.ChangeLoc.bind(this)}
                                 />
                             </div>
                             <div className="row-secction col-md-3">
-                                <label> Calle </label>
+                                <label> Calle (*)</label>
                                 <input
                                     className={errorHTML.classNameError(this.errorCalle, 'form-control')}
                                     placeholder="Calle"
@@ -354,10 +364,11 @@ class AltaCountry extends Component {
                                 {errorHTML.errorLabel(this.errorCalle)}
                             </div>
                             <div className="col-md-3 row-secction">
-                                <label> Número </label>
+                                <label> Número (*)</label>
                                 <input
                                     className={errorHTML.classNameError(this.errorNumero, 'form-control')}
                                     placeholder="Número"
+                                    type="number"
                                     value={this.state.numero}
                                     onChange={this.ChangeNumero}
                                 />
@@ -366,10 +377,11 @@ class AltaCountry extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-4 row-secction">
-                                <label> Celular </label>
+                                <label> Celular (*)</label>
                                 <input
                                     className={errorHTML.classNameError(this.errorCelular, 'form-control')}
                                     placeholder="Celular"
+                                    type="number"
                                     value={this.state.celular}
                                     onChange={this.ChangeCelular}
                                 />
@@ -404,9 +416,9 @@ class AltaCountry extends Component {
                                             {this.state.upLoadValue}%
                                         </progress>
                                     </div>
-                                    <input type="file" onChange={this.handleFiles} />
+                                    <input className="inputFile" type="file"  onChange={this.handleFiles} accept="image/*" />
                                 </div>
-                                <img width="320" id="imgBarrio" />
+                                <img width="320" id="imgBarrio"/>
 
                             </div>
                         </div>
@@ -414,13 +426,21 @@ class AltaCountry extends Component {
                 </div>
 
                 <div style={{marginBottom:'15px'}} className="text-center">
-                    <Button bsStyle="primary" fill wd onClick={this.registrar}>
+                    <Button bsStyle="primary" fill wd
+                            onClick={this.registrar}
+                            disabled={this.FormInvalid()}
+                    >
                         Registrar
                     </Button>
                 </div>
                 <div>
-                    <NotificationSystem ref={this.notificationSystem} style={style} />
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
+                <div className="spinnerAlta" hidden={!this.state.loading}>
+                    <Spinner radius={80} color={'black'}
+                             stroke={5}/>
+                </div>
+
             </div>
         );
     }
