@@ -12,6 +12,7 @@ import { errorHTML } from '../Error';
 import { style } from '../../variables/Variables';
 import NotificationSystem from 'react-notification-system';
 import { operacion } from '../Operaciones';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class PrincipalInvitados extends Component {
     constructor(props) {
@@ -34,6 +35,7 @@ class PrincipalInvitados extends Component {
             estado: null,
             documento: '',
             invitadoCancelar: {},
+            loading: false,
             estadoLista: [
                 { value: true, label: 'Activo' },
                 { value: false, label: 'Inactivo' },
@@ -114,6 +116,7 @@ class PrincipalInvitados extends Component {
             this.setState({
                 ultimo: [],
                 primero: [],
+                loading: true,
                 numPagina: -1,
             });
         }
@@ -194,7 +197,7 @@ class PrincipalInvitados extends Component {
         if (nueva) {
             this.cantidad = paginador.cantidad(this.total);
         }
-        this.setState({ invitados, numPagina: pagina });
+        this.setState({ invitados, loading: false, numPagina: pagina });
     }
 
     reestablecer() {
@@ -450,6 +453,11 @@ class PrincipalInvitados extends Component {
                     </Button>
                 </div>
                 {this.state.alert}
+                { this.state.loading ? (
+                    <div style={{display:'flex', justifyContent:'center', marginTop:'100px'}} >
+                            <CircularProgress thickness="2" color={'white'} style={{width:'120px', height:'120px'}} />
+                    </div> ) : (
+                <div>
                 <div className="card row" hidden={!this.state.invitados.length}>
                     <h4 className="row">Invitados ({this.total})</h4>
                     <div className="card-body">
@@ -547,6 +555,7 @@ class PrincipalInvitados extends Component {
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>
                 </div>
+                </div> )}
 
                 <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
                     <Modal.Header closeButton>

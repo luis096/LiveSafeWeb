@@ -12,6 +12,7 @@ import { errorHTML } from '../Error';
 import { style } from '../../variables/Variables';
 import NotificationSystem from 'react-notification-system';
 import { operacion } from '../Operaciones';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class PrincipalReserva extends Component {
     constructor() {
@@ -31,6 +32,7 @@ class PrincipalReserva extends Component {
             hasta: null,
             ultimo: [],
             primero: [],
+            loading: false,
             errorDesde: { error: false, mensaje: '' },
             errorHasta: { error: false, mensaje: '' },
         };
@@ -113,6 +115,7 @@ class PrincipalReserva extends Component {
         if (nueva) {
             this.setState({
                 ultimo: [],
+                loading: true,
                 primero: [],
                 numPagina: -1,
             });
@@ -200,7 +203,7 @@ class PrincipalReserva extends Component {
             this.cantidad = paginador.cantidad(this.total);
         }
 
-        this.setState({ reservas, numPagina: pagina });
+        this.setState({ reservas, numPagina: pagina, loading: false });
     }
 
     reestablecer() {
@@ -392,7 +395,11 @@ class PrincipalReserva extends Component {
                         Consultar
                     </Button>
                 </div>
-
+                { this.state.loading ? (
+                    <div style={{display:'flex', justifyContent:'center', marginTop:'100px'}} >
+                            <CircularProgress thickness="2" color={'white'} style={{width:'120px', height:'120px'}} />
+                    </div> ) : (
+                <div>
                 <div className="card row" hidden={!this.state.reservas.length}>
                     <h4 className="row">Reservas ({this.total})</h4>
                     <div className="card-body">
@@ -491,6 +498,7 @@ class PrincipalReserva extends Component {
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>
                 </div>
+                </div> )}
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>

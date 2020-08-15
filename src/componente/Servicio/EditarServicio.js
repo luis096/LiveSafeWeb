@@ -235,7 +235,7 @@ class EditarServicio extends Component {
                         </Grid>
                     </div>
                 </div>
-                <div className="text-center">
+                <div style={{marginBottom:'10px'}} className="text-center">
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
                         Guardar cambios
                     </Button>

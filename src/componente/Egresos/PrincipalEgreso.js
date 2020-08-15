@@ -19,6 +19,7 @@ import GeneradorExcel from '../Reportes/GeneradorExcel';
 import { columns } from '../Reportes/Columns';
 import { style } from '../../variables/Variables';
 import NotificationSystem from 'react-notification-system';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -40,6 +41,7 @@ class PrincialEgreso extends Component {
             hasta: null,
             ultimo: [],
             primero: [],
+            loading: false,
             errorDesde: { error: false, mensaje: '' },
             errorHasta: { error: false, mensaje: '' },
         };
@@ -129,6 +131,7 @@ class PrincialEgreso extends Component {
         if (nueva) {
             this.setState({
                 ultimo: [],
+                loading: true,
                 primero: [],
                 numPagina: -1,
             });
@@ -183,8 +186,7 @@ class PrincialEgreso extends Component {
         if (nueva) {
             this.cantidad = paginador.cantidad(this.total);
         }
-
-        this.setState({ egresos, numPagina: pagina });
+        this.setState({ egresos, loading: false, numPagina: pagina });
     }
 
     descargar() {
@@ -437,6 +439,11 @@ class PrincialEgreso extends Component {
                     </Button>
                 </div>
                 {this.descargar()}
+                { this.state.loading ? (
+                    <div style={{display:'flex', justifyContent:'center', marginTop:'100px'}} >
+                            <CircularProgress thickness="2" color={'white'} style={{width:'120px', height:'120px'}} />
+                    </div> ) : (
+                <div>
                 <div className="card row" hidden={!this.state.egresos.length}>
                     <div className="row">
                         <div className="col-md-6 title row-secction">
@@ -534,6 +541,7 @@ class PrincialEgreso extends Component {
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>
                 </div>
+                </div> )}
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
