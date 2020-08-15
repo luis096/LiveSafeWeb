@@ -249,7 +249,7 @@ class Graficos extends Component {
                         <div className='row' id="reporte">
                             <Line data={this.state.dataLineIngresos} width={100} height={40} />
                         </div>
-                        <div className="text-center">
+                        <div style={{ margin:'30px 0 16px 0'}} className="text-center">
                             <Button bsStyle="success" fill
                                 onClick={() => { this.pdf() }}>
                                 Descargar Grafico

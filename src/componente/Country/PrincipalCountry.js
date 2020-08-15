@@ -11,6 +11,7 @@ import { paginador } from '../Paginador';
 import { validator } from '../validator';
 import { errorHTML } from '../Error';
 import { style } from '../../variables/Variables';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import NotificationSystem from 'react-notification-system';
 import { operacion } from '../Operaciones';
 
@@ -27,6 +28,7 @@ class PrincipalCountry extends Component {
             ultimo: [],
             primero: [],
             numPagina: -1,
+            loading: false,
             errorDesde: { error: false, mensaje: '' },
             errorHasta: { error: false, mensaje: '' },
         };
@@ -93,6 +95,7 @@ class PrincipalCountry extends Component {
                 ultimo: [],
                 primero: [],
                 numPagina: -1,
+                loading: true,
             });
         }
         if (this.cantidad.length && (this.cantidad.length <= pagina || pagina < 0)) {
@@ -169,7 +172,7 @@ class PrincipalCountry extends Component {
             this.cantidad = paginador.cantidad(this.total);
         }
 
-        this.setState({ barrios, numPagina: pagina });
+        this.setState({ barrios, numPagina: pagina, loading: false });
     }
 
     hideAlert() {
@@ -276,10 +279,17 @@ class PrincipalCountry extends Component {
                         Consultar
                     </Button>
                 </div>
+                { this.state.loading ? (
+                    <div style={{display:'flex', justifyContent:'center', marginTop:'100px'}} >
+                            <CircularProgress thickness="2" color={'white'} style={{width:'120px', height:'120px'}} />
+                    </div> ) : (
+                <div>
                 <div className="card row" hidden={!this.state.barrios.length}>
                     <h4 className="row">Countries ({this.total})</h4>
                     <div className="card-body">
+                   
                         <table className="table table-hover">
+                        
                             <thead>
                                 <tr>
                                     <th style={{ textAlign: 'center' }} scope="col">
@@ -311,8 +321,12 @@ class PrincipalCountry extends Component {
                                     let editar = '/root/editarCountry/' + bar[1];
                                     return (
                                         <tr className="table-light">
+                                           
                                             <th style={{ textAlign: 'center' }} scope="row">
-                                                {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
+                                            
+                                                                
+                                                {(ind + 1 + paginador.getTamPagina() * this.state.numPagina)}
+                                            
                                             </th>
                                             <td style={{ textAlign: 'center' }}>{bar[0].Nombre}</td>
                                             <td style={{ textAlign: 'center' }}>{bar[0].Titular}</td>
@@ -326,10 +340,12 @@ class PrincipalCountry extends Component {
                                                     </Button>
                                                 </Link>
                                             </td>
+                                            
                                         </tr>
                                     );
                                 })}
                             </tbody>
+                            
                         </table>
                     </div>
                 </div>
@@ -344,7 +360,8 @@ class PrincipalCountry extends Component {
                         <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
                     </Pagination>
                 </div>
-                <div className="row card" hidden={this.state.barrios.length}>
+                </div> )}
+                <div className="row card" hidden={this.state.barrios.length || this.state.loading}>
                     <div className="card-body">
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>

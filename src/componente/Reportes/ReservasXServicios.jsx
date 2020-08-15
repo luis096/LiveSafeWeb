@@ -257,7 +257,7 @@ class ReservasXServicios extends Component {
                                 <Pie data={this.state.dataService}
                                     width={400} height={160} />
                             </div>
-                            <div className="text-center">
+                            <div style={{ margin:'12px 0 8px 0'}} className="text-center">
                                 <Button bsStyle="success" fill
                                     onClick={() => { this.pdf() }}>
                                     Descargar Grafico

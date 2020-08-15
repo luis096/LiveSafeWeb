@@ -12,6 +12,7 @@ import Datetime from 'react-datetime';
 import { operacion } from '../Operaciones';
 import { style } from '../../variables/Variables';
 import NotificationSystem from 'react-notification-system';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class PrincipalAdministrador extends Component {
     constructor() {
@@ -29,6 +30,7 @@ class PrincipalAdministrador extends Component {
             hasta: null,
             ultimo: [],
             primero: [],
+            loading: false,
             errorDesde: { error: false, mensaje: '' },
             errorHasta: { error: false, mensaje: '' },
         };
@@ -126,6 +128,7 @@ class PrincipalAdministrador extends Component {
                 ultimo: [],
                 primero: [],
                 numPagina: -1,
+                loading: true,
             });
         }
         if (this.cantidad.length && (this.cantidad.length <= pagina || pagina < 0)) {
@@ -202,7 +205,7 @@ class PrincipalAdministrador extends Component {
             this.cantidad = paginador.cantidad(this.total);
         }
 
-        this.setState({ administradores, numPagina: pagina });
+        this.setState({ administradores, numPagina: pagina,  loading: false });
     }
 
     reestablecer() {
@@ -318,6 +321,11 @@ class PrincipalAdministrador extends Component {
                     </Button>
                 </div>
 
+                { this.state.loading ? (
+                    <div style={{display:'flex', justifyContent:'center', marginTop:'100px'}} >
+                            <CircularProgress thickness="2" color={'white'} style={{width:'120px', height:'120px'}} />
+                    </div> ) : (
+                <div>
                 <div className="card row" hidden={!this.state.administradores.length}>
                     <h4 className="row ">Administradores ({this.total})</h4>
                     <div className="card-body">
@@ -383,7 +391,8 @@ class PrincipalAdministrador extends Component {
                         </table>
                     </div>
                 </div>
-                <div className="text-center" hidden={!this.state.administradores.length}>
+                </div> )}
+                <div className="text-center" hidden={!this.state.administradores.length || this.state.loading}>
                     <Pagination className="pagination-no-border">
                         <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
 

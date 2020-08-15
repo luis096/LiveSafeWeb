@@ -16,6 +16,7 @@ import GeneradorExcel from '../Reportes/GeneradorExcel';
 import { columns } from '../Reportes/Columns';
 import { style } from '../../variables/Variables';
 import NotificationSystem from 'react-notification-system';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -33,6 +34,7 @@ class PrincipalServicio extends Component {
             descargar: false,
             alert: null,
             numPagina: -1,
+            loading: false,
             ultimo: [],
             primero: [],
         };
@@ -108,6 +110,7 @@ class PrincipalServicio extends Component {
         this.setState({
             servicios: resultado.elementos,
             numPagina: pagina,
+            loading: false,
             primero: resultado.primerDoc,
             ultimo: resultado.ultimoDoc,
         });
@@ -165,6 +168,7 @@ class PrincipalServicio extends Component {
     }
 
     obtenerConsulta(conLimite) {
+        this.setState({loading: true})
         let con = Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Servicios');
         if (conLimite) {
             con = con.limit(paginador.getTamPagina());
@@ -237,6 +241,11 @@ class PrincipalServicio extends Component {
                     </Button>
                 </div>
                 {this.descargar()}
+                { this.state.loading ? (
+                    <div style={{display:'flex', justifyContent:'center', marginTop:'100px'}} >
+                            <CircularProgress thickness="2" color={'white'} style={{width:'120px', height:'120px'}} />
+                    </div> ) : (
+                <div>
                 <div className="card row" hidden={!this.state.servicios.length}>
                     <div className="row">
                         <div className="col-md-6 title row-secction">
@@ -325,6 +334,7 @@ class PrincipalServicio extends Component {
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>
                 </div>
+                </div> )}
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
