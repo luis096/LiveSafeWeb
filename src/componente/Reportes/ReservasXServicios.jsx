@@ -204,7 +204,7 @@ class ReservasXServicios extends Component {
                                     {this.state.errorHasta.mensaje}
                                 </label>
                             </div>
-                            <div className="col-md-2 row-secction">
+                            <div style={{ marginTop:'6px'}} className="col-md-2 row-secction">
                                 <br />
                                 <Button bsStyle="primary" fill wd
                                         disabled={!this.isValidRangeDate()}

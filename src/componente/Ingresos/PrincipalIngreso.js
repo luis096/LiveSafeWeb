@@ -152,6 +152,7 @@ class PrincialIngreso extends Component {
             );
 
         } catch (e) {
+            console.log('object :>> ', e.message);
             this.notificationSystem.current.addNotification(operacion.error(e.message));
             return;
         }
