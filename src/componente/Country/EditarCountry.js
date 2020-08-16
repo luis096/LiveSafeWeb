@@ -430,9 +430,9 @@ class EditarCountry extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="text-center">
+                <div style={{marginBottom:'10px'}} className="text-center">
                     <Button bsStyle="primary" fill wd onClick={this.registrar}>
-                        Registrar
+                        Guardar Cambios
                     </Button>
                 </div>
                 <div>
