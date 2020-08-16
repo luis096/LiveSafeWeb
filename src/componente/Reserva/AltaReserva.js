@@ -372,7 +372,7 @@ class AltaReserva extends Component {
                 {this.state.alert}
                 <div hidden={!(this.state.consulta)}>
                     <div className="row col-md-12">
-                        <div className="row-secction col-md-8">
+                        <div className="row-secction col-md-12">
                             <span>
                                 <h3>Servicio: {this.state.servicioSeleccionado ?
                                     this.state.servicioSeleccionado.label : 'Sin servicio seleccionado'}</h3>

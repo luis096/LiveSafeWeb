@@ -14,3 +14,7 @@
 .derecha {
     align-content: flex-start;
 }
+
+.card {
+    padding: 22px 18px;
+}

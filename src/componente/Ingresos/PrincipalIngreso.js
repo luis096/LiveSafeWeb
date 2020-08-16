@@ -152,16 +152,10 @@ class PrincialIngreso extends Component {
             );
 
         } catch (e) {
-<<<<<<< HEAD
-            console.log('object :>> ', e.message);
-=======
-            console.log(e.message);
->>>>>>> 8b27ef83dd0e8b06d982ed174552f3536f449ec2
             this.notificationSystem.current.addNotification(operacion.error(e.message));
             return;
         }
 
-        console.log(resultado);
 
         this.cantidad = resultado.cantidad;
         this.total = resultado.total;
@@ -276,7 +270,7 @@ class PrincialIngreso extends Component {
                     confirmBtnBsStyle="info"
                     cancelBtnBsStyle="danger"
                     confirmBtnText="Sí, estoy seguro"
-                    cancelBtnText="No, deseo volver atrás"
+                    cancelBtnText="No"
                     showCancel>
                     ¿Está seguro de que desea cancelar el ingreso?
                 </SweetAlert>

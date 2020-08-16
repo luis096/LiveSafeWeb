@@ -4,6 +4,7 @@ import Button from 'components/CustomButton/CustomButton.jsx';
 import { Collapse } from 'reactstrap';
 import Card from 'components/Card/Card.jsx';
 import {validator} from "../validator";
+import  "../Style/Estilo.css"
 
 class Disponibilidad extends Component {
 
@@ -24,13 +25,13 @@ class Disponibilidad extends Component {
                 </Button>
                 <div>
                     <Collapse isOpen={this.state.collapsed}>
-                        <div className="row">
+                        <div style={{marginLeft:'10px'}} className="row">
                             {
                                 this.props.disponibilidad.map((disp, i) => {
                                     return (
                                         <div className="row-secction"
                                              hidden={!(disp && !!disp.horarios.length)}>
-                                            <Card title={this.state.dias[i]} content={
+                                            <Card className="card" title={this.state.dias[i]} content={
                                                 <div>
                                                     {
                                                         disp.horarios.map(value => {
