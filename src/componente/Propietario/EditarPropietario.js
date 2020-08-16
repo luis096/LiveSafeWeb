@@ -185,7 +185,7 @@ class EditarPropietario extends Component {
     render() {
         return (
             <div className="col-12">
-                <legend><h3 className="row">Nuevo Propietario</h3></legend>
+                <legend><h3 className="row">Editar Propietario</h3></legend>
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
@@ -259,7 +259,7 @@ class EditarPropietario extends Component {
                             <fieldset className="col-md-6 row-secction">
                                 <label> Titular</label>
                                 <div className="form-check">
-                                    <Switch onText="Si" offText="No"
+                                    <Switch disabled={true} onText="Si" offText="No"
                                         value={this.state.titular}
                                         onChange={() => {
                                             this.ChangeRadio();

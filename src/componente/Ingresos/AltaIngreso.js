@@ -293,7 +293,7 @@ class AltaIngreso extends Component {
             alert: (
                 <SweetAlert
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
-                    title="Error"
+                    title="Alerta"
                     showCancel
                     onConfirm={() => this.setState({ nuevoInvitado: true })}
                     onCancel={() => this.hideAlert()}

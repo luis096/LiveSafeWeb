@@ -219,7 +219,7 @@ class AltaCountry extends Component {
             .delete()
             .then(() => {
                 document.getElementById('imgBarrio').src = '';
-                this.setState({ imgStorgeRef: '', upLoadValue: 0, name: '' });
+                this.setState({ imgStorgeRef: '', upLoadValue: 0, name: ''});
             })
             .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
@@ -440,7 +440,7 @@ class AltaCountry extends Component {
                     </div>
                 </div>
 
-                <div className="text-center">
+                <div style={{marginBottom:'15px'}} className="text-center">
                     <Button bsStyle="primary" fill wd
                             onClick={this.registrar}
                             disabled={this.FormInvalid()}
