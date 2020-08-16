@@ -300,9 +300,16 @@ class AltaReserva extends Component {
         let anio = time.getFullYear();
         let mes = time.getMonth();
         let dia = time.getDate();
-        dia = dia - time.getDay();
+
+        let lala = time.getDay();
+        if (lala === 0) lala = 7;
+        dia = dia - lala;
+
         let hasta = new Date(anio, mes, (dia + 8));
         let desde = new Date(anio, mes, dia);
+
+        console.log(desde, hasta)
+
         let idPersona = localStorage.getItem('idPersona');
         let newEvents = [];
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
@@ -321,6 +328,7 @@ class AltaReserva extends Component {
             }).catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
+        console.log(newEvents)
         this.setState({ events: newEvents });
     }
 

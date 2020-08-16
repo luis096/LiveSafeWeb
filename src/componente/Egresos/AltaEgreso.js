@@ -102,9 +102,8 @@ class AltaEgreso extends Component {
         //Busco en los ingresos aquel que coincida con los datos ingresados (El ultimo ingreso de la persona)
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
-            .collection('Ingresos')
+            .collection('Ingresos').orderBy('Fecha', 'desc')
             .where('Estado', '==', true)
-            .orderBy('Fecha', 'desc')
             .where('Documento', '==', this.state.documento)
             .where('TipoDocumento', '==', refTipoDocumento)
             .limit(1)
@@ -283,7 +282,7 @@ class AltaEgreso extends Component {
                                 />
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
-                            <div className="col-md-2 row-secction" style={{ marginTop: '25px' }}>
+                            <div className="col-md-1 row-secction" style={{ marginTop: '25px', marginRight: '35px' }}>
                                 <Button bsStyle="default" style={{ marginRight: '10px' }} fill wd onClick={this.reestablecer}>
                                     Restablecer
                                 </Button>
@@ -316,16 +315,16 @@ class AltaEgreso extends Component {
                         <div className="card-body">
                             <h5 className="row">Resultado de la búsqueda </h5>
                             <div className="row">
-                                <div className="col-md-3 row-secction">
-                                    <label>Tipo de Egreso</label>
-                                    <input
-                                        className="form-control"
-                                        disabled={true}
-                                        value={
-                                            this.state.ingreso[0] ? (this.state.ingreso[0].IdPropietario ? 'Invitado' : 'Propietario') : '-'
-                                        }
-                                    />
-                                </div>
+                                {/*<div className="col-md-3 row-secction">*/}
+                                {/*    <label>Tipo de Egreso</label>*/}
+                                {/*    <input*/}
+                                {/*        className="form-control"*/}
+                                {/*        disabled={true}*/}
+                                {/*        value={*/}
+                                {/*            this.state.ingreso[0] ? (this.state.ingreso[0].IdPropietario ? 'Invitado' : 'Propietario') : '-'*/}
+                                {/*        }*/}
+                                {/*    />*/}
+                                {/*</div>*/}
                                 <div className="col-md-3 row-secction">
                                     <label>Nombre</label>
                                     <input

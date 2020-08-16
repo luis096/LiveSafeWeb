@@ -234,7 +234,7 @@ class AltaPropietario extends Component {
         this.setState({loading: true});
         let mailValido = await validator.validarMail(this.state.mail);
         if (!mailValido) {
-            this.errorMail = {error: true, mensaje: 'El mail ingresado ya esta en uso. Intente nuevamente'};
+            this.errorMail = {error: true, mensaje: 'El mail ingresado ya está en uso. Intente nuevamente'};
         }
         this.setState({loading: false});
     }

@@ -8,6 +8,7 @@ import { errorHTML } from '../Error';
 import { style } from '../../variables/Variables';
 import NotificationSystem from 'react-notification-system';
 import { operacion } from '../Operaciones';
+import "../Style/SpinnerAltas.scss"
 
 class AltaInvitado extends Component {
     constructor(props) {
@@ -30,6 +31,7 @@ class AltaInvitado extends Component {
             tipoD: [],
             resultado: '',
             mensaje: '',
+            contactoPropietario: '',
             errorDesde: { error: false, mensaje: '' },
             errorHasta: { error: false, mensaje: '' },
         };
@@ -179,6 +181,7 @@ class AltaInvitado extends Component {
                 querySnapshot.forEach((doc) => {
                     this.state.idPropietario = doc.id;
                     this.setState({ mensaje: doc.data().Apellido + ', ' + doc.data().Nombre });
+                    this.setState({ contactoPropietario: doc.data().Celular });
                 });
             })
             .catch((error) => {
@@ -234,7 +237,6 @@ class AltaInvitado extends Component {
                                     classNamePrefix="select"
                                     isDisabled={false}
                                     isLoading={false}
-                                    isClearable={true}
                                     isSearchable={true}
                                     options={this.state.tipoD}
                                     onChange={this.ChangeSelect.bind(this)}
@@ -254,7 +256,7 @@ class AltaInvitado extends Component {
                                     {this.errorTipoDocumento.mensaje}
                                 </label>
                             </div>
-                            <div className="col-md-3 row-secction">
+                            <div className="col-md-2 row-secction">
                                 <label>Número de Documento</label>
                                 <input
                                     className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
@@ -264,7 +266,7 @@ class AltaInvitado extends Component {
                                 />
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction" hidden={!this.state.mensaje}>
                                 <label>Propietario encontrado</label>
                                 <input
                                     className="form-control"
@@ -273,23 +275,63 @@ class AltaInvitado extends Component {
                                     disabled={true}
                                 />
                             </div>
-                            <div className="col-md-2 row-secction">
+                            <div className="col-md-2 row-secction" hidden={!this.state.mensaje}>
+                                <label>Contacto</label>
+                                <input
+                                    className="form-control"
+                                    placeholder="Realize la búsqueda "
+                                    value={this.state.contactoPropietario}
+                                    disabled={true}
+                                />
+                            </div>
+                            <div className="col-md-2 row-secction btn-propietarioEncontrado">
                                 <Button bsStyle="info" fill wd onClick={this.buscarPropietario}>
                                     Buscar Propietario
                                 </Button>
                             </div>
                         </div>
+                        <div hidden={this.esPropietario}>
+                            <legend></legend>
+                            <h5 className="row">Datos del invitado</h5>
+                        </div>
+
                         <div className="row">
-                            <div className="col-md-6 row-secction">
-                                <label> Grupo </label>
-                                <input
-                                    type="name"
-                                    className={errorHTML.classNameError(this.errorGrupo, 'form-control')}
-                                    placeholder="Nombre"
-                                    value={this.state.grupo}
-                                    onChange={this.ChangeGrupo}
+                            <div className="col-md-3 row-secction">
+                                <label> Tipo de Documento </label>
+                                <Select
+                                    classNamePrefix="select"
+                                    isDisabled={false}
+                                    isLoading={false}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    options={this.state.tipoD}
+                                    onChange={this.ChangeSelectInvitado.bind(this)}
+                                    styles={
+                                        this.errorTipoDocumentoInvitado.error
+                                            ? {
+                                                control: (base, state) => ({
+                                                    ...base,
+                                                    borderColor: 'red',
+                                                    boxShadow: 'red',
+                                                }),
+                                            }
+                                            : {}
+                                    }
                                 />
-                                {errorHTML.errorLabel(this.errorGrupo)}
+                                <label className="small text-danger" hidden={!this.errorTipoDocumentoInvitado.error}>
+                                    {this.errorTipoDocumentoInvitado.mensaje}
+                                </label>
+                            </div>
+                            <div className="col-md-3 row-secction">
+                                <label> Número de Documento </label>
+                                <input
+                                    type="document"
+                                    className={errorHTML.classNameError(this.errorDocumentoInvitado, 'form-control')}
+                                    placeholder="Número de documento"
+                                    value={this.state.documentoInvitado}
+                                    onChange={this.ChangeDocumentoInvitado}
+                                />
+                                {errorHTML.errorLabel(this.errorDocumentoInvitado)}
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label>Fecha Desde</label>
@@ -318,7 +360,7 @@ class AltaInvitado extends Component {
                         </div>
 
                         <div className="row" hidden={this.esPropietario}>
-                            <div className="col-md-6 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label> Nombre </label>
                                 <input
                                     type="name"
@@ -329,7 +371,7 @@ class AltaInvitado extends Component {
                                 />
                                 {errorHTML.errorLabel(this.errorNombre)}
                             </div>
-                            <div className="col-md-6 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label> Apellido </label>
                                 <input
                                     type="family-name"
@@ -340,47 +382,7 @@ class AltaInvitado extends Component {
                                 />
                                 {errorHTML.errorLabel(this.errorApellido)}
                             </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="col-md-4 row-secction">
-                                <label> Tipo de Documento </label>
-                                <Select
-                                    classNamePrefix="select"
-                                    isDisabled={false}
-                                    isLoading={false}
-                                    isClearable={true}
-                                    isSearchable={true}
-                                    options={this.state.tipoD}
-                                    onChange={this.ChangeSelectInvitado.bind(this)}
-                                    styles={
-                                        this.errorTipoDocumentoInvitado.error
-                                            ? {
-                                                control: (base, state) => ({
-                                                    ...base,
-                                                    borderColor: 'red',
-                                                    boxShadow: 'red',
-                                                }),
-                                            }
-                                            : {}
-                                    }
-                                />
-                                <label className="small text-danger" hidden={!this.errorTipoDocumentoInvitado.error}>
-                                    {this.errorTipoDocumentoInvitado.mensaje}
-                                </label>
-                            </div>
-                            <div className="col-md-4 row-secction">
-                                <label> Número de Documento </label>
-                                <input
-                                    type="document"
-                                    className={errorHTML.classNameError(this.errorDocumentoInvitado, 'form-control')}
-                                    placeholder="Número de documento"
-                                    value={this.state.documentoInvitado}
-                                    onChange={this.ChangeDocumentoInvitado}
-                                />
-                                {errorHTML.errorLabel(this.errorDocumentoInvitado)}
-                            </div>
-                            <div className="col-md-4 row-secction" hidden={this.esPropietario}>
+                            <div className="col-md-3 row-secction">
                                 <label>Fecha de Nacimiento</label>
                                 <Datetime inputProps={{ placeholder: 'Fecha de nacimiento' }} />
                             </div>

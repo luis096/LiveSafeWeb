@@ -192,6 +192,7 @@ class PrincipalReserva extends Component {
                 });
             })
             .catch((error) => {
+                console.log(error.message);
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
