@@ -46,6 +46,7 @@ class ReservasXServicios extends Component {
 
 
     ChangeDesde(event) {
+        if (!(event instanceof Object)) return;
         this.setState({ desde: new Date(event) });
         this.setState({
             errorHasta: validator.fechaRango(new Date(event), this.state.hasta, true),
@@ -54,6 +55,7 @@ class ReservasXServicios extends Component {
     }
 
     ChangeHasta(event) {
+        if (!(event instanceof Object)) return;
         this.setState({ hasta: new Date(event) });
         this.setState({
             errorHasta: validator.fechaRango(this.state.desde, new Date(event), false),
@@ -177,7 +179,7 @@ class ReservasXServicios extends Component {
                     <div className="card-body">
                         <div className="row">
                             <div className="col-md-4 row-secction">
-                                <label>Fecha Desde</label>
+                                <label>Fecha Desde (*)</label>
                                 <Datetime
                                     className={this.state.errorDesde.error ? 'has-error' : ''}
                                     value={this.state.desde}
@@ -190,7 +192,7 @@ class ReservasXServicios extends Component {
                                 </label>
                             </div>
                             <div className="col-md-4 row-secction">
-                                <label>Fecha Hasta</label>
+                                <label>Fecha Hasta (*)</label>
                                 <Datetime
                                     className={this.state.errorHasta.error ? 'has-error' : ''}
                                     value={this.state.hasta}
@@ -205,7 +207,7 @@ class ReservasXServicios extends Component {
                             <div className="col-md-2 row-secction">
                                 <br />
                                 <Button bsStyle="primary" fill wd
-                                    disabled={this.state.errorHasta.error || this.state.errorDesde.error}
+                                        disabled={!this.isValidRangeDate()}
                                     onClick={() => {
                                         this.consultar()
                                     }}>

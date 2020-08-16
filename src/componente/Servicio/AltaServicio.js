@@ -20,6 +20,7 @@ import { Views } from 'react-big-calendar';
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.scss';
+import Spinner from "react-spinner-material";
 
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
@@ -57,7 +58,6 @@ class AltaServicio extends Component {
         this.ChangeSelectTurnosMax = this.ChangeSelectTurnosMax.bind(this);
         this.ChangeSelectTurno = this.ChangeSelectTurno.bind(this);
         this.registrar = this.registrar.bind(this);
-        this.reestaurar = this.reestaurar.bind(this);
 
         this.moveEvent = this.moveEvent.bind(this);
         this.newEvent = this.newEvent.bind(this);
@@ -130,6 +130,7 @@ class AltaServicio extends Component {
             if (event.end.getHours() > hasta) hasta = event.end.getHours();
         });
 
+        let e = false;
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
             .collection('Servicios')
@@ -140,12 +141,18 @@ class AltaServicio extends Component {
                 HoraInicio: new Date(2020, 0, 1, desde, 0),
                 HoraFin: new Date(2020, 0, 1, hasta, 0),
                 // Descripcion: this.state.descripcion,
+                FechaAlta: new Date(),
                 TurnosMax: this.state.turnosMax.value,
                 DuracionTurno: this.state.duracionTurno.value * 60,
             })
             .catch((error) => {
+                e = true;
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
+        if (e) return;
+        this.setState({loading: false});
+        this.notificationSystem.current.addNotification(
+            operacion.registroConExito("El servicio se registro con exito"));
     }
 
     ChangeNombre(event) {
@@ -153,7 +160,7 @@ class AltaServicio extends Component {
         if (event.target.value == '') {
             this.errorNombre = validator.requerido(event.target.value);
         } else {
-            this.errorNombre = validator.soloLetras(event.target.value);
+            this.errorNombre = validator.soloLetrasNumeros(event.target.value);
         }
     }
 
@@ -189,9 +196,27 @@ class AltaServicio extends Component {
         this.actualizarHorasMax();
     }
 
-    registrar() {
-        this.addServicio();
-        // this.reestaurar();
+    async registrar() {
+        this.setState({loading: true});
+        await this.addServicio();
+        await this.reset();
+    }
+
+    FormInvalid() {
+
+        let invalid = (this.errorNombre.error );
+
+        if (!invalid) {
+            invalid = (!this.state.nombre || !this.state.turnosMax ||
+                !this.state.duracionTurno || !this.state.events);
+        }
+
+        if (!invalid) {
+            invalid = (!this.state.duracionTurno.value
+                || !this.state.turnosMax.value || !this.state.events.length);
+        }
+
+        return invalid;
     }
 
     redondear(date) {
@@ -213,13 +238,23 @@ class AltaServicio extends Component {
         this.setState(dias);
     }
 
-    reestaurar() {
+    reset() {
         this.setState({
             nombre: '',
             estado: true,
             descripcion: '',
-            horasMax: null,
-            minMax: null,
+            horaDesde: new Date(2020, 0, 1, 8, 0),
+            horaHasta: new Date(2020, 0, 1, 18, 0),
+            dias: [false, false, false, false, false, false, false],
+            turnosMax: null,
+            verCalendar: false,
+            min: new Date(2019, 0, 1, 8, 0),
+            max: new Date(2019, 0, 1, 18, 0),
+            alert: null,
+            events: [],
+            duracionTurno: null,
+            displayDragItemInCell: true,
+            newIdEvent: 1,
         });
     }
 
@@ -306,13 +341,12 @@ class AltaServicio extends Component {
     }
 
     verCalendar() {
-
         this.setState({ duracionTurno: null, turnosMax: null, verCalendar: false });
     }
 
     render() {
         return (
-            <div className="col-12">
+            <div className={this.state.loading ? "col-12 form" : "col-12"}>
                 <legend>
                     <h3 className="row">Nuevo Servicio</h3>
                 </legend>
@@ -321,7 +355,7 @@ class AltaServicio extends Component {
                         <div className="row " style={{ display:'grid'}}>
                             <div>
                             <div className="row-secction col-md-4">
-                                <label> Nombre </label>
+                                <label> Nombre (*)</label>
                                 <input
                                     type="name"
                                     className={errorHTML.classNameError(this.errorNombre, 'form-control')}
@@ -345,7 +379,7 @@ class AltaServicio extends Component {
                                 </div>
                             </div>
                             <div className="row-secction col-md-4">
-                                <label>Duración del turno</label>
+                                <label>Duración del turno (*)</label>
                                 <Select
                                     isClearable={true}
                                     isDisabled={this.state.verCalendar}
@@ -357,7 +391,7 @@ class AltaServicio extends Component {
                         </div>
                         <div style={{ marginTop:'15px'}} >
                             <div className="row-secction col-md-5" >
-                                <label>Cantidad máxima de turnos</label>
+                                <label>Cantidad máxima de turnos (*)</label>
                                 <Select
                                     isClearable={true}
                                     value={this.state.turnosMax}
@@ -365,7 +399,7 @@ class AltaServicio extends Component {
                                     onChange={this.ChangeSelectTurnosMax.bind(this)}
                                 />
                             </div>
-                            <div style={{ display:'grid', marginTop:'4px'}} className="row-secction col-md-6" hidden={!!this.state.verCalendar}>
+                            <div className="row-secction col-md-6 btnVerCalendar" hidden={!!this.state.verCalendar}>
                                 <br />
                                 <Button
                                     bsStyle="warning"
@@ -385,12 +419,6 @@ class AltaServicio extends Component {
                             </div>
                         </div>
                         </div>
-                        {/*<div className="row">*/}
-                        {/*    <label> Descripcion </ label>*/}
-                        {/*    <textarea className="form-control" rows="3" placeholder="Descripcion del servicio"*/}
-                        {/*              value={this.state.descripcion}*/}
-                        {/*              onChange={this.ChangeDescripcion}> </textarea>*/}
-                        {/*</div>*/}
                     </div>
                     <div hidden={!this.state.verCalendar}>
                         <Grid fluid>
@@ -398,6 +426,7 @@ class AltaServicio extends Component {
                                 <Col md={12}>
                                     <Card
                                         calendar
+                                        title={"Horarios disponibles para propietarios (*)"}
                                         content={
                                             <DragAndDropCalendar
                                                 selectable
@@ -430,12 +459,16 @@ class AltaServicio extends Component {
                     </div>
                 </div>
                 <div  style={{marginBottom:'8px'}} hidden={!this.state.verCalendar} className="text-center">
-                    <Button bsStyle="primary" fill wd onClick={this.registrar}>
+                    <Button bsStyle="primary" fill wd onClick={this.registrar}  disabled={this.FormInvalid()}>
                         Registrar
                     </Button>
                 </div>
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
+                </div>
+                <div className="spinnerAlta" hidden={!this.state.loading}>
+                    <Spinner radius={80} color={'black'}
+                             stroke={5}/>
                 </div>
                 {this.state.alert}
             </div>

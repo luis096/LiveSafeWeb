@@ -52,11 +52,13 @@ class PrincipalAdministrador extends Component {
 
     async componentDidMount() {
         const { tipoD, barriosSelect, administradoresTodos } = this.state;
-        await Database.collection('Country')
+        await Database.collectionGroup('Administradores')
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
-                    barriosSelect.push({ value: doc.id, label: doc.data().Nombre });
+                    let id = doc.ref.path.toString().split('/');
+                    let idCountry = id[1];
+                    administradoresTodos.push([doc.data(), doc.id, idCountry]);
                 });
             })
             .catch((error) => {
@@ -72,13 +74,12 @@ class PrincipalAdministrador extends Component {
             .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-        await Database.collectionGroup('Administradores')
+
+        await Database.collection('Country')
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
-                    let id = doc.ref.path.toString().split('/');
-                    let idCountry = id[1];
-                    administradoresTodos.push([doc.data(), doc.id, idCountry]);
+                    barriosSelect.push({ value: doc.id, label: doc.data().Nombre });
                 });
             })
             .catch((error) => {
@@ -221,7 +222,7 @@ class PrincipalAdministrador extends Component {
         this.setState({ administradores, numPagina: pagina,  loading: false });
     }
 
-    consultarNoPaginado(pagina) {
+    async consultarNoPaginado(pagina) {
         const {administradoresTodos, numPagina} = this.state;
         if ((administradoresTodos.length / 10) < pagina || pagina < 0) return;
 
@@ -248,11 +249,23 @@ class PrincipalAdministrador extends Component {
             result = result.filter(x => { return x[2] === this.state.barrio.value.toString() });
         }
 
+        result = result.sort(function (a, b) {
+            if (validator.obtenerFecha(a[0].FechaAlta) < validator.obtenerFecha(b[0].FechaAlta)) {
+                return 1;
+            }
+            if (validator.obtenerFecha(a[0].FechaAlta) > validator.obtenerFecha(b[0].FechaAlta)) {
+                return -1;
+            }
+            return 0;
+        });
 
         this.total = result.length;
         this.cantidad = paginador.cantidad(this.total);
 
-        this.setState({administradores: result, numPagina: pagina, loading: false})
+        await setTimeout(() => {
+            this.setState({administradores: result, numPagina: pagina, loading: false})
+        }, 1000);
+
     }
 
     reestablecer() {
@@ -315,6 +328,7 @@ class PrincipalAdministrador extends Component {
                             <div className="col-md-4 row-secction">
                                 <label>Country</label>
                                 <Select
+                                    isClearable={true}
                                     isSearchable={true}
                                     value={this.state.barrio}
                                     options={this.state.barriosSelect}
@@ -451,7 +465,7 @@ class PrincipalAdministrador extends Component {
                         <Pagination.Last onClick={() => this.consultarNoPaginado(this.state.numPagina + 1)} />
                     </Pagination>
                 </div>
-                <div className="row card" hidden={this.state.administradores.length}>
+                <div className="row card" hidden={this.state.administradores.length || this.state.loading}>
                     <div className="card-body">
                         <h4 className="row">No se encontraron resultados.</h4>
                     </div>

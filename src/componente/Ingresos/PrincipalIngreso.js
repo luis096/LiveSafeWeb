@@ -198,6 +198,7 @@ class PrincialIngreso extends Component {
     descargar() {
         let columnas = columns.INGRESOS;
         let elementos = [];
+        console.log("lala")
 
         if (this.state.descargar) {
             let con = this.obtenerConsulta(false);
@@ -227,7 +228,6 @@ class PrincialIngreso extends Component {
     }
 
     obtenerConsulta(conLimite) {
-        this.setState({loading: true})
         let con = Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Ingresos').orderBy('Fecha', 'desc');
         if (conLimite) {

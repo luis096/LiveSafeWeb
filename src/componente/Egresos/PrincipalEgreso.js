@@ -192,7 +192,6 @@ class PrincialEgreso extends Component {
     descargar() {
         let columnas = columns.INGRESOS;
         let elementos = [];
-
         if (this.state.descargar) {
             let con = this.obtenerConsulta(false);
             let datos = {};
@@ -213,7 +212,7 @@ class PrincialEgreso extends Component {
                 <GeneradorExcel
                     elementos={elementos}
                     estructura={columnas}
-                    pagina={'Ingresos'}
+                    pagina={'Egresos'}
                     ocultar={() => this.setState({ descargar: false })}
                 />
             );

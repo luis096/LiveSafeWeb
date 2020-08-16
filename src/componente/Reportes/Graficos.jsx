@@ -240,6 +240,7 @@ class Graficos extends Component {
                         <div className="row-secction col-md-1">
                             <br />
                             <Button bsStyle="primary" fill
+                                    disabled={!this.isValidRangeDate()}
                                 onClick={() => { this.consultar(this.state.nombreReporte) }}>
                                 Consultar
                             </Button>

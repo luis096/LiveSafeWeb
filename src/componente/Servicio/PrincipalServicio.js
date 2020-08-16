@@ -169,7 +169,8 @@ class PrincipalServicio extends Component {
 
     obtenerConsulta(conLimite) {
         this.setState({loading: true})
-        let con = Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Servicios');
+        let con = Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Servicios').orderBy('FechaAlta', 'desc');
         if (conLimite) {
             con = con.limit(paginador.getTamPagina());
         }
