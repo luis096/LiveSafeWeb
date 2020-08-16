@@ -382,7 +382,7 @@ class PrincialEgreso extends Component {
                                     className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
                                     value={this.state.documento}
                                     onChange={this.ChangeDocumento}
-                                    placeholder="Nro. de Documento"
+                                    placeholder="Número de Documento"
                                 />
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
