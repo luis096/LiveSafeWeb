@@ -465,7 +465,7 @@ class AltaIngreso extends Component {
                                 />
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
-                            <div className="col-md-2 row-secction" style={{ marginTop: '25px' }}>
+                            <div className="col-md-1 row-secction" style={{ marginTop: '25px', marginRight: '35px' }}>
                                 <Button bsStyle="default" style={{ marginRight: '10px' }} fill wd onClick={this.reestablecer}>
                                     Restablecer
                                 </Button>

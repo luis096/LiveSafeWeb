@@ -57,11 +57,12 @@ async function paginar(con, total, totalNum, nueva, cantidad, paginaActual, pagi
         pagina.ultimoDoc.push(ultimoElemento);
         pagina.primerDoc.push(primerElemento);
     }
-    if (!cantidad.length) {
-        pagina.cantidad = paginador.cantidad(pagina.total);
-    } else {
-        pagina.cantidad = cantidad;
-    }
+    // if (!cantidad.length) {
+    //     pagina.cantidad = paginador.cantidad(pagina.total);
+    // } else {
+    //     pagina.cantidad = cantidad;
+    // }
+    pagina.cantidad = paginador.cantidad(pagina.total);
     return pagina;
 }
 
