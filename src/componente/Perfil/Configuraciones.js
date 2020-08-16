@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom';
 import Firebase from 'firebase';
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
-import {operacion} from "../Operaciones";
+import { operacion } from "../Operaciones";
 
 
 class Configuraciones extends Component {
@@ -22,19 +22,19 @@ class Configuraciones extends Component {
     }
 
     ChangePass(event) {
-        this.setState({pass: event.target.value});
+        this.setState({ pass: event.target.value });
     }
 
-    async reestablecer(){
-         let newPassword = this.state.pass;
-         await firebase.auth().currentUser.updatePassword(newPassword).then(() =>{
-             this.setRedirect()
-         }, error=> {
-                 this.notificationSystem.current.addNotification(operacion.error(error.message));
-        },)
-        }
+    async reestablecer() {
+        let newPassword = this.state.pass;
+        await firebase.auth().currentUser.updatePassword(newPassword).then(() => {
+            this.setRedirect()
+        }, error => {
+            this.notificationSystem.current.addNotification(operacion.error(error.message));
+        })
+    }
 
-    setRedirect = async ()=> {
+    setRedirect = async () => {
         await Firebase.auth().signOut().catch((error) => {
             this.notificationSystem.current.addNotification(operacion.error(error.message));
         });
@@ -42,15 +42,15 @@ class Configuraciones extends Component {
         this.setState({
             redirect: true
         });
-        
+
     };
 
-    renderRedirect = ()=> {
+    renderRedirect = () => {
         if (this.state.redirect) {
             this.setState({
                 redirect: false
             });
-            return <Redirect to='/'/>;
+            return <Redirect to='/' />;
         }
     };
 
@@ -59,28 +59,28 @@ class Configuraciones extends Component {
             alert: null
         });
     }
-        
-    confirmar(){
+
+    confirmar() {
         this.setState({
             alert: (
                 <SweetAlert
                     warning
-                    style={{display: 'block', marginTop: '-100px', position: 'center'}}
-                    title="¿Estas seguro?"
-                    onConfirm={()=>this.reestablecer()}
-                    onCancel={()=>this.hideAlert()}
+                    style={{ display: 'block', marginTop: '-100px', position: 'center' }}
+                    title="¿Estás seguro?"
+                    onConfirm={() => this.reestablecer()}
+                    onCancel={() => this.hideAlert()}
                     confirmBtnBsStyle="info"
                     cancelBtnBsStyle="danger"
-                    confirmBtnText="Si, estoy seguro"
+                    confirmBtnText="Sí, estoy seguro"
                     cancelBtnText="Cancelar"
                     showCancel
                 >
-                    ¿Esta seguro de que desea cambiar la conytraseña?
+                    ¿Está seguro de que desea cambiar la contraseña?
                 </SweetAlert>
             )
         });
     }
-    
+
 
     render() {
         return (
@@ -88,41 +88,41 @@ class Configuraciones extends Component {
                 {this.state.alert}
                 <div className="row card">
                     <div className="card-body">
-                        <legend><h3 className="row"><i className="pe-7s-tools"/> Configuraciones</h3></legend>
+                        <legend><h3 className="row"><i className="pe-7s-tools" /> Configuraciones</h3></legend>
                         <div className="row">
-                        <h4><strong style={{paddingLeft: "18px"}}>Cambiar contraseña</strong></h4>
-                            <div className="col-12 row-secction">  
-                          
-                            <div className="col-md-6">
-                                <input className='form-control'
-                                       value={this.state.pass}
-                                       type="password"
-                                       defaultChecked=""
-                                       onChange={this.ChangePass} placeholder="Nueva contraseña"/>
-                            </div>
-                            <div className="col-md-6">
-                                <input className='form-control'
-                                type="password"
-                                        placeholder="Repetir Nueva contraseña"/>
-                            </div>
-                            <div style={{marginTop:'10px'}} className="col-md-6">
-                                <input className='form-control'
-                                    type="password"
-                                        placeholder="Contraseña Actual"/>
-                            </div>
-                            <div style={{marginTop:'10px'}}  className="col-md-6">
-                            {this.renderRedirect()}
-                                <Button bsStyle="default"  fill wd onClick={()=> {
-                                    this.confirmar();
-                                }}>Confirmar</Button>
-                            </div>
-                           
+                            <h4><strong style={{ paddingLeft: "18px" }}>Cambiar contraseña</strong></h4>
+                            <div className="col-12 row-secction">
+
+                                <div className="col-md-6">
+                                    <input className='form-control'
+                                        value={this.state.pass}
+                                        type="password"
+                                        defaultChecked=""
+                                        onChange={this.ChangePass} placeholder="Nueva contraseña" />
+                                </div>
+                                <div className="col-md-6">
+                                    <input className='form-control'
+                                        type="password"
+                                        placeholder="Repetir Nueva contraseña" />
+                                </div>
+                                <div style={{ marginTop: '10px' }} className="col-md-6">
+                                    <input className='form-control'
+                                        type="password"
+                                        placeholder="Contraseña Actual" />
+                                </div>
+                                <div style={{ marginTop: '10px' }} className="col-md-6">
+                                    {this.renderRedirect()}
+                                    <Button bsStyle="default" fill wd onClick={() => {
+                                        this.confirmar();
+                                    }}>Confirmar</Button>
+                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <NotificationSystem ref={this.notificationSystem} style={style}/>
+                    <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>
             </div>
         );

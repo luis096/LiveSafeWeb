@@ -231,15 +231,15 @@ class PrincipalReserva extends Component {
                 <SweetAlert
                     warning
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
-                    title="¿Estas seguro?"
+                    title="¿Estás seguro?"
                     onConfirm={() => this.successDelete()}
                     onCancel={() => this.cancelDetele()}
                     confirmBtnBsStyle="info"
                     cancelBtnBsStyle="danger"
-                    confirmBtnText="Si, estoy seguro"
-                    cancelBtnText="Cancelar"
+                    confirmBtnText="Sí, estoy seguro"
+                    cancelBtnText="No, deseo volver atrás"
                     showCancel>
-                    ¿Esta seguro de que desea cancelar la reserva?
+                    ¿Está seguro de que desea cancelar la reserva?
                 </SweetAlert>
             ),
         });
@@ -275,7 +275,7 @@ class PrincipalReserva extends Component {
                     onConfirm={() => this.hideAlert()}
                     onCancel={() => this.hideAlert()}
                     confirmBtnBsStyle="info">
-                    La reserva se cancelo correctamente.
+                    La reserva se canceló correctamente.
                 </SweetAlert>
             ),
         });
@@ -287,7 +287,7 @@ class PrincipalReserva extends Component {
                 <SweetAlert
                     danger
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
-                    title="Se cancelo la operacion"
+                    title="Operación cancelada"
                     onConfirm={() => this.hideAlert()}
                     onCancel={() => this.hideAlert()}
                     confirmBtnBsStyle="info">
@@ -395,110 +395,110 @@ class PrincipalReserva extends Component {
                         Consultar
                     </Button>
                 </div>
-                { this.state.loading ? (
-                    <div style={{display:'flex', justifyContent:'center', marginTop:'100px'}} >
-                            <CircularProgress thickness="2" color={'white'} style={{width:'120px', height:'120px'}} />
-                    </div> ) : (
-                <div>
-                <div className="card row" hidden={!this.state.reservas.length}>
-                    <h4 className="row">Reservas ({this.total})</h4>
-                    <div className="card-body">
-                        <table className="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Índice
+                {this.state.loading ? (
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '100px' }} >
+                        <CircularProgress thickness="2" color={'white'} style={{ width: '120px', height: '120px' }} />
+                    </div>) : (
+                        <div>
+                            <div className="card row" hidden={!this.state.reservas.length}>
+                                <h4 className="row">Reservas ({this.total})</h4>
+                                <div className="card-body">
+                                    <table className="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Índice
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Nombre
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Nombre
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Servicio
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Servicio
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Estado
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Estado
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Día
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Día
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Hora desde
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Hora desde
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Hora hasta
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Hora hasta
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Visualizar
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Visualizar
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Cancelar
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.state.reservas.map((res, ind) => {
-                                    let desde = new Date(res[0].FechaDesde.seconds * 1000);
-                                    let hasta = new Date(res[0].FechaHasta.seconds * 1000);
-                                    let editar = '/propietario/visualizarReserva/' + res[1];
-                                    let estado = validator.estadoReserva(desde, hasta, res[0].Cancelado);
-                                    return (
-                                        <tr className="table-light">
-                                            <th style={{ textAlign: 'center' }} scope="row">
-                                                {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
-                                            </th>
-                                            <th style={{ textAlign: 'center' }} scope="row">
-                                                {res[0].Nombre}
-                                            </th>
-                                            <th style={{ textAlign: 'center' }} scope="row">
-                                                {res[0].Servicio}
-                                            </th>
-                                            <td style={{ textAlign: 'center' }}>{estado.Nombre}</td>
-                                            <td style={{ textAlign: 'center' }}>{desde.toLocaleDateString()}</td>
-                                            <td style={{ textAlign: 'center' }}>{desde.toLocaleTimeString()}</td>
-                                            <td style={{ textAlign: 'center' }}>{hasta.toLocaleTimeString()}</td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                <Link to={editar}>
-                                                    <Button bsStyle="info" fill wd>
-                                                        Visualizar
-                                                    </Button>
-                                                </Link>
-                                            </td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                <Button
-                                                    bsStyle="warning"
-                                                    fill
-                                                    wd
-                                                    disabled={estado.Id != 0}
-                                                    onClick={() => {
-                                                        this.cancelar(res);
-                                                    }}>
+                                                <th style={{ textAlign: 'center' }} scope="col">
                                                     Cancelar
+                                    </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {this.state.reservas.map((res, ind) => {
+                                                let desde = new Date(res[0].FechaDesde.seconds * 1000);
+                                                let hasta = new Date(res[0].FechaHasta.seconds * 1000);
+                                                let editar = '/propietario/visualizarReserva/' + res[1];
+                                                let estado = validator.estadoReserva(desde, hasta, res[0].Cancelado);
+                                                return (
+                                                    <tr className="table-light">
+                                                        <th style={{ textAlign: 'center' }} scope="row">
+                                                            {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
+                                                        </th>
+                                                        <th style={{ textAlign: 'center' }} scope="row">
+                                                            {res[0].Nombre}
+                                                        </th>
+                                                        <th style={{ textAlign: 'center' }} scope="row">
+                                                            {res[0].Servicio}
+                                                        </th>
+                                                        <td style={{ textAlign: 'center' }}>{estado.Nombre}</td>
+                                                        <td style={{ textAlign: 'center' }}>{desde.toLocaleDateString()}</td>
+                                                        <td style={{ textAlign: 'center' }}>{desde.toLocaleTimeString()}</td>
+                                                        <td style={{ textAlign: 'center' }}>{hasta.toLocaleTimeString()}</td>
+                                                        <td style={{ textAlign: 'center' }}>
+                                                            <Link to={editar}>
+                                                                <Button bsStyle="info" fill wd>
+                                                                    Visualizar
+                                                    </Button>
+                                                            </Link>
+                                                        </td>
+                                                        <td style={{ textAlign: 'center' }}>
+                                                            <Button
+                                                                bsStyle="warning"
+                                                                fill
+                                                                wd
+                                                                disabled={estado.Id != 0}
+                                                                onClick={() => {
+                                                                    this.cancelar(res);
+                                                                }}>
+                                                                Cancelar
                                                 </Button>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div className="text-center" hidden={!this.state.reservas.length}>
-                    <Pagination className="pagination-no-border">
-                        <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div className="text-center" hidden={!this.state.reservas.length}>
+                                <Pagination className="pagination-no-border">
+                                    <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
 
-                        {this.cantidad.map((num) => {
-                            return <Pagination.Item active={num == this.state.numPagina}>{num + 1}</Pagination.Item>;
-                        })}
+                                    {this.cantidad.map((num) => {
+                                        return <Pagination.Item active={num == this.state.numPagina}>{num + 1}</Pagination.Item>;
+                                    })}
 
-                        <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
-                    </Pagination>
-                </div>
-                <div className="row card" hidden={this.state.reservas.length}>
-                    <div className="card-body">
-                        <h4 className="row">No se encontraron resultados.</h4>
-                    </div>
-                </div>
-                </div> )}
+                                    <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
+                                </Pagination>
+                            </div>
+                            <div className="row card" hidden={this.state.reservas.length}>
+                                <div className="card-body">
+                                    <h4 className="row">No se encontraron resultados.</h4>
+                                </div>
+                            </div>
+                        </div>)}
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>

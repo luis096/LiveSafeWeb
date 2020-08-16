@@ -289,15 +289,15 @@ class PrincialEgreso extends Component {
                 <SweetAlert
                     warning
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
-                    title="¿Estas seguro?"
+                    title="¿Estás seguro?"
                     onConfirm={() => this.cancelConfirmado(idEgreso)}
                     onCancel={() => this.cancelDetele()}
                     confirmBtnBsStyle="info"
                     cancelBtnBsStyle="danger"
-                    confirmBtnText="Si, estoy seguro"
-                    cancelBtnText="Cancelar"
+                    confirmBtnText="Sí, estoy seguro"
+                    cancelBtnText="No, deseo volver atrás"
                     showCancel>
-                    ¿Esta seguro de que desea cancelar el egreso?
+                    ¿Está seguro de que desea cancelar el egreso?
                 </SweetAlert>
             ),
         });
@@ -326,7 +326,7 @@ class PrincialEgreso extends Component {
                 <SweetAlert
                     danger
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
-                    title="Se cancelo la operacion"
+                    title="Operación cancelada"
                     onConfirm={() => this.hideAlert()}
                     onCancel={() => this.hideAlert()}
                     confirmBtnBsStyle="info">
@@ -438,109 +438,109 @@ class PrincialEgreso extends Component {
                     </Button>
                 </div>
                 {this.descargar()}
-                { this.state.loading ? (
-                    <div style={{display:'flex', justifyContent:'center', marginTop:'100px'}} >
-                            <CircularProgress thickness="2" color={'white'} style={{width:'120px', height:'120px'}} />
-                    </div> ) : (
-                <div>
-                <div className="card row" hidden={!this.state.egresos.length}>
-                    <div className="row">
-                        <div className="col-md-6 title row-secction">
-                            <h4 style={{ margin: '0px' }}>Egresos ({this.total})</h4>
-                        </div>
-                        <div className="col-md-6 row-secction btnDescarga">
-                            <Button
-                                bsStyle="success"
-                                fill
-                                onClick={() => {
-                                    this.setState({ descargar: true });
-                                }}>
-                                Descargar
+                {this.state.loading ? (
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '100px' }} >
+                        <CircularProgress thickness="2" color={'white'} style={{ width: '120px', height: '120px' }} />
+                    </div>) : (
+                        <div>
+                            <div className="card row" hidden={!this.state.egresos.length}>
+                                <div className="row">
+                                    <div className="col-md-6 title row-secction">
+                                        <h4 style={{ margin: '0px' }}>Egresos ({this.total})</h4>
+                                    </div>
+                                    <div className="col-md-6 row-secction btnDescarga">
+                                        <Button
+                                            bsStyle="success"
+                                            fill
+                                            onClick={() => {
+                                                this.setState({ descargar: true });
+                                            }}>
+                                            Descargar
                             </Button>
-                        </div>
-                    </div>
-                    <div className="card-body">
-                        <table className="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Índice
+                                    </div>
+                                </div>
+                                <div className="card-body">
+                                    <table className="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Índice
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Nombre y Apellido
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Nombre y Apellido
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Tipo Documento
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Tipo Documento
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Documento
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Documento
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Fecha y Hora
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Fecha y Hora
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Observación
+                                                <th style={{ textAlign: 'center' }} scope="col">
+                                                    Observación
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Cancelar
-                                    </th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {this.state.egresos.map((egr, ind) => {
-                                    let hora = validator.obtenerFecha(egr[0].Fecha);
-
-                                    return (
-                                        <tr className="table-light">
-                                            <th style={{ textAlign: 'center' }} scope="row">
-                                                {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
-                                            </th>
-                                            <td style={{ textAlign: 'center' }} scope="row">
-                                                {egr[0].Nombre} {egr[0].Apellido}
-                                            </td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                {operacion.obtenerDocumentoLabel(egr[0].TipoDocumento.id, this.state.tipoD)}
-                                            </td>
-                                            <td style={{ textAlign: 'center' }}>{egr[0].Documento}</td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                {hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}
-                                            </td>
-                                            <td style={{ textAlign: 'center' }}>{egr[0].Observacion ? 'Si' : 'No'}</td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                <Button
-                                                    bsStyle="warning"
-                                                    fill
-                                                    onClick={() => {
-                                                        this.cancelar(egr[1]);
-                                                    }}>
+                                                <th style={{ textAlign: 'center' }} scope="col">
                                                     Cancelar
+                                    </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            {this.state.egresos.map((egr, ind) => {
+                                                let hora = validator.obtenerFecha(egr[0].Fecha);
+
+                                                return (
+                                                    <tr className="table-light">
+                                                        <th style={{ textAlign: 'center' }} scope="row">
+                                                            {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
+                                                        </th>
+                                                        <td style={{ textAlign: 'center' }} scope="row">
+                                                            {egr[0].Nombre} {egr[0].Apellido}
+                                                        </td>
+                                                        <td style={{ textAlign: 'center' }}>
+                                                            {operacion.obtenerDocumentoLabel(egr[0].TipoDocumento.id, this.state.tipoD)}
+                                                        </td>
+                                                        <td style={{ textAlign: 'center' }}>{egr[0].Documento}</td>
+                                                        <td style={{ textAlign: 'center' }}>
+                                                            {hora.toLocaleDateString() + ' - ' + hora.toLocaleTimeString()}
+                                                        </td>
+                                                        <td style={{ textAlign: 'center' }}>{egr[0].Observacion ? 'Si' : 'No'}</td>
+                                                        <td style={{ textAlign: 'center' }}>
+                                                            <Button
+                                                                bsStyle="warning"
+                                                                fill
+                                                                onClick={() => {
+                                                                    this.cancelar(egr[1]);
+                                                                }}>
+                                                                Cancelar
                                                 </Button>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div className="text-center" hidden={!this.state.egresos.length}>
-                    <Pagination className="pagination-no-border">
-                        <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div className="text-center" hidden={!this.state.egresos.length}>
+                                <Pagination className="pagination-no-border">
+                                    <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
 
-                        {this.cantidad.map((num) => {
-                            return <Pagination.Item active={num == this.state.numPagina}>{num + 1}</Pagination.Item>;
-                        })}
+                                    {this.cantidad.map((num) => {
+                                        return <Pagination.Item active={num == this.state.numPagina}>{num + 1}</Pagination.Item>;
+                                    })}
 
-                        <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
-                    </Pagination>
-                </div>
-                <div className="row card" hidden={this.state.egresos.length}>
-                    <div className="card-body">
-                        <h4 className="row">No se encontraron resultados.</h4>
-                    </div>
-                </div>
-                </div> )}
+                                    <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
+                                </Pagination>
+                            </div>
+                            <div className="row card" hidden={this.state.egresos.length}>
+                                <div className="card-body">
+                                    <h4 className="row">No se encontraron resultados.</h4>
+                                </div>
+                            </div>
+                        </div>)}
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>

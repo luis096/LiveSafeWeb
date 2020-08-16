@@ -430,16 +430,16 @@ class VisualizarReserva extends Component {
                                     <thead>
                                         <tr>
                                             <th scope="col">Nombre y Apellido</th>
-                                            <th scope="col">Tipo Doc.</th>
+                                            <th scope="col">Tipo Documento</th>
                                             <th scope="col">Documento</th>
-                                            <th scope="col">Accion</th>
+                                            <th scope="col">Acción</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {this.state.invitadosConfirmados.map((inv) => {
                                             return (
                                                 <tr className="table-light">
-                                                    <th scope="row">{inv[0].Nombre + ', ' + inv[0].Apellido}</th>
+                                                    <th scope="row">{inv[0].Nombre + ' ' + inv[0].Apellido}</th>
                                                     <td>{inv[0].TipoDocumentoLabel}</td>
                                                     <td>{inv[0].Documento}</td>
                                                     <td>
@@ -469,16 +469,16 @@ class VisualizarReserva extends Component {
                                     <thead>
                                         <tr>
                                             <th scope="col">Nombre y Apellido</th>
-                                            <th scope="col">Tipo Doc.</th>
+                                            <th scope="col">Tipo Documento</th>
                                             <th scope="col">Documento</th>
-                                            <th scope="col">Accion</th>
+                                            <th scope="col">Acción</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {this.state.invitadosPendientes.map((inv) => {
                                             return (
                                                 <tr className="table-light">
-                                                    <th scope="row">{inv[0].Nombre + ', ' + inv[0].Apellido}</th>
+                                                    <th scope="row">{inv[0].Nombre + ' ' + inv[0].Apellido}</th>
                                                     <td>{inv[0].TipoDocumentoLabel}</td>
                                                     <td>{inv[0].Documento}</td>
                                                     <td>
