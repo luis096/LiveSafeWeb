@@ -10,6 +10,9 @@ import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
 import Select from "react-select";
 import Delete from '../../assets/img/delete.svg'
+import "../Style/SpinnerAltas.scss"
+
+
 
 class EditarCountry extends Component {
     constructor(props) {
@@ -27,6 +30,8 @@ class EditarCountry extends Component {
             upLoadValue: 0,
             imgStorgeRef: '',
             borrar: false,
+            redirect: false,
+            loading: false,
             departamento: [],
             departamentoBarrio: { label: 'Seleccione un departamento' },
             localidades: [],
@@ -282,6 +287,7 @@ class EditarCountry extends Component {
         //     operacion.sinCompletar("Debe completar todos los campos requeridos")
         //     return
         // }
+        this.setState({loading: true});
         await Database.collection('Country')
             .doc(this.idBarrio)
             .update({
@@ -294,8 +300,12 @@ class EditarCountry extends Component {
                 Imagen: this.state.imagenCountry,
             })
             .catch((error) => {
+                this.state.loading = false;
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
+
+            this.notificationSystem.current.addNotification(
+                operacion.registroConExito("El country se registró con exito"));
     }
 
     render() {

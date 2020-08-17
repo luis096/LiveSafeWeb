@@ -455,7 +455,6 @@ class AltaCountry extends Component {
                     <Spinner radius={80} color={'black'}
                              stroke={5}/>
                 </div>
-
             </div>
         );
     }
