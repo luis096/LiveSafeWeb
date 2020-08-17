@@ -226,7 +226,7 @@ class AltaEgreso extends Component {
             });
 
         this.notificationSystem.current.addNotification(
-            operacion.registroConExito("El egreso se registro con exito"));
+            operacion.registroConExito("El egreso se registró con éxito"));
         this.setState({loading: false});
     }
 

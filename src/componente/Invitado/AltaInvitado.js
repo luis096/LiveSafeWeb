@@ -247,7 +247,7 @@ class AltaInvitado extends Component {
         this.setState({loading: false});
         if (e) return;
         this.notificationSystem.current.addNotification(
-            operacion.registroConExito("El invitado se registro con exito"));
+            operacion.registroConExito("El invitado se registró con éxito"));
     }
 
     reset() {

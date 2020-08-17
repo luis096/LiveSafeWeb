@@ -251,7 +251,7 @@ class AltaCountry extends Component {
         if (error) return;
         this.reset();
         this.notificationSystem.current.addNotification(
-            operacion.registroConExito("El country se registró con exito"));
+            operacion.registroConExito("El country se registró con éxito"));
     }
 
     reset() {

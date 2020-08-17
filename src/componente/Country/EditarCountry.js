@@ -305,7 +305,7 @@ class EditarCountry extends Component {
             });
 
             this.notificationSystem.current.addNotification(
-                operacion.registroConExito("El country se registró con exito"));
+                operacion.registroConExito("El country se registró con éxito"));
     }
 
     render() {

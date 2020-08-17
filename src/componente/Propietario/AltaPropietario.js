@@ -176,7 +176,7 @@ class AltaPropietario extends Component {
         await this.reset();
 
         this.notificationSystem.current.addNotification(
-            operacion.registroConExito("El propietario se registro con exito"));
+            operacion.registroConExito("El propietario se registró con éxito"));
 
     }
 

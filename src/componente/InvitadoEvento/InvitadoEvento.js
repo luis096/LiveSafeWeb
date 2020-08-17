@@ -192,7 +192,7 @@ class InvitadoEvento extends Component {
                 });
             if (e) return;
             this.setState({loading: false});
-            this.notificationSystem.current.addNotification(operacion.registroConExito('Se registro con exito.'));
+            this.notificationSystem.current.addNotification(operacion.registroConExito('Se registró con éxito.'));
         } catch (e) {
             this.setState({loading: false});
             this.notificationSystem.current.addNotification(operacion.error(e.message));

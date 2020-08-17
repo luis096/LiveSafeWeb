@@ -322,7 +322,7 @@ class PrincipalInvitados extends Component {
             });
 
         this.notificationSystem.current.addNotification(
-            operacion.registroConExito("La invitación se realizo con exito"));
+            operacion.registroConExito("La invitación se realizo con éxito"));
         this.setState({ showModal: false, reservaSelceccionada: null, loadingInvitado: false});
     }
 

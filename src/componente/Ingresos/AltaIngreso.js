@@ -276,7 +276,7 @@ class AltaIngreso extends Component {
                 });
         }
         this.notificationSystem.current.addNotification(
-            operacion.registroConExito("El ingreso se registro con exito"));
+            operacion.registroConExito("El ingreso se registró con éxito"));
         this.reestablecer();
         this.setState({loading: false});
     }
