@@ -73,11 +73,8 @@ function obtenerReferenciaConId(num, id) {
 
 function obtenerDisponibleString(value){
     let resultado = '';
-    value.map((dia, i)=>{
-        if(dia){
-            resultado += '-' + DIAS[i];
-        }
-    });
+
+
     return resultado;
 }
 

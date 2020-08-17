@@ -121,7 +121,7 @@ class PrincipalPropietario extends Component {
         if (this.cantidad.length && (this.cantidad.length <= pagina || pagina < 0)) {
             return;
         }
-
+        this.setState({loading: true});
         let con = this.obtenerConsulta(true);
         let total = this.obtenerConsulta(false);
 
@@ -189,7 +189,6 @@ class PrincipalPropietario extends Component {
                         datos = doc.data();
                         datos.FechaAlta = validator.obtenerFecha(doc.data().FechaAlta).toLocaleString();
                         datos.TipoDocumento = operacion.obtenerDocumentoLabel(datos.TipoDocumento.id, this.state.tipoD);
-                        datos.Titular = datos.Titular ? 'Si' : 'No';
                         elementos.push(datos);
                     });
                 })
@@ -200,7 +199,7 @@ class PrincipalPropietario extends Component {
                 <GeneradorExcel
                     elementos={elementos}
                     estructura={columnas}
-                    pagina={'Ingresos'}
+                    pagina={'Propietarios'}
                     ocultar={() => this.setState({ descargar: false })}
                 />
             );
@@ -208,7 +207,6 @@ class PrincipalPropietario extends Component {
     }
 
     obtenerConsulta(conLimite) {
-        this.setState({loading: true})
         let con = Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Propietarios').orderBy('FechaAlta', 'desc');
         if (conLimite) {

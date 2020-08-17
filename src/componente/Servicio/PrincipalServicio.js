@@ -88,6 +88,7 @@ class PrincipalServicio extends Component {
         if (this.cantidad.length && (this.cantidad.length <= pagina || pagina < 0)) {
             return;
         }
+        this.setState({loading: true});
 
         let con = this.obtenerConsulta(true);
         let total = this.obtenerConsulta(false);
@@ -149,7 +150,10 @@ class PrincipalServicio extends Component {
                     querySnapshot.forEach((doc) => {
                         datos = doc.data();
                         datos.Estado = datos.Estado ? 'Disponible' : 'No Disponible';
-                        datos.Disponibilidad = operacion.obtenerDisponibleString(datos.Disponibilidad);
+                        datos.DuracionTurno = (datos.DuracionTurno / 60 >= 1
+                            ? datos.DuracionTurno / 60 + ' Hs.'
+                            : datos.DuracionTurno + ' Min.');
+                        // datos.Disponibilidad = operacion.obtenerDisponibleString(datos.Disponibilidad);
                         elementos.push(datos);
                     });
                 })
@@ -168,7 +172,6 @@ class PrincipalServicio extends Component {
     }
 
     obtenerConsulta(conLimite) {
-        this.setState({loading: true})
         let con = Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Servicios').orderBy('FechaAlta', 'desc');
         if (conLimite) {

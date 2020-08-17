@@ -11,7 +11,7 @@ import NotificationSystem from "react-notification-system";
 import Select from "react-select";
 import Delete from '../../assets/img/delete.svg'
 import "../Style/SpinnerAltas.scss"
-
+import Spinner from "react-spinner-material";
 
 
 class EditarCountry extends Component {
@@ -31,7 +31,7 @@ class EditarCountry extends Component {
             imgStorgeRef: '',
             borrar: false,
             redirect: false,
-            loading: false,
+            loading: true,
             departamento: [],
             departamentoBarrio: { label: 'Seleccione un departamento' },
             localidades: [],
@@ -120,7 +120,7 @@ class EditarCountry extends Component {
 
         if (!!this.state.imagenCountry) {
             this.setState({ imgStorgeRef: Storage.ref(this.state.imagenCountry), upLoadValue: 100 });
-            Storage.ref(this.state.imagenCountry)
+            await Storage.ref(this.state.imagenCountry)
                 .getDownloadURL()
                 .then((url) => {
                     document.getElementById('imgBarrio').src = url;
@@ -131,14 +131,17 @@ class EditarCountry extends Component {
         } else {
             this.setState({ borrar: true });
         }
+
+        this.setState({loading: false});
     }
+
 
     ChangeNombre(event) {
         this.setState({ nombre: event.target.value });
         if (event.target.value === '') {
             this.errorNombre = validator.requerido(event.target.value);
         } else {
-            this.errorNombre = validator.soloLetras(event.target.value);
+            this.errorNombre = validator.soloLetrasNumeros(event.target.value);
         }
     }
 
@@ -147,8 +150,44 @@ class EditarCountry extends Component {
         if (event.target.value === '') {
             this.errorCalle = validator.requerido(event.target.value);
         } else {
-            this.errorCalle = validator.soloLetras(event.target.value);
+            this.errorCalle = validator.soloLetrasNumeros(event.target.value);
         }
+    }
+
+    ChangeNumero(event) {
+        this.setState({ numero: event.target.value });
+        if (event.target.value === '') {
+            this.errorNumero = validator.requerido(event.target.value);
+        } else {
+            this.errorNumero = validator.numero(event.target.value);
+        }
+        if (!event.target.value) return;
+        this.errorNumero = validator.longitud(event.target.value, 5);
+    }
+
+    ChangeCelular(event) {
+        this.setState({ celular: event.target.value });
+        if (event.target.value === '') {
+            this.errorCelular = validator.requerido(event.target.value);
+        } else {
+            this.errorCelular = validator.numero(event.target.value);
+        }
+        if (!event.target.value) return;
+        this.errorCelular = validator.longitud(event.target.value, 10);
+    }
+
+    ChangeTitular(event) {
+        this.setState({ titular: event.target.value });
+        if (event.target.value === '') {
+            this.errorTitular = validator.requerido(event.target.value);
+        } else {
+            this.errorTitular = validator.soloLetrasNumeros(event.target.value);
+        }
+    }
+
+    ChangeDescripcion(event) {
+        this.setState({ descripcion: event.target.value });
+        this.errorDescripcion = validator.soloLetrasNumeros(event.target.value);
     }
 
     ChangeDto(event) {
@@ -189,38 +228,6 @@ class EditarCountry extends Component {
 
     ChangeLoc(event) {
         this.setState({ localidadBarrio: event });
-    }
-
-    ChangeNumero(event) {
-        this.setState({ numero: event.target.value });
-        if (event.target.value === '') {
-            this.errorNumero = validator.requerido(event.target.value);
-        } else {
-            this.errorNumero = validator.numero(event.target.value);
-        }
-    }
-
-    ChangeCelular(event) {
-        this.setState({ celular: event.target.value });
-        if (event.target.value === '') {
-            this.errorCelular = validator.requerido(event.target.value);
-        } else {
-            this.errorCelular = validator.numero(event.target.value);
-        }
-    }
-
-    ChangeTitular(event) {
-        this.setState({ titular: event.target.value });
-        if (event.target.value === '') {
-            this.errorTitular = validator.requerido(event.target.value);
-        } else {
-            this.errorTitular = validator.soloLetras(event.target.value);
-        }
-    }
-
-    ChangeDescripcion(event) {
-        this.setState({ descripcion: event.target.value });
-        this.errorDescripcion = validator.soloLetras(event.target.value);
     }
 
     handleFiles(event) {
@@ -283,12 +290,8 @@ class EditarCountry extends Component {
     }
 
     async registrar() {
-        //  if (this.state.nombre == "" || this.state.calle == "" || this.state.numero =="" || this.state.titular == "" ||
-        //  this.state.celular == "" ) {
-        //     operacion.sinCompletar("Debe completar todos los campos requeridos")
-        //     return
-        // }
         this.setState({loading: true});
+        let e = false;
         await Database.collection('Country')
             .doc(this.idBarrio)
             .update({
@@ -301,17 +304,40 @@ class EditarCountry extends Component {
                 Imagen: this.state.imagenCountry,
             })
             .catch((error) => {
-                this.state.loading = false;
+                e = true;
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
-
-            this.notificationSystem.current.addNotification(
-                operacion.registroConExito("El country se registró con exito"));
+        this.setState({loading: false});
+        if (e) return;
+        this.notificationSystem.current.addNotification(
+            operacion.registroConExito("Los cambios se guardaron con exito"));
     }
+
+    FormInvalid() {
+
+        let invalid = (this.errorNombre.error || this.errorTitular.error ||
+            this.errorCalle.error || this.errorNumero.error ||
+            this.errorCelular.error || this.errorDescripcion.error);
+
+        if (!invalid) {
+            invalid = (!this.state.nombre || !this.state.titular ||
+                !this.state.calle || !this.state.numero ||
+                !this.state.celular || !this.state.departamentoBarrio
+                || !this.state.localidadBarrio);
+        }
+
+        if (!invalid) {
+            invalid = (!this.state.departamentoBarrio.value
+                || !this.state.localidadBarrio.value);
+        }
+
+        return invalid;
+    }
+
 
     render() {
         return (
-            <div className="col-12">
+            <div className={this.state.loading?"col-12 form":"col-12"}>
                 <legend>
                     <h3 className="row">Editar country</h3>
                 </legend>
@@ -324,6 +350,8 @@ class EditarCountry extends Component {
                                 <input
                                     className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                     placeholder="Nombre"
+                                    type="text"
+                                    maxLength={50}
                                     value={this.state.nombre}
                                     onChange={this.ChangeNombre}
                                 />
@@ -334,6 +362,8 @@ class EditarCountry extends Component {
                                 <input
                                     className={errorHTML.classNameError(this.errorTitular, 'form-control')}
                                     placeholder="Titular"
+                                    type="text"
+                                    maxLength={50}
                                     value={this.state.titular}
                                     onChange={this.ChangeTitular}
                                 />
@@ -376,6 +406,8 @@ class EditarCountry extends Component {
                                 <input
                                     className={errorHTML.classNameError(this.errorCalle, 'form-control')}
                                     placeholder="Calle"
+                                    type="text"
+                                    maxLength={50}
                                     value={this.state.calle}
                                     onChange={this.ChangeCalle}
                                 />
@@ -386,6 +418,7 @@ class EditarCountry extends Component {
                                 <input
                                     className={errorHTML.classNameError(this.errorNumero, 'form-control')}
                                     placeholder="Número"
+                                    type="number"
                                     value={this.state.numero}
                                     onChange={this.ChangeNumero}
                                 />
@@ -398,6 +431,7 @@ class EditarCountry extends Component {
                                 <input
                                     className={errorHTML.classNameError(this.errorCelular, 'form-control')}
                                     placeholder="Celular"
+                                    type="number"
                                     value={this.state.celular}
                                     onChange={this.ChangeCelular}
                                 />
@@ -410,6 +444,8 @@ class EditarCountry extends Component {
                                 <textarea
                                     className={errorHTML.classNameError(this.errorDescripcion, 'form-control')}
                                     rows="3"
+                                    type="text"
+                                    maxLength={200}
                                     placeholder="Descripción"
                                     value={this.state.descripcion}
                                     onChange={this.ChangeDescripcion}
@@ -421,7 +457,7 @@ class EditarCountry extends Component {
                             <div style={{display:"inline-block"}}>
                             <div style={{display:"flex", justifyContent:'space-between'}} >
                                     <label> Mapa del country </label>
-                                    <div hidden={this.state.upLoadValue != 100}>
+                                    <div hidden={this.state.upLoadValue !== 100}>
                                        <img style={{width:'20px'}} src={Delete}  onClick={this.eliminarImg}/>
                                 </div>
                                 </div>
@@ -450,6 +486,10 @@ class EditarCountry extends Component {
                 </div>
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
+                </div>
+                <div className="spinnerAlta" hidden={!this.state.loading}>
+                    <Spinner radius={80} color={'black'}
+                             stroke={5}/>
                 </div>
             </div>
         );

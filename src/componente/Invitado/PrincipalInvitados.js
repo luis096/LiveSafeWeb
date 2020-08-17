@@ -527,7 +527,7 @@ class PrincipalInvitados extends Component {
 
                                         <tbody>
                                             {this.state.invitados.map((inv, ind) => {
-                                                let nombre = !!inv[0].Apellido ? inv[0].Nombre + ", " + inv[0].Apellido : "Sin Autenticar";
+                                                let nombre = !!inv[0].Apellido ? inv[0].Nombre + inv[0].Apellido : "Sin Autenticar";
                                                 return (
                                                     <tr className="table-light">
                                                         <th style={{ textAlign: 'center' }}>

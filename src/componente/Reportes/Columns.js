@@ -13,7 +13,6 @@ const PROPIETARIOS = [
     {label:'Apellido' , value:'Apellido'},
     {label:'Documento' , value:'Documento'},
     {label:'Tipo Documento' , value:'TipoDocumento'},
-    {label:'Titular' , value:'Titular'},
     {label:'Fecha Alta' , value:'FechaAlta'},
 ];
 
@@ -27,7 +26,9 @@ const ENCARGADOS = [
 
 const SERVICIOS = [
     {label:'Nombre' , value:'Nombre'},
-    {label:'Disponibilidad' , value:'Disponibilidad'},
+    {label:'Duración de turnos' , value:'DuracionTurno'},
+    // {label:'Duración de turnos' , value:'Disponibilidad'},
+    {label:'Turnos máximos' , value:'TurnosMax'},
     {label:'Estado' , value:'Estado'},
 ];
 

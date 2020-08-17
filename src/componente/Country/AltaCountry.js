@@ -245,7 +245,6 @@ class AltaCountry extends Component {
             })
             .catch((e) => {
                 error = true;
-                this.state.loading = false;
                 this.notificationSystem.current.addNotification(operacion.error(e.message));
             });
 

@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import Select from 'react-select';
-//import '../Style/Alta.css';
 import {style} from "../../variables/Variables";
-
 import '../Propietario/Index.css';
 import {Database} from '../../config/config';
 import {errorHTML} from '../Error';
@@ -32,7 +30,8 @@ class AltaPropietario extends Component {
             idCountry: '',
             mail: '',
             tipoD: [],
-            resultado: ''
+            resultado: '',
+            loading: false
         };
         this.notificationSystem = React.createRef();
         this.addPropietario = this.addPropietario.bind(this);
@@ -185,7 +184,7 @@ class AltaPropietario extends Component {
             idPropietarioCreado: '',
             nombre: '',
             apellido: '',
-            tipoDocumento: {label: "Seleccionar"},
+            tipoDocumento: '',
             documento: '',
             telefonoFijo: '',
             celular: '',
@@ -328,16 +327,6 @@ class AltaPropietario extends Component {
                                        value={this.state.mail}/>
                                 {errorHTML.errorLabel(this.errorMail)}
                             </div>
-                            {/*<fieldset className="col-md-6 row-secction">*/}
-                            {/*    <label> Titular</label>*/}
-                            {/*    <div className="form-check">*/}
-                            {/*        <Switch onText="Si" offText="No"*/}
-                            {/*            value={this.state.titular}*/}
-                            {/*            onChange={() => {*/}
-                            {/*                this.ChangeRadio();*/}
-                            {/*            }} />*/}
-                            {/*    </div>*/}
-                            {/*</fieldset>*/}
                         </div>
                     </div>
                 </div>

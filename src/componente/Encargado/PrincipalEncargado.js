@@ -119,7 +119,7 @@ class PrincipalEncargado extends Component {
         if (this.cantidad.length && (this.cantidad.length <= pagina || pagina < 0)) {
             return;
         }
-
+        this.setState({loading: true});
         let con = this.obtenerConsulta(true);
         let total = this.obtenerConsulta(false);
 
@@ -205,7 +205,6 @@ class PrincipalEncargado extends Component {
     }
 
     obtenerConsulta(conLimite) {
-        this.setState({loading: true})
         let con = Database.collection('Country').doc(localStorage.getItem('idCountry')).collection('Encargados');
         if (conLimite) {
             con = con.limit(paginador.getTamPagina());
