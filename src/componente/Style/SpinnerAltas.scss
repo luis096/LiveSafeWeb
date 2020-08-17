@@ -19,10 +19,11 @@ input[type="file"] {
   font-weight: 600;
   color: #fff;
   background-color: #106BA0;
+  border-radius: 3px;
   display: flex;
   transition: all .5s;
   cursor: pointer;
-  padding: 10px 30px !important;
+  padding: 10px 30px 2px 23px !important;
   width: fit-content;
   text-align: center;
 }

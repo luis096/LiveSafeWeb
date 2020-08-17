@@ -322,7 +322,7 @@ class PrincipalInvitados extends Component {
                     confirmBtnBsStyle="info"
                     cancelBtnBsStyle="danger"
                     confirmBtnText="Sí, estoy seguro"
-                    cancelBtnText="No, deseo volver atrás"
+                    cancelBtnText="No"
                     showCancel>
                     ¿Está seguro de que desea eliminar el invitado?
                 </SweetAlert>
@@ -342,6 +342,7 @@ class PrincipalInvitados extends Component {
         this.setState({
             alert: (
                 <SweetAlert
+                    className="alert"
                     success
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
                     title="Invitado eliminado"

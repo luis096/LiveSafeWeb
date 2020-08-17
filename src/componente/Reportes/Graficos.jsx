@@ -182,22 +182,24 @@ class Graficos extends Component {
     render() {
         return (
             <div className="col-12">
+                 <legend>
+                 <h3 style={{margin:'30px 40px 15px'}}>Cantidad de {this.state.nombreReporte.toLowerCase()} por mes</h3>
+                </legend>
+                
                 <div className="row card">
-                    <div className='row'>
-                        <div className="row-secction col-md-6">
-                            <h3>Cantidad de {this.state.nombreReporte.toLowerCase()} por mes</h3>
+                    <div className='row body'>
+                        
+                    </div>
+                    <div style={{ width:'93%'}} className='row header'>
+                        <div style={{marginLeft:'3px', padding:'0', width:'44%'}} className="row-secction col-md-6">
+                            <h6>Desde</h6>
+                        </div>
+                        <div style={{padding:'0', width:'45%'}} className="row-secction col-md-6">
+                            <h6>Hasta</h6>
                         </div>
                     </div>
-                    <div className='row'>
-                        <div className="row-secction col-md-5">
-                            <h6>Desde:</h6>
-                        </div>
-                        <div className="row-secction col-md-5">
-                            <h6>Hasta:</h6>
-                        </div>
-                    </div>
-                    <div className='row'>
-                        <div className="row-secction col-md-3">
+                    <div style={{marginTop:'5px', display:'flex', flexDirection:'row', width:'100%'}} className='row'>
+                        <div style={{width:'23%', marginRight:'6px'}} className="row-secction ">
                             <label>Mes</label>
                             <Select
                                 placeholder="Seleccionar"
@@ -208,7 +210,7 @@ class Graficos extends Component {
                                 onChange={this.ChangeSelectMesDesde.bind(this)}
                             />
                         </div>
-                        <div className="row-secction col-md-2">
+                        <div style={{width:'18%', margin:'0 6px'}} className="row-secction ">
                             <label>Año</label>
                             <Select
                                 placeholder="Seleccionar"
@@ -219,7 +221,7 @@ class Graficos extends Component {
                                 onChange={this.ChangeSelectAnioDesde.bind(this)}
                             />
                         </div>
-                        <div className="row-secction col-md-3">
+                        <div style={{width:'23%', margin:'0 6px'}} className="row-secction ">
                             <label>Mes</label>
                             <Select
                                 placeholder="Seleccionar"
@@ -230,7 +232,7 @@ class Graficos extends Component {
                                 onChange={this.ChangeSelectMesHasta.bind(this)}
                             />
                         </div>
-                        <div className="row-secction col-md-2">
+                        <div style={{width:'18%', margin:'0 6px'}} className="row-secction ">
                             <label>Año</label>
                             <Select
                                 placeholder="Seleccionar"
@@ -241,7 +243,7 @@ class Graficos extends Component {
                                 onChange={this.ChangeSelectAnioHasta.bind(this)}
                             />
                         </div>
-                        <div className="row-secction col-md-1">
+                        <div style={{marginTop:'5px', width:'18%', marginLeft:'6px'}} className="row-secction ">
                             <br />
                             <Button bsStyle="primary" fill
                                     disabled={!this.isValidRangeDate()}

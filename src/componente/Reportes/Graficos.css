@@ -16,3 +16,8 @@
 .conteiner-porcentajes {
     margin-top: 20px;
 }
+
+.header {
+    box-shadow: 0 4px 6px -6px #222;
+    padding: 0 0 5px 0!important;
+}

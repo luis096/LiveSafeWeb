@@ -453,8 +453,8 @@ class AltaIngreso extends Component {
                 <div className="row card">
                     <div className="card-body">
                         <h5 className="row">Buscar persona</h5>
-                        <div className="row">
-                            <div className="col-md-4 row-secction">
+                        <div className="row col-md-12">
+                            <div className="col-md-3 row-secction">
                                 <label>Tipo de Documento</label>
                                 <Select
                                     value={this.state.tipoDocumento}
@@ -479,7 +479,7 @@ class AltaIngreso extends Component {
                                     {this.errorTipoDocumento.mensaje}
                                 </label>
                             </div>
-                            <div className="col-md-4 row-secction">
+                            <div className="col-md-3 row-secction">
                                 <label>Número de Documento</label>
                                 <input
                                     className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
@@ -491,7 +491,7 @@ class AltaIngreso extends Component {
                                 />
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
-                            <div className="col-md-1 row-secction" style={{ marginTop: '25px', marginRight: '35px' }}>
+                            <div className="col-md-2 row-secction" style={{ marginTop: '25px', marginRight: '20px' }}>
                                 <Button bsStyle="default" style={{ marginRight: '10px' }} fill wd onClick={this.reestablecer}>
                                     Restablecer
                                 </Button>

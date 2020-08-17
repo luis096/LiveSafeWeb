@@ -295,7 +295,7 @@ class PrincialEgreso extends Component {
                     confirmBtnBsStyle="info"
                     cancelBtnBsStyle="danger"
                     confirmBtnText="Sí, estoy seguro"
-                    cancelBtnText="No, deseo volver atrás"
+                    cancelBtnText="No"
                     showCancel>
                     ¿Está seguro de que desea cancelar el egreso?
                 </SweetAlert>

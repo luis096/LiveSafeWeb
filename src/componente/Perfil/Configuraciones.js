@@ -14,7 +14,7 @@ class Configuraciones extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pass: '',
+            pass: ' ',
             redirect: false
         };
         this.notificationSystem = React.createRef();
@@ -96,8 +96,9 @@ class Configuraciones extends Component {
                                 <div className="col-md-6">
                                     <input className='form-control'
                                         value={this.state.pass}
-                                        type="password"
+                                        defaultValue=" "
                                         defaultChecked=""
+                                        type="password"
                                         onChange={this.ChangePass} placeholder="Nueva contraseña" />
                                 </div>
                                 <div className="col-md-6">

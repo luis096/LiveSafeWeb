@@ -229,8 +229,8 @@ class AltaInvitado extends Component {
                 </legend>
                 <div className="row card">
                     <div className="card-body">
-                        <div className="row" hidden={this.esPropietario}>
-                            <div className="col-md-3 row-secction">
+                        <div style={{display:'flex', flexDirection:'row', width:'100%'}} className="row" hidden={this.esPropietario}>
+                            <div style={{width:'20%', marginRight:'6px'}} className=" row-secction">
                                 <label>Tipo de Documento</label>
                                 <Select
                                     className="select-documento"
@@ -257,7 +257,7 @@ class AltaInvitado extends Component {
                                     {this.errorTipoDocumento.mensaje}
                                 </label>
                             </div>
-                            <div className="col-md-2 row-secction">
+                            <div style={{width:'20%', margin:'0 6px'}} className=" row-secction">
                                 <label>Número de Documento</label>
                                 <input
                                     className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
@@ -267,7 +267,7 @@ class AltaInvitado extends Component {
                                 />
                                 {errorHTML.errorLabel(this.errorDocumento)}
                             </div>
-                            <div className="col-md-3 row-secction" hidden={!this.state.mensaje}>
+                            <div style={{width:'20%', margin:'0 6px'}} className=" row-secction" hidden={!this.state.mensaje}>
                                 <label>Propietario encontrado</label>
                                 <input
                                     className="form-control"
@@ -276,7 +276,7 @@ class AltaInvitado extends Component {
                                     disabled={true}
                                 />
                             </div>
-                            <div className="col-md-2 row-secction" hidden={!this.state.mensaje}>
+                            <div style={{width:'18%', margin:'0 6px'}} className=" row-secction" hidden={!this.state.mensaje}>
                                 <label>Contacto</label>
                                 <input
                                     className="form-control"
@@ -285,7 +285,7 @@ class AltaInvitado extends Component {
                                     disabled={true}
                                 />
                             </div>
-                            <div className="col-md-2 row-secction btn-propietarioEncontrado">
+                            <div style={{width:'22%', marginLeft:'6px'}} className=" row-secction btn-propietarioEncontrado">
                                 <Button bsStyle="info" fill wd onClick={this.buscarPropietario}>
                                     Buscar Propietario
                                 </Button>
@@ -297,7 +297,7 @@ class AltaInvitado extends Component {
                         </div>
 
                         <div className="row">
-                            <div className="col-md-3 row-secction">
+                            <div style={{paddingLeft:'0'}} className="col-md-3 row-secction">
                                 <label> Tipo de Documento </label>
                                 <Select
                                     classNamePrefix="select"

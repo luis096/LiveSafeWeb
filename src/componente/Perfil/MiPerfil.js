@@ -9,6 +9,7 @@ import {operacion} from "../Operaciones";
 import Configuraciones from "./Configuraciones";
 import Spinner from "react-spinner-material";
 import "../Style/SpinnerAltas.scss";
+import moment from 'moment';
 
 class MiPerfil extends Component {
 
@@ -151,7 +152,7 @@ class MiPerfil extends Component {
                                 <label> Fecha de Nacimiento </label>
                                 <input className="form-control" readOnly
                                        placeholder="Fecha de Nacimiento"
-                                       value={this.state.fechaNacimiento}/>
+                                       value={moment(this.state.fechaNacimiento).format('DD/MM/YYYY')}/>
                             </div>
                         </div>
                         <div className="row">
