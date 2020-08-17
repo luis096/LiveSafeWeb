@@ -106,7 +106,6 @@ class AltaEgreso extends Component {
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
             .collection('Ingresos').orderBy('Fecha', 'desc')
-            .where('Estado', '==', true)
             .where('Documento', '==', this.state.documento)
             .where('TipoDocumento', '==', refTipoDocumento)
             .limit(1)

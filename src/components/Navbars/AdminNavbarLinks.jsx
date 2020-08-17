@@ -62,19 +62,21 @@ class HeaderLinks extends Component {
             .collection('Notificaciones').orderBy('Fecha', 'desc').limit(10)
             .where('IdPropietario', '==', miReferencia)
             .onSnapshot(query => {
-                if (this.state.noEscuchar) return;
-                let noti = [];
-                let cantidadNuevas = 0;
-                query.forEach(doc => {
-                    let obj = doc.data();
-                    obj.IdReserva = !!doc.data().Referencia ? doc.data().Referencia : '';
-                    noti.push(obj);
-                    if (!doc.data().Visto) {
-                        this.addNotificationNew(doc.data().Tipo, doc.data().Texto);
-                        cantidadNuevas++;
-                    }
-                });
-                this.setState({notificaciones: noti, nuevas: cantidadNuevas});
+                if (!this.state.noEscuchar) {
+                    let noti = [];
+                    let cantidadNuevas = 0;
+                    query.forEach(doc => {
+                        let obj = doc.data();
+                        obj.IdReserva = !!doc.data().Referencia ? doc.data().Referencia : '';
+                        noti.push(obj);
+                        if (!doc.data().Visto) {
+                            this.addNotificationNew(doc.data().Tipo, doc.data().Texto);
+                            cantidadNuevas++;
+                        }
+                    });
+                    this.setState({notificaciones: noti, nuevas: cantidadNuevas});
+                }
+
             });
     }
 
@@ -107,7 +109,7 @@ class HeaderLinks extends Component {
             ),
             level: "info",
             position: "br",
-            autoDismiss: 15
+            autoDismiss: 3
         });
     };
 
@@ -191,7 +193,6 @@ class HeaderLinks extends Component {
     }
 
     async verNotificaciones() {
-        if (!this.state.nuevas) return;
         await this.setState({nuevas: 0, noEscuchar: true});
         const miReferencia = operacion.obtenerMiReferencia(3);
         let ids = [];
@@ -208,7 +209,10 @@ class HeaderLinks extends Component {
                 Visto: true
             });
         });
-        this.setState({noEscuchar: false})
+
+        setTimeout(() => {
+            this.setState({noEscuchar: false})
+        }, 1000);
     }
 
     verReserva(id) {

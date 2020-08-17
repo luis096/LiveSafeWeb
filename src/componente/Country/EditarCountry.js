@@ -226,7 +226,8 @@ class EditarCountry extends Component {
     handleFiles(event) {
         const file = event.target.files[0];
 
-        if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/x-icon') {
+        if (file.type !== 'image/jpeg' && file.type !== 'image/png'
+            && file.type !== 'image/x-icon'  && file.type !== 'image/jpg') {
             this.notificationSystem.current.addNotification(operacion.error("Error en tipo de archivo"));
             return;
         }

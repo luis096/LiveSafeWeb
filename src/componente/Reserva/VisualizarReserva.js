@@ -12,6 +12,8 @@ import NotificationSystem from 'react-notification-system';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import classnames from 'classnames';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import InvitadoEvento from "../InvitadoEvento/InvitadoEvento";
+import {errorHTML} from "../Error";
 
 class VisualizarReserva extends Component {
     constructor(props) {
@@ -53,8 +55,6 @@ class VisualizarReserva extends Component {
     }
 
     async componentDidMount() {
-        var confirmados = [];
-        var pendientes = [];
         await this.conexion.get().then((doc) => {
             this.setState({
                 reserva: doc.data(),
@@ -63,10 +63,34 @@ class VisualizarReserva extends Component {
             });
         });
         this.setState({ estado: validator.estadoReserva(this.state.desde, this.state.hasta, this.state.reserva.Cancelado) });
-        await this.conexion
+        // await this.conexion
+        //     .collection('Invitados')
+        //     .get()
+        //     .then((querySnapshot) => {
+        //         querySnapshot.forEach((doc) => {
+        //             if (doc.exists) {
+        //                 if (doc.data().Estado) {
+        //                     confirmados.push([doc.data(), doc.id]);
+        //                 } else {
+        //                     pendientes.push([doc.data(), doc.id]);
+        //                 }
+        //             }
+        //         });
+        //     })
+        //     .catch((error) => {
+        //         this.notificationSystem.current.addNotification(operacion.error(error.message));
+        //     });
+
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Propietarios')
+            .doc(localStorage.getItem('idPersona'))
+            .collection('Reservas')
+            .doc(this.idReserva)
             .collection('Invitados')
-            .get()
-            .then((querySnapshot) => {
+            .onSnapshot((querySnapshot) => {
+                var confirmados = [];
+                var pendientes = [];
                 querySnapshot.forEach((doc) => {
                     if (doc.exists) {
                         if (doc.data().Estado) {
@@ -76,14 +100,17 @@ class VisualizarReserva extends Component {
                         }
                     }
                 });
+                this.setState({
+                    invitadosConfirmados: confirmados,
+                    invitadosPendientes: pendientes,
+                });
             })
-            .catch((error) => {
-                this.notificationSystem.current.addNotification(operacion.error(error.message));
-            });
-        this.setState({
-            invitadosConfirmados: confirmados,
-            invitadosPendientes: pendientes,
-        });
+
+        // await this.setState({
+        //     invitadosConfirmados: confirmados,
+        //     invitadosPendientes: pendientes,
+        // });
+
         await Database.collection('TipoDocumento')
             .get()
             .then((querySnapshot) => {
@@ -266,78 +293,88 @@ class VisualizarReserva extends Component {
                 <legend>
                     <h3 className="row"> Visualizar reserva</h3>
                 </legend>
-                <div className="row">
-                    <div className="col-md-4 row-secction">
-                        <h4>Nombre del servicio</h4>
-                        <label>{this.state.reserva.Servicio}</label>
-                    </div>
-                    <div className="col-md-4 row-secction">
-                        <h4>Nombre de la reserva</h4>
-                        <label>{this.state.reserva.Nombre}</label>
-                    </div>
-                    <div className="col-md-4 row-secction">
-                        <h4>Estado de la reserva</h4>
-                        <label>{this.state.estado ? this.state.estado.Nombre : '-'}</label>
+                <div className="row card">
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-4 row-secction">
+                                <h4>Nombre del servicio</h4>
+                                <label>{this.state.reserva.Servicio}</label>
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <h4>Nombre de la reserva</h4>
+                                <label>{this.state.reserva.Nombre}</label>
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <h4>Estado de la reserva</h4>
+                                <label>{this.state.estado ? this.state.estado.Nombre : '-'}</label>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-4 row-secction">
+                                <h4>Fecha de la reserva:</h4>
+                                <label>{this.state.desde ? this.state.desde.toLocaleDateString() : '-'}</label>
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <h4>Hora de inicio:</h4>
+                                <label>{this.state.desde ? this.state.desde.toLocaleTimeString() : '-'}</label>
+                            </div>
+                            <div className="col-md-4 row-secction">
+                                <h4>Hora de finalizacion:</h4>
+                                <label>{this.state.hasta ? this.state.hasta.toLocaleTimeString() : '-'}</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-md-4 row-secction">
-                        <h4>Fecha de la reserva:</h4>
-                        <label>{this.state.desde ? this.state.desde.toLocaleDateString() : '-'}</label>
-                    </div>
-                    <div className="col-md-4 row-secction">
-                        <h4>Hora de inicio:</h4>
-                        <label>{this.state.desde ? this.state.desde.toLocaleTimeString() : '-'}</label>
-                    </div>
-                    <div className="col-md-4 row-secction">
-                        <h4>Hora de finalizacion:</h4>
-                        <label>{this.state.hasta ? this.state.hasta.toLocaleTimeString() : '-'}</label>
-                    </div>
-                </div>
+
                 <legend />
                 <h3 className="row">Invitados de la reserva</h3>
-                <div className="row col-md-12">
-                    <div className="row-secction col-md-7">
-                        <label>Link de invitación</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            readOnly
-                            value={
-                                'https://livesafeweb.web.app/#/invitado/' +
-                                localStorage.getItem('idCountry') +
-                                '/' +
-                                localStorage.getItem('idPersona') +
-                                '/' +
-                                this.idReserva
-                            }
-                        />
-                    </div>
-                    <div style={{marginTop:'5px'}} className="row-secction col-md-1">
-                        <br />
-                        <CopyToClipboard
-                            text={
-                                'https://livesafeweb.web.app/#/invitado/' +
-                                localStorage.getItem('idCountry') +
-                                '/' +
-                                localStorage.getItem('idPersona') +
-                                '/' +
-                                this.idReserva
-                            }
-                            onCopy={() =>
-                                this.notificationSystem.current.addNotification(operacion.registroConExito('Copiado en portapapeles'))
-                            }>
-                            <Button bsStyle="success" fill>
-                                Copiar
-                            </Button>
-                        </CopyToClipboard>
-                    </div>
-                    <div style={{marginTop:'25px'}} className=" row-secction col-md-3">
-                        <Button bsStyle="primary" fill wd onClick={this.modalAgregarInvitado} disabled={this.permiteAgregar()}>
-                            Agregar invitado
-                        </Button>
+                <div className="row card">
+                    <div className="card-body">
+                        <div className="row col-md-12">
+                            <div className="row-secction col-md-7">
+                                <label>Link de invitación</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    readOnly
+                                    value={
+                                        'https://livesafeweb.web.app/#/invitado/' +
+                                        localStorage.getItem('idCountry') +
+                                        '/' +
+                                        localStorage.getItem('idPersona') +
+                                        '/' +
+                                        this.idReserva
+                                    }
+                                />
+                            </div>
+                            <div style={{marginTop:'5px'}} className="row-secction col-md-1">
+                                <br />
+                                <CopyToClipboard
+                                    text={
+                                        'https://livesafeweb.web.app/#/invitado/' +
+                                        localStorage.getItem('idCountry') +
+                                        '/' +
+                                        localStorage.getItem('idPersona') +
+                                        '/' +
+                                        this.idReserva
+                                    }
+                                    onCopy={() =>
+                                        this.notificationSystem.current.addNotification(operacion.registroConExito('Copiado en portapapeles'))
+                                    }>
+                                    <Button bsStyle="success" fill>
+                                        Copiar
+                                    </Button>
+                                </CopyToClipboard>
+                            </div>
+                            <div style={{margin:'25px 0 0 10px'}} className=" row-secction col-md-3">
+                                <Button bsStyle="primary" fill wd onClick={this.modalAgregarInvitado} disabled={this.permiteAgregar()}>
+                                    Agregar invitado
+                                </Button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
                 <div className="row">
                     <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
                         <Modal.Header closeButton>

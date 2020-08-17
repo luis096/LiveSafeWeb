@@ -390,6 +390,7 @@ class AltaInvitado extends Component {
                                     isLoading={false}
                                     isClearable={true}
                                     isSearchable={true}
+                                    value={this.state.tipoDocumentoInvitado}
                                     options={this.state.tipoD}
                                     onChange={this.ChangeSelectInvitado.bind(this)}
                                     styles={

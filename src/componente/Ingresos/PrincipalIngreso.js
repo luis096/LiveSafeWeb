@@ -234,7 +234,6 @@ class PrincialIngreso extends Component {
         if (conLimite) {
             con = con.limit(paginador.getTamPagina());
         }
-        con = con.where('Estado', '==', true);
         if (this.state.desde) {
             con = con.where('Fecha', '>=', this.state.desde);
         }
@@ -281,7 +280,7 @@ class PrincialIngreso extends Component {
 
     async cancelConfirmado(idIngreso) {
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Ingresos').doc(idIngreso).update({ Estado: false }).then(
+            .collection('Ingresos').doc(idIngreso).delete().then(
                 this.setState({
                     alert: (
                         <SweetAlert

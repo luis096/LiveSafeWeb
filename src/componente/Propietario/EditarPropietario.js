@@ -256,18 +256,18 @@ class EditarPropietario extends Component {
                                 {errorHTML.errorLabel(this.errorCelular)}
                             </div>
                         </div>
-                        <div className="row">
-                            <fieldset className="col-md-6 row-secction">
-                                <label> Titular</label>
-                                <div className="form-check">
-                                    <Switch disabled={true} onText="Si" offText="No"
-                                        value={this.state.titular}
-                                        onChange={() => {
-                                            this.ChangeRadio();
-                                        }} />
-                                </div>
-                            </fieldset>
-                        </div>
+                        {/*<div className="row">*/}
+                        {/*    <fieldset className="col-md-6 row-secction">*/}
+                        {/*        <label> Titular</label>*/}
+                        {/*        <div className="form-check">*/}
+                        {/*            <Switch disabled={true} onText="Si" offText="No"*/}
+                        {/*                value={this.state.titular}*/}
+                        {/*                onChange={() => {*/}
+                        {/*                    this.ChangeRadio();*/}
+                        {/*                }} />*/}
+                        {/*        </div>*/}
+                        {/*    </fieldset>*/}
+                        {/*</div>*/}
                     </div>
                 </div>
                 <div className="text-center">
