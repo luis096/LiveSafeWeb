@@ -371,6 +371,7 @@ class VisualizarReserva extends Component {
                                     <label> Tipo de Documento </label>
                                     <Select
                                         className="select-documento"
+                                        placeholder="Seleccionar"
                                         classNamePrefix="select"
                                         isDisabled={false}
                                         isLoading={false}

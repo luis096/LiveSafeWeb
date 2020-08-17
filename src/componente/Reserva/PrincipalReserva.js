@@ -225,15 +225,13 @@ class PrincipalReserva extends Component {
     }
 
     cancelar(res) {
-        res[0].Cancelado = true;
         this.setState({
-            reservaCancelar: res,
             alert: (
                 <SweetAlert
                     warning
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
                     title="¿Estás seguro?"
-                    onConfirm={() => this.successDelete()}
+                    onConfirm={() => this.successDelete(res)}
                     onCancel={() => this.cancelDetele()}
                     confirmBtnBsStyle="info"
                     cancelBtnBsStyle="danger"
@@ -246,7 +244,9 @@ class PrincipalReserva extends Component {
         });
     }
 
-    async successDelete() {
+    async successDelete(res) {
+        res[0].Cancelado = true;
+        await this.setState({reservaCancelar: res});
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
             .collection('Servicios')
@@ -329,6 +329,7 @@ class PrincipalReserva extends Component {
                                 <label>Servicio</label>
                                 <Select
                                     classNamePrefix="select"
+                                    placeholder="Seleccionar"
                                     isDisabled={false}
                                     isLoading={false}
                                     isClearable={true}
@@ -447,12 +448,12 @@ class PrincipalReserva extends Component {
                                                         <th style={{ textAlign: 'center' }} scope="row">
                                                             {ind + 1 + paginador.getTamPagina() * this.state.numPagina}
                                                         </th>
-                                                        <th style={{ textAlign: 'center' }} scope="row">
+                                                        <td style={{ textAlign: 'center' }} scope="row">
                                                             {res[0].Nombre}
-                                                        </th>
-                                                        <th style={{ textAlign: 'center' }} scope="row">
+                                                        </td>
+                                                        <td style={{ textAlign: 'center' }} scope="row">
                                                             {res[0].Servicio}
-                                                        </th>
+                                                        </td>
                                                         <td style={{ textAlign: 'center' }}>{estado.Nombre}</td>
                                                         <td style={{ textAlign: 'center' }}>{desde.toLocaleDateString()}</td>
                                                         <td style={{ textAlign: 'center' }}>{desde.toLocaleTimeString()}</td>

@@ -202,6 +202,7 @@ class Graficos extends Component {
                         <div style={{width:'23%', marginRight:'6px'}} className="row-secction ">
                             <label>Mes</label>
                             <Select
+                                placeholder="Seleccionar"
                                 isClearable={true}
                                 isSearchable={true}
                                 value={this.state.mesDesde}
@@ -212,6 +213,7 @@ class Graficos extends Component {
                         <div style={{width:'18%', margin:'0 6px'}} className="row-secction ">
                             <label>Año</label>
                             <Select
+                                placeholder="Seleccionar"
                                 isClearable={true}
                                 isSearchable={true}
                                 value={this.state.anioDesde}
@@ -222,6 +224,7 @@ class Graficos extends Component {
                         <div style={{width:'23%', margin:'0 6px'}} className="row-secction ">
                             <label>Mes</label>
                             <Select
+                                placeholder="Seleccionar"
                                 isClearable={true}
                                 isSearchable={true}
                                 value={this.state.mesHasta}
@@ -232,6 +235,7 @@ class Graficos extends Component {
                         <div style={{width:'18%', margin:'0 6px'}} className="row-secction ">
                             <label>Año</label>
                             <Select
+                                placeholder="Seleccionar"
                                 isClearable={true}
                                 isSearchable={true}
                                 value={this.state.anioHasta}

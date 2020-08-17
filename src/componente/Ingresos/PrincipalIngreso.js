@@ -134,6 +134,7 @@ class PrincialIngreso extends Component {
             return;
         }
 
+        this.setState({loading: true});
         let con = this.obtenerConsulta(true);
         let total = this.obtenerConsulta(false);
 
@@ -293,6 +294,7 @@ class PrincialIngreso extends Component {
                         </SweetAlert>
                     ),
                 }));
+        this.consultar(0, true)
     }
 
     cancelDetele() {
@@ -344,6 +346,7 @@ class PrincialIngreso extends Component {
                             <div className="col-md-3 row-secction">
                                 <label>Tipo de Documento</label>
                                 <Select
+                                    placeholder="Seleccionar"
                                     isClearable={true}
                                     isSearchable={true}
                                     value={this.state.tipoDocumento}
@@ -356,6 +359,7 @@ class PrincialIngreso extends Component {
                                 <input
                                     className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
                                     value={this.state.documento}
+                                    type="number"
                                     onChange={this.ChangeDocumento}
                                     placeholder="Número de Documento"
                                 />

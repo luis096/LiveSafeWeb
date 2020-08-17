@@ -229,6 +229,7 @@ class EditarAdministrador extends Component {
                                 <label> Tipo de Documento (*)</label>
                                 <Select
                                     isSearchable={true}
+                                    placeholder="Seleccionar"
                                     options={this.state.tipoD}
                                     value={this.state.tipoDocumento}
                                     onChange={this.ChangeSelect.bind(this)}

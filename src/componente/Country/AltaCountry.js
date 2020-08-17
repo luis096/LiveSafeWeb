@@ -334,6 +334,7 @@ class AltaCountry extends Component {
                             <div className="row-secction col-md-3">
                                 <label> Departamento (*)</label>
                                 <Select
+                                    placeholder="Seleccionar"
                                     className="select-documento"
                                     classNamePrefix="select"
                                     isDisabled={false}
@@ -350,6 +351,7 @@ class AltaCountry extends Component {
                                 <label> Localidad (*)</label>
                                 <Select
                                     className="select-documento"
+                                    placeholder="Seleccionar"
                                     classNamePrefix="select"
                                     isDisabled={false}
                                     isLoading={false}

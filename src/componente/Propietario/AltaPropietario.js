@@ -23,7 +23,7 @@ class AltaPropietario extends Component {
             idPropietarioCreado: '',
             nombre: '',
             apellido: '',
-            tipoDocumento: {label: "Seleccionar"},
+            tipoDocumento: null,
             documento: '',
             titular: true,
             telefonoFijo: '',
@@ -285,6 +285,7 @@ class AltaPropietario extends Component {
                             <div className="col-md-4 row-secction">
                                 <label> Tipo de Documento (*)</label>
                                 <Select
+                                    placeholder="Seleccionar"
                                     isSearchable={true}
                                     options={this.state.tipoD}
                                     value={this.state.tipoDocumento}

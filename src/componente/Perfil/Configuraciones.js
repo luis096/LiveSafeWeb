@@ -104,12 +104,12 @@ class Configuraciones extends Component {
                                 <div className="col-md-6">
                                     <input className='form-control'
                                         type="password"
-                                        placeholder="Repetir Nueva contraseña" />
+                                        placeholder="Confirmar nueva contraseña" />
                                 </div>
                                 <div style={{ marginTop: '10px' }} className="col-md-6">
                                     <input className='form-control'
                                         type="password"
-                                        placeholder="Contraseña Actual" />
+                                        placeholder="Contraseña actual" />
                                 </div>
                                 <div style={{ marginTop: '10px' }} className="col-md-6">
                                     {this.renderRedirect()}

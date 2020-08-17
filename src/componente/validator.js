@@ -28,6 +28,7 @@ export const validator = {
     fecha,
     soloLetras,
     soloLetrasNumeros,
+    nombreArchivo,
     estadoReserva,
     obtenerFecha,
     validarMail,
@@ -57,6 +58,12 @@ function mail(valor) {
     return EMAIL_REGEXP.test(valor) ? false : true;
 }
 
+function nombreArchivo(valor) {
+    return {
+        error: !NOMBRE_ARCHIVOS.test(valor),
+        mensaje: 'Error en nombre de archivo.'
+    };
+}
 
 function fecha(valor) {
 

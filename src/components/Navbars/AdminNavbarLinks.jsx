@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Firebase from 'firebase';
-import { Redirect } from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 import NotificationSystem from "react-notification-system";
 import './index.scss';
 import {
@@ -16,7 +16,7 @@ import {
 import {Database, Storage} from "../../config/config";
 import {operacion} from "../../componente/Operaciones";
 import {validator} from "../../componente/validator";
-import { style } from "variables/Variables.jsx";
+import {style} from "variables/Variables.jsx";
 
 const pdfA = require("jspdf");
 
@@ -36,11 +36,12 @@ class HeaderLinks extends Component {
             idReserva: '',
             esPropietario: false,
             esRoot: false,
+            rol: ""
         };
         this.notificationSystem = React.createRef();
         this.logout = this.logout.bind(this);
         this.miBarrio = this.miBarrio.bind(this);
-        this.miPerfil= this.miPerfil.bind(this);
+        this.miPerfil = this.miPerfil.bind(this);
         this.configuracion = this.configuracion.bind(this);
         this.addNotificationNew = this.addNotificationNew.bind(this);
         this.notificacionesVacias = this.notificacionesVacias.bind(this);
@@ -64,11 +65,11 @@ class HeaderLinks extends Component {
                 if (this.state.noEscuchar) return;
                 let noti = [];
                 let cantidadNuevas = 0;
-                query.forEach(doc =>{
+                query.forEach(doc => {
                     let obj = doc.data();
-                    obj.IdReserva = !!doc.data().Referencia?doc.data().Referencia:'';
+                    obj.IdReserva = !!doc.data().Referencia ? doc.data().Referencia : '';
                     noti.push(obj);
-                    if(!doc.data().Visto) {
+                    if (!doc.data().Visto) {
                         this.addNotificationNew(doc.data().Tipo, doc.data().Texto);
                         cantidadNuevas++;
                     }
@@ -110,13 +111,22 @@ class HeaderLinks extends Component {
         });
     };
 
-    setRedirect = ()=> {
+    setRedirect = () => {
         Firebase.auth().signOut();
         localStorage.clear();
         this.setState({
             redirect: true
         });
     };
+
+    getRol() {
+        let rol = "";
+        if (localStorage.getItem('tipoUsuario') === 'Root') rol = "root";
+        if (localStorage.getItem('tipoUsuario') === 'Administrador') rol = "admin";
+        if (localStorage.getItem('tipoUsuario') === 'Encargado') rol = "encargado";
+        if (localStorage.getItem('tipoUsuario') === 'Propietario') rol = "propietario";
+        return rol;
+    }
 
     miPerfil() {
         this.setState({
@@ -127,7 +137,7 @@ class HeaderLinks extends Component {
     miPerfilRedirect() {
         if (this.state.redirectPerfil) {
             this.state.redirectPerfil = false;
-            return <Redirect to='miPerfil'/>;
+            return <Redirect to={"/" + this.getRol() + "/miPerfil"}/>;
         }
     }
 
@@ -140,7 +150,7 @@ class HeaderLinks extends Component {
     miBarrioRedirect() {
         if (this.state.redirectBarrio) {
             this.state.redirectBarrio = false;
-            return <Redirect to='miCountry'/>;
+            return <Redirect to={"/" + this.getRol() + "/miCountry"}/>;
         }
     }
 
@@ -153,11 +163,11 @@ class HeaderLinks extends Component {
     miConfiguracionRedirect() {
         if (this.state.redirectConf) {
             this.state.redirectConf = false;
-            return <Redirect to='configuraciones'/>;
+            return <Redirect to={"/" + this.getRol() + "/configuraciones"}/>;
         }
     }
 
-    renderRedirect = ()=> {
+    renderRedirect = () => {
         if (this.state.redirect) {
             return <Redirect to='/'/>;
         }
@@ -170,7 +180,7 @@ class HeaderLinks extends Component {
     };
 
 
-    notificacionesVacias(){
+    notificacionesVacias() {
         return (
             <MenuItem>
                 <div>
@@ -180,23 +190,23 @@ class HeaderLinks extends Component {
         );
     }
 
-    async verNotificaciones(){
-        if(!this.state.nuevas) return;
+    async verNotificaciones() {
+        if (!this.state.nuevas) return;
         await this.setState({nuevas: 0, noEscuchar: true});
         const miReferencia = operacion.obtenerMiReferencia(3);
         let ids = [];
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Notificaciones').where('Visto', '==', false)
-            .where('IdPropietario', '==', miReferencia).get().then(query =>{
+            .where('IdPropietario', '==', miReferencia).get().then(query => {
                 query.forEach(doc => {
                     ids.push(doc.id);
                 })
             });
-        await ids.forEach( (idNotificacion) => {
-             Database.collection('Country').doc(localStorage.getItem('idCountry'))
+        await ids.forEach((idNotificacion) => {
+            Database.collection('Country').doc(localStorage.getItem('idCountry'))
                 .collection('Notificaciones').doc(idNotificacion).update({
-                 Visto: true
-             });
+                Visto: true
+            });
         });
         this.setState({noEscuchar: false})
     }
@@ -209,18 +219,25 @@ class HeaderLinks extends Component {
         });
     }
 
-    confirmarReservaRedirect(){
+    confirmarReservaRedirect() {
         if (this.state.redirectReserva) {
             this.state.redirectReserva = false;
             return <Redirect to={'visualizarReserva/' + this.state.idReserva}/>;
         }
     }
 
+    isRoot() {
+        return (localStorage.getItem('tipoUsuario') === 'Root');
+    }
+
     miBarioNav() {
-        if (this.state.esRoot) {
-            return (<MenuItem eventKey={4.2} onClick={this.miBarrio}>
-                        <i className="pe-7s-home"/> Mi Country
-                    </MenuItem>)
+        if (!this.isRoot()) {
+            return (<><MenuItem eventKey={4.1} onClick={this.miPerfil}>
+                <i className="pe-7s-id"/> Mi Perfil
+            </MenuItem>
+                <MenuItem eventKey={4.2} onClick={this.miBarrio}>
+                    <i className="pe-7s-home"/> Mi Country
+                </MenuItem></>)
         }
     }
 
@@ -236,18 +253,20 @@ class HeaderLinks extends Component {
                             {this.state.nuevas}</span>
                             <p className="hidden-md hidden-lg">
                                 Notificaciones
-                                <b className="caret" />
+                                <b className="caret"/>
                             </p>
                         </div>
                     } noCaret id="basic-nav-dropdown-2">
                     {
-                        !this.state.notificaciones.length?
+                        !this.state.notificaciones.length ?
                             this.notificacionesVacias() :
-                            this.state.notificaciones.map((noti, key) =>{
+                            this.state.notificaciones.map((noti, key) => {
                                 let hora = validator.obtenerFecha(noti.Fecha);
                                 return (
-                                    <MenuItem className="notifications" eventKey={key} onClick={() => {this.verReserva(noti.IdReserva)}}>
-                                        <div >
+                                    <MenuItem className="notifications" eventKey={key} onClick={() => {
+                                        this.verReserva(noti.IdReserva)
+                                    }}>
+                                        <div>
                                             <h5>{noti.Tipo}</h5>
                                             <span>{noti.Texto}</span>
                                         </div>
@@ -264,10 +283,10 @@ class HeaderLinks extends Component {
         let path = "";
 
         await Database.collection("Manual").doc(localStorage.getItem('tipoUsuario')).get().then(doc => {
-           path = doc.data().Path;
+            path = doc.data().Path;
         });
         if (!path) return;
-        Storage.ref(path).getDownloadURL().then((url)=>{
+        Storage.ref(path).getDownloadURL().then((url) => {
             window.open(url, '_blank');
         });
     }
@@ -293,9 +312,6 @@ class HeaderLinks extends Component {
                         id="basic-nav-dropdown-3"
                         bsClass="dropdown-with-icons dropdown"
                     >
-                        <MenuItem eventKey={4.1} onClick={this.miPerfil}>
-                            <i className="pe-7s-id"/> Mi Perfil
-                        </MenuItem>
                         {this.miPerfilRedirect()}
                         {this.miBarioNav()}
                         {this.miBarrioRedirect()}

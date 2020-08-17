@@ -21,10 +21,28 @@ class GeneradorExcel extends Component {
             name: '',
         };
         this.ChangeName = this.ChangeName.bind(this);
+        this.errorNombre = {error: false, mensaje: ''};
     }
 
     ChangeName(event) {
         this.setState({name: event.target.value});
+        if (event.target.value === "") {
+            this.errorNombre = validator.requerido(event.target.value)
+        } else {
+            this.errorNombre = validator.nombreArchivo(event.target.value)
+        }
+
+    }
+
+    FormInvalid() {
+
+        let invalid = (this.errorNombre.error);
+
+        if (!invalid) {
+            invalid = (!this.state.name);
+        }
+
+        return invalid;
     }
 
     render() {
@@ -35,14 +53,17 @@ class GeneradorExcel extends Component {
                         <Modal.Title>Exportar Archivo</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <label>Nombre del Archivo: </label>
-                        <input className={'form-control'}
+                        <label>Nombre del Archivo (*)</label>
+                        <input className={errorHTML.classNameError(this.errorNombre, 'form-control')}
+                               type="text"
+                               maxLength={50}
                                value={this.state.name}
                                onChange={this.ChangeName} placeholder="Nombre del archivo"
                         />
+                        {errorHTML.errorLabel(this.errorNombre)}
                     </Modal.Body>
                     <Modal.Footer>
-                        <ExcelFile element={<Button bsStyle="success" fill wd
+                        <ExcelFile element={<Button bsStyle="success" fill wd disabled={this.FormInvalid()}
                         onClick={()=>{this.props.ocultar()}}>Descargar</Button>}
                                    filename={this.state.name}>
                             <ExcelSheet data={this.state.elementos} name={this.state.pagina}>

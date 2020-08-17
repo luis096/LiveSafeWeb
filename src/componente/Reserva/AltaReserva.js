@@ -343,6 +343,7 @@ class AltaReserva extends Component {
                                 <label> Servicios del Country </label>
                                 <Select
                                     className="col-6"
+                                    placeholder="Seleccionar"
                                     classNamePrefix="select"
                                     isDisabled={false}
                                     isLoading={false}

@@ -209,6 +209,7 @@ class PrincipalServicio extends Component {
                             <div className="col-md-3 row-secction">
                                 <label>Estado</label>
                                 <Select
+                                    placeholder="Seleccionar"
                                     isClearable={true}
                                     isSearchable={true}
                                     value={this.state.estado}

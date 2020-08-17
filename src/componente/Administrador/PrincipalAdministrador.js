@@ -329,6 +329,7 @@ class PrincipalAdministrador extends Component {
                                 <label>Country</label>
                                 <Select
                                     isClearable={true}
+                                    placeholder="Seleccionar"
                                     isSearchable={true}
                                     value={this.state.barrio}
                                     options={this.state.barriosSelect}
