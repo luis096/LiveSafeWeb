@@ -334,6 +334,7 @@ class EditarCountry extends Component {
                                 <label> Departamento </label>
                                 <Select
                                     className="select-documento"
+                                    placeholder="Seleccionar"
                                     classNamePrefix="select"
                                     isDisabled={false}
                                     isLoading={false}
@@ -348,6 +349,7 @@ class EditarCountry extends Component {
                                 <label> Localidad </label>
                                 <Select
                                     className="select-documento"
+                                    placeholder="Seleccionar"
                                     classNamePrefix="select"
                                     isDisabled={false}
                                     isLoading={false}

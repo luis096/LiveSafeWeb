@@ -206,6 +206,7 @@ class EditarServicio extends Component {
                                 <label>Cantidad máxima de turnos</label>
                                 <Select
                                     isClearable={true}
+                                    placeholder="Seleccionar"
                                     value={this.state.turnosMax}
                                     options={this.state.turnosMaxSelect}
                                     onChange={this.ChangeSelectTurnosMax.bind(this)}

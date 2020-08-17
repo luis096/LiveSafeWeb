@@ -234,6 +234,7 @@ class AltaInvitado extends Component {
                                 <label>Tipo de Documento</label>
                                 <Select
                                     className="select-documento"
+                                    placeholder="Seleccionar"
                                     classNamePrefix="select"
                                     isDisabled={false}
                                     isLoading={false}
@@ -300,6 +301,7 @@ class AltaInvitado extends Component {
                                 <label> Tipo de Documento </label>
                                 <Select
                                     classNamePrefix="select"
+                                    placeholder="Seleccionar"
                                     isDisabled={false}
                                     isLoading={false}
                                     isClearable={true}

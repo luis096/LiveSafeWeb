@@ -329,6 +329,7 @@ class PrincipalReserva extends Component {
                                 <label>Servicio</label>
                                 <Select
                                     classNamePrefix="select"
+                                    placeholder="Seleccionar"
                                     isDisabled={false}
                                     isLoading={false}
                                     isClearable={true}

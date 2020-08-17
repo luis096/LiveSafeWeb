@@ -272,6 +272,7 @@ class PrincipalPropietario extends Component {
                             <div className="col-md-3 row-secction">
                                 <label>Tipo de Documento</label>
                                 <Select
+                                    placeholder="Seleccionar"
                                     isClearable={true}
                                     isSearchable={true}
                                     value={this.state.tipoDocumento}

@@ -200,6 +200,7 @@ class Graficos extends Component {
                         <div className="row-secction col-md-3">
                             <label>Mes</label>
                             <Select
+                                placeholder="Seleccionar"
                                 isClearable={true}
                                 isSearchable={true}
                                 value={this.state.mesDesde}
@@ -210,6 +211,7 @@ class Graficos extends Component {
                         <div className="row-secction col-md-2">
                             <label>Año</label>
                             <Select
+                                placeholder="Seleccionar"
                                 isClearable={true}
                                 isSearchable={true}
                                 value={this.state.anioDesde}
@@ -220,6 +222,7 @@ class Graficos extends Component {
                         <div className="row-secction col-md-3">
                             <label>Mes</label>
                             <Select
+                                placeholder="Seleccionar"
                                 isClearable={true}
                                 isSearchable={true}
                                 value={this.state.mesHasta}
@@ -230,6 +233,7 @@ class Graficos extends Component {
                         <div className="row-secction col-md-2">
                             <label>Año</label>
                             <Select
+                                placeholder="Seleccionar"
                                 isClearable={true}
                                 isSearchable={true}
                                 value={this.state.anioHasta}

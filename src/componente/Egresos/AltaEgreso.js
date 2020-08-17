@@ -9,6 +9,7 @@ import { operacion } from '../Operaciones';
 import Datetime from 'react-datetime';
 import { style } from '../../variables/Variables';
 import NotificationSystem from 'react-notification-system';
+import Spinner from "react-spinner-material";
 
 class AltaEgreso extends Component {
     constructor() {
@@ -44,6 +45,7 @@ class AltaEgreso extends Component {
         this.errorNombre = { error: false, mensaje: '' };
         this.errorApellido = { error: false, mensaje: '' };
         this.errorObservacion = { error: false, mensaje: '' };
+        this.errorFechaNacimiento = { error: false, mensaje: '' };
     }
 
     async componentDidMount() {
@@ -57,45 +59,46 @@ class AltaEgreso extends Component {
     }
 
     ChangeDocumento(event) {
-        this.setState({ documento: event.target.value });
-        if (event.target.value == '') {
-            this.errorDocumento = validator.requerido(event.target.value);
+        this.setState({documento: event.target.value});
+        if (event.target.value === "") {
+            this.errorDocumento = validator.requerido(event.target.value)
         } else {
-            this.errorDocumento = validator.numero(event.target.value);
+            this.errorDocumento = validator.numero(event.target.value)
         }
+        if (!event.target.value) return;
+        this.errorDocumento = validator.documento(event.target.value);
     }
+
     ChangeObservacion(event) {
         this.setState({ observacion: event.target.value });
         this.errorObservacion = validator.requerido(event.target.value);
     }
 
     ChangeNombre(event) {
-        this.setState({ nombre: event.target.value });
-        if (event.target.value == '') {
-            this.errorNombre = validator.requerido(event.target.value);
+        this.setState({nombre: event.target.value});
+        if (event.target.value === "") {
+            this.errorNombre = validator.requerido(event.target.value)
         } else {
-            this.errorNombre = validator.soloLetras(event.target.value);
+            this.errorNombre = validator.soloLetrasNumeros(event.target.value)
         }
     }
 
     ChangeApellido(event) {
-        this.setState({ apellido: event.target.value });
-        if (event.target.value == '') {
-            this.errorApellido = validator.requerido(event.target.value);
+        this.setState({apellido: event.target.value});
+        if (event.target.value === "") {
+            this.errorApellido = validator.requerido(event.target.value)
         } else {
-            this.errorApellido = validator.soloLetras(event.target.value);
+            this.errorApellido = validator.soloLetrasNumeros(event.target.value)
         }
     }
 
     ChangeFechaNacimiento(event) {
-        this.setState({ fechaNacimiento: new Date(event) });
+        this.setState({fechaNacimiento: event});
+        this.errorFechaNacimiento = validator.fecha(event);
     }
 
+
     async buscar() {
-        // if( this.state.documento =="" || this.state.tipoDocumento ==""){
-        //     operacion.sinCompletar("Debe completar todos los campos requeridos")
-        //     return
-        // }
         const { ingreso } = this.state;
         let refTipoDocumento = await operacion.obtenerReferenciaDocumento(this.state.tipoDocumento);
 
@@ -235,9 +238,38 @@ class AltaEgreso extends Component {
         });
     }
 
+    FormInvalid() {
+
+        let invalid = (this.errorDocumento.error );
+
+        if (!invalid) {
+            invalid = (!this.state.documento || !this.state.tipoDocumento);
+        }
+
+        if (!invalid) {
+            invalid = (!this.state.tipoDocumento.value);
+        }
+
+        return invalid;
+    }
+
+    FormInvalidRegister() {
+
+        if (!!this.state.ingreso.length) return false;
+        let invalid = (this.errorApellido.error || this.errorNombre.error ||
+            this.errorFechaNacimiento.error || this.errorObservacion.error);
+
+        if (!invalid) {
+            invalid = (!this.state.nombre || !this.state.apellido ||
+                !this.state.fechaNacimiento || !this.state.observacion);
+        }
+
+        return invalid;
+    }
+
     render() {
         return (
-            <div className="col-12">
+            <div className={this.state.loading ? "col-12 form" : "col-12"}>
                 <legend>
                     <h3 className="row">Nuevo Egreso</h3>
                 </legend>
@@ -251,6 +283,7 @@ class AltaEgreso extends Component {
                                 <Select
                                     value={this.state.tipoDocumento}
                                     isDisabled={this.state.busqueda}
+                                    placeholder="Seleccionar"
                                     isClearable={true}
                                     isSearchable={true}
                                     options={this.state.tipoD}
@@ -276,6 +309,7 @@ class AltaEgreso extends Component {
                                 <input
                                     className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
                                     placeholder="Número de Documento"
+                                    type="number"
                                     disabled={this.state.busqueda}
                                     value={this.state.documento}
                                     onChange={this.ChangeDocumento}
@@ -288,7 +322,7 @@ class AltaEgreso extends Component {
                                 </Button>
                             </div>
                             <div className="col-md-2 row-secction" style={{ marginTop: '25px' }}>
-                                <Button bsStyle="primary" fill wd onClick={this.buscar}>
+                                <Button bsStyle="primary" fill wd onClick={this.buscar} disabled={this.FormInvalid()}>
                                     Buscar
                                 </Button>
                             </div>
@@ -303,7 +337,7 @@ class AltaEgreso extends Component {
                                 <div hidden={this.state.existePersonaSinIngreso}>
                                     <h5 className="row text-danger">
                                         La persona ingresada no existe en el sistema. Para registrar el egreso se solicita completar datos
-                                        personales junto con una observacion.
+                                        personales junto con una observación.
                                     </h5>
                                 </div>
                             </div>
@@ -330,6 +364,8 @@ class AltaEgreso extends Component {
                                     <input
                                         className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                         placeholder="Nombre"
+                                        type="text"
+                                        maxLength={50}
                                         value={this.state.nombre}
                                         onChange={this.ChangeNombre}
                                         disabled={this.state.existePersonaSinIngreso}
@@ -341,6 +377,8 @@ class AltaEgreso extends Component {
                                     <input
                                         className={errorHTML.classNameError(this.errorApellido, 'form-control')}
                                         placeholder="Apellido"
+                                        type="text"
+                                        maxLength={50}
                                         value={this.state.apellido}
                                         onChange={this.ChangeApellido}
                                         disabled={this.state.existePersonaSinIngreso}
@@ -349,20 +387,24 @@ class AltaEgreso extends Component {
                                 </div>
                                 <div className="col-md-3 row-secction">
                                     <label>Fecha de Nacimiento</label>
-                                    <Datetime
+                                    <Datetime className={errorHTML.classNameErrorDate(this.errorFechaNacimiento)}
                                         timeFormat={false}
                                         onChange={this.ChangeFechaNacimiento}
                                         value={this.state.fechaNacimiento}
                                         inputProps={{ placeholder: 'Fecha de Nacimiento', disabled: this.state.existePersonaSinIngreso }}
                                     />
+                                    {errorHTML.errorLabel(this.errorFechaNacimiento)}
                                 </div>
                             </div>
                             <div className="row" hidden={this.state.ingreso.length}>
                                 <div className="col-md-6 row-secction">
-                                    <label>Observacón</label>
+                                    <label>Observación</label>
                                     <textarea
                                         className={errorHTML.classNameError(this.errorObservacion, 'form-control')}
                                         rows="3"
+                                        type="text"
+                                        maxLength={200}
+                                        placeholder="Observación"
                                         value={this.state.observacion}
                                         onChange={this.ChangeObservacion}
                                     />
@@ -373,12 +415,16 @@ class AltaEgreso extends Component {
                     </div>
                 </div>
                 <div className="text-center" style={{ marginBottom: '10px' }} hidden={!this.state.busqueda}>
-                    <Button bsStyle="info" fill wd onClick={this.registrar}>
+                    <Button bsStyle="info" fill wd onClick={this.registrar} disabled={this.FormInvalidRegister()}>
                         Registrar Egreso
                     </Button>
                 </div>
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
+                </div>
+                <div className="spinnerAlta" hidden={!this.state.loading}>
+                    <Spinner radius={80} color={'black'}
+                             stroke={5}/>
                 </div>
             </div>
         );

@@ -11,6 +11,7 @@ import { operacion } from '../Operaciones';
 import Datetime from 'react-datetime';
 import { style } from '../../variables/Variables';
 import NotificationSystem from 'react-notification-system';
+import Spinner from "react-spinner-material";
 
 class AltaIngreso extends Component {
     constructor() {
@@ -31,6 +32,7 @@ class AltaIngreso extends Component {
             alert: null,
             nuevoInvitado: false,
             esInvitadoEvento: false,
+            loading: false,
             errorDocumento: { error: false, mensaje: '' },
         };
         this.notificationSystem = React.createRef();
@@ -67,17 +69,20 @@ class AltaIngreso extends Component {
     }
 
     ChangeDocumento(event) {
-        this.setState({ documento: event.target.value });
-        if (event.target.value == '') {
-            this.errorDocumento = validator.requerido(event.target.value);
+        this.setState({documento: event.target.value});
+        if (event.target.value === "") {
+            this.errorDocumento = validator.requerido(event.target.value)
         } else {
-            this.errorDocumento = validator.numero(event.target.value);
+            this.errorDocumento = validator.numero(event.target.value)
         }
+        if (!event.target.value) return;
+        this.errorDocumento = validator.documento(event.target.value);
     }
+
 
     ChangeNombre(event) {
         this.setState({ nombre: event.target.value });
-        if (event.target.value == '') {
+        if (event.target.value === '') {
             this.errorNombre = validator.requerido(event.target.value);
         } else {
             this.errorNombre = validator.soloLetras(event.target.value);
@@ -86,7 +91,7 @@ class AltaIngreso extends Component {
 
     ChangeApellido(event) {
         this.setState({ apellido: event.target.value });
-        if (event.target.value == '') {
+        if (event.target.value === '') {
             this.errorApellido = validator.requerido(event.target.value);
         } else {
             this.errorApellido = validator.soloLetras(event.target.value);
@@ -98,16 +103,14 @@ class AltaIngreso extends Component {
     }
 
     async buscar() {
-        // if( this.state.documento =="" || this.state.tipoDocumento ==""){
-        //     operacion.sinCompletar("Debe completar todos los campos requeridos")
-        //     return
-        // }
+        this.setState({loading: true});
         await this.buscarPersona();
         if (!this.state.invitadoTemp.length) {
             this.state.existeInvitado
                 ? this.errorIngreso('La persona no está invitada o venció su plazo de invitacion al country.')
                 : this.noEncontrado('La persona no se encuentra registrada en el sistema. ¿Desea agregarla como un nuevo invitado? ');
         }
+        this.setState({loading: false});
     }
 
     async buscarPersona() {
@@ -218,8 +221,10 @@ class AltaIngreso extends Component {
     }
 
     async registrar() {
+        this.setState({loading: true});
         let invalido = await this.buscarEnIngresos();
         if (invalido) {
+            this.setState({loading: false});
             this.solicitarObservacion('La persona ya registra un ingreso el country.' + ' Para continuar indique una observación: ');
         } else {
             this.agregarIngreso('');
@@ -271,6 +276,10 @@ class AltaIngreso extends Component {
                     this.notificationSystem.current.addNotification(operacion.error(error.message));
                 });
         }
+        this.notificationSystem.current.addNotification(
+            operacion.registroConExito("El ingreso se registro con exito"));
+        this.reestablecer();
+        this.setState({loading: false});
     }
 
     errorIngreso(msg) {
@@ -417,9 +426,25 @@ class AltaIngreso extends Component {
         });
     }
 
+    FormInvalid() {
+
+        let invalid = (this.errorDocumento.error );
+
+        if (!invalid) {
+            invalid = (!this.state.documento || !this.state.tipoDocumento);
+        }
+
+        if (!invalid) {
+            invalid = (!this.state.tipoDocumento.value);
+        }
+
+        return invalid;
+    }
+
+
     render() {
         return (
-            <div className="col-12">
+            <div className={this.state.loading ? "col-12 form" : "col-12"}>
                 <legend>
                     <h3 className="row">Nuevo Ingreso</h3>
                 </legend>
@@ -434,8 +459,8 @@ class AltaIngreso extends Component {
                                 <Select
                                     value={this.state.tipoDocumento}
                                     isDisabled={this.state.invitadoTemp.length}
-                                    isClearable={true}
                                     isSearchable={true}
+                                    placeholder="Seleccionar"
                                     options={this.state.tipoD}
                                     onChange={this.ChangeSelect.bind(this)}
                                     styles={
@@ -459,6 +484,7 @@ class AltaIngreso extends Component {
                                 <input
                                     className={errorHTML.classNameError(this.errorDocumento, 'form-control')}
                                     placeholder="Número de Documento"
+                                    type="number"
                                     disabled={this.state.invitadoTemp.length}
                                     value={this.state.documento}
                                     onChange={this.ChangeDocumento}
@@ -471,7 +497,7 @@ class AltaIngreso extends Component {
                                 </Button>
                             </div>
                             <div className="col-md-2 row-secction" style={{ marginTop: '25px' }}>
-                                <Button bsStyle="primary" fill wd onClick={this.buscar}>
+                                <Button bsStyle="primary" fill wd onClick={this.buscar} disabled={this.FormInvalid()}>
                                     Buscar
                                 </Button>
                             </div>
@@ -492,20 +518,20 @@ class AltaIngreso extends Component {
                         <div className="card-body">
                             <h5 className="row">Resultado de la búsqueda </h5>
                             <div className="row" hidden={this.state.esInvitadoEvento}>
-                                <div className="col-md-3 row-secction">
-                                    <label>Tipo de Ingreso</label>
-                                    <input
-                                        className="form-control"
-                                        disabled={true}
-                                        value={
-                                            this.state.personaEncontrada[0]
-                                                ? this.state.personaEncontrada[0].IdPropietario
-                                                    ? 'Invitado'
-                                                    : 'Propietario'
-                                                : '-'
-                                        }
-                                    />
-                                </div>
+                                {/*<div className="col-md-3 row-secction">*/}
+                                {/*    <label>Tipo de Ingreso</label>*/}
+                                {/*    <input*/}
+                                {/*        className="form-control"*/}
+                                {/*        disabled={true}*/}
+                                {/*        value={*/}
+                                {/*            this.state.personaEncontrada[0]*/}
+                                {/*                ? this.state.personaEncontrada[0].IdPropietario*/}
+                                {/*                    ? 'Invitado'*/}
+                                {/*                    : 'Propietario'*/}
+                                {/*                : '-'*/}
+                                {/*        }*/}
+                                {/*    />*/}
+                                {/*</div>*/}
                                 <div className="col-md-3 row-secction">
                                     <label>Nombre</label>
                                     <input
@@ -588,13 +614,17 @@ class AltaIngreso extends Component {
                 </div>
                 <div className="text-center" hidden={!this.state.invitadoTemp.length}>
                     <div hidden={this.state.autenticar} style={{ marginBottom: '10px' }}>
-                        <Button bsStyle="info" fill wd onClick={this.registrar}>
+                        <Button bsStyle="info" fill wd onClick={this.registrar} disabled={this.state.loading}>
                             Registrar Ingreso
                         </Button>
                     </div>
                 </div>
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
+                </div>
+                <div className="spinnerAlta" hidden={!this.state.loading}>
+                    <Spinner radius={80} color={'black'}
+                             stroke={5}/>
                 </div>
             </div>
         );

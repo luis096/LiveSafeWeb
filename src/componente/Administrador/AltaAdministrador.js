@@ -221,6 +221,7 @@ class AltaAdministrador extends Component {
                                 <label> Tipo de Documento </label>
                                 <Select
                                     isClearable={true}
+                                    placeholder="Seleccionar"
                                     isSearchable={true}
                                     options={this.state.tipoD}
                                     value={this.state.tipoDocumento}
@@ -258,6 +259,7 @@ class AltaAdministrador extends Component {
                             <div className="col-md-6 row-secction">
                                 <label> Country </label>
                                 <Select
+                                    placeholder="Seleccionar"
                                     isClearable={true}
                                     isSearchable={true}
                                     options={this.state.countryList}

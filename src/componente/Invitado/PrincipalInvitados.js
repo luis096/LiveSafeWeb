@@ -419,6 +419,7 @@ class PrincipalInvitados extends Component {
                             <div className="col-md-3 row-secction">
                                 <label>Estado</label>
                                 <Select
+                                    placeholder="Seleccionar"
                                     isDisabled={false}
                                     isLoading={false}
                                     isClearable={true}
@@ -564,6 +565,7 @@ class PrincipalInvitados extends Component {
                     <Modal.Body>
                         <label> Reservas </label>
                         <Select
+                            placeholder="Seleccionar"
                             classNamePrefix="select"
                             isDisabled={false}
                             isLoading={false}

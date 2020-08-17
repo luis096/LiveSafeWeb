@@ -381,6 +381,7 @@ class AltaServicio extends Component {
                             <div className="row-secction col-md-4">
                                 <label>Duración del turno (*)</label>
                                 <Select
+                                    placeholder="Seleccionar"
                                     isClearable={true}
                                     isDisabled={this.state.verCalendar}
                                     value={this.state.duracionTurno}
@@ -394,6 +395,7 @@ class AltaServicio extends Component {
                                 <label>Cantidad máxima de turnos (*)</label>
                                 <Select
                                     isClearable={true}
+                                    placeholder="Seleccionar"
                                     value={this.state.turnosMax}
                                     options={this.state.turnosMaxSelect}
                                     onChange={this.ChangeSelectTurnosMax.bind(this)}

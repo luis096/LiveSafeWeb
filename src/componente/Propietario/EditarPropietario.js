@@ -229,6 +229,7 @@ class EditarPropietario extends Component {
                             <div className="col-md-4 row-secction">
                                 <label> Tipo de Documento </label>
                                 <Select
+                                    placeholder="Seleccionar"
                                     isClearable={true}
                                     isSearchable={true}
                                     options={this.state.tipoD}
