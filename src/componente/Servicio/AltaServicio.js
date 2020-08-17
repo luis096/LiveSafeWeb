@@ -152,7 +152,7 @@ class AltaServicio extends Component {
         if (e) return;
         this.setState({loading: false});
         this.notificationSystem.current.addNotification(
-            operacion.registroConExito("El servicio se registro con exito"));
+            operacion.registroConExito("El servicio se registró con éxito"));
     }
 
     ChangeNombre(event) {
