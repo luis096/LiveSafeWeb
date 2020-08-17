@@ -9,6 +9,7 @@ import { errorHTML } from '../Error';
 import { validator } from '../validator';
 import { style } from "../../variables/Variables";
 import NotificationSystem from "react-notification-system";
+import "../Style/SpinnerAltas.scss"
 
 
 class EditarEncargado extends Component {
@@ -27,6 +28,7 @@ class EditarEncargado extends Component {
             idCountry: '',
             tipoD: [],// Para cargar el combo
             temp: '',
+            loading: false,
             resultado: ''
         };
         this.notificationSystem = React.createRef();
@@ -98,6 +100,7 @@ class EditarEncargado extends Component {
 
 
     async editEncargado() {
+        this.setState({loading: true});
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
             .collection('Encargados').doc(this.idEncargado).set({
                 Nombre: this.state.nombre,
@@ -109,8 +112,11 @@ class EditarEncargado extends Component {
                 FechaAlta: this.state.fechaAlta,
                 Usuario: this.state.usuario
             }).catch((error) => {
+                this.state.loading = false;
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
+            this.notificationSystem.current.addNotification(
+                operacion.registroConExito("El country se registró con éxito"));
 
     }
 

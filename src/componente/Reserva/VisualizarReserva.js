@@ -297,7 +297,7 @@ class VisualizarReserva extends Component {
                 <legend />
                 <h3 className="row">Invitados de la reserva</h3>
                 <div className="row col-md-12">
-                    <div className="row-secction col-md-6">
+                    <div className="row-secction col-md-7">
                         <label>Link de invitación</label>
                         <input
                             type="text"
@@ -313,7 +313,7 @@ class VisualizarReserva extends Component {
                             }
                         />
                     </div>
-                    <div className="row-secction col-md-3">
+                    <div style={{marginTop:'5px'}} className="row-secction col-md-1">
                         <br />
                         <CopyToClipboard
                             text={
@@ -332,7 +332,7 @@ class VisualizarReserva extends Component {
                             </Button>
                         </CopyToClipboard>
                     </div>
-                    <div className="izquierda row-secction col-md-2">
+                    <div style={{marginTop:'25px'}} className=" row-secction col-md-3">
                         <Button bsStyle="primary" fill wd onClick={this.modalAgregarInvitado} disabled={this.permiteAgregar()}>
                             Agregar invitado
                         </Button>
@@ -344,8 +344,8 @@ class VisualizarReserva extends Component {
                             <Modal.Title>Agregar un nuevo invitado</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <div className="row">
-                                <div className="row-secction">
+                            <div style={{marginLeft:'5px'}} className="row col-md-12">
+                                <div  className="row-secction col-md-6">
                                     <label> Nombre </label>
                                     <input
                                         type="name"
@@ -355,7 +355,7 @@ class VisualizarReserva extends Component {
                                         onChange={this.ChangeNombre}
                                     />
                                 </div>
-                                <div className="row-secction">
+                                <div className="row-secction col-md-6">
                                     <label> Apellido </label>
                                     <input
                                         type="family-name"
@@ -366,8 +366,8 @@ class VisualizarReserva extends Component {
                                     />
                                 </div>
                             </div>
-                            <div className="row">
-                                <div className="row-secction">
+                            <div style={{marginLeft:'5px'}} className="row col-md-12">
+                                <div className="row-secction col-md-6">
                                     <label> Tipo de Documento </label>
                                     <Select
                                         className="select-documento"
@@ -381,7 +381,7 @@ class VisualizarReserva extends Component {
                                         onChange={this.ChangeSelect.bind(this)}
                                     />
                                 </div>
-                                <div className="row-secction">
+                                <div className="row-secction col-md-6">
                                     <label> Número de Documento </label>
                                     <input
                                         type="document"
@@ -393,7 +393,7 @@ class VisualizarReserva extends Component {
                                 </div>
                             </div>
                         </Modal.Body>
-                        <Modal.Footer>
+                        <Modal.Footer className="footerModal">
                             <Button simple onClick={() => this.setState({ showModal: false })}>
                                 Cerrar
                             </Button>
