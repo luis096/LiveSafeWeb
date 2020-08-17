@@ -103,7 +103,7 @@ class EditarInvitado extends Component {
 
     ChangeNombre(event) {
         this.setState({ nombre: event.target.value });
-        if (event.target.value == '') {
+        if (event.target.value === '') {
             this.errorNombre = validator.requerido(event.target.value);
         } else {
             this.errorNombre = validator.soloLetras(event.target.value);
@@ -112,7 +112,7 @@ class EditarInvitado extends Component {
 
     ChangeApellido(event) {
         this.setState({ apellido: event.target.value });
-        if (event.target.value == '') {
+        if (event.target.value === '') {
             this.errorApellido = validator.requerido(event.target.value);
         } else {
             this.errorApellido = validator.soloLetras(event.target.value);
@@ -131,7 +131,7 @@ class EditarInvitado extends Component {
 
     ChangeDocumentoInvitado(event) {
         this.setState({ documentoInvitado: event.target.value });
-        if (event.target.value == '') {
+        if (event.target.value === '') {
             this.errorDocumentoInvitado = validator.requerido(event.target.value);
         } else {
             this.errorDocumentoInvitado = validator.numero(event.target.value);
@@ -144,7 +144,7 @@ class EditarInvitado extends Component {
 
     ChangeDocumento(event) {
         this.setState({ documento: event.target.value });
-        if (event.target.value == '') {
+        if (event.target.value === '') {
             this.errorDocumento = validator.requerido(event.target.value);
         } else {
             this.errorDocumento = validator.numero(event.target.value);
@@ -182,16 +182,29 @@ class EditarInvitado extends Component {
                 <div className="row card">
                     <div className="card-body">
                         <div className="row">
-                            <div className="col-md-6 row-secction">
-                                <label> Grupo </label>
+                            <div className="col-md-3 row-secction">
+                                <label> Nombre </label>
                                 <input
                                     type="name"
-                                    className={errorHTML.classNameError(this.errorGrupo, 'form-control')}
+                                    className={errorHTML.classNameError(this.errorNombre, 'form-control')}
                                     placeholder="Nombre"
-                                    value={this.state.grupo}
-                                    onChange={this.ChangeGrupo}
+                                    value={this.state.invitado[0] ? this.state.invitado[0].Nombre : '-'}
+                                    disabled={true}
+                                    onChange={this.ChangeNombre}
                                 />
-                                {errorHTML.errorLabel(this.errorGrupo)}
+                                {errorHTML.errorLabel(this.errorNombre)}
+                            </div>
+                            <div className="col-md-3 row-secction">
+                                <label> Apellido </label>
+                                <input
+                                    type="family-name"
+                                    className={errorHTML.classNameError(this.errorApellido, 'form-control')}
+                                    placeholder="Apellido"
+                                    value={this.state.invitado[0] ? this.state.invitado[0].Apellido : '-'}
+                                    disabled={true}
+                                    onChange={this.ChangeApellido}
+                                />
+                                {errorHTML.errorLabel(this.errorApellido)}
                             </div>
                             <div className="col-md-3 row-secction">
                                 <label>Fecha Desde</label>
@@ -219,37 +232,12 @@ class EditarInvitado extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-md-6 row-secction">
-                                <label> Nombre </label>
-                                <input
-                                    type="name"
-                                    className={errorHTML.classNameError(this.errorNombre, 'form-control')}
-                                    placeholder="Nombre"
-                                    value={this.state.invitado[0] ? this.state.invitado[0].Nombre : '-'}
-                                    disabled={true}
-                                    onChange={this.ChangeNombre}
-                                />
-                                {errorHTML.errorLabel(this.errorNombre)}
-                            </div>
-                            <div className="col-md-6 row-secction">
-                                <label> Apellido </label>
-                                <input
-                                    type="family-name"
-                                    className={errorHTML.classNameError(this.errorApellido, 'form-control')}
-                                    placeholder="Apellido"
-                                    value={this.state.invitado[0] ? this.state.invitado[0].Apellido : '-'}
-                                    disabled={true}
-                                    onChange={this.ChangeApellido}
-                                />
-                                {errorHTML.errorLabel(this.errorApellido)}
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-md-6 row-secction">
+                            <div className="col-md-4 row-secction">
                                 <label> Tipo de Documento </label>
-                                <input className="form-control" placeholder="Apellido" value={this.state.tipoDocumento} disabled={true} />
+                                <input className="form-control" placeholder="Tipo de Documento"
+                                       value={this.state.tipoDocumento} disabled={true}/>
                             </div>
-                            <div className="col-md-6 row-secction">
+                            <div className="col-md-4 row-secction">
                                 <label> Número de Documento </label>
                                 <input
                                     type="document"
@@ -260,9 +248,7 @@ class EditarInvitado extends Component {
                                 />
                                 {errorHTML.errorLabel(this.errorDocumentoInvitado)}
                             </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-md-6 row-secction">
+                            <div className="col-md-4 row-secction">
                                 <label>Fecha de Nacimiento</label>
                                 <Datetime
                                     timeFormat={false}
