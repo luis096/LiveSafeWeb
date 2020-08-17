@@ -225,7 +225,7 @@ class PrincialEgreso extends Component {
         if (conLimite) {
             con = con.limit(paginador.getTamPagina());
         }
-        con = con.where('Estado', '==', true);
+
         if (this.state.desde) {
             con = con.where('Fecha', '>=', this.state.desde);
         }
@@ -305,7 +305,7 @@ class PrincialEgreso extends Component {
 
     async cancelConfirmado(idEgreso) {
         await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Egresos').doc(idEgreso).update({ Estado: false }).then(
+            .collection('Egresos').doc(idEgreso).delete().then(
                 this.setState({
                     alert: (
                         <SweetAlert
@@ -318,6 +318,7 @@ class PrincialEgreso extends Component {
                         </SweetAlert>
                     ),
                 }));
+        this.consultar(0, true);
     }
 
     cancelDetele() {

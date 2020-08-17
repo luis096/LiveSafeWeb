@@ -330,7 +330,6 @@ class AltaIngreso extends Component {
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
             .collection('Ingresos')
-            .where('Estado', '==', true)
             .orderBy('Fecha', 'desc')
             .where('Documento', '==', this.state.documento)
             .where('TipoDocumento', '==', refTipoDocumento)

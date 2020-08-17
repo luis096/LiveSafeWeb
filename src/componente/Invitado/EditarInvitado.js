@@ -9,6 +9,8 @@ import { operacion } from '../Operaciones';
 import { errorHTML } from '../Error';
 import { style } from '../../variables/Variables';
 import NotificationSystem from 'react-notification-system';
+import "../Style/SpinnerAltas.scss"
+import Spinner from "react-spinner-material";
 
 class EditarInvitado extends Component {
     constructor(props) {
@@ -23,6 +25,7 @@ class EditarInvitado extends Component {
             tipoD: [],
             desde: '',
             hasta: '',
+            loading: true,
             errorDesde: { error: false, mensaje: '' },
             errorHasta: { error: false, mensaje: '' },
         };
@@ -82,7 +85,7 @@ class EditarInvitado extends Component {
             tipoDocumento: operacion.obtenerDocumentoLabel(invitado[0].TipoDocumento.id, this.state.tipoD),
         });
 
-        this.setState({ tipoD, invitado });
+        this.setState({ tipoD, invitado, loading: false });
     }
 
     ChangeDesde(event) {
@@ -159,23 +162,41 @@ class EditarInvitado extends Component {
     }
 
     async registrar() {
+        this.setState({loading: true});
+        let e = false;
+
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
             .collection('Invitados')
             .doc(this.idInvitado)
             .update({
-                Grupo: this.state.grupo,
                 FechaDesde: this.state.desde,
                 FechaHasta: this.state.hasta,
             })
             .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
+
+        this.setState({loading: false});
+        if (e) return;
+        this.notificationSystem.current.addNotification(
+            operacion.registroConExito("Los cambios se guardaron con exito"));
     }
+
+    FormInvalid() {
+
+        let invalid = (this.state.errorDesde.error || this.state.errorHasta.error);
+
+        if (!invalid) {
+            invalid = (!this.state.desde || !this.state.hasta);
+        }
+        return invalid;
+    }
+
 
     render() {
         return (
-            <div className="col-12">
+            <div className={this.state.loading ? "col-12 form" : "col-12"}>
                 <legend>
                     <h3 className="row">Editar Invitado</h3>
                 </legend>
@@ -207,7 +228,7 @@ class EditarInvitado extends Component {
                                 {errorHTML.errorLabel(this.errorApellido)}
                             </div>
                             <div className="col-md-3 row-secction">
-                                <label>Fecha Desde</label>
+                                <label>Fecha Desde (*)</label>
                                 <Datetime
                                     className={this.state.errorDesde.error ? 'has-error' : ''}
                                     value={this.state.desde}
@@ -219,7 +240,7 @@ class EditarInvitado extends Component {
                                 </label>
                             </div>
                             <div className="col-md-3 row-secction">
-                                <label>Fecha Hasta</label>
+                                <label>Fecha Hasta (*)</label>
                                 <Datetime
                                     className={this.state.errorHasta.error ? 'has-error' : ''}
                                     value={this.state.hasta}
@@ -252,9 +273,8 @@ class EditarInvitado extends Component {
                                 <label>Fecha de Nacimiento</label>
                                 <Datetime
                                     timeFormat={false}
-                                    value={validator.obtenerFecha(
-                                        this.state.invitado[0] ? this.state.invitado[0].FechaNacimiento : new Date()
-                                    )}
+                                    value={this.state.invitado[0] && this.state.invitado[0].FechaNacimiento
+                                        ?validator.obtenerFecha(this.state.invitado[0].FechaNacimiento):null}
                                     inputProps={{ placeholder: 'Fecha de Nacimiento', disabled: true }}
                                 />
                             </div>
@@ -262,12 +282,16 @@ class EditarInvitado extends Component {
                     </div>
                 </div>
                 <div className="text-center">
-                    <Button bsStyle="primary" fill wd onClick={this.registrar}>
+                    <Button bsStyle="primary" fill wd onClick={this.registrar} disabled={this.FormInvalid()}>
                         Guardar cambios
                     </Button>
                 </div>
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
+                </div>
+                <div className="spinnerAlta" hidden={!this.state.loading}>
+                    <Spinner radius={80} color={'black'}
+                             stroke={5}/>
                 </div>
             </div>
         );

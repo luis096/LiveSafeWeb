@@ -14,11 +14,19 @@ class Configuraciones extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pass: ' ',
+            pass: '',
             redirect: false
         };
         this.notificationSystem = React.createRef();
         this.ChangePass = this.ChangePass.bind(this);
+    }
+
+    componentDidMount() {
+        setTimeout(()=> {
+            document.getElementById('passOld').type = "password";
+            document.getElementById('pass').type = "password";
+            document.getElementById('passNew').type = "password";
+        }, 1000)
     }
 
     ChangePass(event) {
@@ -81,6 +89,11 @@ class Configuraciones extends Component {
         });
     }
 
+    FormInvalid() {
+        let invalido = (!this.state.pass);
+        return invalido;
+    }
+
 
     render() {
         return (
@@ -94,26 +107,28 @@ class Configuraciones extends Component {
                             <div className="col-12 row-secction">
 
                                 <div className="col-md-6">
-                                    <input className='form-control'
+                                    <input className='form-control' id="passOld"
                                         value={this.state.pass}
                                         defaultValue=" "
                                         defaultChecked=""
-                                        type="password"
+                                        type="text"
                                         onChange={this.ChangePass} placeholder="Nueva contraseña" />
                                 </div>
                                 <div className="col-md-6">
-                                    <input className='form-control'
-                                        type="password"
+                                    <input className='form-control' id="pass"
+                                        type="text"
                                         placeholder="Confirmar nueva contraseña" />
                                 </div>
                                 <div style={{ marginTop: '10px' }} className="col-md-6">
-                                    <input className='form-control'
-                                        type="password"
+                                    <input className='form-control' id="passNew"
+                                        type="text"
                                         placeholder="Contraseña actual" />
                                 </div>
                                 <div style={{ marginTop: '10px' }} className="col-md-6">
                                     {this.renderRedirect()}
-                                    <Button bsStyle="default" fill wd onClick={() => {
+                                    <Button bsStyle="default" fill wd
+                                            disabled={this.FormInvalid()}
+                                            onClick={() => {
                                         this.confirmar();
                                     }}>Confirmar</Button>
                                 </div>

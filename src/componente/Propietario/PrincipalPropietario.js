@@ -379,9 +379,9 @@ class PrincipalPropietario extends Component {
                                     <th style={{ textAlign: 'center' }} scope="col">
                                         Documento
                                     </th>
-                                    <th style={{ textAlign: 'center' }} scope="col">
-                                        Titular
-                                    </th>
+                                    {/*<th style={{ textAlign: 'center' }} scope="col">*/}
+                                    {/*    Titular*/}
+                                    {/*</th>*/}
                                     <th style={{ textAlign: 'center' }} scope="col">
                                         Fecha de Alta
                                     </th>
@@ -405,7 +405,7 @@ class PrincipalPropietario extends Component {
                                             </td>
                                             <td style={{ textAlign: 'center' }}>{tipoDocumento}</td>
                                             <td style={{ textAlign: 'center' }}>{prop[0].Documento}</td>
-                                            <td style={{ textAlign: 'center' }}>{prop[0].Titular ? 'Si' : 'No'}</td>
+                                            {/*<td style={{ textAlign: 'center' }}>{prop[0].Titular ? 'Si' : 'No'}</td>*/}
                                             <td style={{ textAlign: 'center' }}>{hora.toLocaleString()}</td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <Link to={editar}>

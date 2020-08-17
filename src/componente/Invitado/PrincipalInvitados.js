@@ -502,7 +502,7 @@ class PrincipalInvitados extends Component {
                                                     Índice
                                     </th>
                                                 <th style={{ textAlign: 'center' }} scope="col">
-                                                    Apellido y Nombre
+                                                    Nombre y Apellido
                                     </th>
                                                 <th style={{ textAlign: 'center' }} scope="col">
                                                     Tipo Documento
@@ -527,7 +527,7 @@ class PrincipalInvitados extends Component {
 
                                         <tbody>
                                             {this.state.invitados.map((inv, ind) => {
-                                                let nombre = !!inv[0].Apellido ? inv[0].Apellido + ", " + inv[0].Nombre : "Sin Autenticar";
+                                                let nombre = !!inv[0].Apellido ? inv[0].Nombre + ", " + inv[0].Apellido : "Sin Autenticar";
                                                 return (
                                                     <tr className="table-light">
                                                         <th style={{ textAlign: 'center' }}>
@@ -541,7 +541,7 @@ class PrincipalInvitados extends Component {
                                                             <Button
                                                                 bsStyle="info"
                                                                 fill
-                                                                disabled={false}
+                                                                disabled={!inv[0].Apellido}
                                                                 onClick={() => {
                                                                     this.setState({ invitadoReserva: inv });
                                                                     this.modalAgregarInvitado();
