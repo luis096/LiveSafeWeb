@@ -229,7 +229,7 @@ class AltaInvitado extends Component {
                 </legend>
                 <div className="row card">
                     <div className="card-body">
-                        <div style={{display:'flex', flexDirection:'row', width:'100%'}} className="row" hidden={this.esPropietario}>
+                        <div className="row" hidden={this.esPropietario}>
                             <div style={{width:'20%', marginRight:'6px'}} className=" row-secction">
                                 <label>Tipo de Documento</label>
                                 <Select

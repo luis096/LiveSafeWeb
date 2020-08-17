@@ -118,11 +118,13 @@ class AltaEgreso extends Component {
                         this.setState({
                             nombre: doc.data().Nombre,
                             apellido: doc.data().Apellido,
+                            // fechaNacimiento: doc.data().FechaNacimiento
                         });
                     }
                 });
             });
 
+        console.log(ingreso);
         if (!ingreso.length) {
             // Buscar entre los propietarios. Para averiguar si existe en el sistema y cargar los datos.
             await Database.collection('Country')
@@ -133,6 +135,7 @@ class AltaEgreso extends Component {
                 .get()
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
+                        console.log(doc.data(), "2");
                         if (doc.exists) {
                             this.setState({
                                 nombre: doc.data().Nombre,
@@ -156,6 +159,7 @@ class AltaEgreso extends Component {
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         if (doc.exists) {
+                            console.log(doc.data(), "3");
                             this.setState({
                                 nombre: doc.data().Nombre,
                                 apellido: doc.data().Apellido,
@@ -172,6 +176,8 @@ class AltaEgreso extends Component {
 
     async registrar() {
         const { ingreso } = this.state;
+
+        this.setState({loading: true});
 
         let egreso = {
             Nombre: this.state.nombre,
@@ -218,6 +224,10 @@ class AltaEgreso extends Component {
             .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
+
+        this.notificationSystem.current.addNotification(
+            operacion.registroConExito("El egreso se registro con exito"));
+        this.setState({loading: false});
     }
 
     hideAlert() {
@@ -368,7 +378,7 @@ class AltaEgreso extends Component {
                                         maxLength={50}
                                         value={this.state.nombre}
                                         onChange={this.ChangeNombre}
-                                        disabled={this.state.existePersonaSinIngreso}
+                                        disabled={this.state.existePersonaSinIngreso || !!this.state.ingreso.length}
                                     />
                                     {errorHTML.errorLabel(this.errorNombre)}
                                 </div>
@@ -381,7 +391,7 @@ class AltaEgreso extends Component {
                                         maxLength={50}
                                         value={this.state.apellido}
                                         onChange={this.ChangeApellido}
-                                        disabled={this.state.existePersonaSinIngreso}
+                                        disabled={this.state.existePersonaSinIngreso || !!this.state.ingreso.length}
                                     />
                                     {errorHTML.errorLabel(this.errorApellido)}
                                 </div>
@@ -391,7 +401,7 @@ class AltaEgreso extends Component {
                                         timeFormat={false}
                                         onChange={this.ChangeFechaNacimiento}
                                         value={this.state.fechaNacimiento}
-                                        inputProps={{ placeholder: 'Fecha de Nacimiento', disabled: this.state.existePersonaSinIngreso }}
+                                        inputProps={{ placeholder: 'Fecha de Nacimiento', disabled: (this.state.existePersonaSinIngreso || !!this.state.ingreso.length) }}
                                     />
                                     {errorHTML.errorLabel(this.errorFechaNacimiento)}
                                 </div>

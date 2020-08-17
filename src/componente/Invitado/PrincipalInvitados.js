@@ -13,6 +13,7 @@ import { style } from '../../variables/Variables';
 import NotificationSystem from 'react-notification-system';
 import { operacion } from '../Operaciones';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Spinner from "react-spinner-material";
 
 class PrincipalInvitados extends Component {
     constructor(props) {
@@ -20,6 +21,7 @@ class PrincipalInvitados extends Component {
         this.state = {
             invitados: [],
             showModal: false,
+            loadingInvitado: false,
             reservas: [],
             reservaSeleccionada: '',
             invitadoReserva: '',
@@ -125,7 +127,7 @@ class PrincipalInvitados extends Component {
         }
 
         let con = await Database.collection('Country').doc(localStorage.getItem('idCountry'))
-            .collection('Invitados');
+            .collection('Invitados').orderBy("FechaAlta", "desc");
 
         let total = con;
 
@@ -248,6 +250,7 @@ class PrincipalInvitados extends Component {
     }
 
     async agregarNuevoInvitado() {
+        this.setState({ loadingInvitado: true });
         let invitado = {
             Nombre: this.state.invitadoReserva[0].Nombre,
             Apellido: this.state.invitadoReserva[0].Apellido,
@@ -257,6 +260,33 @@ class PrincipalInvitados extends Component {
             Estado: true,
             IdInvitado: this.state.invitadoReserva[1],
         };
+
+        let existeInvitado = false;
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Propietarios')
+            .doc(localStorage.getItem('idPersona'))
+            .collection('Reservas')
+            .doc(this.state.reservaSelceccionada.value)
+            .collection('Invitados')
+            .where('TipoDocumento', '==', invitado.TipoDocumento)
+            .where('Documento', '==', invitado.Documento)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    existeInvitado = doc.exists;
+                });
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
+
+        if (existeInvitado) {
+            this.setState({ showModal: false, reservaSelceccionada: null, loadingInvitado: false });
+            this.notificationSystem.current.addNotification(operacion.error('El invitado ya se encuentra registrado al eveneto.'));
+            return;
+        }
+
 
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
@@ -291,7 +321,9 @@ class PrincipalInvitados extends Component {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
-        this.setState({ showModal: false });
+        this.notificationSystem.current.addNotification(
+            operacion.registroConExito("La invitación se realizo con exito"));
+        this.setState({ showModal: false, reservaSelceccionada: null, loadingInvitado: false});
     }
 
     obtenerDocumentoLabel(id) {
@@ -546,7 +578,7 @@ class PrincipalInvitados extends Component {
                                     <Pagination.First onClick={() => this.consultar(this.state.numPagina - 1, false)} />
 
                                     {this.cantidad.map((num) => {
-                                        return <Pagination.Item active={num == this.state.numPagina}>{num + 1}</Pagination.Item>;
+                                        return <Pagination.Item active={num === this.state.numPagina}>{num + 1}</Pagination.Item>;
                                     })}
 
                                     <Pagination.Last onClick={() => this.consultar(this.state.numPagina + 1, false)} />
@@ -559,30 +591,32 @@ class PrincipalInvitados extends Component {
                             </div>
                         </div>)}
 
-                <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
+                <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false, reservaSelceccionada: null})}>
                     <Modal.Header closeButton>
                         <Modal.Title>Invitar a evento</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <label> Reservas </label>
+                        <label> Reservas (*)</label>
                         <Select
                             placeholder="Seleccionar"
                             classNamePrefix="select"
-                            isDisabled={false}
-                            isLoading={false}
-                            isClearable={true}
                             isSearchable={true}
+                            value={this.state.reservaSelceccionada}
                             options={this.state.reservas}
                             onChange={this.ChangeSelect.bind(this)}
                         />
                         <br />
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button simple onClick={() => this.setState({ showModal: false })}>
+                        <Button simple onClick={() => this.setState({ showModal: false, reservaSelceccionada: null })}>
                             Cerrar
                         </Button>
-                        <Button bsStyle="success" fill onClick={this.agregarNuevoInvitado}>
-                            Agregar
+                        <Button bsStyle="success" fill onClick={this.agregarNuevoInvitado}
+                                disabled={!this.state.reservaSelceccionada || !this.state.reservaSelceccionada.value}>
+                            { this.state.loadingInvitado ? (
+                                <Spinner radius={20} color={'black'} stroke={2} />
+                            ) : "Agregar"
+                            }
                         </Button>
                     </Modal.Footer>
                 </Modal>

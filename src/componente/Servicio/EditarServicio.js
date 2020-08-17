@@ -11,9 +11,10 @@ import NotificationSystem from "react-notification-system";
 import { operacion } from "../Operaciones";
 import { Col, Grid, Row } from "react-bootstrap";
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import Card from 'components/Card/Card.jsx';
+import "../Style/SpinnerAltas.scss"
 import moment from 'moment';
 import 'moment/locale/es';
+import Spinner from "react-spinner-material";
 
 moment.locale('es');
 const localizer = momentLocalizer(moment);
@@ -38,6 +39,7 @@ class EditarServicio extends Component {
             turnoSelect: [],
             turnosMaxSelect: [],
             duracionTurno: null,
+            loading: true
         };
         this.notificationSystem = React.createRef();
         this.editServicio = this.editServicio.bind(this);
@@ -130,8 +132,8 @@ class EditarServicio extends Component {
             min: new Date(2020, 0, 1, desde, 0),
             max: new Date(2020, 0, 1, hasta, 0),
         });
-
         await this.actualizarHorasMax();
+        this.setState({loading: false});
     }
 
     async actualizarHorasMax() {
@@ -167,14 +169,29 @@ class EditarServicio extends Component {
         this.setState({ turnosMax: value });
     }
 
-    registrar() {
-        this.editServicio();
+    async registrar() {
+        this.setState({loading: true});
+        let e = false;
+
+        await Database.collection('Country').doc(localStorage.getItem('idCountry'))
+            .collection('Servicios').doc(this.idServicio).update({
+                Estado: this.state.estado,
+                TurnosMax: this.state.turnosMax.value
+            }).catch((error) => {
+                e = true;
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
+
+        this.setState({loading: false});
+        if (e) return;
+        this.notificationSystem.current.addNotification(
+            operacion.registroConExito("Los cambios se guardaron con exito"));
     }
 
     render() {
 
         return (
-            <div className="col-12">
+            <div className={this.state.loading ? "col-12 form" : "col-12"}>
                 <legend><h3 className="row">Editar Servicio</h3></legend>
                 <div className="row card">
                     <div className="card-body">
@@ -237,12 +254,16 @@ class EditarServicio extends Component {
                     </div>
                 </div>
                 <div style={{marginBottom:'10px'}} className="text-center">
-                    <Button bsStyle="primary" fill wd onClick={this.registrar}>
+                    <Button bsStyle="primary" fill wd onClick={this.registrar} disabled={this.state.loading}>
                         Guardar cambios
                     </Button>
                 </div>
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
+                </div>
+                <div className="spinnerAlta" hidden={!this.state.loading}>
+                    <Spinner radius={80} color={'black'}
+                             stroke={5}/>
                 </div>
                 {this.state.alert}
             </div>

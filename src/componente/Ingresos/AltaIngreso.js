@@ -161,7 +161,6 @@ class AltaIngreso extends Component {
                     this.notificationSystem.current.addNotification(operacion.error(error.message));
                 });
         }
-
         // Si el invitado existe pero no tiene invitacion valida, busco entre las invitaciones
         // a eventos, si al menos una es valida, se le permite ingresar al country.
         if (!invitadoTemp.length) {
@@ -199,7 +198,7 @@ class AltaIngreso extends Component {
                 .get()
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
-                        if (ids.some((id) => doc.id == id)) {
+                        if (ids.some((id) => doc.id === id)) {
                             propietarios.push([doc.data(), doc.id]);
                         }
                     });
@@ -408,7 +407,7 @@ class AltaIngreso extends Component {
                 });
         });
 
-        this.setState({ autenticar: false });
+        this.setState({ autenticar: false, propietarios: [] });
     }
 
     reestablecer() {
@@ -503,7 +502,7 @@ class AltaIngreso extends Component {
                             </div>
                         </div>
                         <div hidden={this.state.invitadoTemp.length <= 1}>
-                            <h5 className="row" hidden={this.state.autenticar}>
+                            <h5 className="row text-danger" hidden={this.state.autenticar}>
                                 La persona ha sido invitada por más de un propietario. Debe seleccionar el propietario al
                                 cual se realiza la visita para registrar el ingreso
                             </h5>
@@ -614,7 +613,8 @@ class AltaIngreso extends Component {
                 </div>
                 <div className="text-center" hidden={!this.state.invitadoTemp.length}>
                     <div hidden={this.state.autenticar} style={{ marginBottom: '10px' }}>
-                        <Button bsStyle="info" fill wd onClick={this.registrar} disabled={this.state.loading}>
+                        <Button bsStyle="info" fill wd onClick={this.registrar}
+                                disabled={this.state.loading || (this.state.propietarios.length > 1 && this.state.id === -1)}>
                             Registrar Ingreso
                         </Button>
                     </div>

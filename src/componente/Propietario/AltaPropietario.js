@@ -23,7 +23,7 @@ class AltaPropietario extends Component {
             idPropietarioCreado: '',
             nombre: '',
             apellido: '',
-            tipoDocumento: {label: "Seleccionar"},
+            tipoDocumento: null,
             documento: '',
             titular: true,
             telefonoFijo: '',

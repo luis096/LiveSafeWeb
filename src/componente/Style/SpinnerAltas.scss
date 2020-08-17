@@ -40,3 +40,9 @@ input[type="file"] {
 .btn-propietarioEncontrado {
   margin-top: 25px;
 }
+
+.contenedor-propietario {
+  flex-direction: row;
+  display: flex;
+  width: 100% ;
+}
