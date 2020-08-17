@@ -55,7 +55,10 @@ function requerido(valor) {
 }
 
 function mail(valor) {
-    return EMAIL_REGEXP.test(valor) ? false : true;
+    return {
+        error: !EMAIL_REGEXP.test(valor),
+        mensaje: 'Mail invalido'
+    };
 }
 
 function nombreArchivo(valor) {

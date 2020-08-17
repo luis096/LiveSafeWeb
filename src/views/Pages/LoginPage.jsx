@@ -16,6 +16,9 @@ import { Redirect } from 'react-router-dom';
 import Spinner from 'react-spinner-material';
 import AuthNavbar from 'components/Navbars/AuthNavbar.jsx';
 import bgImage from '../../assets/img/fondo.jpg';
+import {operacion} from "../../componente/Operaciones";
+import NotificationSystem from "react-notification-system";
+import {style} from "../../variables/Variables";
 
 class LoginPage extends Component {
     constructor(props) {
@@ -37,6 +40,7 @@ class LoginPage extends Component {
             login: false,
             loading: false
         };
+        this.notificationSystem = React.createRef();
         this.crearUsuarioNuevo = this.crearUsuarioNuevo.bind(this);
         this.ChangeEmail = this.ChangeEmail.bind(this);
         this.ChangePass = this.ChangePass.bind(this);
@@ -92,18 +96,23 @@ class LoginPage extends Component {
 
     async onButtonPress() {
         this.setState({loading: true});
-        await this.obtenerValoresUsuario();
+        try {
+            await this.obtenerValoresUsuario();
 
-        if (!this.state.tipoUsuario) {
-            await this.consultarUsuarioTemporal();
-        } else {
-            console.log("Se loguea  ");
-            await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-                .then(()=> {
-                    this.setState({result: true});
-                    this.setState({resultado: 'Fallo de autentificacion'});
-                    this.setState({loading: false});
-                });
+            if (!this.state.tipoUsuario) {
+                await this.consultarUsuarioTemporal();
+            } else {
+                await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+                    .then(()=> {
+                        this.setState({result: true});
+                        this.setState({resultado: 'Fallo de autentificacion'});
+                        this.setState({loading: false});
+                    });
+            }
+        } catch (e) {
+            console.log(e.message);
+            this.setState({loading: false});
+            this.notificationSystem.current.addNotification(operacion.error("Ups! Ocurrio un error. Intente nuevamente"));
         }
     }
 
@@ -202,7 +211,7 @@ class LoginPage extends Component {
                                                     <div>
                                                         {this.state.passIncorrect && <ControlLabel className="passIncorrect"> Las contraseñas son incorrectas</ControlLabel>}
                                                        <div >
-                                                           <button bsStyle="info"  fill wd className="button"
+                                                           <button bsStyle="info"  fill wd className="button" disabled={this.state.loading}
                                                                    onClick={this.state.usuarioNuevo ?
                                                                        this.crearUsuarioNuevo :
                                                                        this.onButtonPress
@@ -228,6 +237,9 @@ class LoginPage extends Component {
                             style={{backgroundImage: 'url(' + bgImage + ')'}}
                         />
                     </div>
+                </div>
+                <div>
+                    <NotificationSystem ref={this.notificationSystem} style={style}/>
                 </div>
                 {this.redirect()}
             </div>
