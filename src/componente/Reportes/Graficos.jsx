@@ -258,7 +258,7 @@ class Graficos extends Component {
                         <div style={{ margin:'30px 0 16px 0'}} className="text-center">
                             <Button bsStyle="success" fill
                                 onClick={() => { this.pdf() }}>
-                                Descargar Grafico
+                                Descargar Gráfico
                             </Button>
                         </div>
 

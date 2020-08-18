@@ -180,7 +180,7 @@ class EditarInvitado extends Component {
         this.setState({loading: false});
         if (e) return;
         this.notificationSystem.current.addNotification(
-            operacion.registroConExito("Los cambios se guardaron con exito"));
+            operacion.registroConExito("Los cambios se guardaron con éxito"));
     }
 
     FormInvalid() {
