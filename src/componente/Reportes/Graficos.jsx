@@ -166,7 +166,7 @@ class Graficos extends Component {
 
 
     pdf() {
-        let titulo = "LiveSafe - Reporte de " + this.state.nombreReporte.toLowerCase() + " por mes, desde " +
+        let titulo = "LiveSafe - Reporte de " + this.state.nombreReporte.toLowerCase() + " por mes desde " +
             this.state.mesDesde.label + " " + this.state.anioDesde.label
             + " a " + this.state.mesHasta.label + " " + this.state.anioHasta.label;
         const pdf = new jsPDF('L', 'px');

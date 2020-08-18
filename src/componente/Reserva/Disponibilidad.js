@@ -13,7 +13,7 @@ class Disponibilidad extends Component {
         this.state = {
             disponibilidad: props.disponibilidad,
             collapsed: false,
-            dias: ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
+            dias: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado", "Domingo"]
         };
     }
 
