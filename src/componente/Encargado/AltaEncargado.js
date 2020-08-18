@@ -156,7 +156,7 @@ class AltaEncargado extends Component {
         await this.reset();
 
         this.notificationSystem.current.addNotification(
-            operacion.registroConExito("El encargado se registro con exito"));
+            operacion.registroConExito("El encargado se registró con éxito"));
     }
 
     reset() {

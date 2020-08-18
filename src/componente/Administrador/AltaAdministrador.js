@@ -173,7 +173,7 @@ class AltaAdministrador extends Component {
         await this.reset();
 
         this.notificationSystem.current.addNotification(
-            operacion.registroConExito("El administrador se registro con exito"));
+            operacion.registroConExito("El administrador se registró con éxito"));
 
     }
 

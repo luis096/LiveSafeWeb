@@ -262,7 +262,7 @@ class ReservasXServicios extends Component {
                             <div style={{ margin:'12px 0 8px 0'}} className="text-center">
                                 <Button bsStyle="success" fill
                                     onClick={() => { this.pdf() }}>
-                                    Descargar Grafico
+                                    Descargar Gráfico
                                 </Button>
                             </div>
                         </div>
