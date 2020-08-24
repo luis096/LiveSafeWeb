@@ -42,7 +42,7 @@ export const validator = {
 function numero(valor) {
     return {
         error: !NUMBER_REGEXP.test(valor),
-        mensaje: 'Solo ingresar números'
+        mensaje: 'Solo ingresar números.'
     };
 }
 
@@ -50,14 +50,14 @@ function numero(valor) {
 function requerido(valor) {
     return {
         error: (valor === '' || valor == null),
-        mensaje: 'El campo es requerido'
+        mensaje: 'El campo es requerido.'
     };
 }
 
 function mail(valor) {
     return {
         error: !EMAIL_REGEXP.test(valor),
-        mensaje: 'Mail invalido'
+        mensaje: 'Mail inválido.'
     };
 }
 
@@ -72,21 +72,21 @@ function fecha(valor) {
 
     return {
         error: !(valor instanceof Object),
-        mensaje: 'El formato de fecha debe ser: dd/mm/yyyy'
+        mensaje: 'El formato de fecha debe ser: dd/mm/yyyy.'
     };
 }
 
 function soloLetras(valor) {
     return {
         error: LETTERS_REGEXP.test(valor) ? false : true,
-        mensaje: 'Solo ingresar letras'
+        mensaje: 'Solo ingresar letras.'
     };
 }
 
 function soloLetrasNumeros(valor) {
     return {
         error: LETTERS_NUMBER_REGEXP.test(valor) ? false : true,
-        mensaje: 'Solo ingresar valores alfanuméricos'
+        mensaje: 'Solo ingresar valores alfanuméricos.'
     };
 }
 
@@ -94,7 +94,7 @@ function longitud(valor, longitud) {
     let error = (valor.length > longitud);
     return {
         error: error,
-        mensaje: 'No debe superar los ' + longitud + ' caracteres'
+        mensaje: 'No debe superar los ' + longitud + ' caracteres.'
     };
 }
 
@@ -102,7 +102,7 @@ function documento(valor) {
     let error = (valor.length > 8 || valor.length < 7);
     return {
         error: error,
-        mensaje: 'El documento debe tener entre 7 y 8 caracteres '
+        mensaje: 'El documento debe tener entre 7 y 8 caracteres. '
     };
 }
 
@@ -145,12 +145,12 @@ function fechaRango(desde, hasta, bool) {
     if (desde >= hasta && bool) {
         return {
             error: true,
-            mensaje: 'La fecha desde debe ser menor a la fecha hasta'
+            mensaje: 'La fecha desde debe ser menor a la fecha hasta.'
         };
     } else if (desde >= hasta) {
         return {
             error: true,
-            mensaje: 'La fecha hasta debe ser mayor a la fecha desde'
+            mensaje: 'La fecha hasta debe ser mayor a la fecha desde.'
         };
     } else {
         return {

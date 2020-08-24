@@ -16,6 +16,7 @@ import NotificationSystem from "react-notification-system";
 import { style } from "../../variables/Variables";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import logo from "../../Icono2.ico";
 
 class ReservasXServicios extends Component {
 
@@ -31,6 +32,7 @@ class ReservasXServicios extends Component {
             sinDatos: true,
             desde: null,
             hasta: null,
+            porcentajeLabel: "",
             errorDesde: { error: false, mensaje: '' },
             errorHasta: { error: false, mensaje: '' },
         };
@@ -165,6 +167,17 @@ class ReservasXServicios extends Component {
             pdf.text(titulo, 10, 20);
             pdf.text(porcentajes, 10, 40, { maxWidth: 600 });
             pdf.addImage(imgData, 'PNG', -100, 100, 800, 300);
+
+
+            pdf.save("Reservas-por-servicio.pdf");
+        });
+    }
+
+    async pdfMejorado() {
+        const pdf = new jsPDF('L', 'px');
+        await html2canvas(document.querySelector("#descarga")).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            pdf.addImage(imgData, 'PNG', 0, 0, 650, 430);
             pdf.save("Reservas-por-servicio.pdf");
         });
     }
@@ -219,60 +232,100 @@ class ReservasXServicios extends Component {
                 </div>
 
 
-                <div className="row card" hidden={this.state.sinDatos}>
-                    <div className="card-body">
-                        <div className='row'>
-                            <div className="col-12">
-                                <Button bsStyle="warning" fill wd
-                                    disabled={!this.state.dataService}
-                                    onClick={() => {
-                                        this.setState({ collapsed: !this.state.collapsed })
-                                    }}>
-                                    Ver porcentajes
-                                </Button>
-                                <div hidden={this.state.dataService}>
-                                    <h5>No existen reservas realizadas en los servicios del country.</h5>
+                {/*<div className="row card" hidden={this.state.sinDatos}>*/}
+                {/*    <div className="card-body">*/}
+                {/*        <div className='row'>*/}
+                {/*            <div className="col-12">*/}
+                {/*                <Button bsStyle="warning" fill wd*/}
+                {/*                    disabled={!this.state.dataService}*/}
+                {/*                    onClick={() => {*/}
+                {/*                        this.setState({ collapsed: !this.state.collapsed })*/}
+                {/*                    }}>*/}
+                {/*                    Ver porcentajes*/}
+                {/*                </Button>*/}
+                {/*                <div hidden={this.state.dataService}>*/}
+                {/*                    <h5>No existen reservas realizadas en los servicios del country.</h5>*/}
+                {/*                </div>*/}
+                {/*                <div className="conteiner-porcentajes" id="porcentajes">*/}
+                {/*                    <Collapse isOpen={this.state.collapsed}>*/}
+                {/*                        <Card title={"Porcentajes:"} content={*/}
+                {/*                            <div className="row">*/}
+                {/*                                {*/}
+                {/*                                    this.state.servicio && this.state.servicio.labels.map((value, i) => {*/}
+                {/*                                        return (<div className="row-secction col-md-3 porcentajes">*/}
+                {/*                                            <div className="colorReference"*/}
+                {/*                                                style={{ background: this.state.servicio.color[i] }}>*/}
+                {/*                                            </div>*/}
+                {/*                                            <span className="servicioText">{value + ": " +*/}
+                {/*                                                this.state.servicio.porcentajes[i].toFixed(2)*/}
+                {/*                                                + "%"}</span>*/}
+                {/*                                        </div>*/}
+                {/*                                        );*/}
+                {/*                                    })}*/}
+                {/*                            </div>*/}
+                {/*                        }>*/}
+                {/*                        </Card>*/}
+                {/*                    </Collapse>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*            /!*<div id="reporte">*!/*/}
+                {/*            /!*    <Pie data={this.state.dataService}*!/*/}
+                {/*            /!*        width={400} height={160} />*!/*/}
+                {/*            /!*</div>*!/*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</div style={{width: "1448px", height: "932px"}}>*/}
+
+                <div hidden={this.state.sinDatos}>
+                    <div id="descarga">
+                        <div className="card row">
+                            <div className="cabecera">
+                                <h3>LiveSafe <img src={logo} width={"40px"} height={"40px"} alt="logo"/></h3>
+                                <h4 className="tituloReporte">Reporte de reservas por servicios</h4>
+                                <div className="fecha">
+                                    <label>Fecha de emición: {new Date().toLocaleDateString()}</label>
+                                    <label>Fecha desde: {this.state.desde?this.state.desde.toLocaleDateString()+" ":""}
+                                    - Fecha hasta: {this.state.hasta?this.state.hasta.toLocaleDateString():""}
+                                        </label>
                                 </div>
-                                <div className="conteiner-porcentajes" id="porcentajes">
-                                    <Collapse isOpen={this.state.collapsed}>
-                                        <Card title={"Porcentajes:"} content={
-                                            <div className="row">
-                                                {
-                                                    this.state.servicio && this.state.servicio.labels.map((value, i) => {
-                                                        return (<div className="row-secction col-md-3 porcentajes">
-                                                            <div className="colorReference"
-                                                                style={{ background: this.state.servicio.color[i] }}>
-                                                            </div>
-                                                            <span className="servicioText">{value + ": " +
-                                                                this.state.servicio.porcentajes[i].toFixed(2)
-                                                                + "%"}</span>
+                            </div>
+                            <legend/>
+                            <div>
+                                <Card title={"Porcentajes:"} content={
+                                    <div className="row">
+                                        {
+                                            this.state.servicio && this.state.servicio.labels.map((value, i) => {
+                                                return (<div className="row-secction col-md-3 porcentajes">
+                                                        <div className="colorReference"
+                                                             style={{ background: this.state.servicio.color[i] }}>
                                                         </div>
-                                                        );
-                                                    })}
-                                            </div>
-                                        }>
-                                        </Card>
-                                    </Collapse>
-                                </div>
+                                                        <span className="servicioText">{value + ": " +
+                                                        this.state.servicio.porcentajes[i].toFixed(2)
+                                                        + "%"}</span>
+                                                    </div>
+                                                );
+                                            })}
+                                    </div>
+                                }>
+                                </Card>
                             </div>
-                            <div id="reporte">
-                                <Pie data={this.state.dataService}
-                                    width={400} height={160} />
-                            </div>
-                            <div style={{ margin:'12px 0 8px 0'}} className="text-center">
-                                <Button bsStyle="success" fill
-                                    onClick={() => { this.pdf() }}>
-                                    Descargar Gráfico
-                                </Button>
-                            </div>
+                            <Pie data={this.state.dataService}
+                                 width={100} height={40}/>
                         </div>
                     </div>
+                    <div style={{ margin:'12px 0 8px 0'}} className="text-center">
+                        <Button bsStyle="success" fill
+                                onClick={() => { this.pdfMejorado() }}>
+                            Descargar Reporte
+                        </Button>
+                    </div>
                 </div>
+
 
                 <div className="row card" hidden={!this.state.sinDatos}>
                     <div className="card-body">
                         <div className='row'>
-                            <h3>No hay datos disponibles aún</h3>
+                            <h3>Aún no hay datos disponibles.</h3>
                         </div>
                     </div>
                 </div>

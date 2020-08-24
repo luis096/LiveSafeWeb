@@ -319,7 +319,7 @@ class VisualizarReserva extends Component {
                                 <label>{this.state.desde ? this.state.desde.toLocaleTimeString() : '-'}</label>
                             </div>
                             <div className="col-md-4 row-secction">
-                                <h4>Hora de finalizacion:</h4>
+                                <h4>Hora de finalización:</h4>
                                 <label>{this.state.hasta ? this.state.hasta.toLocaleTimeString() : '-'}</label>
                             </div>
                         </div>

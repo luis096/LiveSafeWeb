@@ -21,3 +21,21 @@
     box-shadow: 0 4px 6px -6px #222;
     padding: 0 0 5px 0!important;
 }
+
+.cabecera {
+    display: flex;
+}
+
+.tituloReporte {
+    text-align: center;
+    margin: 0 18%;
+    padding-top: 20px;
+}
+
+.fecha {
+    display: grid;
+}
+
+.reporteOculto {
+   display: none;
+}

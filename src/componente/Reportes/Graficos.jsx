@@ -267,7 +267,7 @@ class Graficos extends Component {
                 <div className="row card" hidden={!this.state.sinDatos}>
                     <div className="card-body">
                         <div className='row'>
-                            <h3>No hay datos disponibles aún</h3>
+                            <h3>Aún no hay datos disponibles.</h3>
                         </div>
                     </div>
                 </div>
