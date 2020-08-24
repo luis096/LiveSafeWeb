@@ -13,7 +13,7 @@ import { detachMarkedSpans } from "codemirror/src/line/spans";
 import NotificationSystem from "react-notification-system";
 import { style } from "../../variables/Variables";
 import icono from "../../Icono2.ico";
-import logo from "../../logoLiveSafe.png"
+import logo from "../../Icono2.ico"
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -178,6 +178,29 @@ class Graficos extends Component {
         });
     }
 
+    async pdfMejorado() {
+        const pdf = new jsPDF('L', 'px');
+        await html2canvas(document.querySelector("#descarga")).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            pdf.addImage(imgData, 'PNG', 0, 0, 650, 300);
+            pdf.save(this.state.nombreReporte + "-por-mes.pdf");
+        });
+    }
+
+
+    reset() {
+        this.setState({
+            alert: null,
+            loaing: false,
+            dataLineIngresos: {},
+            sinDatos: true,
+            anioDesde: null,
+            anioHasta: null,
+            mesDesde: null,
+            mesHasta: null
+        });
+    }
+
     render() {
         return (
             <div className="col-12">
@@ -202,6 +225,7 @@ class Graficos extends Component {
                             <label>Mes</label>
                             <Select
                                 placeholder="Seleccionar"
+                                isDisabled={!this.state.sinDatos}
                                 isClearable={true}
                                 isSearchable={true}
                                 value={this.state.mesDesde}
@@ -213,6 +237,7 @@ class Graficos extends Component {
                             <label>Año</label>
                             <Select
                                 placeholder="Seleccionar"
+                                isDisabled={!this.state.sinDatos}
                                 isClearable={true}
                                 isSearchable={true}
                                 value={this.state.anioDesde}
@@ -224,6 +249,7 @@ class Graficos extends Component {
                             <label>Mes</label>
                             <Select
                                 placeholder="Seleccionar"
+                                isDisabled={!this.state.sinDatos}
                                 isClearable={true}
                                 isSearchable={true}
                                 value={this.state.mesHasta}
@@ -235,6 +261,7 @@ class Graficos extends Component {
                             <label>Año</label>
                             <Select
                                 placeholder="Seleccionar"
+                                isDisabled={!this.state.sinDatos}
                                 isClearable={true}
                                 isSearchable={true}
                                 value={this.state.anioHasta}
@@ -245,25 +272,50 @@ class Graficos extends Component {
                         <div style={{marginTop:'5px', width:'18%', marginLeft:'6px'}} className="row-secction ">
                             <br />
                             <Button bsStyle="primary" fill
-                                    disabled={!this.isValidRangeDate()}
+                                    disabled={!this.isValidRangeDate() || !this.state.sinDatos}
                                 onClick={() => { this.consultar(this.state.nombreReporte) }}>
-                                Consultar
+                                Generar Reporte
                             </Button>
                         </div>
-                    </div>
-                    <div className="card-body" hidden={this.state.sinDatos}>
-                        <div className='row' id="reporte">
-                            <Line data={this.state.dataLineIngresos} width={100} height={40} />
-                        </div>
-                        <div style={{ margin:'30px 0 16px 0'}} className="text-center">
-                            <Button bsStyle="success" fill
-                                onClick={() => { this.pdf() }}>
-                                Descargar Gráfico
+                        <div style={{marginTop:'5px', width:'18%', marginLeft:'6px'}} className="row-secction ">
+                            <br />
+                            <Button bsStyle="default" fill
+                                    disabled={this.state.sinDatos}
+                                    onClick={() => { this.reset()}}>
+                                Reestablecer
                             </Button>
                         </div>
-
                     </div>
                 </div>
+
+
+                <div hidden={this.state.sinDatos}>
+                    <div id="descarga">
+                        <div className="card row">
+                            <div className="cabecera">
+                                <h3>LiveSafe <img src={logo} width={"40px"} height={"40px"} alt="logo"/></h3>
+                                <h4 className="tituloReporte">Reporte de {this.state.nombreReporte.toLowerCase()} por mes</h4>
+                                <div className="fecha">
+                                    <label>Fecha de emición: {new Date().toLocaleDateString()}</label>
+                                    <label>Fecha desde: {this.state.mesDesde ? this.state.mesDesde.label+" " : ""}
+                                        {this.state.anioDesde ? this.state.anioDesde.label+" " : ""}
+                                        - Fecha hasta: {this.state.mesHasta ? this.state.mesHasta.label+" " : ""}
+                                        {this.state.anioHasta ? this.state.anioHasta.label+" " : ""}
+                                    </label>
+                                </div>
+                            </div>
+                            <legend/>
+                            <Line data={this.state.dataLineIngresos} width={100} height={40} />
+                        </div>
+                    </div>
+                    <div style={{ margin:'12px 0 8px 0'}} className="text-center">
+                        <Button bsStyle="success" fill
+                                onClick={() => { this.pdfMejorado() }}>
+                            Descargar Reporte
+                        </Button>
+                    </div>
+                </div>
+
                 <div className="row card" hidden={!this.state.sinDatos}>
                     <div className="card-body">
                         <div className='row'>
