@@ -213,15 +213,15 @@ class Graficos extends Component {
                         
                     </div>
                     <div style={{ width:'93%'}} className='row header'>
-                        <div style={{marginLeft:'3px', padding:'0', width:'44%'}} className="row-secction col-md-6">
+                        <div style={{marginLeft:'3px', padding:'0', width:'36%'}} className="row-secction col-md-6">
                             <h6>Desde</h6>
                         </div>
-                        <div style={{padding:'0', width:'45%'}} className="row-secction col-md-6">
+                        <div style={{padding:'0', width:'54%'}} className="row-secction col-md-6">
                             <h6>Hasta</h6>
                         </div>
                     </div>
                     <div style={{marginTop:'5px', display:'flex', flexDirection:'row', width:'100%'}} className='row'>
-                        <div style={{width:'23%', marginRight:'6px'}} className="row-secction ">
+                        <div style={{width:'17%', marginRight:'6px'}} className="row-secction ">
                             <label>Mes</label>
                             <Select
                                 placeholder="Seleccionar"
@@ -233,7 +233,7 @@ class Graficos extends Component {
                                 onChange={this.ChangeSelectMesDesde.bind(this)}
                             />
                         </div>
-                        <div style={{width:'18%', margin:'0 6px'}} className="row-secction ">
+                        <div style={{width:'14%', margin:'0 6px'}} className="row-secction ">
                             <label>Año</label>
                             <Select
                                 placeholder="Seleccionar"
@@ -245,7 +245,7 @@ class Graficos extends Component {
                                 onChange={this.ChangeSelectAnioDesde.bind(this)}
                             />
                         </div>
-                        <div style={{width:'23%', margin:'0 6px'}} className="row-secction ">
+                        <div style={{width:'17%', margin:'0 6px'}} className="row-secction ">
                             <label>Mes</label>
                             <Select
                                 placeholder="Seleccionar"
@@ -257,7 +257,7 @@ class Graficos extends Component {
                                 onChange={this.ChangeSelectMesHasta.bind(this)}
                             />
                         </div>
-                        <div style={{width:'18%', margin:'0 6px'}} className="row-secction ">
+                        <div style={{width:'14%', margin:'0 6px'}} className="row-secction ">
                             <label>Año</label>
                             <Select
                                 placeholder="Seleccionar"
@@ -269,7 +269,7 @@ class Graficos extends Component {
                                 onChange={this.ChangeSelectAnioHasta.bind(this)}
                             />
                         </div>
-                        <div style={{marginTop:'5px', width:'18%', marginLeft:'6px'}} className="row-secction ">
+                        <div style={{marginTop:'5px', width:'16%', marginLeft:'6px'}} className="row-secction ">
                             <br />
                             <Button bsStyle="primary" fill
                                     disabled={!this.isValidRangeDate() || !this.state.sinDatos}
@@ -277,7 +277,7 @@ class Graficos extends Component {
                                 Generar Reporte
                             </Button>
                         </div>
-                        <div style={{marginTop:'5px', width:'18%', marginLeft:'6px'}} className="row-secction ">
+                        <div style={{marginTop:'5px', width:'16%', marginLeft:'6px'}} className="row-secction ">
                             <br />
                             <Button bsStyle="default" fill
                                     disabled={this.state.sinDatos}
@@ -293,13 +293,17 @@ class Graficos extends Component {
                     <div id="descarga">
                         <div className="card row">
                             <div className="cabecera">
-                                <h3>LiveSafe <img src={logo} width={"40px"} height={"40px"} alt="logo"/></h3>
+                            <div style={{display:"flex", alignItems:"center"}}>
+                                <img  src={logo} width={"40px"} height={"40px"} alt="logo"/>
+                                     <h2 style={{marginLeft:'6px'}}> LiveSafe</h2>
+                                </div>
                                 <h4 className="tituloReporte">Reporte de {this.state.nombreReporte.toLowerCase()} por mes</h4>
                                 <div className="fecha">
                                     <label>Fecha de emición: {new Date().toLocaleDateString()}</label>
                                     <label>Fecha desde: {this.state.mesDesde ? this.state.mesDesde.label+" " : ""}
-                                        {this.state.anioDesde ? this.state.anioDesde.label+" " : ""}
-                                        - Fecha hasta: {this.state.mesHasta ? this.state.mesHasta.label+" " : ""}
+                                        {this.state.anioDesde ? this.state.anioDesde.label+" " : ""} </label>
+                                        <label>
+                                        Fecha hasta: {this.state.mesHasta ? this.state.mesHasta.label+" " : ""}
                                         {this.state.anioHasta ? this.state.anioHasta.label+" " : ""}
                                     </label>
                                 </div>
