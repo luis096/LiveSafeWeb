@@ -49,11 +49,11 @@ import PrincipalIngreso from 'componente/Ingresos/PrincipalIngreso.js';
 import AltaIngreso from 'componente/Ingresos/AltaIngreso';
 import PrincipalEgreso from 'componente/Egresos/PrincipalEgreso.js';
 import AltaEgreso from 'componente/Egresos/AltaEgreso';
-
-import AltaInvitado from 'componente/Invitado/AltaInvitado.js';
+import AltaInvitadoIngreso from "./componente/Ingresos/AltaInvitadoIngreso";
 
 //Propietario
 import PrincipalInvitado from 'componente/Invitado/PrincipalInvitados.js';
+import AltaInvitado from "./componente/Invitado/AltaInvitado";
 import EditarInvitado from 'componente/Invitado/EditarInvitado.js';
 
 import PrincipalReserva from './componente/Reserva/PrincipalReserva.js';
@@ -602,7 +602,7 @@ var routes = [
         name: 'Nuevo Invitado',
         icon: 'pe-7s-graph',
         noVisualizar: true,
-        component: AltaInvitado,
+        component: AltaInvitadoIngreso,
     },
     //Se repiten en los distintos perfiles
     {
