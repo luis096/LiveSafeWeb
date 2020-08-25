@@ -224,7 +224,7 @@ class ReservasXServicios extends Component {
                                     onClick={() => {
                                         this.consultar()
                                     }}>
-                                    Consultar
+                                    Generar Reporte
                                 </Button>
                             </div>
                         </div>
@@ -280,12 +280,17 @@ class ReservasXServicios extends Component {
                     <div id="descarga">
                         <div className="card row">
                             <div className="cabecera">
-                                <h3>LiveSafe <img src={logo} width={"40px"} height={"40px"} alt="logo"/></h3>
+                                <div style={{display:"flex", alignItems:"center"}}>
+                                <img src={logo} width={"40px"} height={"40px"} alt="logo"/>
+                                     <h2 style={{marginLeft:'6px'}}> LiveSafe</h2>
+                                </div>
+                               
                                 <h4 className="tituloReporte">Reporte de reservas por servicios</h4>
                                 <div className="fecha">
                                     <label>Fecha de emición: {new Date().toLocaleDateString()}</label>
-                                    <label>Fecha desde: {this.state.desde?this.state.desde.toLocaleDateString()+" ":""}
-                                    - Fecha hasta: {this.state.hasta?this.state.hasta.toLocaleDateString():""}
+                                    <label>Fecha desde: {this.state.desde?this.state.desde.toLocaleDateString()+" ":""}</label>
+                                        <label>
+                                    Fecha hasta: {this.state.hasta?this.state.hasta.toLocaleDateString():""}
                                         </label>
                                 </div>
                             </div>
