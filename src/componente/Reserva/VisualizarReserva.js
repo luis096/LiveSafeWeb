@@ -63,23 +63,6 @@ class VisualizarReserva extends Component {
             });
         });
         this.setState({ estado: validator.estadoReserva(this.state.desde, this.state.hasta, this.state.reserva.Cancelado) });
-        // await this.conexion
-        //     .collection('Invitados')
-        //     .get()
-        //     .then((querySnapshot) => {
-        //         querySnapshot.forEach((doc) => {
-        //             if (doc.exists) {
-        //                 if (doc.data().Estado) {
-        //                     confirmados.push([doc.data(), doc.id]);
-        //                 } else {
-        //                     pendientes.push([doc.data(), doc.id]);
-        //                 }
-        //             }
-        //         });
-        //     })
-        //     .catch((error) => {
-        //         this.notificationSystem.current.addNotification(operacion.error(error.message));
-        //     });
 
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
@@ -106,10 +89,6 @@ class VisualizarReserva extends Component {
                 });
             })
 
-        // await this.setState({
-        //     invitadosConfirmados: confirmados,
-        //     invitadosPendientes: pendientes,
-        // });
 
         await Database.collection('TipoDocumento')
             .get()
@@ -148,6 +127,9 @@ class VisualizarReserva extends Component {
     }
 
     async agregarInvitado(invitado, id) {
+        let desde2 = new Date(this.state.desde);
+        let hasta2 = new Date(this.state.hasta);
+
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
             .collection('InvitacionesEventos')
@@ -160,14 +142,15 @@ class VisualizarReserva extends Component {
                     '/Reservas/' +
                     this.idReserva
                 ),
-                FechaDesde: this.state.desde,
-                FechaHasta: this.state.hasta,
+                FechaDesde: new Date(desde2.setMinutes(desde2.getMinutes() - 30)),
+                FechaHasta: new Date(hasta2.setMinutes(hasta2.getMinutes() + 30)),
                 TipoDocumento: invitado.TipoDocumento,
-                Documento: invitado.Documento,
+                Documento: invitado.Documento
             })
             .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
+
         await this.conexion
             .collection('Invitados')
             .doc(id)
@@ -175,7 +158,51 @@ class VisualizarReserva extends Component {
             .catch((error) => {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
+
+
+        let existeComoInvitado = await this.buscarEnInvitados(invitado);
+
+        if (existeComoInvitado) return;
+
+        let invitadoNuevo = {
+            Estado: false,
+            TipoDocumento: invitado.TipoDocumento,
+            Documento: invitado.Documento,
+            FechaAlta: new Date(),
+            FechaDesde: new Date(),
+            FechaHasta: new Date(),
+            IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry')
+                + '/Propietarios/' + localStorage.getItem('idPersona'))
+        }
+
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Invitados')
+            .add(invitadoNuevo)
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
     }
+
+    async buscarEnInvitados(invitado) {
+        let existe = false;
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Invitados')
+            .where('Documento', '==', invitado.Documento)
+            .where('TipoDocumento', '==', invitado.TipoDocumento)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    existe = doc.exists;
+                });
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
+        return existe;
+    }
+
 
     modalAgregarInvitado() {
         this.setState({ showModal: true });

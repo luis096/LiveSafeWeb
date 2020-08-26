@@ -341,7 +341,6 @@ class PrincipalInvitados extends Component {
     }
 
     cancelar(inv) {
-        inv[0].Estado = !inv[0].Estado;
         this.setState({
             invitadoCancelar: inv,
             alert: (
@@ -363,6 +362,7 @@ class PrincipalInvitados extends Component {
     }
 
     async successDelete() {
+        this.state.invitadoCancelar[0].Estado = !this.state.invitadoCancelar[0].Estado;
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
             .collection('Invitados')
@@ -520,7 +520,7 @@ class PrincipalInvitados extends Component {
                                                     Editar
                                     </th>
                                                 <th style={{ textAlign: 'center' }} scope="col">
-                                                    Eliminar
+                                                    Acción
                                     </th>
                                             </tr>
                                         </thead>
@@ -558,12 +558,12 @@ class PrincipalInvitados extends Component {
                                                         </td>
                                                         <td style={{ textAlign: 'center' }}>
                                                             <Button
-                                                                bsStyle="danger"
+                                                                bsStyle={inv[0].Estado ? 'danger' : 'success'}
                                                                 fill
                                                                 onClick={() => {
                                                                     this.cancelar(inv);
                                                                 }}>
-                                                                Eliminar
+                                                                {inv[0].Estado ? 'Desactivar' : 'Activar'}
                                                 </Button>
                                                         </td>
                                                     </tr>

@@ -32,6 +32,7 @@ class AltaIngreso extends Component {
             alert: null,
             nuevoInvitado: false,
             esInvitadoEvento: false,
+            idsInvitadoAutenticar: [],
             loading: false,
             errorDocumento: { error: false, mensaje: '' },
         };
@@ -102,15 +103,52 @@ class AltaIngreso extends Component {
         this.setState({ fechaNacimiento: new Date(event) });
     }
 
+    // Agregar bandera para optimizar
     async buscar() {
         this.setState({loading: true});
-        await this.buscarPersona();
-        if (!this.state.invitadoTemp.length) {
-            this.state.existeInvitado
-                ? this.errorIngreso('La persona no está invitada o venció su plazo de invitacion al country.')
-                : this.noEncontrado('La persona no se encuentra registrada en el sistema. ¿Desea agregarla como un nuevo invitado? ');
+
+        // Busco primero entre los invitados par autenticarlo en caso de que sea necesario.
+        // NO valida invitacion solo AUTENTICA!.
+        let ids = await this.buscarAutenticar();
+        console.log(ids);
+        // Si hay que autenticar, que lo haga y luego seguimos el camino normal.
+        if (!ids.length) {
+            await this.buscarPersona();
+            if (!this.state.invitadoTemp.length) {
+                this.state.existeInvitado
+                    ? this.errorIngreso('La persona no está invitada o venció su plazo de invitación al country.')
+                    : this.noEncontrado('La persona no se encuentra registrada en el sistema. ¿Desea agregarla como un nuevo invitado?');
+            }
         }
+
         this.setState({loading: false});
+    }
+
+
+    // Busco para autenticar entre toda la coleccion de invitados. En caso de necesitarlo
+    // retorno un array con todos los ids. ademas se pone en true la bandera y guardo los ids.
+    async buscarAutenticar() {
+        let ids = [];
+        let refTipoDocumento = await operacion.obtenerReferenciaDocumento(this.state.tipoDocumento);
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Invitados')
+            .where('Documento', '==', this.state.documento)
+            .where('TipoDocumento', '==', refTipoDocumento)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (doc.exists && !doc.data().Apellido) {
+                       ids.push(doc.id)
+                    }
+                });
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
+
+        this.setState({autenticar: !!ids.length, idsInvitadoAutenticar: ids});
+        return ids;
     }
 
     async buscarPersona() {
@@ -136,6 +174,9 @@ class AltaIngreso extends Component {
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
             });
 
+
+        let temporalEvento = {};
+
         //Si no se encontro la persona entre ellos, busco entre los invitados registrados en el barrio
         if (!invitadoTemp.length) {
             await Database.collection('Country')
@@ -148,11 +189,9 @@ class AltaIngreso extends Component {
                     querySnapshot.forEach((doc) => {
                         if (doc.exists) {
                             this.setState({ existeInvitado: true });
+                            temporalEvento = doc.data();
                             if (doc.data().Estado && validator.validarInvitado(doc.data().FechaDesde, doc.data().FechaHasta)) {
                                 invitadoTemp.push([doc.data(), doc.id]);
-                                if (!doc.data().Nombre) {
-                                    this.setState({ autenticar: true });
-                                }
                             }
                         }
                     });
@@ -161,6 +200,7 @@ class AltaIngreso extends Component {
                     this.notificationSystem.current.addNotification(operacion.error(error.message));
                 });
         }
+
         // Si el invitado existe pero no tiene invitacion valida, busco entre las invitaciones
         // a eventos, si al menos una es valida, se le permite ingresar al country.
         if (!invitadoTemp.length) {
@@ -174,9 +214,9 @@ class AltaIngreso extends Component {
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         if (doc.exists) {
+                            this.setState({ existeInvitado: true });
                             if (validator.validarInvitado(doc.data().FechaDesde, doc.data().FechaHasta)) {
                                 invitadoTemp.push([doc.data(), doc.id]);
-                                this.setState({ esInvitadoEvento: true });
                             }
                         }
                     });
@@ -210,7 +250,7 @@ class AltaIngreso extends Component {
         }
 
         personaEncontrada = invitadoTemp[0] || [];
-        if (personaEncontrada[0]) {
+        if (!!personaEncontrada[0]) {
             nombre = personaEncontrada[0].Nombre;
             apellido = personaEncontrada[0].Apellido;
             fechaNacimiento = validator.obtenerFecha(personaEncontrada[0].FechaNacimiento);
@@ -231,7 +271,7 @@ class AltaIngreso extends Component {
     }
 
     async agregarIngreso(observacion) {
-        this.setState({ alert: null });
+        this.setState({ alert: null, loading: true });
         let datosPersonas = this.state.personaEncontrada[0];
 
         if (this.state.invitadoTemp.length > 1) {
@@ -239,13 +279,12 @@ class AltaIngreso extends Component {
         }
 
         let ingreso = {
-            Nombre: this.state.nombre || 'Invitado Evento',
-            Apellido: this.state.apellido || 'Invitado Evento',
+            Nombre: this.state.nombre,
+            Apellido: this.state.apellido,
             TipoDocumento: datosPersonas.TipoDocumento,
             Documento: datosPersonas.Documento,
             Fecha: new Date(),
             Egreso: false,
-            Estado: true,
             Observacion: observacion,
             IdEncargado: operacion.obtenerMiReferencia(2),
             IdPropietario: datosPersonas.IdPropietario ? datosPersonas.IdPropietario : '',
@@ -268,9 +307,8 @@ class AltaIngreso extends Component {
                     IdPropietario: datosPersonas.IdPropietario,
                     Tipo: 'Ingreso',
                     Texto: this.state.nombre + ' ' + this.state.apellido + ' ha ingresado al Country.',
-                    Visto: false,
+                    Visto: false
                 })
-                .then(this.reestablecer)
                 .catch((error) => {
                     this.notificationSystem.current.addNotification(operacion.error(error.message));
                 });
@@ -286,9 +324,8 @@ class AltaIngreso extends Component {
             alert: (
                 <SweetAlert
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
-                    title="Error"
+                    title="Upss!!"
                     onConfirm={() => this.hideAlert()}
-                    onCancel={() => this.hideAlert()}
                     confirmBtnBsStyle="info">
                     {msg}
                 </SweetAlert>
@@ -376,37 +413,34 @@ class AltaIngreso extends Component {
     redirectNuevoInvitado() {
         if (this.state.nuevoInvitado) {
             this.state.nuevoInvitado = false;
-            return <Redirect to="altaInvitado" />;
+            return <Redirect to="altaInvitado"/>;
         }
     }
 
     async autenticarInvitado() {
-        let { invitadoTemp } = this.state;
-        let refTipoDocumento = await operacion.obtenerReferenciaDocumento(this.state.tipoDocumento);
-        invitadoTemp.forEach(async (inv) => {
-            await Database.collection('Country')
+        let { idsInvitadoAutenticar } = this.state;
+        this.setState({ loading: true });
+
+        // Autenticar todos a la vez.
+        // Get a new write batch
+        let batch = Database.batch();
+
+        idsInvitadoAutenticar.forEach((idInvitado) => {
+            let sfRef = Database.collection('Country')
                 .doc(localStorage.getItem('idCountry'))
-                .collection('Invitados')
-                .doc(inv[1])
-                .set({
-                    Nombre: this.state.nombre,
-                    Apellido: this.state.apellido,
-                    Estado: inv[0].Estado,
-                    TipoDocumento: operacion.obtenerReferenciaDocumento(this.state.tipoDocumento),
-                    Documento: this.state.documento,
-                    Grupo: inv[0].Grupo,
-                    FechaNacimiento: this.state.fechaNacimiento,
-                    FechaAlta: inv[0].FechaAlta,
-                    FechaDesde: inv[0].FechaDesde,
-                    FechaHasta: inv[0].FechaHasta,
-                    IdPropietario: inv[0].IdPropietario,
-                })
-                .catch((error) => {
-                    this.notificationSystem.current.addNotification(operacion.error(error.message));
-                });
+                .collection('Invitados').doc(idInvitado.toString());
+            batch.update(sfRef, "Nombre", this.state.nombre);
+            batch.update(sfRef, "Apellido", this.state.apellido);
+            batch.update(sfRef, "FechaNacimiento", this.state.fechaNacimiento);
         });
 
-        this.setState({ autenticar: false, propietarios: [] });
+        // Commit the batch
+        await batch.commit().then(() => {
+            this.setState({ autenticar: false, loading: false });
+            this.notificationSystem.current.addNotification(
+                operacion.registroConExito("El invitado se autenticó con éxito"));
+            this.buscar();
+        });
     }
 
     reestablecer() {
@@ -421,6 +455,10 @@ class AltaIngreso extends Component {
             documento: '',
             descripcion: '',
             esInvitadoEvento: false,
+            idsInvitadoAutenticar: [],
+            nombre: '',
+            apellido: '',
+            fechaNacimiento: '',
         });
     }
 
@@ -448,6 +486,8 @@ class AltaIngreso extends Component {
                 </legend>
                 {this.state.alert}
                 {this.redirectNuevoInvitado()}
+
+                {/*Region de la consulta.*/}
                 <div className="row card">
                     <div className="card-body">
                         <h5 className="row">Buscar persona</h5>
@@ -461,17 +501,6 @@ class AltaIngreso extends Component {
                                     placeholder="Seleccionar"
                                     options={this.state.tipoD}
                                     onChange={this.ChangeSelect.bind(this)}
-                                    styles={
-                                        this.errorTipoDocumento.error
-                                            ? {
-                                                control: (base, state) => ({
-                                                    ...base,
-                                                    borderColor: 'red',
-                                                    boxShadow: 'red',
-                                                }),
-                                            }
-                                            : {}
-                                    }
                                 />
                                 <label className="small text-danger" hidden={!this.errorTipoDocumento.error}>
                                     {this.errorTipoDocumento.mensaje}
@@ -495,11 +524,17 @@ class AltaIngreso extends Component {
                                 </Button>
                             </div>
                             <div className="col-md-2 row-secction" style={{ marginTop: '25px' }}>
-                                <Button bsStyle="primary" fill wd onClick={this.buscar} disabled={this.FormInvalid()}>
+                                <Button bsStyle="primary" fill wd
+                                        onClick={this.buscar}
+                                        disabled={this.FormInvalid() ||
+                                        this.state.personaEncontrada.length ||
+                                        this.state.autenticar}>
                                     Buscar
                                 </Button>
                             </div>
                         </div>
+
+                        {/*Mensajes de distintos caminos. (1-Mas de un propietario 2-No esta autenticado)*/}
                         <div hidden={this.state.invitadoTemp.length <= 1}>
                             <h5 className="row text-danger" hidden={this.state.autenticar}>
                                 La persona ha sido invitada por más de un propietario. Debe seleccionar el propietario al
@@ -511,25 +546,15 @@ class AltaIngreso extends Component {
                         </h5>
                     </div>
                 </div>
-                <div className="col-md-12">
-                    <div className="row card" hidden={!this.state.invitadoTemp.length}>
+
+
+                {/*Region de resultado. Se muestra la perona encontrada,
+                se habilitan los campos par escribir en caso de autenticar sea necesario*/}
+                <div className="col-md-12" hidden={!this.state.personaEncontrada.length && !this.state.autenticar}>
+                    <div className="row card">
                         <div className="card-body">
-                            <h5 className="row">Resultado de la búsqueda </h5>
-                            <div className="row" hidden={this.state.esInvitadoEvento}>
-                                {/*<div className="col-md-3 row-secction">*/}
-                                {/*    <label>Tipo de Ingreso</label>*/}
-                                {/*    <input*/}
-                                {/*        className="form-control"*/}
-                                {/*        disabled={true}*/}
-                                {/*        value={*/}
-                                {/*            this.state.personaEncontrada[0]*/}
-                                {/*                ? this.state.personaEncontrada[0].IdPropietario*/}
-                                {/*                    ? 'Invitado'*/}
-                                {/*                    : 'Propietario'*/}
-                                {/*                : '-'*/}
-                                {/*        }*/}
-                                {/*    />*/}
-                                {/*</div>*/}
+                            <h5 className="row">Resultado de la búsqueda</h5>
+                            <div className="row">
                                 <div className="col-md-3 row-secction">
                                     <label>Nombre</label>
                                     <input
@@ -558,24 +583,30 @@ class AltaIngreso extends Component {
                                         timeFormat={false}
                                         onChange={this.ChangeFechaNacimiento}
                                         value={this.state.fechaNacimiento}
-                                        inputProps={{ placeholder: 'Fecha de Nacimiento', disabled: !this.state.autenticar }}
+                                        inputProps={{
+                                            placeholder: 'Fecha de Nacimiento',
+                                            disabled: !this.state.autenticar
+                                        }}
                                     />
                                 </div>
-                            </div>
-                            <div className="row" hidden={!this.state.esInvitadoEvento}>
-                                <label>La persona se encuentra invitada a un evento dentro del country.</label>
                             </div>
                         </div>
                     </div>
                 </div>
+
+
+                {/*Boton de autenticar al Invitado*/}
                 <div className="text-center" hidden={!this.state.autenticar}>
                     <Button bsStyle="warning" fill wd onClick={this.autenticarInvitado}>
                         Autenticar
                     </Button>
                 </div>
 
-                <div className="col-md-12" hidden={this.state.autenticar}>
-                    <div className="card row" hidden={this.state.invitadoTemp.length <= 1}>
+
+                {/*Region Tabla de Propietarios
+                  se muestra en caso de que NO REQUIERA AUTENTICAR, y TENGA MAS DE 1 PROPIETARIO*/}
+                <div className="col-md-12" hidden={this.state.autenticar || this.state.invitadoTemp.length <= 1}>
+                    <div className="card row">
                         <h4 className="row">Propietarios</h4>
                         <div className="card-body row">
                             <table className="table table-hover">
@@ -610,6 +641,15 @@ class AltaIngreso extends Component {
                         </div>
                     </div>
                 </div>
+
+                {/*Registrar ingreso.
+                Se muestra si:
+                    - Encontro al menos una persona.
+                    - No requiera autenticar.
+                Se deshabilita si:
+                    - Esta cargando o si tiene mas de un propietario y no lo eligio aun
+
+                */}
                 <div className="text-center" hidden={!this.state.invitadoTemp.length}>
                     <div hidden={this.state.autenticar} style={{ marginBottom: '10px' }}>
                         <Button bsStyle="info" fill wd onClick={this.registrar}
@@ -618,6 +658,9 @@ class AltaIngreso extends Component {
                         </Button>
                     </div>
                 </div>
+
+
+
                 <div>
                     <NotificationSystem ref={this.notificationSystem} style={style} />
                 </div>

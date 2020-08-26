@@ -85,18 +85,22 @@ class AltaInvitado extends Component {
     async registrar() {
         this.setState({loading: true});
         let e = false;
+
+        let result = await this.buscarInvitadoAutenticado();
+
+        console.log(result);
+        if (result.repetido) {
+            this.notificationSystem.current.addNotification(
+                operacion.error("El invitado ya existe."));
+            this.reset();
+            this.setState({loading: false});
+            return;
+        }
+
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
             .collection('Invitados')
-            .add({
-                Estado: this.state.estado,
-                TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumentoInvitado.value),
-                Documento: this.state.documentoInvitado,
-                FechaAlta: new Date(),
-                FechaDesde: this.state.desde,
-                FechaHasta: this.state.hasta,
-                IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + this.state.idPropietario),
-            })
+            .add(result.invitado)
             .catch((error) => {
                 e = true;
                 this.notificationSystem.current.addNotification(operacion.error(error.message));
@@ -106,7 +110,47 @@ class AltaInvitado extends Component {
         this.setState({loading: false});
         if (e) return;
         this.notificationSystem.current.addNotification(
-            operacion.registroConExito("El invitado se registró con éxito"));
+            operacion.registroConExito("El invitado se registró con éxito."));
+    }
+
+
+    async buscarInvitadoAutenticado() {
+        let repetido = false;
+        let invitado = {
+            Estado: true,
+            TipoDocumento: Database.doc('TipoDocumento/' + this.state.tipoDocumentoInvitado.value),
+            Documento: this.state.documentoInvitado,
+            FechaAlta: new Date(),
+            FechaDesde: this.state.desde,
+            FechaHasta: this.state.hasta,
+            IdPropietario: Database.doc('Country/' + localStorage.getItem('idCountry') + '/Propietarios/' + this.state.idPropietario),
+        };
+
+        let refTipoDocumento = await operacion.obtenerReferenciaDocumento(this.state.tipoDocumentoInvitado);
+
+        await Database.collection('Country')
+            .doc(localStorage.getItem('idCountry'))
+            .collection('Invitados')
+            .where('Documento', '==', this.state.documentoInvitado)
+            .where('TipoDocumento', '==', refTipoDocumento)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (doc.exists && !!doc.data().Apellido) {
+                        invitado.Nombre = doc.data().Nombre;
+                        invitado.Apellido = doc.data().Apellido;
+                        invitado.FechaNacimiento = doc.data().FechaNacimiento;
+                        if (!repetido) {
+                            repetido = (doc.data().IdPropietario.id === this.state.idPropietario);
+                        }
+                    }
+                });
+            })
+            .catch((error) => {
+                this.notificationSystem.current.addNotification(operacion.error(error.message));
+            });
+
+        return {invitado: invitado, repetido: repetido};
     }
 
     reset() {
