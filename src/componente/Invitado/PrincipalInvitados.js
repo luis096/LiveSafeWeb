@@ -341,6 +341,7 @@ class PrincipalInvitados extends Component {
     }
 
     cancelar(inv) {
+        let msj = inv[0].Estado?"desactivar":"activar";
         this.setState({
             invitadoCancelar: inv,
             alert: (
@@ -355,13 +356,15 @@ class PrincipalInvitados extends Component {
                     confirmBtnText="Sí, estoy seguro"
                     cancelBtnText="No"
                     showCancel>
-                    ¿Está seguro de que desea eliminar el invitado?
+                    ¿Está seguro de que desea {msj} al invitado?
                 </SweetAlert>
             ),
         });
     }
 
     async successDelete() {
+        let msj = this.state.invitadoCancelar[0].Estado?"desactivó":"activó";
+        let msjTitle = this.state.invitadoCancelar[0].Estado?"desactivádo":"activádo";
         this.state.invitadoCancelar[0].Estado = !this.state.invitadoCancelar[0].Estado;
         await Database.collection('Country')
             .doc(localStorage.getItem('idCountry'))
@@ -377,11 +380,11 @@ class PrincipalInvitados extends Component {
                     className="alert"
                     success
                     style={{ display: 'block', marginTop: '-100px', position: 'center' }}
-                    title="Invitado eliminado"
+                    title={"Invitado " + msjTitle}
                     onConfirm={() => this.hideAlert()}
                     onCancel={() => this.hideAlert()}
                     confirmBtnBsStyle="info">
-                    El invitado se eliminó correctamente
+                    El invitado se {msj} correctamente
                 </SweetAlert>
             ),
         });
@@ -403,7 +406,7 @@ class PrincipalInvitados extends Component {
                     onConfirm={() => this.hideAlert()}
                     onCancel={() => this.hideAlert()}
                     confirmBtnBsStyle="info">
-                    El invitado no fue eliminado.
+                    El invitado no fue modificado.
                 </SweetAlert>
             ),
         });
