@@ -15,7 +15,7 @@ const NOMBRE_ARCHIVOS = /^(?!((con|prn|aux)((\.[^\\/:*"$•?<>|]{1,3}$)|$))|[\s\
 const LETRAS_REGEXP = /^[a-zA-Z ]*$/;
 
 
-const ESTADOS_RESERVAS = ['Pendiente', 'En Curso', 'Cancelado', 'Realizado'];
+const ESTADOS_RESERVAS = ['Pendiente', 'En Curso', 'Cancelada', 'Finalizada'];
 
 
 // Se retorna TRUE si hay un error.. 

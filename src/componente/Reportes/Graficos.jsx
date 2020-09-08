@@ -299,11 +299,11 @@ class Graficos extends Component {
                                 </div>
                                 <h4 className="tituloReporte">Reporte de {this.state.nombreReporte.toLowerCase()} por mes</h4>
                                 <div className="fecha">
-                                    <label>Fecha de emición: {new Date().toLocaleDateString()}</label>
-                                    <label>Fecha desde: {this.state.mesDesde ? this.state.mesDesde.label+" " : ""}
+                                    <label>Fecha de emisión: {new Date().toLocaleDateString()}</label>
+                                    <label>Desde: {this.state.mesDesde ? this.state.mesDesde.label+" " : ""}
                                         {this.state.anioDesde ? this.state.anioDesde.label+" " : ""} </label>
                                         <label>
-                                        Fecha hasta: {this.state.mesHasta ? this.state.mesHasta.label+" " : ""}
+                                        Hasta: {this.state.mesHasta ? this.state.mesHasta.label+" " : ""}
                                         {this.state.anioHasta ? this.state.anioHasta.label+" " : ""}
                                     </label>
                                 </div>

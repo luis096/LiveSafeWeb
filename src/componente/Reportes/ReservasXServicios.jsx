@@ -287,10 +287,10 @@ class ReservasXServicios extends Component {
                                
                                 <h4 className="tituloReporte">Reporte de reservas por servicios</h4>
                                 <div className="fecha">
-                                    <label>Fecha de emición: {new Date().toLocaleDateString()}</label>
-                                    <label>Fecha desde: {this.state.desde?this.state.desde.toLocaleDateString()+" ":""}</label>
+                                    <label>Fecha de emisión: {new Date().toLocaleDateString()}</label>
+                                    <label>Desde: {this.state.desde?this.state.desde.toLocaleDateString()+" ":""}</label>
                                         <label>
-                                    Fecha hasta: {this.state.hasta?this.state.hasta.toLocaleDateString():""}
+                                    Hasta: {this.state.hasta?this.state.hasta.toLocaleDateString():""}
                                         </label>
                                 </div>
                             </div>
